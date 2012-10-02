@@ -1,0 +1,49 @@
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-01 15:46:37
+project --topLevelPackage nc.moumea.mairie --projectName sirh-eae-ws --java 6 --packaging WAR
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-01 15:46:49
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 08:07:02
+hint
+jpa setup --provider HIBERNATE --database ORACLE 
+hint
+entity jpa --class nc.moumea.mairie.sirh.eae.domain.Eae --testAutomatically
+hint
+field string --fieldName Agent 
+web mvc json setup
+perform clean
+web mvc json add --jsonObject ~.sirh.eae.domain.Eae --class ~.sirh.eaa.web.controller.EaeController
+hint
+// [failed] database reverse engineer --package nc.noumea.mairie.sirh.eae.domain --schema unable-to-obtain-connection 
+// [failed] database reverse engineer --testAutomatically --schema EAE
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema no-schema-required
+// [failed] database introspect --schema EAE --enableViews false 
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-02 14:15:38
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 14:22:00
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema EAE
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-02 14:25:03
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 14:25:14
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema EAE
+// [failed] database reverse engineer --schema EAE --package nc.noumea.mairie.sirh.eae.domain
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-02 14:30:12
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 14:30:58
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema no-schema-required
+// [failed] database reverse engineer --schema tttt
+// [failed] database introspect --schema no-schema-required
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-02 14:39:15
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 14:40:32
+// [failed] database introspect --schema EAE
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-02 14:46:15
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 14:47:16
+hint
+entity jpa --class ~.sirh.eae.domain.EaeResultat
+entity jpa --class ~.sirh.eae.domain.EaeAppreciation
+entity jpa --class ~.sirh.eae.domain.EaeAutoEvaluation
+entity jpa --class ~.sirh.eae.domain.EaeCampagneActeurs
+entity jpa --class ~.sirh.eae.domain.EaeCampagneAction
+entity jpa --class ~.sirh.eae.domain.EaeCampagne
+// [failed] focus --class nc.noumea.mairie.sirh.eae.domain.Eae
+// [failed] focus --class Eae
+// [failed] field date --type ~.sirh.eae.domain.Eae --fieldName dateCreation --column DATE_CREATION
