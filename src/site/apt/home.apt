@@ -1,0 +1,12 @@
+ -----
+ SIRH-EAE
+ -----
+ Nicolas RAYNAUD
+ -----
+  02/10/2012
+
+SIRH EAE WebServices
+
+ SIRH EAE WS représente l'ensemble des webservices relatifs à la gestion des EAE.
+ Ces WS sont accédés depuis le portail Kiosque et repose sur la base de données des EAE ainsi que la base de données SIRH.
+ 
