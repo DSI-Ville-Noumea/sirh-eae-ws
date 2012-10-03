@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
 import nc.moumea.mairie.sirh.domain.Agent;
 
 privileged aspect Agent_Roo_Jpa_Entity {
@@ -23,24 +22,12 @@ privileged aspect Agent_Roo_Jpa_Entity {
     @Column(name = "ID_AGENT")
     private Integer Agent.idAgent;
     
-    @Version
-    @Column(name = "version")
-    private Integer Agent.version;
-    
     public Integer Agent.getIdAgent() {
         return this.idAgent;
     }
     
     public void Agent.setIdAgent(Integer id) {
         this.idAgent = id;
-    }
-    
-    public Integer Agent.getVersion() {
-        return this.version;
-    }
-    
-    public void Agent.setVersion(Integer version) {
-        this.version = version;
     }
     
 }

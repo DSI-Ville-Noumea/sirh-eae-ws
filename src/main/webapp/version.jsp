@@ -3,7 +3,7 @@ sirh.eae.ws.version=<%=this.getServletContext().getInitParameter("VERSION")%><br
 sirh.eae.ws.localhost.hostaddress=<%=InetAddress.getLocalHost().getHostAddress()%><br/>
 sirh.eae.ws.localhost.canonicalhostname=<%=InetAddress.getLocalHost().getCanonicalHostName()%><br/>
 sirh.eae.ws.localhost.hostname=<%=InetAddress.getLocalHost().getHostName()%><br/>
-<%=this.getServletContext() %>
+
 <%
 	HttpSession theSession = request.getSession(false);
 
