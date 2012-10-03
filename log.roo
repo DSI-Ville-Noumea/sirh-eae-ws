@@ -79,3 +79,4 @@ help
 focus --class ~.sirh.eae.domain.Eae
 field number --fieldName idAgent --column ID_AGENT --type int
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-03 10:57:54
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-03 14:25:29
