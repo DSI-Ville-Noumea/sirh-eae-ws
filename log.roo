@@ -47,3 +47,35 @@ entity jpa --class ~.sirh.eae.domain.EaeCampagne
 // [failed] focus --class nc.noumea.mairie.sirh.eae.domain.Eae
 // [failed] focus --class Eae
 // [failed] field date --type ~.sirh.eae.domain.Eae --fieldName dateCreation --column DATE_CREATION
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 16:23:19
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema EAE
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-02 16:29:08
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-02 16:29:18
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema EAE
+// [failed] database introspect --schema EAE
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-02 16:49:27
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-03 07:58:20
+hint
+// [failed] entity jpa --class nc.moumea.mairie.sirh.domain.Agent --schema SIRH --identifierColumn ID_AGENT --identifierField idAgent --identifierType int --table AGENT
+// [failed] entity jpa --class nc.moumea.mairie.sirh.domain.Agent --schema SIRH --identifierColumn ID_AGENT --identifierField idAgent --identifierType Integer.class --table AGENT
+// [failed] entity jpa --class nc.moumea.mairie.sirh.domain.Agent --schema SIRH --identifierColumn ID_AGENT --identifierField idAgent --table AGENT
+// [failed] entity jpa --class nc.moumea.mairie.sirh.domain.Agent --schema SIRH
+// [failed] entity jpa --class nc.moumea.mairie.sirh.domain.Agent
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-03 08:34:44
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-03 08:34:54
+entity jpa --class nc.moumea.mairie.sirh.domain.Agent
+field number --type java.lang.Integer --fieldName nomatr --column NOMATR
+field string --fieldName nomMarital --column NOM_MARITAL
+field string --fieldName nomPatronymique --column NOM_PATRONYMIQUE --notNull 
+field number --fieldName idAgent --column ID_AGENT --type int
+// [failed] focus --class nc.noumea.mairie.sirh.eae.Eae
+// [failed] field number --fieldName idAgent --column ID_AGENT --type int
+hint
+help
+focus --class ~.sirh.eae.domain.Eae
+field number --fieldName idAgent --column ID_AGENT --type int
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-03 10:57:54
