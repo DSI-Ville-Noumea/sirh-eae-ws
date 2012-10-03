@@ -1,7 +1,6 @@
 package nc.moumea.mairie.sirh.domain;
 
 import javax.persistence.Column;
-import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;

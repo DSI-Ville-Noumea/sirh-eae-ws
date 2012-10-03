@@ -62,17 +62,9 @@
 	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/ORACLE_EAE"
 		resource-ref="true" />
 
-	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH_Kiosque"
+	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH"
 		resource-ref="true" />
-
-	<!-- <bean id="pum" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager"> -->
-	<!-- <property name="persistenceXmlLocations"> -->
-	<!-- <list> -->
-	<!-- <value>classpath*:META-INF/persistence.xml</value> -->
-	<!-- </list> -->
-	<!-- </property> -->
-	<!-- </bean> -->
-
+		
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
 		id="eaeTransactionManager">
 		<property name="entityManagerFactory" ref="eaeEntityManagerFactory" />

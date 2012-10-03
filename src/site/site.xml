@@ -31,10 +31,7 @@
         	<item name="Fichier context.xml" href="exploitation/context.html"/>
         </menu>
 		<menu name="Développement">
-        	<item name="Application" href="developpement/application.html"/>
-        </menu>
-		<menu name="Conception">
-        	<item name="Agent" href="conception/agent.html"/>
+        	<item name="Application" href="developpement/configuration.html"/>
         </menu>
 		<menu name="FAQ">
         	<item name="SIE" href="sie.html"/>

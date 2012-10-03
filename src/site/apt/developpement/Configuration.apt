@@ -7,17 +7,23 @@
 
 SIRH EAE WebServices Configuration
 
- Variable d'environnement
+** Variable d'environnement pour build maven
++------------------------------------------+
  MAVEN_OPTS=-Duser.timezone="Pacific/Noumea"
- 
- Installation du driver ojdbc6
++------------------------------------------+
+
+** Installation du driver ojdbc6
  
  POM.xml
-	 <dependency>
-		<groupId>com.oracle</groupId>
-		<artifactId>ojdbc</artifactId>
-		<version>6</version>
-	 </dependency>
- Mvn
-	mvn install:install-file -Dfile=my/path/to/the/jar/ojdbc6.jar -DgroupId=com.oracle -DartifactId=ojdbc -Dversion=6 -Dpackaging=jar -DgeneratePom=true
- 
++------------------------------------------+
+<dependency>
+	<groupId>com.oracle</groupId>
+	<artifactId>ojdbc</artifactId>
+	<version>6</version>
+ </dependency>
++------------------------------------------+
+ Maven command
++------------------------------------------+
+mvn install:install-file -Dfile=my/path/to/the/jar/ojdbc6.jar 
+	-DgroupId=com.oracle -DartifactId=ojdbc -Dversion=6 -Dpackaging=jar -DgeneratePom=true
++------------------------------------------+

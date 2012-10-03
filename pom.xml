@@ -14,6 +14,15 @@
         <slf4j.version>1.6.4</slf4j.version>
         <spring.version>3.1.1.RELEASE</spring.version>
     </properties>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://dvlp:8181/browse/EAEWS</url>
+    </issueManagement>
+    <scm>
+        <connection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</connection>
+        <developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</developerConnection>
+        <url>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</url>
+    </scm>
     <repositories>
         <repository>
             <id>spring-maven-release</id>
@@ -319,13 +328,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
-<!-- 				<configuration> -->
-<!-- 					<webResources> -->
-<!-- 						<resource> -->
-<!-- 							<directory>src/main/java</directory> -->
-<!-- 						</resource> -->
-<!-- 					</webResources> -->
-<!-- 				</configuration> -->
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>src/main/java</directory>
+						</resource>
+					</webResources>
+				</configuration>
             </plugin>
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -566,4 +575,5 @@
             </plugin>
         </plugins>
     </build>
+    <description>SIRH-EAE-WS is a web application responsible for exposing REST web services allowing consumers to perform CRUD operations on the SIRH EAE module.</description>
 </project>
