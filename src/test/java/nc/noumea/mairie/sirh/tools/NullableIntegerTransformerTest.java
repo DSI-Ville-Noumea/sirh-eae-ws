@@ -2,8 +2,6 @@ package nc.noumea.mairie.sirh.tools;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
-
 import org.junit.Test;
 
 import flexjson.JSONSerializer;

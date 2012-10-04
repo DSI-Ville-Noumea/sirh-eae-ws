@@ -1,18 +1,20 @@
 package nc.noumea.mairie.sirh.eae.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.service.EaeService;
 
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;

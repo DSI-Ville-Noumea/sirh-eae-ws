@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class EaeService implements IEaeService {
 	@Override
 	public List<Eae> listEaesByAgentId(int agentId) {
 
-		Query eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idAgent = :idAgent", Eae.class);
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idAgent = :idAgent", Eae.class);
 		eaeQuery.setParameter("idAgent", agentId);
 		
 		List<Eae> result = eaeQuery.getResultList();

@@ -1,12 +1,10 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.tools.MSDateTransformer;
@@ -17,7 +15,6 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 
-import flexjson.JSON;
 import flexjson.JSONSerializer;
 
 @RooJavaBean

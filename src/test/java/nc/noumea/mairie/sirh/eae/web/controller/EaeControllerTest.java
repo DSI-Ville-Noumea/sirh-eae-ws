@@ -11,7 +11,6 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
-import nc.noumea.mairie.sirh.eae.web.controller.EaeController;
 
 import org.junit.Test;
 import org.mockito.Mockito;

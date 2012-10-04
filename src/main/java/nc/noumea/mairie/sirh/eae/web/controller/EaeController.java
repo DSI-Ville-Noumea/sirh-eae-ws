@@ -2,10 +2,6 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
