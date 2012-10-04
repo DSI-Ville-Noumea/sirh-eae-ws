@@ -5,14 +5,14 @@
  -----
   02/10/2012
 
-SIRH EAE WebServices Configuration
+ SIRH EAE WebServices Configuration
 
-** Variable d'environnement pour build maven
+ Variable d'environnement pour build maven
 +------------------------------------------+
  MAVEN_OPTS=-Duser.timezone="Pacific/Noumea"
 +------------------------------------------+
 
-** Installation du driver ojdbc6
+ Installation du driver ojdbc6
  
  POM.xml
 +------------------------------------------+

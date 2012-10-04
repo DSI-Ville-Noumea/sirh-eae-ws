@@ -82,3 +82,34 @@ field number --fieldName idAgent --column ID_AGENT --type int
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-03 14:25:29
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-03 15:55:09
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-03 16:13:00
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-03 16:21:17
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-04 09:12:34
+osgi ps
+osgi start --url file:/Alphalog/Mairie/ojdbc-osgi/target/com.oracle.roo.jdbc.ojdbc6-6.0001.jar
+osgi ps
+// [failed] database introspect --schema EAE
+// [failed] database reverse engineer --schema EAE
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-04 09:19:44
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-04 09:21:18
+// [failed] database introspect --schema EAE
+// [failed] database reverse engineer --schema EAE
+osgi ps
+// [failed] database reverse engineer --schema EAE
+osgi uninstall --bundleSymbolicName com.oracle.roo.jdbc.ojdbc6
+osgi ps
+// [failed] osgi uninstall --bundleSymbolicName file:/C:/springsource/spring-roo-1.2.2.RELEASE/bundle/ojdbc6.jar
+// [failed] database reverse engineer --schema EAE
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-04 09:36:49
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-04 09:49:03
+entity jpa --class ~.sirh.eae.domain.EaeDiplome --identifierColumn ID_EAE_DIPLOME --identifierField idEaeDiplome --table EAE_DIPLOME --versionField "" --testAutomatically 
+hint
+field string --fieldName libelleDiplome --column LIBELLE_DIPLOME
+focus --class ~.sirh.eae.domain.Eae
+field number --fieldName idAgent --column ID_AGENT --type int
+web mvc json add --class ~.sirh.eae.web.controller.EaeController --jsonObject ~.sirh.eae.domain.Eae
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-04 14:34:05
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-04 14:44:28
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-04 14:46:30
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-04 14:50:16
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-04 15:00:50
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-05 09:10:06
