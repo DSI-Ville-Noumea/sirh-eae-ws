@@ -1,8 +1,9 @@
-package nc.noumea.mairie.sirh.tools;
+package nc.noumea.mairie.sirh.tools.transformer;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+
 
 import org.junit.Test;
 

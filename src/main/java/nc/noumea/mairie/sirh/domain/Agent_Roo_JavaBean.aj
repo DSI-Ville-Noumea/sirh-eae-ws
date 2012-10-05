@@ -3,6 +3,7 @@
 
 package nc.noumea.mairie.sirh.domain;
 
+import java.util.Date;
 import nc.noumea.mairie.sirh.domain.Agent;
 
 privileged aspect Agent_Roo_JavaBean {
@@ -29,6 +30,38 @@ privileged aspect Agent_Roo_JavaBean {
     
     public void Agent.setNomPatronymique(String nomPatronymique) {
         this.nomPatronymique = nomPatronymique;
+    }
+    
+    public String Agent.getNomUsage() {
+        return this.nomUsage;
+    }
+    
+    public void Agent.setNomUsage(String nomUsage) {
+        this.nomUsage = nomUsage;
+    }
+    
+    public String Agent.getPrenom() {
+        return this.prenom;
+    }
+    
+    public void Agent.setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+    
+    public String Agent.getPrenomUsage() {
+        return this.prenomUsage;
+    }
+    
+    public void Agent.setPrenomUsage(String prenomUsage) {
+        this.prenomUsage = prenomUsage;
+    }
+    
+    public Date Agent.getDateNaissance() {
+        return this.dateNaissance;
+    }
+    
+    public void Agent.setDateNaissance(Date dateNaissance) {
+        this.dateNaissance = dateNaissance;
     }
     
 }

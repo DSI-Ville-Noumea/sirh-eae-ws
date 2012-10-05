@@ -7,8 +7,9 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.domain.Agent;
-import nc.noumea.mairie.sirh.tools.MSDateTransformer;
-import nc.noumea.mairie.sirh.tools.NullableIntegerTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -100,7 +101,7 @@ public class Eae {
     public static JSONSerializer getSerializerForEaeList() {
     	
     	JSONSerializer serializer = new JSONSerializer()
-    	.include("idAgent")
+    	.include("agentEvalue")
     	.include("directionService")
     	.include("sectionService")
     	.include("etat")
@@ -113,6 +114,7 @@ public class Eae {
     	.include("dureeEntretien")
     	.transform(new MSDateTransformer(), Date.class)
     	.transform(new NullableIntegerTransformer(), Integer.class)
+    	.transform(new SimpleAgentTransformer(), Agent.class)
     	.exclude("*");
     	
     	return serializer;
