@@ -3,6 +3,8 @@ package nc.noumea.mairie.sirh.eae.domain;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -41,6 +43,9 @@ public class Eae {
     @Column(name = "SECTION_SERVICE")
     private String sectionService;
     
+    @Column(name = "SERVICE")
+    private String service;
+    
     @Column(name = "STATUT")
     private String statut;
     
@@ -51,10 +56,7 @@ public class Eae {
     @NotNull
     @Column(name = "CAP")
     private boolean cap;
-    
-    @Column(name = "AVIS_CAP")
-    private String avisCap;
-    
+        
     @NotNull
     @Column(name = "DOC_ATTACHE")
     private boolean docAttache;
@@ -86,6 +88,9 @@ public class Eae {
     @Column(name = "ID_DELEGATAIRE")
     private Integer idAgentDelegataire;
     
+    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
+    private EaeEvaluation eaeEvaluation;
+    
     /*
      * Transient properties (will be populated by AS400 entity manager)
      */
@@ -101,21 +106,25 @@ public class Eae {
     public static JSONSerializer getSerializerForEaeList() {
     	
     	JSONSerializer serializer = new JSONSerializer()
-    	.include("agentEvalue")
-    	.include("directionService")
-    	.include("sectionService")
-    	.include("etat")
-    	.include("cap")
-    	.include("avisCap")
-    	.include("docAttache")
-    	.include("dateCreation")
-    	.include("dateFinalisation")
-    	.include("dateControle")
-    	.include("dureeEntretien")
-    	.transform(new MSDateTransformer(), Date.class)
-    	.transform(new NullableIntegerTransformer(), Integer.class)
-    	.transform(new SimpleAgentTransformer(), Agent.class)
-    	.exclude("*");
+	    	.include("agentEvalue")
+	    	.include("directionService")
+	    	.include("sectionService")
+	    	.include("service")
+	    	.include("etat")
+	    	.include("cap")
+	    	.include("docAttache")
+	    	.include("dateCreation")
+	    	.include("dateFinalisation")
+	    	.include("dateControle")
+	    	.include("dureeEntretien")
+	    	.include("agentShd")
+	    	.include("agentDelegataire")
+	    	.include("eaeEvaluation.avisShd")
+	    	.include("idEae")
+	    	.transform(new MSDateTransformer(), Date.class)
+	    	.transform(new NullableIntegerTransformer(), Integer.class)
+	    	.transform(new SimpleAgentTransformer(), Agent.class)
+	    	.exclude("*");
     	
     	return serializer;
     }

@@ -6,6 +6,7 @@ package nc.noumea.mairie.sirh.eae.domain;
 import java.util.Date;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 
 privileged aspect Eae_Roo_JavaBean {
     
@@ -41,6 +42,14 @@ privileged aspect Eae_Roo_JavaBean {
         this.sectionService = sectionService;
     }
     
+    public String Eae.getService() {
+        return this.service;
+    }
+    
+    public void Eae.setService(String service) {
+        this.service = service;
+    }
+    
     public String Eae.getStatut() {
         return this.statut;
     }
@@ -63,14 +72,6 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setCap(boolean cap) {
         this.cap = cap;
-    }
-    
-    public String Eae.getAvisCap() {
-        return this.avisCap;
-    }
-    
-    public void Eae.setAvisCap(String avisCap) {
-        this.avisCap = avisCap;
     }
     
     public boolean Eae.isDocAttache() {
@@ -151,6 +152,14 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setIdAgentDelegataire(Integer idAgentDelegataire) {
         this.idAgentDelegataire = idAgentDelegataire;
+    }
+    
+    public EaeEvaluation Eae.getEaeEvaluation() {
+        return this.eaeEvaluation;
+    }
+    
+    public void Eae.setEaeEvaluation(EaeEvaluation eaeEvaluation) {
+        this.eaeEvaluation = eaeEvaluation;
     }
     
     public Agent Eae.getAgentEvalue() {

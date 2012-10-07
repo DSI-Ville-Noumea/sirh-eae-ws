@@ -115,3 +115,26 @@ web mvc json add --class ~.sirh.eae.web.controller.EaeController --jsonObject ~.
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-05 09:10:06
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-05 12:07:32
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-05 12:09:23
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluation --identifierColumn ID_EAE_EVALUATION --identifierField idEaeEvaluation --identifierType int --persistenceUnit eaePersistenceUnit --table EAE_EVALUATION
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluation --identifierColumn ID_EAE_EVALUATION --identifierField idEaeEvaluation --identifierType Integer.class --persistenceUnit eaePersistenceUnit --table EAE_EVALUATION
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluation --identifierColumn ID_EAE_EVALUATION --identifierField idEaeEvaluation --persistenceUnit eaePersistenceUnit --table EAE_EVALUATION --identifierType java.lang.Integer
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-05 14:04:29
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-05 14:04:37
+entity jpa --class ~.sirh.eae.domain.EaeEvaluation --identifierColumn ID_EAE_EVALUATION --identifierField idEaeEvaluation --persistenceUnit eaePersistenceUnit --table EAE_EVALUATION --identifierType java.lang.Integer
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-05 14:05:32
+field number --fieldName noteAnnee --type java.lang.Integer --column NOTE_ANNEE
+field number --fieldName noteAnneeN1 --type java.lang.Integer --column NOTE_ANNEE_N1
+field number --fieldName noteAnneeN2 --type java.lang.Integer --column NOTE_ANNEE_N2
+field number --fieldName noteAnneeN3 --type java.lang.Integer --column NOTE_ANNEE_N3
+field string --fieldName avis --column AVIS
+field string --fieldName avancementDiff --column AVANCEMENT_DIFF
+field string --fieldName changementClasse --column CHANGEMENT_CLASSE
+focus --class ~.sirh.eae.domain.Eae
+focus --class ~.sirh.eae.domain.Eae
+// [failed] field reference --type ~.sirh.eae.domain.EaeEvaluation --fieldName eaeEvaluation --referencedColumnName ID_EAE_EVALUATION
+focus --class ~.sirh.eae.domain.EaeEvaluation
+field reference --fieldName eae --type ~.sirh.eae.domain.Eae --cardinality ONE_TO_ONE 
+exit
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-05 16:16:57
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-05 16:17:18
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-08 08:08:21
