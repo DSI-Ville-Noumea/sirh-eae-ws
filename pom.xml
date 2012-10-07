@@ -23,6 +23,13 @@
 		<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</developerConnection>
 		<url>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</url>
 	</scm>
+    <distributionManagement>
+        <site>
+            <id>sirheaews.website.prod</id>
+            <name>SIRH EAE Website Prod</name>
+            <url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH-EAE-WS\</url>
+        </site>
+    </distributionManagement>
 	<repositories>
 		<repository>
 			<id>spring-maven-release</id>
