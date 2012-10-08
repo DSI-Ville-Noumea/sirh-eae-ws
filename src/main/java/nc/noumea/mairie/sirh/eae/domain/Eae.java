@@ -1,14 +1,17 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.domain.Agent;
+import nc.noumea.mairie.sirh.tools.transformer.EaeEvaluateurToAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
@@ -91,6 +94,9 @@ public class Eae {
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
     private EaeEvaluation eaeEvaluation;
     
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+	private Set<EaeEvaluateur> eaeEvaluateurs;
+    
     /*
      * Transient properties (will be populated by AS400 entity manager)
      */
@@ -121,9 +127,11 @@ public class Eae {
 	    	.include("agentDelegataire")
 	    	.include("eaeEvaluation.avisShd")
 	    	.include("idEae")
+	    	.include("eaeEvaluateurs")
 	    	.transform(new MSDateTransformer(), Date.class)
 	    	.transform(new NullableIntegerTransformer(), Integer.class)
 	    	.transform(new SimpleAgentTransformer(), Agent.class)
+	    	.transform(new EaeEvaluateurToAgentTransformer(), EaeEvaluateur.class)
 	    	.exclude("*");
     	
     	return serializer;

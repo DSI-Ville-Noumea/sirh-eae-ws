@@ -32,7 +32,7 @@ public class EaeTest {
 		eae.setDateControle(new Date(2012, 02, 02));
 		eae.setDureeEntretien(56);
 		
-		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentShd\":null,\"cap\":true,\"dateControle\":\"/DATE(61288750800000)/\",\"dateCreation\":\"/DATE(61288750800000)/\",\"dateFinalisation\":\"/DATE(61288750800000)/\",\"directionService\":\"direction service bidule\",\"docAttache\":true,\"dureeEntretien\":56,\"eaeEvaluation\":null,\"etat\":\"etat de l'eae\",\"idEae\":18,\"sectionService\":\"section service bbudile\",\"service\":\"the service\"}";
+		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentShd\":null,\"cap\":true,\"dateControle\":\"/DATE(61288750800000)/\",\"dateCreation\":\"/DATE(61288750800000)/\",\"dateFinalisation\":\"/DATE(61288750800000)/\",\"directionService\":\"direction service bidule\",\"docAttache\":true,\"dureeEntretien\":56,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"etat\":\"etat de l'eae\",\"idEae\":18,\"sectionService\":\"section service bbudile\",\"service\":\"the service\"}";
 		
 		// When
 		String result = Eae.getSerializerForEaeList().serialize(eae);
@@ -42,7 +42,7 @@ public class EaeTest {
 		// Then
 		assertEquals(expectedResult, result);
 		
-		assertEquals(15, includes.size());
+		assertEquals(16, includes.size());
 		assertEquals("[agentEvalue]", includes.get(0).toString());
 		assertEquals("[directionService]", includes.get(1).toString());
 		assertEquals("[sectionService]", includes.get(2).toString());
@@ -58,6 +58,7 @@ public class EaeTest {
 		assertEquals("[agentDelegataire]", includes.get(12).toString());
 		assertEquals("[eaeEvaluation,avisShd]", includes.get(13).toString());
 		assertEquals("[idEae]", includes.get(14).toString());
+		assertEquals("[eaeEvaluateurs]", includes.get(15).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
@@ -81,7 +82,7 @@ public class EaeTest {
 		eae.setDateControle(null);
 		eae.setDureeEntretien(null);
 		
-		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentShd\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"directionService\":\"direction service bidule\",\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluation\":null,\"etat\":\"etat de l'eae\",\"idEae\":18,\"sectionService\":\"section service bbudile\",\"service\":\"the service\"}";
+		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentShd\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"directionService\":\"direction service bidule\",\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"etat\":\"etat de l'eae\",\"idEae\":18,\"sectionService\":\"section service bbudile\",\"service\":\"the service\"}";
 		
 		// When
 		String result = Eae.getSerializerForEaeList().serialize(eae);

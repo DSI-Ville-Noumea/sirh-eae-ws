@@ -138,3 +138,15 @@ exit
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-05 16:16:57
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-05 16:17:18
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-08 08:08:21
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType Integer.class
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType int
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType java.lang.Integer
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType java.lang.Integer.class
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType int
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType java.lang.Integer
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType java.lang.Long
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-08 09:10:38
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-08 09:10:44
+entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersistenceUnit --table EAE_EVALUATEUR --identifierColumn ID_EAE_EVALUATEUR --identifierField idEaeEvaluateur --identifierType java.lang.Integer
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-08 13:58:34
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-08 13:59:44

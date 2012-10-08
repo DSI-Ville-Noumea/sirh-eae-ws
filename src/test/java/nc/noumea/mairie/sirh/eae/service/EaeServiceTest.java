@@ -14,11 +14,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.service.IAgentService;
 
 import org.junit.Test;
-import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -54,7 +53,7 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentEvalueFilledIn() {
+	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentsFilledIn() {
 
 		// Given
 		Eae eaeToReturn = new Eae();
@@ -73,44 +72,38 @@ public class EaeServiceTest {
 						"select e from Eae e where e.idAgent = :idAgent",
 						Eae.class)).thenReturn(queryMock);
 
-		// Mock the agent find static method to return our agent
-		Agent agentToReturn = new Agent();
-		agentToReturn.setIdAgent(9);
-		agentToReturn.setNomPatronymique("Bilbo");
-
-		Agent.findAgent(9);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
-
+		// Mock the AgentService
+		IAgentService agentServiceMock = mock(IAgentService.class);
+				
 		// Set the mock as the entityManager of the service class
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
-
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		
 		// When
 		List<Eae> result = service.listEaesByAgentId(9);
 
 		// Then
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals(agentToReturn, result.get(0).getAgentEvalue());
-
+		
 		verify(queryMock, times(1)).getResultList();
+		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn);
 	}
 	
 	@Test
-	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentShdFilledIn() {
+	public void testlistEaesByAgentId_When2EaesForAgent_returnListOf2EaeWithAgentsFilledIn() {
 
 		// Given
-		int idAgent = 9;
-		Integer idAgentShd = 17;
 		Eae eaeToReturn = new Eae();
-		eaeToReturn.setIdAgent(idAgent);
-		eaeToReturn.setIdAgentShd(idAgentShd);
-		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn));
+		eaeToReturn.setIdAgent(9);
+		Eae eaeToReturn2 = new Eae();
+		eaeToReturn.setIdAgent(92);
+		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn, eaeToReturn2));
 
 		// Mock the query to return a specific result
 		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
-		when(queryMock.setParameter("idAgent", idAgent)).thenReturn(queryMock);
+		when(queryMock.setParameter("idAgent", 9)).thenReturn(queryMock);
 		when(queryMock.getResultList()).thenReturn(resultOfQuery);
 
 		// Mock the entity manager to return the mock query
@@ -120,91 +113,24 @@ public class EaeServiceTest {
 						"select e from Eae e where e.idAgent = :idAgent",
 						Eae.class)).thenReturn(queryMock);
 
-		// Mock the Agent find static method to return our agent
-		Agent agentToReturn = new Agent();
-		agentToReturn.setIdAgent(idAgent);
-		agentToReturn.setNomPatronymique("Bilbo");
-
-		Agent.findAgent(idAgent);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
-		
-		// Mock the Agent static method to return our agentSHD
-		Agent agentShdToReturn = new Agent();
-		agentShdToReturn.setIdAgent(idAgentShd);
-		agentShdToReturn.setNomPatronymique("somone else");
-
-		Agent.findAgent(idAgentShd);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentShdToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
-
+		// Mock the AgentService
+		IAgentService agentServiceMock = mock(IAgentService.class);
+				
 		// Set the mock as the entityManager of the service class
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
-
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		
 		// When
 		List<Eae> result = service.listEaesByAgentId(9);
 
 		// Then
 		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals(agentShdToReturn, result.get(0).getAgentShd());
-
-		verify(queryMock, times(1)).getResultList();
-	}
-
-	@Test
-	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentDelegataireFilledIn() {
-
-		// Given
-		int idAgent = 9;
-		Integer idAgentDelegataire = 29;
-		Eae eaeToReturn = new Eae();
-		eaeToReturn.setIdAgent(idAgent);
-		eaeToReturn.setIdAgentDelegataire(idAgentDelegataire);
-		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn));
-
-		// Mock the query to return a specific result
-		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
-		when(queryMock.setParameter("idAgent", idAgent)).thenReturn(queryMock);
-		when(queryMock.getResultList()).thenReturn(resultOfQuery);
-
-		// Mock the entity manager to return the mock query
-		EntityManager entManagerMock = mock(EntityManager.class);
-		when(
-				entManagerMock.createQuery(
-						"select e from Eae e where e.idAgent = :idAgent",
-						Eae.class)).thenReturn(queryMock);
-
-		// Mock the Agent find static method to return our agent
-		Agent agentToReturn = new Agent();
-		agentToReturn.setIdAgent(idAgent);
-		agentToReturn.setNomPatronymique("Bilbo");
-
-		Agent.findAgent(idAgent);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
+		assertEquals(2, result.size());
 		
-		// Mock the Agent static method to return our agentSHD
-		Agent agentDelegataireToReturn = new Agent();
-		agentDelegataireToReturn.setIdAgent(idAgentDelegataire);
-		agentDelegataireToReturn.setNomPatronymique("yet another person");
-
-		Agent.findAgent(idAgentDelegataire);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentDelegataireToReturn);
-		
-		AnnotationDrivenStaticEntityMockingControl.playback();
-
-		// Set the mock as the entityManager of the service class
-		EaeService service = new EaeService();
-		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
-
-		// When
-		List<Eae> result = service.listEaesByAgentId(9);
-
-		// Then
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals(agentDelegataireToReturn, result.get(0).getAgentDelegataire());
-
 		verify(queryMock, times(1)).getResultList();
+		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn);
+		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn2);
 	}
+	
 }
