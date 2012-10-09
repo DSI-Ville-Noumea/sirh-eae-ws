@@ -1,10 +1,109 @@
+
+-- connecte en SYSTEM
+
+----------------------------------------------------------------
+-- creation des roles et users
+create role R_EAE_ADM;
+create role R_EAE_USR;
+create role R_EAE_READ;
+
+
+grant connect, create session, create table, create sequence, create public synonym to R_EAE_ADM;
+grant unlimited tablespace to R_EAE_ADM;
+grant connect, create session to R_EAE_USR;
+grant connect, create session to R_EAE_READ;
+
+create user EAE_ADM identified by PASSWORD_SECRET_SIE;
+create user EAE_USR identified by PASSWORD_SECRET_SIE_2;
+create user EAE_READ identified by PASSWORD_DONNER_AU_SED;
+
+
+
+grant R_EAE_ADM to EAE_ADM;
+grant R_EAE_USR to EAE_USR;
+grant R_EAE_READ to EAE_READ;
+
+
+
+----------------------------------------------------------------
+-- Creation des tablespaces : finaliser les nomns de fichiers par le SIE
+
+-- petit, prevoir des extends de 20 Mo, initial 20 Mo
+CREATE TABLESPACE TS_SIRHR_PARAM DATAFILE
+'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
+SIZE 20M AUTOEXTEND ON NEXT 20M MAXSIZE 100M
+LOGGING
+ONLINE
+PERMANENT
+EXTENT MANAGEMENT LOCAL UNIFORM SIZE 512K
+BLOCKSIZE 8K
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK OFF;
+
+
+-- prevoir des extends de 100 Mo, initial 50 Mo
+CREATE TABLESPACE TS_SIRHR_DATA DATAFILE
+'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
+SIZE 50M AUTOEXTEND ON NEXT 100M MAXSIZE 2000M
+LOGGING
+ONLINE
+PERMANENT
+EXTENT MANAGEMENT LOCAL UNIFORM SIZE 512K
+BLOCKSIZE 8K
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK OFF;
+
+
+-- moyen, prevoir des extends de 100 Mo, initial 20 Mo
+CREATE TABLESPACE TS_SIRHR_INDEX DATAFILE
+'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
+SIZE 20M AUTOEXTEND ON NEXT 100M MAXSIZE 2000M
+LOGGING
+ONLINE
+PERMANENT
+EXTENT MANAGEMENT LOCAL UNIFORM SIZE 512K
+BLOCKSIZE 8K
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK OFF;
+
+
+-- le plus petit possible, pas d'extend, bloque
+CREATE TABLESPACE TS_SIRHR_DEFAULT DATAFILE
+'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
+SIZE 10M AUTOEXTEND OFF MAXSIZE 2000M
+LOGGING
+ONLINE
+PERMANENT
+EXTENT MANAGEMENT LOCAL UNIFORM SIZE 512K
+BLOCKSIZE 8K
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK OFF;
+
+alter tablespace TS_DEFAULT read only;
+
+
+-- on redirige par defaut sur le tablespace USERS pour flagger les mises en recette sauvages...
+alter user EAE_ADM default tablespace TS_DEFAULT;
+
+-- fin de la section admin bdd
+
+----------------------------------------------------------------
+-- Connecte en EAE_ADM
+----------------------------------------------------------------
+
 --==============================================================
 -- Table: EAE_CAMPAGNE_EAE
 --==============================================================
 create sequence ID_CAMPAGNE_EAE_SEQ 
 start with 1 
 increment by 1 
-nomaxvalue; 
+nomaxvalue;
+
+create public synonym ID_CAMPAGNE_EAE_SEQ for ID_CAMPAGNE_EAE_SEQ;
+grant select on ID_CAMPAGNE_EAE_SEQ to R_EAE_USR;
+
+
+ 
 create table EAE_CAMPAGNE_EAE
 (
    ID_CAMPAGNE_EAE INTEGER not null,
@@ -16,7 +115,13 @@ create table EAE_CAMPAGNE_EAE
    COMMENTAIRE VARCHAR2(255),
    constraint PK_CAMPAGNE_EAE
    primary key (ID_CAMPAGNE_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_CAMPAGNE_EAE for EAE_CAMPAGNE_EAE;
+grant select, insert, update, delete on EAE_CAMPAGNE_EAE to R_EAE_USR;
+grant select on EAE_CAMPAGNE_EAE to R_EAE_READ;
+
 
 --==============================================================
 -- Table: EAE_CAMPAGNE_ACTION
@@ -25,6 +130,12 @@ create sequence ID_CAMPAGNE_ACTION_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym ID_CAMPAGNE_ACTION_SEQ for ID_CAMPAGNE_ACTION_SEQ;
+grant select on EAE_CAMPAGNE_EAE to R_EAE_USR;
+
+
+
 create table EAE_CAMPAGNE_ACTION
 (
    ID_CAMPAGNE_ACTION INTEGER ,
@@ -42,7 +153,14 @@ create table EAE_CAMPAGNE_ACTION
    constraint FK_CAMPAGNE_EAE
          foreign key (ID_CAMPAGNE_EAE)
          references EAE_CAMPAGNE_EAE(ID_CAMPAGNE_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_CAMPAGNE_ACTION for EAE_CAMPAGNE_ACTION;
+grant select, insert, update, delete on EAE_CAMPAGNE_ACTION to R_EAE_USR;
+grant select on EAE_CAMPAGNE_ACTION to R_EAE_READ;
+
+
 --==============================================================
 -- Table: EAE_CAMPAGNE_ACTEURS
 --==============================================================
@@ -50,6 +168,11 @@ create sequence EAE_ID_CAMPAGNE_ACTEURS_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_ID_CAMPAGNE_ACTEURS_SEQ for EAE_ID_CAMPAGNE_ACTEURS_SEQ;
+grant select on EAE_ID_CAMPAGNE_ACTEURS_SEQ to R_EAE_USR;
+
+
 create table EAE_CAMPAGNE_ACTEURS
 (
    ID_CAMPAGNE_ACTEURS INTEGER not null ,
@@ -60,7 +183,14 @@ create table EAE_CAMPAGNE_ACTEURS
    constraint FK_CAMPAGNE_ACTION
          foreign key (ID_CAMPAGNE_ACTION)
          references EAE_CAMPAGNE_ACTION(ID_CAMPAGNE_ACTION)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_CAMPAGNE_ACTEURS for EAE_CAMPAGNE_ACTEURS;
+grant select, insert, update, delete on EAE_CAMPAGNE_ACTEURS to R_EAE_USR;
+grant select on EAE_CAMPAGNE_ACTEURS to R_EAE_READ;
+
+
 --==============================================================
 -- Table: EAE
 --==============================================================
@@ -68,6 +198,11 @@ create sequence EAE_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_SEQ for EAE_SEQ;
+grant select on EAE_SEQ to R_EAE_USR;
+
+
 create table EAE
 (
    ID_EAE INTEGER not null,
@@ -95,7 +230,14 @@ create table EAE
    constraint FK_EAE_CAMPAGNE_EAE
          foreign key (ID_CAMPAGNE_EAE)
          references EAE_CAMPAGNE_EAE(ID_CAMPAGNE_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE for EAE;
+grant select, insert, update, delete on EAE to R_EAE_USR;
+grant select on EAE to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX EAE_index
    ON EAE (ID_CAMPAGNE_EAE,ID_AGENT);
 --==============================================================
@@ -105,6 +247,11 @@ create sequence EAE_EVALUATEUR_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_EVALUATEUR_SEQ for EAE_EVALUATEUR_SEQ;
+grant select on EAE_EVALUATEUR_SEQ to R_EAE_USR;
+
+
 create table EAE_EVALUATEUR
 (
    ID_EAE_EVALUATEUR INTEGER not null,
@@ -120,7 +267,14 @@ create table EAE_EVALUATEUR
    constraint FK_EAE_EVALUATEUR
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_EVALUATEUR for EAE_EVALUATEUR;
+grant select, insert, update, delete on EAE_EVALUATEUR to R_EAE_USR;
+grant select on EAE_EVALUATEUR to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX EAE_EVALUATEUR_index
    ON EAE_EVALUATEUR(ID_EAE,ID_AGENT);
 --==============================================================
@@ -130,6 +284,11 @@ create sequence EAE_EVALUE_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_EVALUE_SEQ for EAE_EVALUE_SEQ;
+grant select on EAE_EVALUE_SEQ to R_EAE_USR;
+
+
 create table EAE_EVALUE
 (
    ID_EAE_EVALUE INTEGER not null,
@@ -156,7 +315,14 @@ create table EAE_EVALUE
    constraint FK_EAE_EVALUE
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_EVALUE for EAE_EVALUE;
+grant select, insert, update, delete on EAE_EVALUE to R_EAE_USR;
+grant select on EAE_EVALUE to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX EAE_EVALUE_index
    ON EAE_EVALUE (ID_EAE,ID_AGENT);
 --==============================================================
@@ -166,6 +332,11 @@ create sequence EAE_FICHE_POSTE_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_FICHE_POSTE_SEQ for EAE_FICHE_POSTE_SEQ;
+grant select on EAE_FICHE_POSTE_SEQ to R_EAE_USR;
+
+
 create table EAE_FICHE_POSTE
 (
    ID_EAE_FICHE_POSTE INTEGER not null,
@@ -189,7 +360,15 @@ create table EAE_FICHE_POSTE
    constraint FK_EAE_FICHE_POSTE
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_FICHE_POSTE for EAE_FICHE_POSTE;
+grant select, insert, update, delete on EAE_FICHE_POSTE to R_EAE_USR;
+grant select on EAE_FICHE_POSTE to R_EAE_READ;
+
+
+
 CREATE UNIQUE INDEX EAE_FICHE_POSTE_index
    ON EAE_FICHE_POSTE (ID_EAE,ID_AGENT,TYPE_FDP);
 --==============================================================
@@ -199,6 +378,11 @@ create sequence EAE_FDP_ACTIVITES_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_FDP_ACTIVITES_SEQ for EAE_FDP_ACTIVITES_SEQ;
+grant select on EAE_FDP_ACTIVITES_SEQ to R_EAE_USR;
+
+
 create table EAE_FDP_ACTIVITES
 (
    ID_EAE_FDP_ACTIVITES INTEGER not null,
@@ -210,7 +394,14 @@ create table EAE_FDP_ACTIVITES
    constraint FK_EAE_FDP_ACTIVITES
          foreign key (ID_EAE_FICHE_POSTE)
          references EAE_FICHE_POSTE(ID_EAE_FICHE_POSTE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_FDP_ACTIVITES for EAE_FDP_ACTIVITES;
+grant select, insert, update, delete on EAE_FDP_ACTIVITES to R_EAE_USR;
+grant select on EAE_FDP_ACTIVITES to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX EAE_FDP_ACTIVITES_index
    ON EAE_FDP_ACTIVITES (ID_EAE_FICHE_POSTE,TYPE_ACTIVITE,LIBELLE_ACTIVITE);
 --==============================================================
@@ -220,6 +411,11 @@ create sequence EAE_DIPLOME_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_DIPLOME_SEQ for EAE_DIPLOME_SEQ;
+grant select on EAE_DIPLOME_SEQ to R_EAE_USR;
+
+
 create table EAE_DIPLOME
 (
    ID_EAE_DIPLOME INTEGER not null,
@@ -230,7 +426,14 @@ create table EAE_DIPLOME
    constraint FK_EAE_DIPLOME
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_DIPLOME for EAE_DIPLOME;
+grant select, insert, update, delete on EAE_DIPLOME to R_EAE_USR;
+grant select on EAE_DIPLOME to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX EAE_DIPLOME_index
    ON EAE_DIPLOME (id_eae,LIBELLE_DIPLOME);
 --==============================================================
@@ -240,6 +443,12 @@ create sequence EAE_PARCOURS_PRO_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_PARCOURS_PRO_SEQ for EAE_PARCOURS_PRO_SEQ;
+grant select on EAE_PARCOURS_PRO_SEQ to R_EAE_USR;
+
+
+
 create table EAE_PARCOURS_PRO
 (
    ID_EAE_PARCOURS_PRO INTEGER not null,
@@ -252,7 +461,15 @@ create table EAE_PARCOURS_PRO
    constraint FK_EAE_PARCOURS_PRO
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_PARCOURS_PRO for EAE_PARCOURS_PRO;
+grant select, insert, update, delete on EAE_PARCOURS_PRO to R_EAE_USR;
+grant select on EAE_PARCOURS_PRO to R_EAE_READ;
+
+
+
 CREATE UNIQUE INDEX eae_parcours_pro_index
    ON eae_parcours_pro (id_eae,date_debut);
 
@@ -263,6 +480,11 @@ create sequence EAE_FORMATION_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_FORMATION_SEQ for EAE_FORMATION_SEQ;
+grant select on EAE_FORMATION_SEQ to R_EAE_USR;
+
+
 create table EAE_FORMATION
 (
    ID_EAE_FORMATION INTEGER not null,
@@ -275,7 +497,14 @@ create table EAE_FORMATION
    constraint FK_EAE_FORMATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_FORMATION for EAE_FORMATION;
+grant select, insert, update, delete on EAE_FORMATION to R_EAE_USR;
+grant select on EAE_FORMATION to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX eae_FORMATION_index
    ON eae_FORMATION (id_eae,LIBELLE_FORMATION);
 
@@ -285,14 +514,26 @@ CREATE UNIQUE INDEX eae_FORMATION_index
 create sequence EAE_TYPE_RESULTAT_SEQ 
 start with 1 
 increment by 1 
-nomaxvalue; 
+nomaxvalue;
+
+create public synonym EAE_TYPE_RESULTAT_SEQ for EAE_TYPE_RESULTAT_SEQ;
+grant select on EAE_TYPE_RESULTAT_SEQ to R_EAE_USR;
+
+
+
 create table EAE_TYPE_RESULTAT
 (
    ID_EAE_TYPE_RESULTAT INTEGER not null,
    LIBELLE_TYPE_RESULTAT VARCHAR2(50),
    constraint PK_EAE_TYPE_RESULTAT
    primary key (ID_EAE_TYPE_RESULTAT)
-);
+)
+TABLESPACE TS_SIRHR_PARAM;
+
+create public synonym EAE_TYPE_RESULTAT for EAE_TYPE_RESULTAT;
+grant select, insert, update, delete on EAE_TYPE_RESULTAT to R_EAE_USR;
+grant select on EAE_TYPE_RESULTAT to R_EAE_READ;
+
 
 --==============================================================
 -- Table: EAE_RESULTAT
@@ -300,7 +541,12 @@ create table EAE_TYPE_RESULTAT
 create sequence EAE_RESULTAT_SEQ 
 start with 1 
 increment by 1 
-nomaxvalue; 
+nomaxvalue;
+
+create public synonym EAE_RESULTAT_SEQ for EAE_RESULTAT_SEQ;
+grant select on EAE_RESULTAT_SEQ to R_EAE_USR;
+
+
 create table EAE_RESULTAT
 (
    ID_EAE_RESULTAT INTEGER not null,
@@ -318,7 +564,14 @@ create table EAE_RESULTAT
    constraint FK_EAE_RESULTAT
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_RESULTAT for EAE_RESULTAT;
+grant select, insert, update, delete on EAE_RESULTAT to R_EAE_USR;
+grant select on EAE_RESULTAT to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX eae_RESULTAT_index
    ON eae_RESULTAT (id_eae,ID_TYPE_RESULTAT,OBJECTIF);
 
@@ -329,6 +582,13 @@ create sequence EAE_PLAN_ACTION_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_PLAN_ACTION_SEQ for EAE_PLAN_ACTION_SEQ;
+grant select on EAE_PLAN_ACTION_SEQ to R_EAE_USR;
+
+
+
+
 create table EAE_PLAN_ACTION
 (
    ID_EAE_PLAN_ACTION INTEGER not null,
@@ -344,7 +604,14 @@ create table EAE_PLAN_ACTION
    constraint FK_EAE_PLAN_ACTION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_PLAN_ACTION for EAE_PLAN_ACTION;
+grant select, insert, update, delete on EAE_PLAN_ACTION to R_EAE_USR;
+grant select on EAE_PLAN_ACTION to R_EAE_READ;
+
+
 CREATE UNIQUE INDEX EAE_PLAN_ACTION_index
    ON EAE_PLAN_ACTION (id_eae,ID_TYPE_RESULTAT,OBJECTIF);
 
@@ -354,14 +621,28 @@ CREATE UNIQUE INDEX EAE_PLAN_ACTION_index
 create sequence EAE_NIVEAU_EAE_SEQ 
 start with 1 
 increment by 1 
-nomaxvalue; 
+nomaxvalue;
+
+create public synonym EAE_NIVEAU_EAE_SEQ for EAE_NIVEAU_EAE_SEQ;
+grant select on EAE_NIVEAU_EAE_SEQ to R_EAE_USR;
+
+
+
+
 create table EAE_NIVEAU_EAE
 (
    ID_EAE_NIVEAU_EAE INTEGER not null,
    LIBELLE_NIVEAU_EAE VARCHAR2(50),
    constraint PK_EAE_NIVEAU_EAE
    primary key (ID_EAE_NIVEAU_EAE)
-);
+)
+TABLESPACE TS_SIRHR_PARAM;
+
+create public synonym EAE_NIVEAU_EAE for EAE_NIVEAU_EAE;
+grant select, insert, update, delete on EAE_NIVEAU_EAE to R_EAE_USR;
+grant select on EAE_NIVEAU_EAE to R_EAE_READ;
+
+
 
 --==============================================================
 -- Table: EAE_EVALUATION
@@ -370,6 +651,11 @@ create sequence EAE_EVALUATION_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_EVALUATION_SEQ for EAE_EVALUATION_SEQ;
+grant select on EAE_EVALUATION_SEQ to R_EAE_USR;
+
+
 create table EAE_EVALUATION
 (
    ID_EAE_EVALUATION INTEGER not null,
@@ -392,7 +678,12 @@ create table EAE_EVALUATION
    constraint FK_EAE_EVALUATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_EVALUATION for EAE_EVALUATION;
+grant select, insert, update, delete on EAE_EVALUATION to R_EAE_USR;
+grant select on EAE_EVALUATION to R_EAE_READ;
 
 --==============================================================
 -- Table: EAE_DOCUMENT
@@ -400,7 +691,12 @@ create table EAE_EVALUATION
 create sequence EAE_DOCUMENT_SEQ 
 start with 1 
 increment by 1 
-nomaxvalue; 
+nomaxvalue;
+
+create public synonym EAE_DOCUMENT_SEQ for EAE_DOCUMENT_SEQ;
+grant select on EAE_DOCUMENT_SEQ to R_EAE_USR;
+
+
 create table EAE_DOCUMENT
 (
    ID_EAE_DOCUMENT INTEGER not null,
@@ -413,7 +709,14 @@ create table EAE_DOCUMENT
    constraint FK_EAE_DOCUMENT
          foreign key (ID_CAMPAGNE_EAE)
          references EAE_CAMPAGNE_EAE(ID_CAMPAGNE_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_DOCUMENT for EAE_DOCUMENT;
+grant select, insert, update, delete on EAE_DOCUMENT to R_EAE_USR;
+grant select on EAE_DOCUMENT to R_EAE_READ;
+
+
 
 --==============================================================
 -- Table: EAE_APPRECIATION
@@ -422,6 +725,11 @@ create sequence EAE_APPRECIATION_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_APPRECIATION_SEQ for EAE_APPRECIATION_SEQ;
+grant select on EAE_APPRECIATION_SEQ to R_EAE_USR;
+
+
 create table EAE_APPRECIATION
 (
    ID_EAE_APPRECIATION INTEGER not null,
@@ -434,7 +742,15 @@ create table EAE_APPRECIATION
    constraint FK_EAE_APPRECIATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_APPRECIATION for EAE_APPRECIATION;
+grant select, insert, update, delete on EAE_APPRECIATION to R_EAE_USR;
+grant select on EAE_APPRECIATION to R_EAE_READ;
+
+
+
 CREATE UNIQUE INDEX EAE_APPRECIATION_index
    ON EAE_APPRECIATION (id_eae,NUMERO);
 
@@ -445,6 +761,11 @@ create sequence EAE_AUTO_EVALUATION_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_AUTO_EVALUATION_SEQ for EAE_AUTO_EVALUATION_SEQ;
+grant select on EAE_AUTO_EVALUATION_SEQ to R_EAE_USR;
+
+
 create table EAE_AUTO_EVALUATION
 (
    ID_EAE_AUTO_EVALUATION INTEGER not null,
@@ -458,7 +779,14 @@ create table EAE_AUTO_EVALUATION
    constraint FK_EAE_AUTO_EVALUATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_AUTO_EVALUATION for EAE_AUTO_EVALUATION;
+grant select, insert, update, delete on EAE_AUTO_EVALUATION to R_EAE_USR;
+grant select on EAE_AUTO_EVALUATION to R_EAE_READ;
+
+
 
 --==============================================================
 -- Table: EAE_EVOLUTION
@@ -467,6 +795,11 @@ create sequence EAE_EVOLUTION_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_EVOLUTION_SEQ for EAE_EVOLUTION_SEQ;
+grant select on EAE_EVOLUTION_SEQ to R_EAE_USR;
+
+
 create table EAE_EVOLUTION
 (
    ID_EAE_EVOLUTION INTEGER not null,
@@ -496,7 +829,14 @@ create table EAE_EVOLUTION
    constraint FK_EAE_EVOLUTION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_EVOLUTION for EAE_EVOLUTION;
+grant select, insert, update, delete on EAE_EVOLUTION to R_EAE_USR;
+grant select on EAE_EVOLUTION to R_EAE_READ;
+
+
 
 --==============================================================
 -- Table: EAE_EVOL_SOUHAIT
@@ -505,6 +845,12 @@ create sequence EAE_EVOL_SOUHAIT_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_EVOL_SOUHAIT_SEQ for EAE_EVOL_SOUHAIT_SEQ;
+grant select on EAE_EVOL_SOUHAIT_SEQ to R_EAE_USR;
+
+
+
 create table EAE_EVOL_SOUHAIT
 (
    ID_EAE_EVOL_SOUHAIT INTEGER not null,
@@ -516,7 +862,14 @@ create table EAE_EVOL_SOUHAIT
    constraint FK_EAE_EVOL_SOUHAIT
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_EVOL_SOUHAIT for EAE_EVOL_SOUHAIT;
+grant select, insert, update, delete on EAE_EVOL_SOUHAIT to R_EAE_USR;
+grant select on EAE_EVOL_SOUHAIT to R_EAE_READ;
+
+
 
 --==============================================================
 -- Table: EAE_TYPE_DEVELOPPEMENT
@@ -525,13 +878,25 @@ create sequence EAE_TYPE_DEVELOPPEMENT_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_TYPE_DEVELOPPEMENT_SEQ for EAE_TYPE_DEVELOPPEMENT_SEQ;
+grant select on EAE_TYPE_DEVELOPPEMENT_SEQ to R_EAE_USR;
+
+
 create table EAE_TYPE_DEVELOPPEMENT
 (
    ID_EAE_TYPE_DEVELOPPEMENT INTEGER not null,
    LIBELLE_TYPE_DEVELOPPEMENT VARCHAR2(50),
    constraint PK_EAE_TYPE_DEVELOPPEMENT
    primary key (ID_EAE_TYPE_DEVELOPPEMENT)
-);
+)
+TABLESPACE TS_SIRHR_PARAM;
+
+create public synonym EAE_TYPE_DEVELOPPEMENT for EAE_TYPE_DEVELOPPEMENT;
+grant select, insert, update, delete on EAE_TYPE_DEVELOPPEMENT to R_EAE_USR;
+grant select on EAE_TYPE_DEVELOPPEMENT to R_EAE_READ;
+
+
 
 --==============================================================
 -- Table: EAE_DEVELOPPEMENT
@@ -540,6 +905,11 @@ create sequence EAE_DEVELOPPEMENT_SEQ
 start with 1 
 increment by 1 
 nomaxvalue; 
+
+create public synonym EAE_DEVELOPPEMENT_SEQ for EAE_DEVELOPPEMENT_SEQ;
+grant select on EAE_DEVELOPPEMENT_SEQ to R_EAE_USR;
+
+
 create table EAE_DEVELOPPEMENT
 (
    ID_EAE_DEVELOPPEMENT INTEGER not null,
@@ -556,4 +926,10 @@ create table EAE_DEVELOPPEMENT
    constraint FK_EAE_DEVELOPPEMENT
          foreign key (ID_EAE)
          references EAE(ID_EAE)
-);
+)
+TABLESPACE TS_SIRHR_DATA;
+
+create public synonym EAE_DEVELOPPEMENT for EAE_DEVELOPPEMENT;
+grant select, insert, update, delete on EAE_DEVELOPPEMENT to R_EAE_USR;
+grant select on EAE_DEVELOPPEMENT to R_EAE_READ;
+
