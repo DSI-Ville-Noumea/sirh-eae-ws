@@ -19,4 +19,6 @@ alter table EAE_FDP_ACTIVITE add (VERSION number);
 alter table EAE_PARCOURS_PRO add (VERSION number);
 alter table EAE_FORMATION add (VERSION number);
 alter table EAE_RESULTAT add (VERSION number);
-alter table EAE_RESULTAT rename column ID_TYPE_RESULTAT to ID_EAE_TYPE_RESULTAT
+alter table EAE_RESULTAT rename column ID_TYPE_RESULTAT to ID_EAE_TYPE_RESULTAT;
+RENAME EAE_NIVEAU_EAE TO EAE_NIVEAU;
+alter table EAE_NIVEAU rename column ID_EAE_NIVEAU_EAE to ID_EAE_NIVEAU;
