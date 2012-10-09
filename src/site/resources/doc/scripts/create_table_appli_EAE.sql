@@ -372,7 +372,7 @@ grant select on EAE_FICHE_POSTE to R_EAE_READ;
 CREATE UNIQUE INDEX EAE_FICHE_POSTE_index
    ON EAE_FICHE_POSTE (ID_EAE,ID_AGENT,TYPE_FDP);
 --==============================================================
--- Table: EAE_FDP_ACTIVITES
+-- Table: EAE_FDP_ACTIVITE
 --==============================================================
 create sequence EAE_S_FDP_ACTIVITE 
 start with 1 
@@ -383,7 +383,7 @@ create public synonym EAE_S_FDP_ACTIVITE for EAE_S_FDP_ACTIVITE;
 grant select on EAE_S_FDP_ACTIVITE to R_EAE_USR;
 
 
-create table EAE_FDP_ACTIVITES
+create table EAE_FDP_ACTIVITE
 (
    ID_EAE_FDP_ACTIVITES INTEGER not null,
    ID_EAE_FICHE_POSTE INTEGER not null,
@@ -397,13 +397,13 @@ create table EAE_FDP_ACTIVITES
 )
 TABLESPACE TS_SIRHR_DATA;
 
-create public synonym EAE_FDP_ACTIVITES for EAE_FDP_ACTIVITES;
-grant select, insert, update, delete on EAE_FDP_ACTIVITES to R_EAE_USR;
-grant select on EAE_FDP_ACTIVITES to R_EAE_READ;
+create public synonym EAE_FDP_ACTIVITE for EAE_FDP_ACTIVITE;
+grant select, insert, update, delete on EAE_FDP_ACTIVITE to R_EAE_USR;
+grant select on EAE_FDP_ACTIVITE to R_EAE_READ;
 
 
-CREATE UNIQUE INDEX EAE_FDP_ACTIVITES_index
-   ON EAE_FDP_ACTIVITES (ID_EAE_FICHE_POSTE,TYPE_ACTIVITE,LIBELLE_ACTIVITE);
+CREATE UNIQUE INDEX EAE_FDP_ACTIVITE_index
+   ON EAE_FDP_ACTIVITE (ID_EAE_FICHE_POSTE,TYPE_ACTIVITE,LIBELLE_ACTIVITE);
 --==============================================================
 -- Table: EAE_DIPLOME
 --==============================================================
@@ -616,7 +616,7 @@ CREATE UNIQUE INDEX EAE_PLAN_ACTION_index
    ON EAE_PLAN_ACTION (id_eae,ID_TYPE_RESULTAT,OBJECTIF);
 
 --==============================================================
--- Table: EAE_NIVEAU_EAE
+-- Table: EAE_NIVEAU
 --==============================================================
 create sequence EAE_S_NIVEAU 
 start with 1 
@@ -629,7 +629,7 @@ grant select on EAE_S_NIVEAU to R_EAE_USR;
 
 
 
-create table EAE_NIVEAU_EAE
+create table EAE_NIVEAU
 (
    ID_EAE_NIVEAU_EAE INTEGER not null,
    LIBELLE_NIVEAU_EAE VARCHAR2(50),
@@ -638,9 +638,9 @@ create table EAE_NIVEAU_EAE
 )
 TABLESPACE TS_SIRHR_PARAM;
 
-create public synonym EAE_NIVEAU_EAE for EAE_NIVEAU_EAE;
-grant select, insert, update, delete on EAE_NIVEAU_EAE to R_EAE_USR;
-grant select on EAE_NIVEAU_EAE to R_EAE_READ;
+create public synonym EAE_NIVEAU for EAE_NIVEAU;
+grant select, insert, update, delete on EAE_NIVEAU to R_EAE_USR;
+grant select on EAE_NIVEAU to R_EAE_READ;
 
 
 
@@ -674,7 +674,7 @@ create table EAE_EVALUATION
    primary key (ID_EAE_EVALUATION),
    constraint FK_EAE_NIVEAU_EAE
          foreign key (ID_EAE_NIVEAU)
-         references EAE_NIVEAU_EAE(ID_EAE_NIVEAU_EAE),
+         references EAE_NIVEAU(ID_EAE_NIVEAU_EAE),
    constraint FK_EAE_EVALUATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
