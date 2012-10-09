@@ -94,13 +94,13 @@ alter user EAE_ADM default tablespace TS_DEFAULT;
 --==============================================================
 -- Table: EAE_CAMPAGNE_EAE
 --==============================================================
-create sequence ID_CAMPAGNE_EAE_SEQ 
+create sequence EAE_S_CAMPAGNE_EAE 
 start with 1 
 increment by 1 
 nomaxvalue;
 
-create public synonym ID_CAMPAGNE_EAE_SEQ for ID_CAMPAGNE_EAE_SEQ;
-grant select on ID_CAMPAGNE_EAE_SEQ to R_EAE_USR;
+create public synonym EAE_S_CAMPAGNE_EAE for EAE_S_CAMPAGNE_EAE;
+grant select on EAE_S_CAMPAGNE_EAE to R_EAE_USR;
 
 
  
@@ -126,13 +126,13 @@ grant select on EAE_CAMPAGNE_EAE to R_EAE_READ;
 --==============================================================
 -- Table: EAE_CAMPAGNE_ACTION
 --==============================================================
-create sequence ID_CAMPAGNE_ACTION_SEQ 
+create sequence EAE_S_CAMPAGNE_ACTION 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym ID_CAMPAGNE_ACTION_SEQ for ID_CAMPAGNE_ACTION_SEQ;
-grant select on EAE_CAMPAGNE_EAE to R_EAE_USR;
+create public synonym EAE_S_CAMPAGNE_ACTION for EAE_S_CAMPAGNE_ACTION;
+grant select on EAE_S_CAMPAGNE_ACTION to R_EAE_USR;
 
 
 
@@ -164,13 +164,13 @@ grant select on EAE_CAMPAGNE_ACTION to R_EAE_READ;
 --==============================================================
 -- Table: EAE_CAMPAGNE_ACTEURS
 --==============================================================
-create sequence EAE_ID_CAMPAGNE_ACTEURS_SEQ 
+create sequence EAE_S_CAMPAGNE_ACTEURS 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_ID_CAMPAGNE_ACTEURS_SEQ for EAE_ID_CAMPAGNE_ACTEURS_SEQ;
-grant select on EAE_ID_CAMPAGNE_ACTEURS_SEQ to R_EAE_USR;
+create public synonym EAE_S_CAMPAGNE_ACTEURS for EAE_S_CAMPAGNE_ACTEURS;
+grant select on EAE_S_CAMPAGNE_ACTEURS to R_EAE_USR;
 
 
 create table EAE_CAMPAGNE_ACTEURS
@@ -194,13 +194,13 @@ grant select on EAE_CAMPAGNE_ACTEURS to R_EAE_READ;
 --==============================================================
 -- Table: EAE
 --==============================================================
-create sequence EAE_SEQ 
+create sequence EAE_S_EAE 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_SEQ for EAE_SEQ;
-grant select on EAE_SEQ to R_EAE_USR;
+create public synonym EAE_S_EAE for EAE_S_EAE;
+grant select on EAE_S_EAE to R_EAE_USR;
 
 
 create table EAE
@@ -243,13 +243,13 @@ CREATE UNIQUE INDEX EAE_index
 --==============================================================
 -- Table: EAE_EVALUATEUR
 --==============================================================
-create sequence EAE_EVALUATEUR_SEQ 
+create sequence EAE_S_EVALUATEUR 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_EVALUATEUR_SEQ for EAE_EVALUATEUR_SEQ;
-grant select on EAE_EVALUATEUR_SEQ to R_EAE_USR;
+create public synonym EAE_S_EVALUATEUR for EAE_S_EVALUATEUR;
+grant select on EAE_S_EVALUATEUR to R_EAE_USR;
 
 
 create table EAE_EVALUATEUR
@@ -280,13 +280,13 @@ CREATE UNIQUE INDEX EAE_EVALUATEUR_index
 --==============================================================
 -- Table: EAE_EVALUE
 --==============================================================
-create sequence EAE_EVALUE_SEQ 
+create sequence EAE_S_EVALUE 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_EVALUE_SEQ for EAE_EVALUE_SEQ;
-grant select on EAE_EVALUE_SEQ to R_EAE_USR;
+create public synonym EAE_S_EVALUE for EAE_S_EVALUE;
+grant select on EAE_S_EVALUE to R_EAE_USR;
 
 
 create table EAE_EVALUE
@@ -328,13 +328,13 @@ CREATE UNIQUE INDEX EAE_EVALUE_index
 --==============================================================
 -- Table: EAE_FICHE_POSTE
 --==============================================================
-create sequence EAE_FICHE_POSTE_SEQ 
+create sequence EAE_S_FICHE_POSTE 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_FICHE_POSTE_SEQ for EAE_FICHE_POSTE_SEQ;
-grant select on EAE_FICHE_POSTE_SEQ to R_EAE_USR;
+create public synonym EAE_S_FICHE_POSTE for EAE_S_FICHE_POSTE;
+grant select on EAE_S_FICHE_POSTE to R_EAE_USR;
 
 
 create table EAE_FICHE_POSTE
@@ -374,13 +374,13 @@ CREATE UNIQUE INDEX EAE_FICHE_POSTE_index
 --==============================================================
 -- Table: EAE_FDP_ACTIVITES
 --==============================================================
-create sequence EAE_FDP_ACTIVITES_SEQ 
+create sequence EAE_S_FDP_ACTIVITE 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_FDP_ACTIVITES_SEQ for EAE_FDP_ACTIVITES_SEQ;
-grant select on EAE_FDP_ACTIVITES_SEQ to R_EAE_USR;
+create public synonym EAE_S_FDP_ACTIVITE for EAE_S_FDP_ACTIVITE;
+grant select on EAE_S_FDP_ACTIVITE to R_EAE_USR;
 
 
 create table EAE_FDP_ACTIVITES
@@ -407,13 +407,13 @@ CREATE UNIQUE INDEX EAE_FDP_ACTIVITES_index
 --==============================================================
 -- Table: EAE_DIPLOME
 --==============================================================
-create sequence EAE_DIPLOME_SEQ 
+create sequence EAE_S_DIPLOME 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_DIPLOME_SEQ for EAE_DIPLOME_SEQ;
-grant select on EAE_DIPLOME_SEQ to R_EAE_USR;
+create public synonym EAE_S_DIPLOME for EAE_S_DIPLOME;
+grant select on EAE_S_DIPLOME to R_EAE_USR;
 
 
 create table EAE_DIPLOME
@@ -439,13 +439,13 @@ CREATE UNIQUE INDEX EAE_DIPLOME_index
 --==============================================================
 -- Table: EAE_PARCOURS_PRO
 --==============================================================
-create sequence EAE_PARCOURS_PRO_SEQ 
+create sequence EAE_S_PARCOURS_PRO 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_PARCOURS_PRO_SEQ for EAE_PARCOURS_PRO_SEQ;
-grant select on EAE_PARCOURS_PRO_SEQ to R_EAE_USR;
+create public synonym EAE_S_PARCOURS_PRO for EAE_S_PARCOURS_PRO;
+grant select on EAE_S_PARCOURS_PRO to R_EAE_USR;
 
 
 
@@ -476,13 +476,13 @@ CREATE UNIQUE INDEX eae_parcours_pro_index
 --==============================================================
 -- Table: EAE_FORMATION
 --==============================================================
-create sequence EAE_FORMATION_SEQ 
+create sequence EAE_S_FORMATION 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_FORMATION_SEQ for EAE_FORMATION_SEQ;
-grant select on EAE_FORMATION_SEQ to R_EAE_USR;
+create public synonym EAE_S_FORMATION for EAE_S_FORMATION;
+grant select on EAE_S_FORMATION to R_EAE_USR;
 
 
 create table EAE_FORMATION
@@ -511,13 +511,13 @@ CREATE UNIQUE INDEX eae_FORMATION_index
 --==============================================================
 -- Table: EAE_TYPE_RESULTAT
 --==============================================================
-create sequence EAE_TYPE_RESULTAT_SEQ 
+create sequence EAE_S_TYPE_RESULTAT 
 start with 1 
 increment by 1 
 nomaxvalue;
 
-create public synonym EAE_TYPE_RESULTAT_SEQ for EAE_TYPE_RESULTAT_SEQ;
-grant select on EAE_TYPE_RESULTAT_SEQ to R_EAE_USR;
+create public synonym EAE_S_TYPE_RESULTAT for EAE_S_TYPE_RESULTAT;
+grant select on EAE_S_TYPE_RESULTAT to R_EAE_USR;
 
 
 
@@ -538,13 +538,13 @@ grant select on EAE_TYPE_RESULTAT to R_EAE_READ;
 --==============================================================
 -- Table: EAE_RESULTAT
 --==============================================================
-create sequence EAE_RESULTAT_SEQ 
+create sequence EAE_S_RESULTAT 
 start with 1 
 increment by 1 
 nomaxvalue;
 
-create public synonym EAE_RESULTAT_SEQ for EAE_RESULTAT_SEQ;
-grant select on EAE_RESULTAT_SEQ to R_EAE_USR;
+create public synonym EAE_S_RESULTAT for EAE_S_RESULTAT;
+grant select on EAE_S_RESULTAT to R_EAE_USR;
 
 
 create table EAE_RESULTAT
@@ -578,13 +578,13 @@ CREATE UNIQUE INDEX eae_RESULTAT_index
 --==============================================================
 -- Table: EAE_PLAN_ACTION
 --==============================================================
-create sequence EAE_PLAN_ACTION_SEQ 
+create sequence EAE_S_PLAN_ACTION 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_PLAN_ACTION_SEQ for EAE_PLAN_ACTION_SEQ;
-grant select on EAE_PLAN_ACTION_SEQ to R_EAE_USR;
+create public synonym EAE_S_PLAN_ACTION for EAE_S_PLAN_ACTION;
+grant select on EAE_S_PLAN_ACTION to R_EAE_USR;
 
 
 
@@ -618,13 +618,13 @@ CREATE UNIQUE INDEX EAE_PLAN_ACTION_index
 --==============================================================
 -- Table: EAE_NIVEAU_EAE
 --==============================================================
-create sequence EAE_NIVEAU_EAE_SEQ 
+create sequence EAE_S_NIVEAU 
 start with 1 
 increment by 1 
 nomaxvalue;
 
-create public synonym EAE_NIVEAU_EAE_SEQ for EAE_NIVEAU_EAE_SEQ;
-grant select on EAE_NIVEAU_EAE_SEQ to R_EAE_USR;
+create public synonym EAE_S_NIVEAU for EAE_S_NIVEAU;
+grant select on EAE_S_NIVEAU to R_EAE_USR;
 
 
 
@@ -647,13 +647,13 @@ grant select on EAE_NIVEAU_EAE to R_EAE_READ;
 --==============================================================
 -- Table: EAE_EVALUATION
 --==============================================================
-create sequence EAE_EVALUATION_SEQ 
+create sequence EAE_S_EVALUATION 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_EVALUATION_SEQ for EAE_EVALUATION_SEQ;
-grant select on EAE_EVALUATION_SEQ to R_EAE_USR;
+create public synonym EAE_S_EVALUATION for EAE_S_EVALUATION;
+grant select on EAE_S_EVALUATION to R_EAE_USR;
 
 
 create table EAE_EVALUATION
@@ -688,13 +688,13 @@ grant select on EAE_EVALUATION to R_EAE_READ;
 --==============================================================
 -- Table: EAE_DOCUMENT
 --==============================================================
-create sequence EAE_DOCUMENT_SEQ 
+create sequence EAE_S_DOCUMENT 
 start with 1 
 increment by 1 
 nomaxvalue;
 
-create public synonym EAE_DOCUMENT_SEQ for EAE_DOCUMENT_SEQ;
-grant select on EAE_DOCUMENT_SEQ to R_EAE_USR;
+create public synonym EAE_S_DOCUMENT for EAE_S_DOCUMENT;
+grant select on EAE_S_DOCUMENT to R_EAE_USR;
 
 
 create table EAE_DOCUMENT
@@ -721,13 +721,13 @@ grant select on EAE_DOCUMENT to R_EAE_READ;
 --==============================================================
 -- Table: EAE_APPRECIATION
 --==============================================================
-create sequence EAE_APPRECIATION_SEQ 
+create sequence EAE_S_APPRECIATION 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_APPRECIATION_SEQ for EAE_APPRECIATION_SEQ;
-grant select on EAE_APPRECIATION_SEQ to R_EAE_USR;
+create public synonym EAE_S_APPRECIATION for EAE_S_APPRECIATION;
+grant select on EAE_S_APPRECIATION to R_EAE_USR;
 
 
 create table EAE_APPRECIATION
@@ -757,13 +757,13 @@ CREATE UNIQUE INDEX EAE_APPRECIATION_index
 --==============================================================
 -- Table: EAE_AUTO_EVALUATION
 --==============================================================
-create sequence EAE_AUTO_EVALUATION_SEQ 
+create sequence EAE_S_AUTO_EVALUATION 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_AUTO_EVALUATION_SEQ for EAE_AUTO_EVALUATION_SEQ;
-grant select on EAE_AUTO_EVALUATION_SEQ to R_EAE_USR;
+create public synonym EAE_S_AUTO_EVALUATION for EAE_S_AUTO_EVALUATION;
+grant select on EAE_S_AUTO_EVALUATION to R_EAE_USR;
 
 
 create table EAE_AUTO_EVALUATION
@@ -791,13 +791,13 @@ grant select on EAE_AUTO_EVALUATION to R_EAE_READ;
 --==============================================================
 -- Table: EAE_EVOLUTION
 --==============================================================
-create sequence EAE_EVOLUTION_SEQ 
+create sequence EAE_S_EVOLUTION 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_EVOLUTION_SEQ for EAE_EVOLUTION_SEQ;
-grant select on EAE_EVOLUTION_SEQ to R_EAE_USR;
+create public synonym EAE_S_EVOLUTION for EAE_S_EVOLUTION;
+grant select on EAE_S_EVOLUTION to R_EAE_USR;
 
 
 create table EAE_EVOLUTION
@@ -841,13 +841,13 @@ grant select on EAE_EVOLUTION to R_EAE_READ;
 --==============================================================
 -- Table: EAE_EVOL_SOUHAIT
 --==============================================================
-create sequence EAE_EVOL_SOUHAIT_SEQ 
+create sequence EAE_S_EVOL_SOUHAIT 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_EVOL_SOUHAIT_SEQ for EAE_EVOL_SOUHAIT_SEQ;
-grant select on EAE_EVOL_SOUHAIT_SEQ to R_EAE_USR;
+create public synonym EAE_S_EVOL_SOUHAIT for EAE_S_EVOL_SOUHAIT;
+grant select on EAE_S_EVOL_SOUHAIT to R_EAE_USR;
 
 
 
@@ -874,13 +874,13 @@ grant select on EAE_EVOL_SOUHAIT to R_EAE_READ;
 --==============================================================
 -- Table: EAE_TYPE_DEVELOPPEMENT
 --==============================================================
-create sequence EAE_TYPE_DEVELOPPEMENT_SEQ 
+create sequence EAE_S_TYPE_DEVELOPPEMENT 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_TYPE_DEVELOPPEMENT_SEQ for EAE_TYPE_DEVELOPPEMENT_SEQ;
-grant select on EAE_TYPE_DEVELOPPEMENT_SEQ to R_EAE_USR;
+create public synonym EAE_S_TYPE_DEVELOPPEMENT for EAE_S_TYPE_DEVELOPPEMENT;
+grant select on EAE_S_TYPE_DEVELOPPEMENT to R_EAE_USR;
 
 
 create table EAE_TYPE_DEVELOPPEMENT
@@ -901,13 +901,13 @@ grant select on EAE_TYPE_DEVELOPPEMENT to R_EAE_READ;
 --==============================================================
 -- Table: EAE_DEVELOPPEMENT
 --==============================================================
-create sequence EAE_DEVELOPPEMENT_SEQ 
+create sequence EAE_S_DEVELOPPEMENT 
 start with 1 
 increment by 1 
 nomaxvalue; 
 
-create public synonym EAE_DEVELOPPEMENT_SEQ for EAE_DEVELOPPEMENT_SEQ;
-grant select on EAE_DEVELOPPEMENT_SEQ to R_EAE_USR;
+create public synonym EAE_S_DEVELOPPEMENT for EAE_S_DEVELOPPEMENT;
+grant select on EAE_S_DEVELOPPEMENT to R_EAE_USR;
 
 
 create table EAE_DEVELOPPEMENT
