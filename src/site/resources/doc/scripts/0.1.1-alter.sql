@@ -1,3 +1,4 @@
+-- Connecte en EAE_ADM
 alter table EAE_EVALUE add (VERSION number);
 alter table EAE add (VERSION number);
 alter table EAE drop column DIRECTION_SERVICE;
@@ -20,3 +21,5 @@ alter table EAE_FORMATION add (VERSION number);
 alter table EAE_RESULTAT add (VERSION number);
 alter table EAE_RESULTAT rename column ID_TYPE_RESULTAT to ID_EAE_TYPE_RESULTAT;
 alter table EAE_NIVEAU rename column ID_EAE_NIVEAU_EAE to ID_EAE_NIVEAU;
+
+-- Verifier les objets invalides
