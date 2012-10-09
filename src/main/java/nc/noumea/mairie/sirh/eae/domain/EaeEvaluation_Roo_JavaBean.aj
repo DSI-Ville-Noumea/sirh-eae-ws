@@ -5,6 +5,7 @@ package nc.noumea.mairie.sirh.eae.domain;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 
 privileged aspect EaeEvaluation_Roo_JavaBean {
     
@@ -70,6 +71,14 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
     
     public void EaeEvaluation.setChangementClasse(String changementClasse) {
         this.changementClasse = changementClasse;
+    }
+    
+    public EaeNiveau EaeEvaluation.getNiveauEae() {
+        return this.niveauEae;
+    }
+    
+    public void EaeEvaluation.setNiveauEae(EaeNiveau niveauEae) {
+        this.niveauEae = niveauEae;
     }
     
     public Eae EaeEvaluation.getEae() {

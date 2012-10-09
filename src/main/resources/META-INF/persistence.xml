@@ -6,6 +6,15 @@
         <class>nc.noumea.mairie.sirh.eae.domain.Eae</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluation</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeNiveau</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeEvalue</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeFichePoste</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeFormation</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeDiplome</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeResultat</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeTypeResultat</class>
       	<exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect"/>

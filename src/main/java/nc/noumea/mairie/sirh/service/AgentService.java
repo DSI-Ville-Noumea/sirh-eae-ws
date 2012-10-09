@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.service;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class AgentService implements IAgentService{
 
 		eaeToFill.setAgentEvalue(Agent.findAgent(eaeToFill.getIdAgent()));
 		
-		if (eaeToFill.getIdAgentShd() != null)
-			eaeToFill.setAgentShd(Agent.findAgent(eaeToFill.getIdAgentShd()));
+		if (eaeToFill.getEaeFichePoste() != null)
+			fillEaeFichePosteWithAgent(eaeToFill.getEaeFichePoste());
 		
 		if (eaeToFill.getIdAgentDelegataire() != null)
 			eaeToFill.setAgentDelegataire(Agent.findAgent(eaeToFill.getIdAgentDelegataire()));
@@ -35,6 +36,15 @@ public class AgentService implements IAgentService{
 		eaeEvaluateurToFill.setAgent(agent);
 		
 		return eaeEvaluateurToFill;
+	}
+	
+	@Override
+	public EaeFichePoste fillEaeFichePosteWithAgent(EaeFichePoste eaeFichePosteToFill) {
+		
+		Agent agent = Agent.findAgent(eaeFichePosteToFill.getIdAgentShd());
+		eaeFichePosteToFill.setAgentShd(agent);
+		
+		return eaeFichePosteToFill;
 	}
 
 }

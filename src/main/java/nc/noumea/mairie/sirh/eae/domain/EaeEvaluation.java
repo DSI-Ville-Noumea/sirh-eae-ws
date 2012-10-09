@@ -38,6 +38,10 @@ public class EaeEvaluation {
     private String changementClasse;
 
     @OneToOne
+	@JoinColumn(name = "ID_EAE_NIVEAU")
+    private EaeNiveau niveauEae;
+    
+    @OneToOne
     @JoinColumn(name = "ID_EAE")
     private Eae eae;
 }

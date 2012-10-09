@@ -3,6 +3,7 @@
 
 package nc.noumea.mairie.sirh.eae.domain;
 
+import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 
 privileged aspect EaeDiplome_Roo_JavaBean {
@@ -13,6 +14,14 @@ privileged aspect EaeDiplome_Roo_JavaBean {
     
     public void EaeDiplome.setLibelleDiplome(String libelleDiplome) {
         this.libelleDiplome = libelleDiplome;
+    }
+    
+    public Eae EaeDiplome.getEae() {
+        return this.eae;
+    }
+    
+    public void EaeDiplome.setEae(Eae eae) {
+        this.eae = eae;
     }
     
 }

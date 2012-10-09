@@ -16,11 +16,11 @@ public class SimpleAgentTransformer extends AbstractTransformer {
 
 	    getContext().writeComma();
 	    getContext().writeName("nom");
-	    getContext().transform(agent.getNomPatronymique());
+	    getContext().transform(agent.getDisplayNom());
 
 	    getContext().writeComma();
 	    getContext().writeName("prenom");
-	    getContext().transform(agent.getPrenom());
+	    getContext().transform(agent.getDisplayPrenom());
 	    
 	    getContext().writeCloseObject();
 	    

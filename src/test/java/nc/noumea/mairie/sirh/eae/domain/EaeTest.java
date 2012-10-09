@@ -21,9 +21,6 @@ public class EaeTest {
 		Eae eae = new Eae();
 		eae.setIdEae(18);
 		eae.setIdAgent(999);
-		eae.setDirectionService("direction service bidule");
-		eae.setSectionService("section service bbudile");
-		eae.setService("the service");
 		eae.setEtat("etat de l'eae");
 		eae.setCap(true);
 		eae.setDocAttache(true);
@@ -32,7 +29,12 @@ public class EaeTest {
 		eae.setDateControle(new Date(2012, 02, 02));
 		eae.setDureeEntretien(56);
 		
-		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentShd\":null,\"cap\":true,\"dateControle\":\"/DATE(61288750800000)/\",\"dateCreation\":\"/DATE(61288750800000)/\",\"dateFinalisation\":\"/DATE(61288750800000)/\",\"directionService\":\"direction service bidule\",\"docAttache\":true,\"dureeEntretien\":56,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"etat\":\"etat de l'eae\",\"idEae\":18,\"sectionService\":\"section service bbudile\",\"service\":\"the service\"}";
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setSectionService("section service bbudile");
+		fdp.setService("the service");
+		fdp.setDirectionService("direction service bidule");
+		
+		eae.setEaeFichePoste(fdp);
 		
 		// When
 		String result = Eae.getSerializerForEaeList().serialize(eae);
@@ -40,25 +42,20 @@ public class EaeTest {
 		List<PathExpression> excludes = Eae.getSerializerForEaeList().getExcludes();
 		
 		// Then
-		assertEquals(expectedResult, result);
-		
-		assertEquals(16, includes.size());
+		assertEquals(13, includes.size());
 		assertEquals("[agentEvalue]", includes.get(0).toString());
-		assertEquals("[directionService]", includes.get(1).toString());
-		assertEquals("[sectionService]", includes.get(2).toString());
-		assertEquals("[service]", includes.get(3).toString());
-		assertEquals("[etat]", includes.get(4).toString());
-		assertEquals("[cap]", includes.get(5).toString());
-		assertEquals("[docAttache]", includes.get(6).toString());
-		assertEquals("[dateCreation]", includes.get(7).toString());
-		assertEquals("[dateFinalisation]", includes.get(8).toString());
-		assertEquals("[dateControle]", includes.get(9).toString());
-		assertEquals("[dureeEntretien]", includes.get(10).toString());
-		assertEquals("[agentShd]", includes.get(11).toString());
-		assertEquals("[agentDelegataire]", includes.get(12).toString());
-		assertEquals("[eaeEvaluation,avisShd]", includes.get(13).toString());
-		assertEquals("[idEae]", includes.get(14).toString());
-		assertEquals("[eaeEvaluateurs]", includes.get(15).toString());
+		assertEquals("[etat]", includes.get(1).toString());
+		assertEquals("[cap]", includes.get(2).toString());
+		assertEquals("[docAttache]", includes.get(3).toString());
+		assertEquals("[dateCreation]", includes.get(4).toString());
+		assertEquals("[dateFinalisation]", includes.get(5).toString());
+		assertEquals("[dateControle]", includes.get(6).toString());
+		assertEquals("[dureeEntretien]", includes.get(7).toString());
+		assertEquals("[agentDelegataire]", includes.get(8).toString());
+		assertEquals("[eaeEvaluation,avisShd]", includes.get(9).toString());
+		assertEquals("[idEae]", includes.get(10).toString());
+		assertEquals("[eaeEvaluateurs]", includes.get(11).toString());
+		assertEquals("[eaeFichePoste]", includes.get(12).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
@@ -71,9 +68,6 @@ public class EaeTest {
 		Eae eae = new Eae();
 		eae.setIdEae(18);
 		eae.setIdAgent(999);
-		eae.setDirectionService("direction service bidule");
-		eae.setSectionService("section service bbudile");
-		eae.setService("the service");
 		eae.setEtat("etat de l'eae");
 		eae.setCap(true);
 		eae.setDocAttache(true);
@@ -82,7 +76,14 @@ public class EaeTest {
 		eae.setDateControle(null);
 		eae.setDureeEntretien(null);
 		
-		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentShd\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"directionService\":\"direction service bidule\",\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"etat\":\"etat de l'eae\",\"idEae\":18,\"sectionService\":\"section service bbudile\",\"service\":\"the service\"}";
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setSectionService("section service bbudile");
+		fdp.setService("the service");
+		fdp.setDirectionService("direction service bidule");
+		
+		eae.setEaeFichePoste(fdp);
+		
+		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"directionService\":\"direction service bidule\",\"sectionService\":\"section service bbudile\",\"service\":\"the service\",\"agentShd\":null,\"etat\":\"etat de l'eae\",\"idEae\":18}";
 		
 		// When
 		String result = Eae.getSerializerForEaeList().serialize(eae);
@@ -122,11 +123,13 @@ public class EaeTest {
 		eae.setIdEae(18);
 		eae.setIdAgent(999);
 		
+		EaeFichePoste fdp = new EaeFichePoste();
+		eae.setEaeFichePoste(fdp);
 		Agent agent = new Agent();
 		agent.setIdAgent(999);
 		agent.setNomPatronymique("Duck");
 		agent.setPrenom("Donald");
-		eae.setAgentShd(agent);
+		fdp.setAgentShd(agent);
 		
 		String expectedResult = "\"agentShd\":{\"idAgent\":999,\"nom\":\"Duck\",\"prenom\":\"Donald\"}";
 		

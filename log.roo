@@ -151,3 +151,60 @@ entity jpa --class ~.sirh.eae.domain.EaeEvaluateur --persistenceUnit eaePersiste
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-08 13:58:34
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-08 13:59:44
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-08 16:59:56
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-09 09:00:53
+// [failed] entity jpa --class ~.sirh.eae.domain.EaeNiveauEae --persistenceUnit eaePersistenceUnit --table EAE_NIVEAU_EAE --identifierColumn idEaeNiveauEae --identifierField ID_EAE_NIVEAU_EAE --identifierType int
+entity jpa --class ~.sirh.eae.domain.EaeNiveauEae --persistenceUnit eaePersistenceUnit --table EAE_NIVEAU_EAE --identifierColumn idEaeNiveauEae --identifierField ID_EAE_NIVEAU_EAE --identifierType java.lang.Integer
+entity jpa --class ~.sirh.eae.domain.EaeEvalue --persistenceUnit eaePersistenceUnit --table EAE_EVALUE --identifierColumn ID_EAE_EVALUE --identifierField idEaeEvalue --identifierType java.lang.Integer
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-09 09:30:57
+field date --class ~.sirh.eae.domain.EaeEvalue --fieldName dateEntreeService --column DATE_ENTREE_SERVICE --type java.util.Date
+field date --class ~.sirh.eae.domain.EaeEvalue --fieldName dateEntreeCollectivite --column DATE_ENTREE_COLLECTIVITE --type java.util.Date
+field date --class ~.sirh.eae.domain.EaeEvalue --fieldName dateEntreeFonctionnaire --column DATE_ENTREE_FONCTIONNAIRE --type java.util.Date
+field date --class ~.sirh.eae.domain.EaeEvalue --fieldName dateEntreeAdministration --column DATE_ENTREE_ADMINISTRATION --type java.util.Date
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName statut --column STATUT
+field number --class ~.sirh.eae.domain.EaeEvalue --fieldName ancienneteEchelon --column ANCIENNETE_ECHELON --type java.lang.Integer
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName cadre --column CADRE
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName categorie --column CATEGORIE
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName classification --column CLASSIFICATION
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName grade --column GRADE
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName echelon --column ECHELON
+field date --class ~.sirh.eae.domain.EaeEvalue --fieldName dateEffetAvancement --column DATE_EFFET_AVCT --type java.util.Date
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName nouvGrade --column NOUV_GRADE
+field string --class ~.sirh.eae.domain.EaeEvalue --fieldName nouvEchelon --column NOUV_ECHELON
+// [failed] field string --class ~.sirh.eae.domain.EaeEvalue --fieldName position --column POSITION
+field number --class ~.sirh.eae.domain.EaeEvalue --fieldName typeAvancement --column TYPE_AVCT --type java.lang.Integer
+entity jpa --class ~.sirh.eae.domain.EaeFichePoste --persistenceUnit eaePersistenceUnit --table EAE_FICHE_POSTE --identifierColumn ID_EAE_FICHE_POSTE --identifierField idEaeFichePoste --identifierType java.lang.Integer
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName typeFdp --column TYPE_FDP
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName directionService --column DIRECTION_SERV
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName service --column SERVICE_SERV
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName sectionService --column SECTION_SERV
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName emploi --column EMPLOI
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName fonction --column FONCTION
+field date --class ~.sirh.eae.domain.EaeFichePoste --fieldName dateEntreeFonction --column DATE_ENTREE_FONCTION --type java.util.Date
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName gradePoste --column GRADE_POSTE
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName localisation --column LOCALISATION
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName fonctionResponsable --column FONCTION_RESP
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName nomResponsable --column NOM_RESP
+field string --class ~.sirh.eae.domain.EaeFichePoste --fieldName prenomResponsable --column PRENOM_RESP
+entity jpa --class ~.sirh.eae.domain.EaeFdpActivites --persistenceUnit eaePersistenceUnit --table EAE_FDP_ACTIVITES --identifierColumn ID_EAE_FDP_ACTIVITES --identifierField idEaeFdpActivites --identifierType java.lang.Integer
+// [failed] field string --class ~.sirh.eae.domain.EaeFdpActivite --fieldName typeActivite --column TYPE_ACTIVITE
+// [failed] field string --class ~.sirh.eae.domain.EaeFdpActivite --fieldName libelleActivite --column LIBELLE_ACTIVITE
+field string --class ~.sirh.eae.domain.EaeFdpActivite --fieldName typeActivite --column TYPE_ACTIVITE
+field string --class ~.sirh.eae.domain.EaeFdpActivite --fieldName libelleActivite --column LIBELLE_ACTIVITE
+entity jpa --class ~.sirh.eae.domain.EaeParcoursPro --persistenceUnit eaePersistenceUnit --table EAE_PARCOURS_PRO --identifierColumn ID_EAE_PARCOURS_PRO --identifierField idEaeParcoursPro --identifierType java.lang.Integer
+entity jpa --class ~.sirh.eae.domain.EaeFormation --persistenceUnit eaePersistenceUnit --table EAE_FORMATION --identifierColumn ID_EAE_FORMATION --identifierField idEaeFormation --identifierType java.lang.Integer
+entity jpa --class ~.sirh.eae.domain.EaeResultat --persistenceUnit eaePersistenceUnit --table EAE_RESULTAT --identifierColumn ID_EAE_RESULTAT --identifierField idEaeResultat --identifierType java.lang.Integer
+entity jpa --class ~.sirh.eae.domain.EaeTypeResultat --persistenceUnit eaePersistenceUnit --table EAE_TYPE_RESULTAT --identifierColumn ID_EAE_TYPE_RESULTAT --identifierField idEaeTypeResultat --identifierType java.lang.Integer
+exit
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-09 11:57:38
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-09 12:08:09
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-09 12:08:15
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-09 12:12:47
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-09 12:12:52
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-09 12:13:05
+perform test
+exit
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-09 12:15:22
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-09 13:59:43
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-09 13:59:53
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-09 14:22:56
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-09 14:23:43

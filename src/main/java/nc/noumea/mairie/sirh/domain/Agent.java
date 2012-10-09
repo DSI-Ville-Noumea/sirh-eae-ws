@@ -44,4 +44,20 @@ public class Agent {
     @Column(name = "DATE_NAISSANCE")
     @Temporal(TemporalType.DATE)
     private Date dateNaissance;
+    
+    public String getDisplayPrenom() {
+    	if (getPrenomUsage() != null && !getPrenomUsage().isEmpty())
+    		return getPrenomUsage();
+    	else
+    		return getPrenom();
+    }
+    
+    public String getDisplayNom() {
+    	if (getNomMarital() != null && !getNomMarital().isEmpty())
+    		return getNomMarital();
+    	else if (getNomUsage() != null && !getNomUsage().isEmpty())
+    		return getNomUsage();
+    	else
+    		return getNomPatronymique();
+    }
 }

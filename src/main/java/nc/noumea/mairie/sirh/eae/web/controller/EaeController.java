@@ -47,6 +47,30 @@ public class EaeController {
 		
 		return new ResponseEntity<String>(jsonResult, headers, HttpStatus.OK);
 	}
+	
+	@ResponseBody
+	@RequestMapping("creationEae")
+	@Transactional
+	public ResponseEntity<String> createEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
+		
+		return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
+	}
+	
+	@ResponseBody
+	@RequestMapping("suppressionEae")
+	@Transactional
+	public ResponseEntity<String> deleteEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
+		
+		return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
+	}
+	
+	@ResponseBody
+	@RequestMapping("affecterDelegataire")
+	@Transactional
+	public ResponseEntity<String> affectDelegataire(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue, @RequestParam("idDelegataire") int idDelegataire) {
+		
+		return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
+	}
 }
 	
 	

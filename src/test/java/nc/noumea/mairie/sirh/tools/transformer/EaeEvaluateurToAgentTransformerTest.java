@@ -16,7 +16,7 @@ public class EaeEvaluateurToAgentTransformerTest {
 
 		// Given
 		JSONSerializer serializer = new JSONSerializer();
-		EaeEvaluateurToAgentTransformer tr = new EaeEvaluateurToAgentTransformer();
+		EaeEvaluateurToAgentFlatTransformer tr = new EaeEvaluateurToAgentFlatTransformer();
 		EaeEvaluateur eval = null;
 
 		// When
@@ -32,7 +32,7 @@ public class EaeEvaluateurToAgentTransformerTest {
 
 		// Given
 		JSONSerializer serializer = new JSONSerializer();
-		EaeEvaluateurToAgentTransformer tr = new EaeEvaluateurToAgentTransformer();
+		EaeEvaluateurToAgentFlatTransformer tr = new EaeEvaluateurToAgentFlatTransformer();
 		Agent agent = new Agent();
 		agent.setIdAgent(899);
 		EaeEvaluateur eval = new EaeEvaluateur();

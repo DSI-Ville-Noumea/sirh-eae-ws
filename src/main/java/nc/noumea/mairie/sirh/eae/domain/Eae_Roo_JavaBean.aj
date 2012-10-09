@@ -7,8 +7,14 @@ import java.util.Date;
 import java.util.Set;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
+import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
+import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 
 privileged aspect Eae_Roo_JavaBean {
     
@@ -18,38 +24,6 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setIdAgent(int idAgent) {
         this.idAgent = idAgent;
-    }
-    
-    public Integer Eae.getIdAgentShd() {
-        return this.idAgentShd;
-    }
-    
-    public void Eae.setIdAgentShd(Integer idAgentShd) {
-        this.idAgentShd = idAgentShd;
-    }
-    
-    public String Eae.getDirectionService() {
-        return this.directionService;
-    }
-    
-    public void Eae.setDirectionService(String directionService) {
-        this.directionService = directionService;
-    }
-    
-    public String Eae.getSectionService() {
-        return this.sectionService;
-    }
-    
-    public void Eae.setSectionService(String sectionService) {
-        this.sectionService = sectionService;
-    }
-    
-    public String Eae.getService() {
-        return this.service;
-    }
-    
-    public void Eae.setService(String service) {
-        this.service = service;
     }
     
     public String Eae.getStatut() {
@@ -172,20 +146,60 @@ privileged aspect Eae_Roo_JavaBean {
         this.eaeEvaluateurs = eaeEvaluateurs;
     }
     
+    public EaeEvalue Eae.getEaeEvalue() {
+        return this.eaeEvalue;
+    }
+    
+    public void Eae.setEaeEvalue(EaeEvalue eaeEvalue) {
+        this.eaeEvalue = eaeEvalue;
+    }
+    
+    public EaeFichePoste Eae.getEaeFichePoste() {
+        return this.eaeFichePoste;
+    }
+    
+    public void Eae.setEaeFichePoste(EaeFichePoste eaeFichePoste) {
+        this.eaeFichePoste = eaeFichePoste;
+    }
+    
+    public Set<EaeDiplome> Eae.getEaeDiplomes() {
+        return this.eaeDiplomes;
+    }
+    
+    public void Eae.setEaeDiplomes(Set<EaeDiplome> eaeDiplomes) {
+        this.eaeDiplomes = eaeDiplomes;
+    }
+    
+    public Set<EaeParcoursPro> Eae.getEaeParcoursPros() {
+        return this.eaeParcoursPros;
+    }
+    
+    public void Eae.setEaeParcoursPros(Set<EaeParcoursPro> eaeParcoursPros) {
+        this.eaeParcoursPros = eaeParcoursPros;
+    }
+    
+    public Set<EaeFormation> Eae.getEaeFormations() {
+        return this.eaeFormations;
+    }
+    
+    public void Eae.setEaeFormations(Set<EaeFormation> eaeFormations) {
+        this.eaeFormations = eaeFormations;
+    }
+    
+    public Set<EaeResultat> Eae.getEaeResultats() {
+        return this.eaeResultats;
+    }
+    
+    public void Eae.setEaeResultats(Set<EaeResultat> eaeResultats) {
+        this.eaeResultats = eaeResultats;
+    }
+    
     public Agent Eae.getAgentEvalue() {
         return this.agentEvalue;
     }
     
     public void Eae.setAgentEvalue(Agent agentEvalue) {
         this.agentEvalue = agentEvalue;
-    }
-    
-    public Agent Eae.getAgentShd() {
-        return this.agentShd;
-    }
-    
-    public void Eae.setAgentShd(Agent agentShd) {
-        this.agentShd = agentShd;
     }
     
     public Agent Eae.getAgentDelegataire() {

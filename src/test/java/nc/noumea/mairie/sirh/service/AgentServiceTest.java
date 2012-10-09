@@ -8,7 +8,7 @@ import java.util.Set;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
-import nc.noumea.mairie.sirh.service.AgentService;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 import org.junit.Test;
 import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
@@ -40,6 +40,30 @@ public class AgentServiceTest {
 		// Then
 		assertEquals(agentToReturn, eval.getAgent());
 	}
+	
+	@Test
+	public void testFillAgentForEaeFichePoste() {
+
+		// Given
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setIdAgentShd(998);
+
+		// Mock the agent find static method to return our agent
+		Agent agentToReturn = new Agent();
+		agentToReturn.setIdAgent(998);
+		agentToReturn.setNomPatronymique("Bilbo");
+
+		Agent.findAgent(998);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+
+		// When
+		AgentService service = new AgentService();
+		service.fillEaeFichePosteWithAgent(fdp);
+
+		// Then
+		assertEquals(agentToReturn, fdp.getAgentShd());
+	}
 
 	@Test
 	public void testfillEaeWithAgents_When1DelegataireAnd1ShdNoEvaluateurs_returnFilledInObject() {
@@ -51,7 +75,9 @@ public class AgentServiceTest {
 		Eae eaeToReturn = new Eae();
 		eaeToReturn.setIdAgent(idAgent);
 		eaeToReturn.setIdAgentDelegataire(idAgentDelegataire);
-		eaeToReturn.setIdAgentShd(idAgentShd);
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setIdAgentShd(idAgentShd);
+		eaeToReturn.setEaeFichePoste(fdp);
 		
 		// Mock the Agent find static method to return our agent
 		Agent agentToReturn = new Agent();
@@ -66,7 +92,7 @@ public class AgentServiceTest {
 		agentShdToReturn.setIdAgent(idAgentShd);
 		agentShdToReturn.setNomPatronymique("yet another person shd");
 
-		Agent.findAgent(eaeToReturn.getIdAgentShd());
+		Agent.findAgent(fdp.getIdAgentShd());
 		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentShdToReturn);
 				
 		// Mock the Agent static method to return our agentDelegataire
@@ -88,9 +114,8 @@ public class AgentServiceTest {
 		// Then
 		assertEquals(agentToReturn, result.getAgentEvalue());
 		assertEquals(agentDelegataireToReturn, result.getAgentDelegataire());
-		assertEquals(agentShdToReturn, result.getAgentShd());
 	}
-	
+
 	@Test
 	public void testfillEaeWithAgents_When2Evaluateurs_returnFilledInObject() {
 

@@ -11,7 +11,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.domain.Agent;
-import nc.noumea.mairie.sirh.tools.transformer.EaeEvaluateurToAgentTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.EaeEvaluateurToAgentFlatTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.EaeFichePosteToEaeListTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
@@ -35,19 +36,6 @@ public class Eae {
 	@NotNull
     @Column(name = "ID_AGENT")
     private int idAgent;
-    
-	@NotNull
-    @Column(name = "ID_SHD")
-    private Integer idAgentShd;
-    
-    @Column(name = "DIRECTION_SERVICE")
-    private String directionService;
-    
-    @Column(name = "SECTION_SERVICE")
-    private String sectionService;
-    
-    @Column(name = "SERVICE")
-    private String service;
     
     @Column(name = "STATUT")
     private String statut;
@@ -97,15 +85,30 @@ public class Eae {
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
 	private Set<EaeEvaluateur> eaeEvaluateurs;
     
+    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
+    private EaeEvalue eaeEvalue;
+    
+    @OneToOne(optional = false, mappedBy = "eae", fetch = FetchType.LAZY)
+    private EaeFichePoste eaeFichePoste;
+    
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+	private Set<EaeDiplome> eaeDiplomes;
+    
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+	private Set<EaeParcoursPro> eaeParcoursPros;
+    
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+	private Set<EaeFormation> eaeFormations;
+    
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+   	private Set<EaeResultat> eaeResultats;
+    
     /*
      * Transient properties (will be populated by AS400 entity manager)
      */
     @Transient
     private Agent agentEvalue;
-    
-    @Transient
-    private Agent agentShd;
-    
+        
     @Transient
     private Agent agentDelegataire;
     
@@ -113,9 +116,6 @@ public class Eae {
     	
     	JSONSerializer serializer = new JSONSerializer()
 	    	.include("agentEvalue")
-	    	.include("directionService")
-	    	.include("sectionService")
-	    	.include("service")
 	    	.include("etat")
 	    	.include("cap")
 	    	.include("docAttache")
@@ -123,15 +123,16 @@ public class Eae {
 	    	.include("dateFinalisation")
 	    	.include("dateControle")
 	    	.include("dureeEntretien")
-	    	.include("agentShd")
 	    	.include("agentDelegataire")
 	    	.include("eaeEvaluation.avisShd")
 	    	.include("idEae")
 	    	.include("eaeEvaluateurs")
+	    	.include("eaeFichePoste")
 	    	.transform(new MSDateTransformer(), Date.class)
 	    	.transform(new NullableIntegerTransformer(), Integer.class)
 	    	.transform(new SimpleAgentTransformer(), Agent.class)
-	    	.transform(new EaeEvaluateurToAgentTransformer(), EaeEvaluateur.class)
+	    	.transform(new EaeEvaluateurToAgentFlatTransformer(), EaeEvaluateur.class)
+	    	.transform(new EaeFichePosteToEaeListTransformer(), EaeFichePoste.class)
 	    	.exclude("*");
     	
     	return serializer;
