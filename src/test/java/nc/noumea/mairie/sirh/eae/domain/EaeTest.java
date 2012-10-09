@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.domain.Agent;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class EaeTest {
 		Eae eae = new Eae();
 		eae.setIdEae(18);
 		eae.setIdAgent(999);
-		eae.setEtat("etat de l'eae");
+		eae.setEtat(EaeEtatEnum.C);
 		eae.setCap(true);
 		eae.setDocAttache(true);
 		eae.setDateCreation(new Date(2012, 02, 02));
@@ -68,7 +69,7 @@ public class EaeTest {
 		Eae eae = new Eae();
 		eae.setIdEae(18);
 		eae.setIdAgent(999);
-		eae.setEtat("etat de l'eae");
+		eae.setEtat(EaeEtatEnum.C);
 		eae.setCap(true);
 		eae.setDocAttache(true);
 		eae.setDateCreation(null);
@@ -83,7 +84,7 @@ public class EaeTest {
 		
 		eae.setEaeFichePoste(fdp);
 		
-		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"directionService\":\"direction service bidule\",\"sectionService\":\"section service bbudile\",\"service\":\"the service\",\"agentShd\":null,\"etat\":\"etat de l'eae\",\"idEae\":18}";
+		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"directionService\":\"direction service bidule\",\"sectionService\":\"section service bbudile\",\"service\":\"the service\",\"agentShd\":null,\"etat\":\"Créé\",\"idEae\":18}";
 		
 		// When
 		String result = Eae.getSerializerForEaeList().serialize(eae);

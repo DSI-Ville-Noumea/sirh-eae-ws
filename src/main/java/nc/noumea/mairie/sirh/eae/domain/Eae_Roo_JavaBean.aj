@@ -15,6 +15,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 privileged aspect Eae_Roo_JavaBean {
     
@@ -34,11 +35,11 @@ privileged aspect Eae_Roo_JavaBean {
         this.statut = statut;
     }
     
-    public String Eae.getEtat() {
+    public EaeEtatEnum Eae.getEtat() {
         return this.etat;
     }
     
-    public void Eae.setEtat(String etat) {
+    public void Eae.setEtat(EaeEtatEnum etat) {
         this.etat = etat;
     }
     

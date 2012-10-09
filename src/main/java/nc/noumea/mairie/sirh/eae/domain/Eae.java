@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -11,6 +13,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.domain.Agent;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvaluateurToAgentFlatTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.EaeFichePosteToEaeListTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
@@ -23,6 +26,7 @@ import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 
 import flexjson.JSONSerializer;
+import flexjson.transformer.EnumTransformer;
 
 @RooJavaBean
 @RooToString
@@ -38,11 +42,12 @@ public class Eae {
     private int idAgent;
     
     @Column(name = "STATUT")
-    private String statut;
+	private String statut;
     
     @NotNull
     @Column(name = "ETAT")
-    private String etat;
+    @Enumerated(EnumType.STRING)
+    private EaeEtatEnum etat;
     
     @NotNull
     @Column(name = "CAP")
@@ -133,6 +138,7 @@ public class Eae {
 	    	.transform(new SimpleAgentTransformer(), Agent.class)
 	    	.transform(new EaeEvaluateurToAgentFlatTransformer(), EaeEvaluateur.class)
 	    	.transform(new EaeFichePosteToEaeListTransformer(), EaeFichePoste.class)
+	    	.transform(new EnumTransformer(), "etat")
 	    	.exclude("*");
     	
     	return serializer;

@@ -7,7 +7,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.service.IAgentService;
+import nc.noumea.mairie.sirh.tools.IHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ public class EaeService implements IEaeService {
 	
 	@Autowired
 	private IAgentService agentService;
+	
+	@Autowired
+	private IHelper helper;
 	
 	@Override
 	public List<Eae> listEaesByAgentId(int agentId) {
@@ -36,6 +41,18 @@ public class EaeService implements IEaeService {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public void initializeEae(int idEae) throws EaeServiceException {
+		
+		Eae eaeToInitialize = Eae.findEae(idEae);
+		
+		if (eaeToInitialize == null) 
+			throw new EaeServiceException(String.format("Impossible de créer l'EAE id '%d'", idEae));
+		
+		eaeToInitialize.setDateCreation(helper.getCurrentDate());
+		eaeToInitialize.setEtat(EaeEtatEnum.C);
 	}
 	
 }

@@ -9,21 +9,38 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.service.IAgentService;
+import nc.noumea.mairie.sirh.tools.IHelper;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @MockStaticEntityMethods
 public class EaeServiceTest {
 
+	private static IHelper helperMock;
+	
+	@BeforeClass 
+	public static void SetUp() {
+		Calendar c = new GregorianCalendar();
+		c.set(2007, 04, 19);
+		
+		helperMock = mock(IHelper.class);
+		when(helperMock.getCurrentDate()).thenReturn(c.getTime());
+	}
+	
 	@Test
 	public void testlistEaesByAgentId_WhenNoEaeForAgent_returnNull() {
 
@@ -133,4 +150,45 @@ public class EaeServiceTest {
 		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn2);
 	}
 	
+	@Test
+	public void testInitilizeEae_eaeDoesNotExist_throwException() {
+		// Given
+		EaeService service = new EaeService();
+		
+		// Mock the agent find static method to return our agent
+		Eae eaeToReturn = null;
+
+		Eae.findEae(987);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+				
+		// When
+		try {
+			service.initializeEae(987);
+		}
+		catch(EaeServiceException ex) {
+			// Then
+			assertEquals("Impossible de créer l'EAE id '987'", ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testInitilizeEae_eaeExists_setCreationDateAndStatus() throws EaeServiceException{
+		// Given
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+				
+		// Mock the agent find static method to return our agent
+		Eae eaeToReturn = new Eae();
+		eaeToReturn.setIdEae(987);
+		
+		Eae.findEae(eaeToReturn.getIdEae());
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+				
+		// When
+		service.initializeEae(987);
+		assertEquals(EaeEtatEnum.C, eaeToReturn.getEtat());
+		assertEquals(helperMock.getCurrentDate(), eaeToReturn.getDateCreation());
+	}
 }
