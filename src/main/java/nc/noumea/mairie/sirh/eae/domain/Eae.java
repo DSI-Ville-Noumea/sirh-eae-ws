@@ -19,6 +19,7 @@ import nc.noumea.mairie.sirh.tools.transformer.EaeFichePosteToEaeListTransformer
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -26,11 +27,10 @@ import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 
 import flexjson.JSONSerializer;
-import flexjson.transformer.EnumTransformer;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE", identifierField = "idEae", identifierType = Integer.class, table = "EAE")
+@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE", identifierField = "idEae", identifierType = Integer.class, table = "EAE", sequenceName="EAE_S_EAE")
 @RooJson
 public class Eae {
 
@@ -138,7 +138,7 @@ public class Eae {
 	    	.transform(new SimpleAgentTransformer(), Agent.class)
 	    	.transform(new EaeEvaluateurToAgentFlatTransformer(), EaeEvaluateur.class)
 	    	.transform(new EaeFichePosteToEaeListTransformer(), EaeFichePoste.class)
-	    	.transform(new EnumTransformer(), "etat")
+	    	.transform(new ValueEnumTransformer(), Enum.class)
 	    	.exclude("*");
     	
     	return serializer;

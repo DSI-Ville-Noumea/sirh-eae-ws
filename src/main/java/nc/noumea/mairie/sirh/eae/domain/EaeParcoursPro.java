@@ -12,7 +12,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_PARCOURS_PRO", identifierField = "idEaeParcoursPro", identifierType = Integer.class, table = "EAE_PARCOURS_PRO")
+@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_PARCOURS_PRO", identifierField = "idEaeParcoursPro", identifierType = Integer.class, table = "EAE_PARCOURS_PRO", sequenceName="EAE_S_PARCOURS_PRO")
 public class EaeParcoursPro {
 	
 	@Column(name = "DATE_DEBUT")

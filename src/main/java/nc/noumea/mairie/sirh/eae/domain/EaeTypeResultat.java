@@ -8,7 +8,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_TYPE_RESULTAT", identifierField = "idEaeTypeResultat", identifierType = Integer.class, table = "EAE_TYPE_RESULTAT", versionField = "")
+@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_TYPE_RESULTAT", identifierField = "idEaeTypeResultat", identifierType = Integer.class, table = "EAE_TYPE_RESULTAT", versionField = "", sequenceName="EAE_S_TYPE_RESULTAT")
 public class EaeTypeResultat {
 	
 	@Column(name = "LIBELLE_TYPE_RESULTAT")
