@@ -3,11 +3,11 @@
 
 package nc.noumea.mairie.sirh.eae.domain;
 
-import nc.noumea.mairie.sirh.eae.domain.EaeTypeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import org.springframework.beans.factory.annotation.Configurable;
 
-privileged aspect EaeTypeResultat_Roo_Configurable {
+privileged aspect EaePlanAction_Roo_Configurable {
     
-    declare @type: EaeTypeResultat: @Configurable;
+    declare @type: EaePlanAction: @Configurable;
     
 }

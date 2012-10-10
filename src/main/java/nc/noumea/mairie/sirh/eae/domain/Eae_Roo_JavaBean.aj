@@ -14,6 +14,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
+import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
@@ -193,6 +194,14 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setEaeResultats(Set<EaeResultat> eaeResultats) {
         this.eaeResultats = eaeResultats;
+    }
+    
+    public Set<EaePlanAction> Eae.getEaePlanActions() {
+        return this.eaePlanActions;
+    }
+    
+    public void Eae.setEaePlanActions(Set<EaePlanAction> eaePlanActions) {
+        this.eaePlanActions = eaePlanActions;
     }
     
     public Agent Eae.getAgentEvalue() {

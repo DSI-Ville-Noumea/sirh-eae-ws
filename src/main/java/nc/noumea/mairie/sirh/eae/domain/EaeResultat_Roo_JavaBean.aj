@@ -5,7 +5,7 @@ package nc.noumea.mairie.sirh.eae.domain;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
-import nc.noumea.mairie.sirh.eae.domain.EaeTypeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 
 privileged aspect EaeResultat_Roo_JavaBean {
     
@@ -15,14 +15,6 @@ privileged aspect EaeResultat_Roo_JavaBean {
     
     public void EaeResultat.setObjectif(String objectif) {
         this.objectif = objectif;
-    }
-    
-    public String EaeResultat.getDetailObjectif() {
-        return this.detailObjectif;
-    }
-    
-    public void EaeResultat.setDetailObjectif(String detailObjectif) {
-        this.detailObjectif = detailObjectif;
     }
     
     public String EaeResultat.getResultat() {
@@ -41,12 +33,12 @@ privileged aspect EaeResultat_Roo_JavaBean {
         this.commentaire = commentaire;
     }
     
-    public EaeTypeResultat EaeResultat.getTypeResultat() {
-        return this.typeResultat;
+    public EaeTypeObjectif EaeResultat.getTypeObjectif() {
+        return this.typeObjectif;
     }
     
-    public void EaeResultat.setTypeResultat(EaeTypeResultat typeResultat) {
-        this.typeResultat = typeResultat;
+    public void EaeResultat.setTypeObjectif(EaeTypeObjectif typeObjectif) {
+        this.typeObjectif = typeObjectif;
     }
     
     public Eae EaeResultat.getEae() {

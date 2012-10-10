@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
 
@@ -28,6 +29,12 @@ public class EaeController {
 	@Autowired
 	private IAgentMatriculeConverterService agentMatriculeConverterService;
 	
+	private HttpHeaders getJsonHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+	    headers.add("Content-Type", "application/json; charset=utf-8");
+	    return headers;
+	}
+	
 	@ResponseBody
 	@RequestMapping("listEaesByAgent")
 	@Transactional(readOnly = true)
@@ -35,17 +42,14 @@ public class EaeController {
 		
 		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
     	
-    	HttpHeaders headers = new HttpHeaders();
-	    headers.add("Content-Type", "application/json; charset=utf-8");
-	    
-	    List<Eae> result = eaeService.listEaesByAgentId(convertedId);
+    	List<Eae> result = eaeService.listEaesByAgentId(convertedId);
 		
 		if (result.isEmpty())
-			return new ResponseEntity<String>(headers, HttpStatus.NO_CONTENT); 
+			return new ResponseEntity<String>(HttpStatus.NO_CONTENT); 
 		
 		String jsonResult = Eae.getSerializerForEaeList().serialize(result);
 		
-		return new ResponseEntity<String>(jsonResult, headers, HttpStatus.OK);
+		return new ResponseEntity<String>(jsonResult, getJsonHeaders(), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -53,7 +57,21 @@ public class EaeController {
 	@Transactional
 	public ResponseEntity<String> createEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
-		return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
+		List<Eae> agentEaes = eaeService.findFourPreviousEaesByAgentId(idEvalue);
+		
+		if (agentEaes.isEmpty())
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		Eae lastEae = agentEaes.get(0);
+		agentEaes.remove(0);
+		
+		try {
+			eaeService.initializeEae(lastEae, agentEaes);
+		} catch (EaeServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	@ResponseBody

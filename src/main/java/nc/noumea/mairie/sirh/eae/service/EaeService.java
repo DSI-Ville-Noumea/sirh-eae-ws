@@ -30,6 +30,10 @@ public class EaeService implements IEaeService {
 	@Autowired
 	private ISirhWsConsumer sirhWsConsumer;
 	
+	/*
+	 * Interface implementation
+	 */
+	
 	@Override
 	public List<Eae> listEaesByAgentId(int agentId) {
 
@@ -55,7 +59,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void initializeEae(Eae eaeToInitialize) throws EaeServiceException {
+	public void initializeEae(Eae eaeToInitialize, List<Eae> previousEaes) throws EaeServiceException {
 		
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
 			throw new EaeServiceException(String.format("Impossible de créer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
@@ -65,17 +69,46 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	public void startEae(Eae eaeToStart) throws EaeServiceException {
+
+		if (eaeToStart.getEtat() != EaeEtatEnum.C)
+			throw new EaeServiceException(String.format("Impossible de créer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(), eaeToStart.getEtat().toString()));
+				
+		eaeToStart.setEtat(EaeEtatEnum.EC);
+	}
+
+	
+	/*
+	 * Finders methods
+	 */
+	
+	private List<Eae> findLatestEaesByAgentId(int agentId, int maxResults) {
+		
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idAgent = :idAgent order by e.dateCreation desc", Eae.class);
+		eaeQuery.setParameter("idAgent", agentId);
+		eaeQuery.setMaxResults(maxResults);
+		List<Eae> result = eaeQuery.getResultList();
+		
+		return result;
+	}
+
+	@Override
 	public Eae findLastEaeByAgentId(int agentId) {
 		
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idAgent = :idAgent orderby e.DateCreation desc", Eae.class);
-		eaeQuery.setParameter("idAgent", agentId);
-		eaeQuery.setMaxResults(1);
-		List<Eae> result = eaeQuery.getResultList();
+		List<Eae> result = findLatestEaesByAgentId(agentId, 1);
 		
 		if (result.isEmpty())
 			return null;
 		else
 			return result.get(0);
+	}
+	
+	@Override
+	public List<Eae> findFourPreviousEaesByAgentId(int agentId) {
+		
+		List<Eae> result = findLatestEaesByAgentId(agentId, 4);
+		
+		return result;
 	}
 	
 }

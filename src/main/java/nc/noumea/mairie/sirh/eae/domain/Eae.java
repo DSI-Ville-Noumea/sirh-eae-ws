@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -88,7 +89,7 @@ public class Eae {
     private EaeEvaluation eaeEvaluation;
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
-	private Set<EaeEvaluateur> eaeEvaluateurs;
+	private Set<EaeEvaluateur> eaeEvaluateurs = new HashSet<EaeEvaluateur>();
     
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
     private EaeEvalue eaeEvalue;
@@ -97,16 +98,19 @@ public class Eae {
     private EaeFichePoste eaeFichePoste;
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
-	private Set<EaeDiplome> eaeDiplomes;
+	private Set<EaeDiplome> eaeDiplomes = new HashSet<EaeDiplome>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
-	private Set<EaeParcoursPro> eaeParcoursPros;
+	private Set<EaeParcoursPro> eaeParcoursPros = new HashSet<EaeParcoursPro>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
-	private Set<EaeFormation> eaeFormations;
+	private Set<EaeFormation> eaeFormations = new HashSet<EaeFormation>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
-   	private Set<EaeResultat> eaeResultats;
+   	private Set<EaeResultat> eaeResultats = new HashSet<EaeResultat>();
+    
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+   	private Set<EaePlanAction> eaePlanActions = new HashSet<EaePlanAction>();
     
     /*
      * Transient properties (will be populated by AS400 entity manager)

@@ -58,7 +58,7 @@ public class EaeControllerTest {
 	}
 	
 	@Test
-	public void test1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException {
+	public void testlistEaesByAgent_1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException {
 		
 		// Given
 		List<Eae> resultOfService = new ArrayList<Eae>(Arrays.asList(new Eae()));
@@ -82,25 +82,83 @@ public class EaeControllerTest {
 		assertEquals(1, returnedResult.size());
 	}
 	
-	//@Test
+	@Test
 	public void testCreateEae_creationOk_ReturnHttp200() throws EaeServiceException {
 		
 		// Given
-		Eae eaeToCreate = new Eae();
+		int agentId = 12;
+		int agentEvalueId = 13;
+		Eae lastEae = new Eae();
+		List<Eae> eaeToCreateList = new ArrayList<Eae>(Arrays.asList(lastEae));
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.findFourPreviousEaesByAgentId(agentEvalueId)).thenReturn(eaeToCreateList);
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.createEae(1, 1);
+		ResponseEntity<String> result = controller.createEae(agentId, agentEvalueId);
 		
 		// Then
+		assertFalse(eaeToCreateList.contains(lastEae));
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
 		
-		verify(eaeServiceMock, times(1)).initializeEae(eaeToCreate);
+		verify(eaeServiceMock, times(1)).findFourPreviousEaesByAgentId(agentEvalueId);
+		verify(eaeServiceMock, times(1)).initializeEae(lastEae, eaeToCreateList);
+	}
+	
+	@Test
+	public void testCreateEae_noEaeForAgent_ReturnHttp404() throws EaeServiceException {
+		
+		// Given
+		int agentId = 12;
+		int agentEvalueId = 13;
+		List<Eae> eaeToCreateList = new ArrayList<Eae>();
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.findFourPreviousEaesByAgentId(agentEvalueId)).thenReturn(eaeToCreateList);
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.createEae(agentId, agentEvalueId);
+		
+		// Then
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertFalse(result.hasBody());
+		
+		verify(eaeServiceMock, times(1)).findFourPreviousEaesByAgentId(agentEvalueId);
+	}
+	
+	@Test
+	public void testCreateEae_EaeForAgentIsAlreadyCreated_ReturnHttp409() throws EaeServiceException {
+		
+		// Given
+		int agentId = 12;
+		int agentEvalueId = 13;
+		Eae lastEae = new Eae();
+		List<Eae> eaeToCreateList = new ArrayList<Eae>(Arrays.asList(lastEae));
+		EaeServiceException ex = new EaeServiceException("message");
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.findFourPreviousEaesByAgentId(agentEvalueId)).thenReturn(eaeToCreateList);
+		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock).initializeEae(lastEae, eaeToCreateList);
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.createEae(agentId, agentEvalueId);
+
+		// Then
+		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+		assertTrue(result.hasBody());
+		assertEquals(ex.getMessage(), result.getBody());
 	}
 }

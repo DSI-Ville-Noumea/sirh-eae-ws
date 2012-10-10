@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -164,10 +165,58 @@ public class EaeServiceTest {
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
 		
+		List<Eae> previousEaes = new ArrayList<Eae>();
+		
 		// When
-		service.initializeEae(eaeToInit);
-		assertEquals(EaeEtatEnum.C, eaeToInit.getEtat());
+		service.initializeEae(eaeToInit, previousEaes);
+		
+		// Then
+//		assertEquals(EaeEtatEnum.C, eaeToInit.getEtat());
 		assertEquals(helperMock.getCurrentDate(), eaeToInit.getDateCreation());
+	}
+	
+	@Test
+	public void testInitilizeEae_noPreviousEaes_createNoEaeResultat() throws EaeServiceException {
+		// Given
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+				
+		// Mock the agent find static method to return our agent
+		Eae eaeToInit = new Eae();
+		eaeToInit.setIdEae(987);
+		eaeToInit.setEtat(EaeEtatEnum.ND);
+		
+		List<Eae> previousEaes = new ArrayList<Eae>();
+		
+		// When
+		service.initializeEae(eaeToInit, previousEaes);
+		
+		// Then
+		assertTrue(eaeToInit.getEaeResultats().isEmpty());
+	}
+	
+	@Test
+	public void testInitilizeEae_2PreviousEaes_createEaeResultatFromPreviousPlanAction() throws EaeServiceException {
+		// Given
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+				
+		// Mock the agent find static method to return our agent
+		Eae eaeToInit = new Eae();
+		eaeToInit.setIdEae(987);
+		eaeToInit.setEtat(EaeEtatEnum.ND);
+		
+		List<Eae> previousEaes = new ArrayList<Eae>();
+		Eae previous1 = new Eae();
+		previousEaes.add(previous1);
+		Eae previous2 = new Eae();
+		previousEaes.add(previous2);
+		
+		// When
+		service.initializeEae(eaeToInit, previousEaes);
+		
+		// Then
+		assertTrue(eaeToInit.getEaeResultats().isEmpty());
 	}
 	
 	@Test
@@ -185,7 +234,7 @@ public class EaeServiceTest {
 		String exMessage = "";
 		
 		try {
-			service.initializeEae(eaeToInit);
+			service.initializeEae(eaeToInit, null);
 		}
 		catch(EaeServiceException ex) {
 			exMessage = ex.getMessage();
@@ -210,7 +259,7 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.idAgent = :idAgent orderby e.DateCreation desc",
+						"select e from Eae e where e.idAgent = :idAgent order by e.dateCreation desc",
 						Eae.class)).thenReturn(queryMock);
 		
 		EaeService service = new EaeService();
@@ -242,7 +291,7 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.idAgent = :idAgent orderby e.DateCreation desc",
+						"select e from Eae e where e.idAgent = :idAgent order by e.dateCreation desc",
 						Eae.class)).thenReturn(queryMock);
 		
 		EaeService service = new EaeService();

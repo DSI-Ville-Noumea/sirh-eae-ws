@@ -10,17 +10,14 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_RESULTAT", identifierField = "idEaeResultat", identifierType = Integer.class, table = "EAE_RESULTAT", sequenceName="EAE_S_RESULTAT")
-public class EaeResultat {
+@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_PLAN_ACTION", identifierField = "idEaePlanAction", identifierType = Integer.class, table = "EAE_PLAN_ACTION", sequenceName="EAE_S_PLAN_ACTION")
+public class EaePlanAction {
 	
 	@Column(name = "OBJECTIF")
 	private String objectif;
 	
-	@Column(name = "RESULTAT")
-	private String resultat;
-	
-	@Column(name = "COMMENTAIRE")
-	private String commentaire;
+	@Column(name = "MESURE")
+	private String mesure;
 	
 	@OneToOne
 	@JoinColumn(name = "ID_EAE_TYPE_OBJECTIF")

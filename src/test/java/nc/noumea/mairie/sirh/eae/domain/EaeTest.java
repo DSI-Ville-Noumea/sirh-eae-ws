@@ -84,7 +84,7 @@ public class EaeTest {
 		
 		eae.setEaeFichePoste(fdp);
 		
-		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluateurs\":null,\"eaeEvaluation\":null,\"directionService\":\"direction service bidule\",\"sectionService\":\"section service bbudile\",\"service\":\"the service\",\"agentShd\":null,\"etat\":\"Créé\",\"idEae\":18}";
+		String expectedResult = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"cap\":true,\"dateControle\":null,\"dateCreation\":null,\"dateFinalisation\":null,\"docAttache\":true,\"dureeEntretien\":null,\"eaeEvaluateurs\":[],\"eaeEvaluation\":null,\"directionService\":\"direction service bidule\",\"sectionService\":\"section service bbudile\",\"service\":\"the service\",\"agentShd\":null,\"etat\":\"Créé\",\"idEae\":18}";
 		
 		// When
 		String result = Eae.getSerializerForEaeList().serialize(eae);

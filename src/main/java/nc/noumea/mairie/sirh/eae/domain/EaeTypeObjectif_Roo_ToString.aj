@@ -3,13 +3,13 @@
 
 package nc.noumea.mairie.sirh.eae.domain;
 
-import nc.noumea.mairie.sirh.eae.domain.EaeTypeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-privileged aspect EaeTypeResultat_Roo_ToString {
+privileged aspect EaeTypeObjectif_Roo_ToString {
     
-    public String EaeTypeResultat.toString() {
+    public String EaeTypeObjectif.toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     
