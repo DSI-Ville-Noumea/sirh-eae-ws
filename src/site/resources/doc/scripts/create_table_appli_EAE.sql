@@ -933,3 +933,29 @@ create public synonym EAE_DEVELOPPEMENT for EAE_DEVELOPPEMENT;
 grant select, insert, update, delete on EAE_DEVELOPPEMENT to R_EAE_USR;
 grant select on EAE_DEVELOPPEMENT to R_EAE_READ;
 
+
+-- Connecté en EAE_USR
+
+select * from EAE_NIVEAU;
+select * from EAE_FDP_ACTIVITE;
+select * from EAE_CAMPAGNE_EAE;
+select * from EAE_CAMPAGNE_ACTION;
+select * from EAE_CAMPAGNE_ACTEURS;
+select * from EAE;
+select * from EAE_EVALUATEUR;
+select * from EAE_EVALUE;
+select * from EAE_FICHE_POSTE;
+select * from EAE_DIPLOME;
+select * from EAE_PARCOURS_PRO;
+select * from EAE_FORMATION;
+select * from EAE_RESULTAT;
+select * from EAE_PLAN_ACTION;
+select * from EAE_EVALUATION;
+select * from EAE_DOCUMENT;
+select * from EAE_APPRECIATION;
+select * from EAE_AUTO_EVALUATION;
+select * from EAE_EVOLUTION;
+select * from EAE_EVOL_SOUHAIT;
+select * from EAE_TYPE_DEVELOPPEMENT;
+select * from EAE_DEVELOPPEMENT;
+select * from EAE_TYPE_OBJECTIF;
