@@ -509,30 +509,30 @@ CREATE UNIQUE INDEX eae_FORMATION_index
    ON eae_FORMATION (id_eae,LIBELLE_FORMATION);
 
 --==============================================================
--- Table: EAE_TYPE_RESULTAT
+-- Table: EAE_TYPE_OBJECTIF
 --==============================================================
-create sequence EAE_S_TYPE_RESULTAT 
+create sequence EAE_S_TYPE_OBJECTIF 
 start with 1 
 increment by 1 
 nomaxvalue;
 
-create public synonym EAE_S_TYPE_RESULTAT for EAE_S_TYPE_RESULTAT;
-grant select on EAE_S_TYPE_RESULTAT to R_EAE_USR;
+create public synonym EAE_S_TYPE_OBJECTIF for EAE_S_TYPE_OBJECTIF;
+grant select on EAE_S_TYPE_OBJECTIF to R_EAE_USR;
 
 
 
-create table EAE_TYPE_RESULTAT
+create table EAE_TYPE_OBJECTIF
 (
    ID_EAE_TYPE_RESULTAT INTEGER not null,
    LIBELLE_TYPE_RESULTAT VARCHAR2(50),
-   constraint PK_EAE_TYPE_RESULTAT
+   constraint PK_EAE_TYPE_OBJECTIF
    primary key (ID_EAE_TYPE_RESULTAT)
 )
 TABLESPACE TS_SIRHR_PARAM;
 
-create public synonym EAE_TYPE_RESULTAT for EAE_TYPE_RESULTAT;
-grant select, insert, update, delete on EAE_TYPE_RESULTAT to R_EAE_USR;
-grant select on EAE_TYPE_RESULTAT to R_EAE_READ;
+create public synonym EAE_TYPE_OBJECTIF for EAE_TYPE_OBJECTIF;
+grant select, insert, update, delete on EAE_TYPE_OBJECTIF to R_EAE_USR;
+grant select on EAE_TYPE_OBJECTIF to R_EAE_READ;
 
 
 --==============================================================
@@ -558,9 +558,9 @@ create table EAE_RESULTAT
    COMMENTAIRE VARCHAR2(255),
    constraint PK_EAE_RESULTAT
    primary key (ID_EAE_RESULTAT),
-   constraint FK_EAE_TYPE_RESULTAT
+   constraint FK_EAE_TYPE_OBJECTIF
          foreign key (ID_TYPE_RESULTAT)
-         references EAE_TYPE_RESULTAT(ID_EAE_TYPE_RESULTAT),
+         references EAE_TYPE_OBJECTIF(ID_EAE_TYPE_RESULTAT),
    constraint FK_EAE_RESULTAT
          foreign key (ID_EAE)
          references EAE(ID_EAE)
@@ -598,9 +598,9 @@ create table EAE_PLAN_ACTION
    MESURE VARCHAR2(255),
    constraint PK_EAE_PLAN_ACTION
    primary key (ID_EAE_PLAN_ACTION),
-   constraint FK_EAE_TYPE_RES_PLAN_ACTION
+   constraint FK_EAE_TYPE_OBJ_PLAN_ACTION
          foreign key (ID_TYPE_RESULTAT)
-         references EAE_TYPE_RESULTAT(ID_EAE_TYPE_RESULTAT),
+         references EAE_TYPE_OBJECTIF(ID_EAE_TYPE_RESULTAT),
    constraint FK_EAE_PLAN_ACTION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
