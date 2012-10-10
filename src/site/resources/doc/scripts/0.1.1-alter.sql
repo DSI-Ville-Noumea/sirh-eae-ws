@@ -24,5 +24,7 @@ alter table EAE_RESULTAT add (VERSION number default 0 not null);
 alter table EAE_RESULTAT rename column ID_TYPE_RESULTAT to ID_EAE_TYPE_OBJECTIF;
 alter table EAE_NIVEAU rename column ID_EAE_NIVEAU_EAE to ID_EAE_NIVEAU;
 alter table EAE_PLAN_ACTION rename column ID_TYPE_RESULTAT to ID_EAE_TYPE_OBJECTIF;
+alter table EAE_PLAN_ACTION add (VERSION number default 0 not null);
+alter table EAE_RESULTAT drop column DETAIL_OBJECTIF;
 
 -- Verifier les objets invalides
