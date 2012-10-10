@@ -7,5 +7,6 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 public interface IEaeService {
 
 	List<Eae> listEaesByAgentId(int agentId);
-	void initializeEae(int idEae) throws EaeServiceException;
+	void initializeEae(Eae eaeToInitialize) throws EaeServiceException;
+	Eae findLastEaeByAgentId(int agentId);
 }

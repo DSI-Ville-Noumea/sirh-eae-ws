@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
@@ -19,7 +20,8 @@ privileged aspect EaeEvalue_Roo_Jpa_Entity {
     declare @type: EaeEvalue: @Table(name = "EAE_EVALUE");
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "eaeEvalueGen", sequenceName = "EAE_S_EVALUE")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvalueGen")
     @Column(name = "ID_EAE_EVALUE")
     private Integer EaeEvalue.idEaeEvalue;
     

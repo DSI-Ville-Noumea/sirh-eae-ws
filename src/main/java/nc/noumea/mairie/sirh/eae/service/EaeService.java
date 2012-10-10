@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -26,16 +27,26 @@ public class EaeService implements IEaeService {
 	@Autowired
 	private IHelper helper;
 	
+	@Autowired
+	private ISirhWsConsumer sirhWsConsumer;
+	
 	@Override
 	public List<Eae> listEaesByAgentId(int agentId) {
 
-		//TODO: this will change into a WS call to SIRH-WS in order to retrieve the list of EAEs to display
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idAgent = :idAgent", Eae.class);
-		eaeQuery.setParameter("idAgent", agentId);
-		List<Eae> result = eaeQuery.getResultList();
+		List<Eae> result = new ArrayList<Eae>();
 		
-		// For each EAE result, retrieve the Agent, SHD and Delegataire informations from the Agent (other persistenceUnit)
-		// retrieve also the Evaluateurs of the current EAE
+		// Get the list of EAEs to return
+		List<Integer> eaeIds = sirhWsConsumer.getListOfEaesForAgentId(agentId);
+		
+		if (eaeIds.isEmpty())
+			return result;
+		
+		// Retrieve the EAEs
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idEae in (:eaeIds)", Eae.class);
+		eaeQuery.setParameter("eaeIds", eaeIds);
+		result = eaeQuery.getResultList();
+		
+		// For each EAE result, retrieve extra information from SIRH
 		for(Eae eae : result) {
 			agentService.fillEaeWithAgents(eae);
 		}
@@ -44,15 +55,27 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void initializeEae(int idEae) throws EaeServiceException {
+	public void initializeEae(Eae eaeToInitialize) throws EaeServiceException {
 		
-		Eae eaeToInitialize = Eae.findEae(idEae);
-		
-		if (eaeToInitialize == null) 
-			throw new EaeServiceException(String.format("Impossible de créer l'EAE id '%d'", idEae));
-		
+		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
+			throw new EaeServiceException(String.format("Impossible de créer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
+				
 		eaeToInitialize.setDateCreation(helper.getCurrentDate());
 		eaeToInitialize.setEtat(EaeEtatEnum.C);
+	}
+
+	@Override
+	public Eae findLastEaeByAgentId(int agentId) {
+		
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idAgent = :idAgent orderby e.DateCreation desc", Eae.class);
+		eaeQuery.setParameter("idAgent", agentId);
+		eaeQuery.setMaxResults(1);
+		List<Eae> result = eaeQuery.getResultList();
+		
+		if (result.isEmpty())
+			return null;
+		else
+			return result.get(0);
 	}
 	
 }

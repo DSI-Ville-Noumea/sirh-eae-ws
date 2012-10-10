@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 
@@ -15,11 +16,12 @@ privileged aspect EaeNiveau_Roo_Jpa_Entity {
     
     declare @type: EaeNiveau: @Entity;
     
-    declare @type: EaeNiveau: @Table(name = "EAE_NIVEAU_EAE");
+    declare @type: EaeNiveau: @Table(name = "EAE_NIVEAU");
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID_EAE_NIVEAU_EAE")
+    @SequenceGenerator(name = "eaeNiveauGen", sequenceName = "EAE_S_NIVEAU")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeNiveauGen")
+    @Column(name = "ID_EAE_NIVEAU")
     private Integer EaeNiveau.idEaeNiveau;
     
     public Integer EaeNiveau.getIdEaeNiveau() {
