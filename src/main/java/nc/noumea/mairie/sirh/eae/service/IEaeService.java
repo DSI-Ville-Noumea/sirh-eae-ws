@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.service;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 
 public interface IEaeService {
 
@@ -11,7 +12,7 @@ public interface IEaeService {
 	 * @param the agentId of the user
 	 * @return the list of EAEs
 	 */
-	List<Eae> listEaesByAgentId(int agentId);
+	List<EaeListItemDto> listEaesByAgentId(int agentId);
 	
 	/**
 	 * Initilizes an EAE based on the previous year's EAE (if existing)

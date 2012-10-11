@@ -29,6 +29,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
@@ -70,7 +71,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
 
 		// When
-		List<Eae> result = service.listEaesByAgentId(9);
+		List<EaeListItemDto> result = service.listEaesByAgentId(9);
 
 		// Then
 		assertNotNull(result);
@@ -89,6 +90,7 @@ public class EaeServiceTest {
 		
 		Eae eaeToReturn = new Eae();
 		eaeToReturn.setIdAgent(9);
+		eaeToReturn.setEtat(EaeEtatEnum.EC);
 		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn));
 
 		// Mock the query to return a specific result
@@ -112,7 +114,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
 		
 		// When
-		List<Eae> result = service.listEaesByAgentId(9);
+		List<EaeListItemDto> result = service.listEaesByAgentId(9);
 
 		// Then
 		assertNotNull(result);
@@ -133,8 +135,10 @@ public class EaeServiceTest {
 		
 		Eae eaeToReturn = new Eae();
 		eaeToReturn.setIdAgent(9);
+		eaeToReturn.setEtat(EaeEtatEnum.EC);
 		Eae eaeToReturn2 = new Eae();
-		eaeToReturn.setIdAgent(92);
+		eaeToReturn2.setIdAgent(92);
+		eaeToReturn2.setEtat(EaeEtatEnum.EC);
 		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn, eaeToReturn2));
 
 		// Mock the query to return a specific result
@@ -158,7 +162,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
 		
 		// When
-		List<Eae> result = service.listEaesByAgentId(2);
+		List<EaeListItemDto> result = service.listEaesByAgentId(2);
 
 		// Then
 		assertNotNull(result);

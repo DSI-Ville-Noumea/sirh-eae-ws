@@ -148,4 +148,14 @@ public class Eae {
     	
     	return serializer;
     }
+
+	public boolean isEvaluateurOrDelegataire(int idAgent) {
+		
+		for (EaeEvaluateur e : this.getEaeEvaluateurs()) {
+			if (e.getIdAgent() == idAgent)
+				return true;
+		}
+		
+		return (getIdAgentDelegataire() != null &&  getIdAgentDelegataire() == idAgent);
+	}
 }

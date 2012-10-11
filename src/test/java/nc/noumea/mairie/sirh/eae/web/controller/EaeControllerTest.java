@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.service.AgentMatriculeConverterServiceException;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
@@ -47,7 +48,7 @@ public class EaeControllerTest {
 		EaeController controller = new EaeController();
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.listEaesByAgentId(0)).thenReturn(new ArrayList<Eae>());
+		when(eaeServiceMock.listEaesByAgentId(0)).thenReturn(new ArrayList<EaeListItemDto>());
 		
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
@@ -64,7 +65,7 @@ public class EaeControllerTest {
 	public void testlistEaesByAgent_1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException {
 		
 		// Given
-		List<Eae> resultOfService = new ArrayList<Eae>(Arrays.asList(new Eae()));
+		List<EaeListItemDto> resultOfService = new ArrayList<EaeListItemDto>(Arrays.asList(new EaeListItemDto()));
 		EaeController controller = new EaeController();
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);

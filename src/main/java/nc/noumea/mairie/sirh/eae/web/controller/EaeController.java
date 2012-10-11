@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
@@ -42,12 +43,12 @@ public class EaeController {
 		
 		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
     	
-    	List<Eae> result = eaeService.listEaesByAgentId(convertedId);
+    	List<EaeListItemDto> result = eaeService.listEaesByAgentId(convertedId);
 		
 		if (result.isEmpty())
 			return new ResponseEntity<String>(HttpStatus.NO_CONTENT); 
 		
-		String jsonResult = Eae.getSerializerForEaeList().serialize(result);
+		String jsonResult = EaeListItemDto.getSerializerForEaeListItemDto().serialize(result);
 		
 		return new ResponseEntity<String>(jsonResult, getJsonHeaders(), HttpStatus.OK);
 	}

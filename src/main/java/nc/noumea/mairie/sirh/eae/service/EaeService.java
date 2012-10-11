@@ -14,6 +14,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
@@ -40,9 +41,9 @@ public class EaeService implements IEaeService {
 	 */
 	
 	@Override
-	public List<Eae> listEaesByAgentId(int agentId) {
+	public List<EaeListItemDto> listEaesByAgentId(int agentId) {
 
-		List<Eae> result = new ArrayList<Eae>();
+		List<EaeListItemDto> result = new ArrayList<EaeListItemDto>();
 		
 		// Get the list of EAEs to return
 		List<Integer> eaeIds = sirhWsConsumer.getListOfEaesForAgentId(agentId);
@@ -53,11 +54,14 @@ public class EaeService implements IEaeService {
 		// Retrieve the EAEs
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idEae in (:eaeIds)", Eae.class);
 		eaeQuery.setParameter("eaeIds", eaeIds);
-		result = eaeQuery.getResultList();
+		List<Eae> queryResult = eaeQuery.getResultList();
 		
 		// For each EAE result, retrieve extra information from SIRH
-		for(Eae eae : result) {
+		for(Eae eae : queryResult) {
 			agentService.fillEaeWithAgents(eae);
+			EaeListItemDto dtoItem = new EaeListItemDto(eae);
+			dtoItem.setAccessRightsForAgentId(eae, agentId);
+			result.add(dtoItem);
 		}
 		
 		return result;
