@@ -15,7 +15,7 @@
 	</context-param>
 	<context-param>
 		<param-name>VERSION</param-name>
-		<param-value>0.1.0-SNAPSHOT</param-value>
+		<param-value>0.1.3-SNAPSHOT</param-value>
 	</context-param>
 
 	<filter>
