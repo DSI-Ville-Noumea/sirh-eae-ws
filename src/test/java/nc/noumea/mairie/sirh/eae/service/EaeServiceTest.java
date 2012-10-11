@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -424,7 +425,8 @@ public class EaeServiceTest {
 	public void testResetEaeEvaluateur_eaeIsCree_setEtatToNDAndResetEvaluateurs() throws EaeServiceException {
 		
 		// Given
-		Eae eaeToDelete = new Eae();
+		Eae eaeToDelete = spy(new Eae());
+		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
 		eaeToDelete.setIdEae(987);
 		eaeToDelete.setEtat(EaeEtatEnum.C);
 		
@@ -453,7 +455,8 @@ public class EaeServiceTest {
 	public void testResetEaeEvaluateur_eaeIsEC_setEtatToNDAndResetEvaluateurs() throws EaeServiceException {
 		
 		// Given
-		Eae eaeToDelete = new Eae();
+		Eae eaeToDelete = spy(new Eae());
+		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
 		eaeToDelete.setIdEae(987);
 		eaeToDelete.setEtat(EaeEtatEnum.EC);
 		
@@ -482,7 +485,9 @@ public class EaeServiceTest {
 	public void testResetEaeEvaluateur_eaeIsND_resetEvaluateurs() throws EaeServiceException {
 		
 		// Given
-		Eae eaeToDelete = new Eae();
+		Eae eaeToDelete = spy(new Eae());
+		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		 
 		eaeToDelete.setIdEae(987);
 		eaeToDelete.setEtat(EaeEtatEnum.ND);
 		
