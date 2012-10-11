@@ -53,20 +53,24 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("creationEae")
+	@RequestMapping("initialiserEae")
 	@Transactional
-	public ResponseEntity<String> createEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
+	public ResponseEntity<String> initializeEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
-		List<Eae> agentEaes = eaeService.findFourPreviousEaesByAgentId(idEvalue);
+		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
+    	
+		List<Eae> agentEaes = eaeService.findCurrentAndPreviousEaesByAgentId(convertedIdAgentEvalue);
 		
 		if (agentEaes.isEmpty())
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		
 		Eae lastEae = agentEaes.get(0);
-		agentEaes.remove(0);
+		Eae previousEae = null;
+		if (agentEaes.size() > 1)
+			previousEae = agentEaes.get(1);
 		
 		try {
-			eaeService.initializeEae(lastEae, agentEaes);
+			eaeService.initializeEae(lastEae, previousEae);
 		} catch (EaeServiceException e) {
 			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
 		}
@@ -75,19 +79,67 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("suppressionEae")
+	@RequestMapping("demarrerEae")
 	@Transactional
-	public ResponseEntity<String> deleteEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
+	public ResponseEntity<String> startEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
-		return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
+		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
+    	
+		Eae eaeToStart = eaeService.findLastEaeByAgentId(convertedIdAgentEvalue);
+		
+		if (eaeToStart == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.startEae(eaeToStart);
+		} catch (EaeServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping("resetEae")
+	@Transactional
+	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
+		
+		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
+    	
+		Eae eaeToReset = eaeService.findLastEaeByAgentId(convertedIdAgentEvalue);
+		
+		if (eaeToReset == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.resetEaeEvaluateur(eaeToReset);
+		} catch (EaeServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	@ResponseBody
 	@RequestMapping("affecterDelegataire")
 	@Transactional
-	public ResponseEntity<String> affectDelegataire(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue, @RequestParam("idDelegataire") int idDelegataire) {
+	public ResponseEntity<String> setDelegataire(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue, @RequestParam("idDelegataire") int idDelegataire) {
 		
-		return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
+		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
+		Integer convertedIdAgentDelegataire = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idDelegataire);
+    	
+		Eae eae = eaeService.findLastEaeByAgentId(convertedIdAgentEvalue);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.setDelegataire(eae, convertedIdAgentDelegataire);
+		} catch (EaeServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }
 	

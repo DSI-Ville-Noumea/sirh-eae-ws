@@ -7,7 +7,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
+import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
@@ -59,24 +64,76 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void initializeEae(Eae eaeToInitialize, List<Eae> previousEaes) throws EaeServiceException {
+	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
 		
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
-			throw new EaeServiceException(String.format("Impossible de créer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
+			throw new EaeServiceException(String.format("Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
 				
 		eaeToInitialize.setDateCreation(helper.getCurrentDate());
 		eaeToInitialize.setEtat(EaeEtatEnum.C);
+		
+		if (eaeToInitialize.getEaeEvaluation() == null) {
+			EaeEvaluation eva = new EaeEvaluation();
+			eva.setEae(eaeToInitialize);
+			eaeToInitialize.setEaeEvaluation(eva);
+		}
+		// If no previous EAE, return
+		if (previousEae == null)
+			return;
+		
+		// Copy the previous notes to current EAE
+		eaeToInitialize.getEaeEvaluation().setNoteAnneeN1(previousEae.getEaeEvaluation().getNoteAnnee());
+		eaeToInitialize.getEaeEvaluation().setNoteAnneeN2(previousEae.getEaeEvaluation().getNoteAnneeN1());
+		eaeToInitialize.getEaeEvaluation().setNoteAnneeN3(previousEae.getEaeEvaluation().getNoteAnneeN2());
+		
+		// Copy the Plan Actions items of N-1 EAE into EaeResultats of this year's EAE
+		for(EaePlanAction pa : previousEae.getEaePlanActions()) {
+			EaeResultat res = new EaeResultat();
+			res.setObjectif(pa.getObjectif());
+			res.setTypeObjectif(pa.getTypeObjectif());
+			eaeToInitialize.getEaeResultats().add(res);
+		}
 	}
 
 	@Override
 	public void startEae(Eae eaeToStart) throws EaeServiceException {
 
-		if (eaeToStart.getEtat() != EaeEtatEnum.C)
-			throw new EaeServiceException(String.format("Impossible de créer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(), eaeToStart.getEtat().toString()));
+		if (eaeToStart.getEtat() != EaeEtatEnum.C && eaeToStart.getEtat() != EaeEtatEnum.EC)
+			throw new EaeServiceException(String.format("Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(), eaeToStart.getEtat().toString()));
 				
-		eaeToStart.setEtat(EaeEtatEnum.EC);
+		if (eaeToStart.getEtat() != EaeEtatEnum.EC)
+			eaeToStart.setEtat(EaeEtatEnum.EC);
 	}
 
+	@Override
+	public void resetEaeEvaluateur(Eae eaeToReset) throws EaeServiceException {
+
+		if (eaeToReset.getEtat() != EaeEtatEnum.C && eaeToReset.getEtat() != EaeEtatEnum.EC && eaeToReset.getEtat() != EaeEtatEnum.ND)
+			throw new EaeServiceException(String.format("Impossible de réinitialiser l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToReset.getIdEae(), eaeToReset.getEtat().toString()));
+				
+		if (eaeToReset.getEtat() != EaeEtatEnum.ND)
+			eaeToReset.setEtat(EaeEtatEnum.ND);
+		
+		eaeToReset.getEaeEvaluateurs().clear();
+		eaeToReset.flush();
+		
+		EaeEvaluateur evaluateur = new EaeEvaluateur();
+		evaluateur.setEae(eaeToReset);
+		evaluateur.setIdAgent(eaeToReset.getEaeFichePoste().getIdAgentShd());
+		evaluateur.setFonction(eaeToReset.getEaeFichePoste().getFonctionResponsable());
+		eaeToReset.getEaeEvaluateurs().add(evaluateur);
+	}
+	
+	@Override
+	public void setDelegataire(Eae eae, int idAgentDelegataire) throws EaeServiceException {
+		
+		Agent agentDelegataire = Agent.findAgent(idAgentDelegataire);
+		
+		if (agentDelegataire == null)
+			throw new EaeServiceException(String.format("Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.", idAgentDelegataire));
+		
+		eae.setIdAgentDelegataire(idAgentDelegataire);
+	}	
 	
 	/*
 	 * Finders methods
@@ -104,11 +161,10 @@ public class EaeService implements IEaeService {
 	}
 	
 	@Override
-	public List<Eae> findFourPreviousEaesByAgentId(int agentId) {
+	public List<Eae> findCurrentAndPreviousEaesByAgentId(int agentId) {
 		
-		List<Eae> result = findLatestEaesByAgentId(agentId, 4);
+		List<Eae> result = findLatestEaesByAgentId(agentId, 2);
 		
 		return result;
 	}
-	
 }

@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -18,13 +19,21 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
+import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -32,6 +41,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 public class EaeServiceTest {
 
 	private static IHelper helperMock;
+	private static EaeTypeObjectif t1, t2;
 	
 	@BeforeClass 
 	public static void SetUp() {
@@ -40,6 +50,11 @@ public class EaeServiceTest {
 		
 		helperMock = mock(IHelper.class);
 		when(helperMock.getCurrentDate()).thenReturn(c.getTime());
+		
+		t1 = new EaeTypeObjectif();
+		t1.setLibelleTypeObjectif("INDIVIDUEL");
+		t2 = new EaeTypeObjectif();
+		t2.setLibelleTypeObjectif("EQUIPE");
 	}
 	
 	@Test
@@ -160,18 +175,15 @@ public class EaeServiceTest {
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 				
-		// Mock the agent find static method to return our agent
+		// Mock the EAE
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
-		
-		List<Eae> previousEaes = new ArrayList<Eae>();
-		
+				
 		// When
-		service.initializeEae(eaeToInit, previousEaes);
+		service.initializeEae(eaeToInit, null);
 		
 		// Then
-//		assertEquals(EaeEtatEnum.C, eaeToInit.getEtat());
 		assertEquals(helperMock.getCurrentDate(), eaeToInit.getDateCreation());
 	}
 	
@@ -181,42 +193,67 @@ public class EaeServiceTest {
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 				
-		// Mock the agent find static method to return our agent
+		// Mock the EAE 
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
 		
-		List<Eae> previousEaes = new ArrayList<Eae>();
-		
 		// When
-		service.initializeEae(eaeToInit, previousEaes);
+		service.initializeEae(eaeToInit, null);
 		
 		// Then
 		assertTrue(eaeToInit.getEaeResultats().isEmpty());
 	}
 	
 	@Test
-	public void testInitilizeEae_2PreviousEaes_createEaeResultatFromPreviousPlanAction() throws EaeServiceException {
+	public void testInitilizeEae_1PreviousEae_createEaeResultatFromPreviousPlanActionAndCopyNotes() throws EaeServiceException {
 		// Given
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 				
-		// Mock the agent find static method to return our agent
+		// Mock EAEs list (current, previous)
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
 		
-		List<Eae> previousEaes = new ArrayList<Eae>();
-		Eae previous1 = new Eae();
-		previousEaes.add(previous1);
-		Eae previous2 = new Eae();
-		previousEaes.add(previous2);
+		Eae previousEae = new Eae();
+		EaePlanAction p1 = new EaePlanAction();
+		p1.setObjectif("obj1");
+		p1.setTypeObjectif(t1);
+		previousEae.getEaePlanActions().add(p1);
+		
+		EaePlanAction p2 = new EaePlanAction();
+		p2.setObjectif("obj2");
+		p2.setTypeObjectif(t2);
+		previousEae.getEaePlanActions().add(p2);
+		
+		EaeEvaluation eval = new EaeEvaluation();
+		eval.setNoteAnnee(13);
+		eval.setNoteAnneeN1(14);
+		eval.setNoteAnneeN2(15);
+		eval.setNoteAnneeN3(16);
+		
+		previousEae.setEaeEvaluation(eval);
 		
 		// When
-		service.initializeEae(eaeToInit, previousEaes);
+		service.initializeEae(eaeToInit, previousEae);
 		
 		// Then
-		assertTrue(eaeToInit.getEaeResultats().isEmpty());
+		assertFalse(eaeToInit.getEaeResultats().isEmpty());
+		assertNull(eaeToInit.getEaeEvaluation().getNoteAnnee());
+		assertEquals(new Integer(13), eaeToInit.getEaeEvaluation().getNoteAnneeN1());
+		assertEquals(new Integer(14), eaeToInit.getEaeEvaluation().getNoteAnneeN2());
+		assertEquals(new Integer(15), eaeToInit.getEaeEvaluation().getNoteAnneeN3());
+		assertEquals(2, eaeToInit.getEaeResultats().size());
+		
+		List<EaeResultat> resultats = new ArrayList<EaeResultat>();
+		resultats.addAll(eaeToInit.getEaeResultats());
+
+		assertTrue(resultats.get(0).getObjectif() == p1.getObjectif() || resultats.get(0).getObjectif() == p2.getObjectif());
+		assertTrue(resultats.get(0).getTypeObjectif() == p1.getTypeObjectif() || resultats.get(0).getTypeObjectif() == p2.getTypeObjectif());
+		
+		assertTrue(resultats.get(1).getObjectif() == p1.getObjectif() || resultats.get(1).getObjectif() == p2.getObjectif());
+		assertTrue(resultats.get(1).getTypeObjectif() == p1.getTypeObjectif() || resultats.get(1).getTypeObjectif() == p2.getTypeObjectif());
 	}
 	
 	@Test
@@ -241,7 +278,7 @@ public class EaeServiceTest {
 		}
 		
 		// Then
-		assertEquals("Impossible de créer l'EAE id '987': le statut de cet Eae est 'En cours'.", exMessage);
+		assertEquals("Impossible d'initialiser l'EAE id '987': le statut de cet Eae est 'En cours'.", exMessage);
 		assertEquals(EaeEtatEnum.EC, eaeToInit.getEtat());
 	}
 	
@@ -303,5 +340,223 @@ public class EaeServiceTest {
 		// Then
 		assertEquals(firstEae, result);
 		verify(queryMock, times(1)).getResultList();
+	}
+	
+	@Test
+	public void testStartEae_eaeIsNotCree_throwException() {
+		// Given
+		Eae eaeToStart = new Eae();
+		eaeToStart.setIdEae(987);
+		eaeToStart.setEtat(EaeEtatEnum.ND);
+		
+		EaeService service = new EaeService();
+		
+		try {
+			// When
+			service.startEae(eaeToStart);
+		}
+		catch (EaeServiceException ex) {
+			// Then
+			assertEquals("Impossible de démarrer l'EAE id '987': le statut de cet Eae est 'Non débuté'.", ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testStartEae_eaeIsCree_setEtatToEC() throws EaeServiceException {
+		
+		// Given
+		Eae eaeToStart = new Eae();
+		eaeToStart.setIdEae(987);
+		eaeToStart.setEtat(EaeEtatEnum.C);
+		
+		EaeService service = new EaeService();
+
+		// When
+		service.startEae(eaeToStart);
+		
+		// Then
+		assertEquals(EaeEtatEnum.EC, eaeToStart.getEtat());
+	}
+	
+	@Test
+	public void testStartEae_eaeIsEC_doNothing() throws EaeServiceException {
+		
+		// Given
+		Eae eaeToStart = new Eae();
+		eaeToStart.setIdEae(987);
+		eaeToStart.setEtat(EaeEtatEnum.EC);
+		
+		EaeService service = new EaeService();
+
+		// When
+		service.startEae(eaeToStart);
+		
+		// Then
+		assertEquals(EaeEtatEnum.EC, eaeToStart.getEtat());
+	}
+	
+	@Test
+	public void testResetEaeEvaluateur_eaeIsNotND_C_EC_throwException() {
+		// Given
+		Eae eaeToDelete = new Eae();
+		eaeToDelete.setIdEae(987);
+		eaeToDelete.setEtat(EaeEtatEnum.F);
+		
+		EaeEvaluateur eval = new EaeEvaluateur();
+		eval.setIdAgent(9009);
+		eaeToDelete.getEaeEvaluateurs().add(eval);
+		
+		EaeService service = new EaeService();
+		
+		try {
+			// When
+			service.resetEaeEvaluateur(eaeToDelete);
+		}
+		catch (EaeServiceException ex) {
+			// Then
+			assertEquals("Impossible de réinitialiser l'EAE id '987': le statut de cet Eae est 'Finalisé'.", ex.getMessage());
+		}
+		
+		assertEquals(eval, eaeToDelete.getEaeEvaluateurs().iterator().next());
+	}
+	
+	@Test
+	public void testResetEaeEvaluateur_eaeIsCree_setEtatToNDAndResetEvaluateurs() throws EaeServiceException {
+		
+		// Given
+		Eae eaeToDelete = new Eae();
+		eaeToDelete.setIdEae(987);
+		eaeToDelete.setEtat(EaeEtatEnum.C);
+		
+		EaeEvaluateur eval = new EaeEvaluateur();
+		eval.setIdAgent(9009);
+		eaeToDelete.getEaeEvaluateurs().add(eval);
+		
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setIdAgentShd(10000);
+		fdp.setFonctionResponsable("fonction responsable");
+		
+		eaeToDelete.setEaeFichePoste(fdp);
+		
+		EaeService service = new EaeService();
+
+		// When
+		service.resetEaeEvaluateur(eaeToDelete);
+		
+		// Then
+		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
+		assertEquals(10000, eaeToDelete.getEaeEvaluateurs().iterator().next().getIdAgent());
+		assertEquals("fonction responsable", eaeToDelete.getEaeEvaluateurs().iterator().next().getFonction());
+	}
+	
+	@Test
+	public void testResetEaeEvaluateur_eaeIsEC_setEtatToNDAndResetEvaluateurs() throws EaeServiceException {
+		
+		// Given
+		Eae eaeToDelete = new Eae();
+		eaeToDelete.setIdEae(987);
+		eaeToDelete.setEtat(EaeEtatEnum.EC);
+		
+		EaeEvaluateur eval = new EaeEvaluateur();
+		eval.setIdAgent(9009);
+		eaeToDelete.getEaeEvaluateurs().add(eval);
+		
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setIdAgentShd(10000);
+		fdp.setFonctionResponsable("fonction responsable");
+		
+		eaeToDelete.setEaeFichePoste(fdp);
+		
+		EaeService service = new EaeService();
+
+		// When
+		service.resetEaeEvaluateur(eaeToDelete);
+		
+		// Then
+		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
+		assertEquals(10000, eaeToDelete.getEaeEvaluateurs().iterator().next().getIdAgent());
+		assertEquals("fonction responsable", eaeToDelete.getEaeEvaluateurs().iterator().next().getFonction());
+	}
+	
+	@Test
+	public void testResetEaeEvaluateur_eaeIsND_resetEvaluateurs() throws EaeServiceException {
+		
+		// Given
+		Eae eaeToDelete = new Eae();
+		eaeToDelete.setIdEae(987);
+		eaeToDelete.setEtat(EaeEtatEnum.ND);
+		
+		EaeEvaluateur eval = new EaeEvaluateur();
+		eval.setIdAgent(9009);
+		eaeToDelete.getEaeEvaluateurs().add(eval);
+
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setIdAgentShd(10000);
+		fdp.setFonctionResponsable("fonction responsable");
+		
+		eaeToDelete.setEaeFichePoste(fdp);
+		
+		EaeService service = new EaeService();
+
+		// When
+		service.resetEaeEvaluateur(eaeToDelete);
+		
+		// Then
+		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
+		assertEquals(10000, eaeToDelete.getEaeEvaluateurs().iterator().next().getIdAgent());
+		assertEquals("fonction responsable", eaeToDelete.getEaeEvaluateurs().iterator().next().getFonction());
+	}
+	
+	@Test
+	public void testSetDelegataire_DelegataireExists_SetAgentId() throws EaeServiceException {
+		// Given
+		Eae eae = new Eae();
+		eae.setIdAgentDelegataire(123);
+		Integer idAgentDelegataire = 1789;
+		
+		// Mock the agent find static method to return our agent
+		Agent agentToReturn = new Agent();
+		agentToReturn.setIdAgent(idAgentDelegataire);
+		agentToReturn.setNomPatronymique("Bilbo");
+
+		Agent.findAgent(idAgentDelegataire);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		EaeService service = new EaeService();
+		
+		// When
+		service.setDelegataire(eae, idAgentDelegataire);
+		
+		// Then
+		assertEquals(idAgentDelegataire, eae.getIdAgentDelegataire());
+	}
+	
+	@Test
+	public void testSetDelegataire_DelegataireDoesNotExist_throwException() {
+		// Given
+		Eae eae = new Eae();
+		eae.setIdAgentDelegataire(123);
+		Integer idAgentDelegataire = 1789;
+		
+		// Mock the agent find static method to return our null agent
+		Agent agentToReturn = null;
+	
+		Agent.findAgent(idAgentDelegataire);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		EaeService service = new EaeService();
+		
+		try {
+			// When
+			service.setDelegataire(eae, idAgentDelegataire);
+		}
+		catch (EaeServiceException ex) {
+			// Then
+			assertEquals("Impossible d'affecter l'agent '1789' en tant que délégataire: cet Agent n'existe pas.", ex.getMessage());
+			assertEquals(new Integer(123), eae.getIdAgentDelegataire());
+		}
+		
 	}
 }

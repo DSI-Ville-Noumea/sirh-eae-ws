@@ -217,3 +217,5 @@ exit
 entity jpa --class ~.sirh.eae.domain.EaePlanAction --persistenceUnit eaePersistenceUnit --table EAE_PLAN_ACTION --identifierColumn ID_EAE_PLAN_ACTION --identifierField idEaePlanAction --identifierType java.lang.Integer
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-10 16:24:52
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-10 16:24:59
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-10 17:23:21
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-11 08:11:43

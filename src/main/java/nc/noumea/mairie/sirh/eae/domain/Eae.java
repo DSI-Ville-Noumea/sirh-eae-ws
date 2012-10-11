@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -85,10 +86,10 @@ public class Eae {
     @Column(name = "ID_DELEGATAIRE")
     private Integer idAgentDelegataire;
     
-    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private EaeEvaluation eaeEvaluation;
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeEvaluateur> eaeEvaluateurs = new HashSet<EaeEvaluateur>();
     
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
@@ -106,7 +107,7 @@ public class Eae {
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
 	private Set<EaeFormation> eaeFormations = new HashSet<EaeFormation>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
    	private Set<EaeResultat> eaeResultats = new HashSet<EaeResultat>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
