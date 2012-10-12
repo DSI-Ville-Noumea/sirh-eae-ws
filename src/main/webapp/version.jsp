@@ -1,8 +1,13 @@
 <%@page import="java.net.InetAddress"%>
 sirh.eae.ws.version=<%=this.getServletContext().getInitParameter("VERSION")%><br/>
-sirh.eae.ws.localhost.hostaddress=<%=InetAddress.getLocalHost().getHostAddress()%><br/>
-sirh.eae.ws.localhost.canonicalhostname=<%=InetAddress.getLocalHost().getCanonicalHostName()%><br/>
-sirh.eae.ws.localhost.hostname=<%=InetAddress.getLocalHost().getHostName()%><br/>
+sirh.eae.ws.tomcat.version=<%= application.getServerInfo() %><br/>
+sirh.eae.ws.tomcat.catalina_base : <%= System.getProperty("catalina.base") %><br>
+sirh.eae.ws.hostname=<%=InetAddress.getLocalHost().getHostName()%><br/>
+sirh.eae.ws.hostaddress=<%=InetAddress.getLocalHost().getHostAddress()%><br/>
+sirh.eae.ws.canonicalhostname=<%=InetAddress.getLocalHost().getCanonicalHostName()%><br/>
+
+tomcat.version : <%= application.getServerInfo() %><br>
+
 
 <%
 	HttpSession theSession = request.getSession(false);
