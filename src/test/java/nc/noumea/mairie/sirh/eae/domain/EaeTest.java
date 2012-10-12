@@ -9,16 +9,25 @@ import org.junit.Test;
 public class EaeTest {
 
 	@Test
-	public void testIsEvaluateurOuDelegataire_idAgentNotInEvaluateursNorDelegataire_returnFalse() {
+	public void testIsEvaluateur_idAgentNotInEvaluateurs_returnFalse() {
 		// Given
 		Eae eae = new Eae();
 		
 		// Then
-		assertFalse(eae.isEvaluateurOrDelegataire(89));
+		assertFalse(eae.isEvaluateur(89));
 	}
 	
 	@Test
-	public void testIsEvaluateurOuDelegataire_idAgentInEvaluateurs_returnTrue() {
+	public void testIsDelegataire_idAgentNotDelegataire_returnFalse() {
+		// Given
+		Eae eae = new Eae();
+		
+		// Then
+		assertFalse(eae.isDelegataire(89));
+	}
+	
+	@Test
+	public void testIsEvaluateur_idAgentInEvaluateurs_returnTrue() {
 		// Given
 		Eae eae = new Eae();
 		EaeEvaluateur eval = new EaeEvaluateur();
@@ -26,11 +35,11 @@ public class EaeTest {
 		eae.getEaeEvaluateurs().add(eval);
 		
 		// Then
-		assertTrue(eae.isEvaluateurOrDelegataire(5678));
+		assertTrue(eae.isEvaluateur(5678));
 	}
 	
 	@Test
-	public void testIsEvaluateurOuDelegataire_idAgentAsDelegataire_returnTrue() {
+	public void testIsDelegataire_idAgentAsDelegataire_returnTrue() {
 		// Given
 		Eae eae = new Eae();
 		EaeEvaluateur eval = new EaeEvaluateur();
@@ -40,6 +49,6 @@ public class EaeTest {
 		eae.setIdAgentDelegataire(5678);
 		
 		// Then
-		assertTrue(eae.isEvaluateurOrDelegataire(5678));
+		assertTrue(eae.isDelegataire(5678));
 	}
 }

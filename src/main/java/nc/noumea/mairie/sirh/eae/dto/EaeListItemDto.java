@@ -39,6 +39,7 @@ public class EaeListItemDto {
 	private boolean droitAcceder;
 	private boolean droitReinitialiser;
 	private boolean droitDemarrer;
+	private boolean droitAffecterDelegataire;
 
 	public EaeListItemDto() {
 		
@@ -65,6 +66,7 @@ public class EaeListItemDto {
 	public void setAccessRightsForAgentId(Eae eae, int idAgent) {
 	
 		boolean isEvaluateurOrDelegataire = eae.isEvaluateurOrDelegataire(idAgent);
+		boolean isEvaluateur = eae.isEvaluateur(idAgent);
 		
 		switch (getEtat()) {
 			case ND:
@@ -83,6 +85,7 @@ public class EaeListItemDto {
 				break;
 				
 			default:
+				setDroitAffecterDelegataire(isEvaluateur);
 				break;
 		}
 	}
@@ -106,6 +109,7 @@ public class EaeListItemDto {
 				.include("droitAcceder")
 				.include("droitReinitialiser")
 				.include("droitDemarrer")
+				.include("droitAffecterDelegataire")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new NullableIntegerTransformer(), Integer.class)
 				.transform(new SimpleAgentTransformer(), Agent.class)
@@ -243,5 +247,13 @@ public class EaeListItemDto {
 
 	public void setDroitDemarrer(boolean droitDemarrer) {
 		this.droitDemarrer = droitDemarrer;
+	}
+
+	public boolean isDroitAffecterDelegataire() {
+		return droitAffecterDelegataire;
+	}
+
+	public void setDroitAffecterDelegataire(boolean droitAffecterDelegataire) {
+		this.droitAffecterDelegataire = droitAffecterDelegataire;
 	}
 }

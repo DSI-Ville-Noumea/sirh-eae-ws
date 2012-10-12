@@ -149,13 +149,21 @@ public class Eae {
     	return serializer;
     }
 
-	public boolean isEvaluateurOrDelegataire(int idAgent) {
-		
-		for (EaeEvaluateur e : this.getEaeEvaluateurs()) {
+    public boolean isEvaluateur(int idAgent) {
+
+    	for (EaeEvaluateur e : this.getEaeEvaluateurs()) {
 			if (e.getIdAgent() == idAgent)
 				return true;
 		}
-		
-		return (getIdAgentDelegataire() != null &&  getIdAgentDelegataire() == idAgent);
+    	
+    	return false;
+    }
+    
+    public boolean isDelegataire(int idAgent) {
+    	return (getIdAgentDelegataire() != null &&  getIdAgentDelegataire() == idAgent);
+    }
+    
+	public boolean isEvaluateurOrDelegataire(int idAgent) {
+		return isEvaluateur(idAgent) || isDelegataire(idAgent);		
 	}
 }

@@ -320,7 +320,7 @@ public class EaeListItemDtoTest {
 		List<PathExpression> excludes = EaeListItemDto.getSerializerForEaeListItemDto().getExcludes();
 		
 		// Then
-		assertEquals(16, includes.size());
+		assertEquals(17, includes.size());
 		assertEquals("[agentEvalue]", includes.get(0).toString());
 		assertEquals("[etat]", includes.get(1).toString());
 		assertEquals("[cap]", includes.get(2).toString());
@@ -337,6 +337,7 @@ public class EaeListItemDtoTest {
 		assertEquals("[droitAcceder]", includes.get(13).toString());
 		assertEquals("[droitReinitialiser]", includes.get(14).toString());
 		assertEquals("[droitDemarrer]", includes.get(15).toString());
+		assertEquals("[droitAffecterDelegataire]", includes.get(16).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
