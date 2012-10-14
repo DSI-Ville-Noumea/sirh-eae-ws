@@ -58,7 +58,7 @@
 <!-- 		<property name="validationQuery" value="SELECT 1 FROM DUAL" /> -->
 <!-- 	</bean> -->
 
-	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/ORACLE_EAE"
+	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/SIRH_EAE_WS"
 		resource-ref="true" />
 
 	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH"

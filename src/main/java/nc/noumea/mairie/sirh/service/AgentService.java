@@ -8,18 +8,18 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AgentService implements IAgentService{
+public class AgentService implements IAgentService {
 
 	@Override
 	public Eae fillEaeWithAgents(Eae eaeToFill) {
 
-		eaeToFill.setAgentEvalue(Agent.findAgent(eaeToFill.getIdAgent()));
+		eaeToFill.setAgentEvalue(getAgent(eaeToFill.getIdAgent()));
 		
 		if (eaeToFill.getEaeFichePoste() != null)
 			fillEaeFichePosteWithAgent(eaeToFill.getEaeFichePoste());
 		
 		if (eaeToFill.getIdAgentDelegataire() != null)
-			eaeToFill.setAgentDelegataire(Agent.findAgent(eaeToFill.getIdAgentDelegataire()));
+			eaeToFill.setAgentDelegataire(getAgent(eaeToFill.getIdAgentDelegataire()));
 		
 		if (eaeToFill.getEaeEvaluateurs() != null)
 			for (EaeEvaluateur eval : eaeToFill.getEaeEvaluateurs())
@@ -32,7 +32,7 @@ public class AgentService implements IAgentService{
 	@Override
 	public EaeEvaluateur fillEaeEvaluateurWithAgent(EaeEvaluateur eaeEvaluateurToFill) {
 		
-		Agent agent = Agent.findAgent(eaeEvaluateurToFill.getIdAgent());
+		Agent agent = getAgent(eaeEvaluateurToFill.getIdAgent());
 		eaeEvaluateurToFill.setAgent(agent);
 		
 		return eaeEvaluateurToFill;
@@ -41,10 +41,14 @@ public class AgentService implements IAgentService{
 	@Override
 	public EaeFichePoste fillEaeFichePosteWithAgent(EaeFichePoste eaeFichePosteToFill) {
 		
-		Agent agent = Agent.findAgent(eaeFichePosteToFill.getIdAgentShd());
+		Agent agent = getAgent(eaeFichePosteToFill.getIdAgentShd());
 		eaeFichePosteToFill.setAgentShd(agent);
 		
 		return eaeFichePosteToFill;
 	}
 
+	@Override
+	public Agent getAgent(int idAgent) {
+		return Agent.findAgent(idAgent);
+	}
 }

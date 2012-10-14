@@ -159,4 +159,25 @@ public class AgentServiceTest {
 		assertEquals(agentToReturn2, result.getEaeEvaluateurs().iterator().next().getAgent());
 		
 	}
+	
+	@Test
+	public void testGetAgent_callAgentStaticFinder() {
+		
+		// Given
+		Agent agentToReturn = new Agent();
+		agentToReturn.setIdAgent(789);
+		
+		// Setup mock for static Agent finder method
+		Agent.findAgent(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		AgentService service = new AgentService();
+		
+		// When
+		Agent result = service.getAgent(789);
+		
+		// Then
+		assertEquals(agentToReturn, result);
+	}
 }

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.service.AgentMatriculeConverterServiceException;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
@@ -394,5 +395,50 @@ public class EaeControllerTest {
 		assertFalse(result.hasBody());
 		
 		verify(eaeServiceMock, times(0)).setDelegataire(lastEae, agentDelegataireId);
+	}
+	
+	@Test
+	public void testgetEaesDashboard_NoEaes_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException {
+		
+		// Given
+		EaeController controller = new EaeController();
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.getEaesDashboard(0)).thenReturn(new ArrayList<EaeDashboardItemDto>());
+		
+		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.getEaesDashboard(0);
+		
+		// Then
+		assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+		assertFalse(result.hasBody());
+	}
+	
+	@Test
+	public void testgetEaesDashboard_1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException {
+		
+		// Given
+		List<EaeDashboardItemDto> resultOfService = new ArrayList<EaeDashboardItemDto>(Arrays.asList(new EaeDashboardItemDto()));
+		EaeController controller = new EaeController();
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.getEaesDashboard(1)).thenReturn(resultOfService);
+
+		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.getEaesDashboard(1);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertTrue(result.hasBody());
+		
+		JSONDeserializer<List<EaeDashboardItemDto>> deserializer = new JSONDeserializer<List<EaeDashboardItemDto>>();
+		List<EaeDashboardItemDto> returnedResult = deserializer.deserialize(result.getBody().toString());
+		assertEquals(1, returnedResult.size());
 	}
 }

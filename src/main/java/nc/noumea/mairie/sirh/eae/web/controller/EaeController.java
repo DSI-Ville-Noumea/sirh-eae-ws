@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
@@ -141,6 +142,23 @@ public class EaeController {
 		}
 		
 		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping("tableauDeBord")
+	@Transactional
+	public ResponseEntity<String> getEaesDashboard(@RequestParam("idAgent") int idAgent) {
+		
+		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
+    	
+    	List<EaeDashboardItemDto> result = eaeService.getEaesDashboard(convertedId);
+		
+		if (result.isEmpty())
+			return new ResponseEntity<String>(HttpStatus.NO_CONTENT); 
+		
+		String jsonResult = EaeDashboardItemDto.getSerializerForEaeDashboardItemDto().serialize(result);
+		
+		return new ResponseEntity<String>(jsonResult, getJsonHeaders(), HttpStatus.OK);
 	}
 }
 	

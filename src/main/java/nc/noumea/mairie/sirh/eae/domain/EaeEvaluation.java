@@ -1,8 +1,13 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasse;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -32,10 +37,12 @@ public class EaeEvaluation {
     private String avisShd;
 
     @Column(name = "AVANCEMENT_DIFF")
-    private String avancementDiff;
+    @Enumerated(EnumType.STRING)
+    private EaeAvancementEnum avancementDiff;
 
     @Column(name = "CHANGEMENT_CLASSE")
-    private String changementClasse;
+    @Enumerated(EnumType.STRING)
+    private EaeAvisChangementClasse changementClasse;
 
     @OneToOne
 	@JoinColumn(name = "ID_EAE_NIVEAU")

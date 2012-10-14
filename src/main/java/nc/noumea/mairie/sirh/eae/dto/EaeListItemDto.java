@@ -59,8 +59,8 @@ public class EaeListItemDto {
 		this.setDateFinalisation(eaeItem.getDateFinalisation());
 		this.setDateControle(eaeItem.getDateControle());
 		
-		if (eaeItem.getEaeEvaluation() != null)
-			this.setAvisShd(eaeItem.getEaeEvaluation().getAvisShd());
+		if (eaeItem.getEaeEvaluation() != null && eaeItem.getEaeEvaluation().getAvancementDiff() != null)
+			this.setAvisShd(eaeItem.getEaeEvaluation().getAvancementDiff().toString());
 	}
 	
 	public void setAccessRightsForAgentId(Eae eae, int idAgent) {

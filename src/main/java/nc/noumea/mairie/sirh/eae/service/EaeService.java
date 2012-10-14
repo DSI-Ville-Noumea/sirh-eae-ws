@@ -1,7 +1,9 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,6 +16,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
@@ -52,9 +55,7 @@ public class EaeService implements IEaeService {
 			return result;
 		
 		// Retrieve the EAEs
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idEae in (:eaeIds)", Eae.class);
-		eaeQuery.setParameter("eaeIds", eaeIds);
-		List<Eae> queryResult = eaeQuery.getResultList();
+		List<Eae> queryResult = findEaesByIds(eaeIds);
 		
 		// For each EAE result, retrieve extra information from SIRH
 		for(Eae eae : queryResult) {
@@ -67,7 +68,7 @@ public class EaeService implements IEaeService {
 		return result;
 	}
 
-	@Override
+		@Override
 	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
 		
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
@@ -139,6 +140,57 @@ public class EaeService implements IEaeService {
 		eae.setIdAgentDelegataire(idAgentDelegataire);
 	}	
 	
+	@Override
+	public List<EaeDashboardItemDto> getEaesDashboard(int idAgent) {
+
+		List<EaeDashboardItemDto> result = new ArrayList<EaeDashboardItemDto>();
+		
+		// Get the list of EAEs to return
+		List<Integer> eaeIds = sirhWsConsumer.getListOfEaesForAgentId(idAgent);
+		
+		if (eaeIds.isEmpty())
+			return result;
+		
+		// Retrieve the EAEs
+		List<Eae> queryResult = findEaesByIds(eaeIds);
+		
+		Map<Integer, List<Eae>> groupedResult = new HashMap<Integer, List<Eae>>();
+		List<Eae> eaesWithoutEvaluateurs = new ArrayList<Eae>();
+		
+		for (Eae e : queryResult) {
+			
+			if (e.getEaeEvaluateurs().isEmpty())
+				eaesWithoutEvaluateurs.add(e);
+			
+			for (EaeEvaluateur eval : e.getEaeEvaluateurs()) {
+			
+				if (!groupedResult.containsKey(eval.getIdAgent()))
+					groupedResult.put(eval.getIdAgent(), new ArrayList<Eae>());
+				
+				groupedResult.get(eval.getIdAgent()).add(e);
+			}
+		}
+		
+		for (Integer evaluateurId : groupedResult.keySet()) {
+			EaeDashboardItemDto item = new EaeDashboardItemDto(groupedResult.get(evaluateurId));
+			Agent agent = agentService.getAgent(evaluateurId);
+			item.setNom(agent.getDisplayNom());
+			item.setPrenom(agent.getDisplayPrenom());
+			
+			result.add(item);
+		}
+		
+		if (!eaesWithoutEvaluateurs.isEmpty()) {
+			EaeDashboardItemDto itemWithoutEvaluateur = new EaeDashboardItemDto(eaesWithoutEvaluateurs);
+			itemWithoutEvaluateur.setNom("?");
+			itemWithoutEvaluateur.setPrenom("?");
+			result.add(itemWithoutEvaluateur);
+		}
+		
+		return result;
+	}
+	
+	
 	/*
 	 * Finders methods
 	 */
@@ -170,5 +222,13 @@ public class EaeService implements IEaeService {
 		List<Eae> result = findLatestEaesByAgentId(agentId, 2);
 		
 		return result;
+	}
+	
+	@Override
+	public List<Eae> findEaesByIds(List<Integer> eaeIds) {
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idEae in (:eaeIds)", Eae.class);
+		eaeQuery.setParameter("eaeIds", eaeIds);
+		List<Eae> queryResult = eaeQuery.getResultList();
+		return queryResult;
 	}
 }

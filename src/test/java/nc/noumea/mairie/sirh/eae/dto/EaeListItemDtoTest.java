@@ -13,6 +13,7 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class EaeListItemDtoTest {
 		eaeItem.setDateControle(c.getTime());
 		
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setAvisShd("stringggg");
+		eval.setAvancementDiff(EaeAvancementEnum.MINI);
 		
 		eaeItem.setEaeEvaluation(eval);
 		
@@ -86,6 +87,7 @@ public class EaeListItemDtoTest {
 		assertEquals(dto.getDateCreation(), eaeItem.getDateCreation());
 		assertEquals(dto.getDateFinalisation(), eaeItem.getDateFinalisation());
 		assertEquals(dto.getDateControle(), eaeItem.getDateControle());
+		assertEquals(dto.getAvisShd(), eaeItem.getEaeEvaluation().getAvancementDiff().toString());
 	}
 	
 	@Test

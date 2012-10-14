@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.service;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 
 public interface IEaeService {
@@ -15,7 +16,7 @@ public interface IEaeService {
 	List<EaeListItemDto> listEaesByAgentId(int agentId);
 	
 	/**
-	 * Initilizes an EAE based on the previous year's EAE (if existing)
+	 * Initializes an EAE based on the previous year's EAE (if existing)
 	 * @param eaeToInitialize
 	 * @param previousEae
 	 * @throws EaeServiceException
@@ -44,6 +45,13 @@ public interface IEaeService {
 	void setDelegataire(Eae eae, int idAgentDelegataire) throws EaeServiceException;
 	
 	/**
+	 * Retrieves the dashboard of current ongoing EAEs for a SHD, an evaluateur or a delegataire
+	 * @param idAgent viewing the dashboard
+	 * @return a list of Evaluateurs with their respective list of EAEs statuses
+	 */
+	List<EaeDashboardItemDto> getEaesDashboard(int idAgent);
+	
+	/**
 	 * Find the last EAE of a given Agent
 	 * @param agentId
 	 * @return
@@ -56,4 +64,11 @@ public interface IEaeService {
 	 * @return
 	 */
 	List<Eae> findCurrentAndPreviousEaesByAgentId(int agentId);
+	
+	/**
+	 * Find a list of EAEs by their Ids
+	 * @param eaeIds : the list of Ids
+	 * @return the list of EAEs corresponding to the Ids
+	 */
+	List<Eae> findEaesByIds(List<Integer> eaeIds);
 }

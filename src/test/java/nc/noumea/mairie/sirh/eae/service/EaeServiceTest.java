@@ -29,6 +29,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
@@ -267,7 +268,6 @@ public class EaeServiceTest {
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 				
-		// Mock the agent find static method to return our agent
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.EC);
@@ -567,5 +567,156 @@ public class EaeServiceTest {
 			assertEquals(new Integer(123), eae.getIdAgentDelegataire());
 		}
 		
+	}
+	
+	@Test
+	public void testGetEaesDashboard_NoEaeForAgentId_ReturnEmptyList() {
+		
+		// Given
+		List<Integer> eaeIds = new ArrayList<Integer>();
+		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
+		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		
+		// When
+		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
+		
+		// Then
+		assertEquals(0, result.size());
+	}
+	
+	@Test
+	public void testGetEaesDashboard_3EaesForAgentId2Evaluateurs_ReturnDtoListOf2() {
+		
+		// Given
+		Agent agent19 = new Agent();
+		agent19.setNomUsage("toto");
+		
+		Agent agent21 = new Agent();
+		agent21.setNomUsage("titi");
+		
+		EaeEvaluateur toto = new EaeEvaluateur();
+		toto.setIdAgent(19);
+		EaeEvaluateur titi = new EaeEvaluateur();
+		titi.setIdAgent(21);
+		
+		Eae eaeToReturn1 = new Eae();
+		eaeToReturn1.setIdAgent(9);
+		eaeToReturn1.setEtat(EaeEtatEnum.EC);
+		eaeToReturn1.getEaeEvaluateurs().add(toto);
+		
+		Eae eaeToReturn2 = new Eae();
+		eaeToReturn2.setIdAgent(10);
+		eaeToReturn2.setEtat(EaeEtatEnum.EC);
+		eaeToReturn2.getEaeEvaluateurs().add(titi);
+		
+		Eae eaeToReturn3 = new Eae();
+		eaeToReturn3.setIdAgent(11);
+		eaeToReturn3.setEtat(EaeEtatEnum.EC);
+		eaeToReturn3.getEaeEvaluateurs().add(toto);
+		
+		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1, 2, 3));
+		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1, eaeToReturn2, eaeToReturn3);
+
+		// Mock the WS to return 3 ids
+		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
+		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		
+		// Mock the query to return a specific result
+		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
+		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.getResultList()).thenReturn(resultOfQuery);
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(
+				entManagerMock.createQuery(
+						"select e from Eae e where e.idEae in (:eaeIds)",
+						Eae.class)).thenReturn(queryMock);
+
+		// Mock the AgentService
+		IAgentService agentServiceMock = mock(IAgentService.class);
+		when(agentServiceMock.getAgent(19)).thenReturn(agent19);
+		when(agentServiceMock.getAgent(21)).thenReturn(agent21);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		
+		// When
+		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
+		
+		// Then
+		assertEquals(2, result.size());
+		assertEquals("toto", result.get(0).getNom());
+		assertEquals(2, result.get(0).getEnCours());
+		assertEquals("titi", result.get(1).getNom());
+		assertEquals(1, result.get(1).getEnCours());
+	}
+	
+	@Test
+	public void testGetEaesDashboard_3EaesForAgentId1EvaluateurAnd2WithoutEvaluateur_ReturnDtoListOf2() {
+		
+		// Given
+		Agent agent19 = new Agent();
+		agent19.setNomUsage("toto");
+		agent19.setPrenom("tutu");
+		
+		EaeEvaluateur toto = new EaeEvaluateur();
+		toto.setIdAgent(19);
+		
+		Eae eaeToReturn1 = new Eae();
+		eaeToReturn1.setIdAgent(9);
+		eaeToReturn1.setEtat(EaeEtatEnum.EC);
+		eaeToReturn1.getEaeEvaluateurs().add(toto);
+		
+		Eae eaeToReturn2 = new Eae();
+		eaeToReturn2.setIdAgent(10);
+		eaeToReturn2.setEtat(EaeEtatEnum.NA);
+		
+		Eae eaeToReturn3 = new Eae();
+		eaeToReturn3.setIdAgent(11);
+		eaeToReturn3.setEtat(EaeEtatEnum.NA);
+		
+		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1, 2, 3));
+		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1, eaeToReturn2, eaeToReturn3);
+
+		// Mock the WS to return 3 ids
+		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
+		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		
+		// Mock the query to return a specific result
+		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
+		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.getResultList()).thenReturn(resultOfQuery);
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(
+				entManagerMock.createQuery(
+						"select e from Eae e where e.idEae in (:eaeIds)",
+						Eae.class)).thenReturn(queryMock);
+
+		// Mock the AgentService
+		IAgentService agentServiceMock = mock(IAgentService.class);
+		when(agentServiceMock.getAgent(19)).thenReturn(agent19);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		
+		// When
+		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
+		
+		// Then
+		assertEquals(2, result.size());
+		assertEquals("toto", result.get(0).getNom());
+		assertEquals("tutu", result.get(0).getPrenom());
+		assertEquals(1, result.get(0).getEnCours());
+		assertEquals("?", result.get(1).getNom());
+		assertEquals("?", result.get(1).getPrenom());
+		assertEquals(2, result.get(1).getNonAffecte());
 	}
 }
