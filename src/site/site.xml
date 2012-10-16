@@ -33,10 +33,7 @@
         </menu>
 		<menu name="Développement">
         	<item name="Application" href="developpement/configuration.html"/>
-        </menu>
-		<menu name="FAQ">
-        	<item name="SIE" href="sie.html"/>
-        	<item name="SED" href="sed.html"/>
+			<item name="Dev. environnement" href="developpement/DevenvSetup.html"/>
         </menu>
         <menu ref="reports"/>
     </body>

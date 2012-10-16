@@ -1,0 +1,65 @@
+﻿ -----
+ SIRH-EAE WS
+ -----
+ Nicolas RAYNAUD
+ -----
+  16/10/2012
+
+ *SIRH EAE WebServices Development Environment Configuration
+ 
+ [[1]] Copy the {{{../doc/environments/dev/0.1.5-SNAPSHOT-sirhdb.script}0.1.5-SNAPSHOT-sirhdb.script}} and {{{../doc/environments/dev/0.1.5-SNAPSHOT-sirhdb.properties}0.1.5-SNAPSHOT-sirhdb.properties}} files in the future HSQL db file location "C:\SIRHDB\" without the "0.1.5-SNAPSHOT-" prefix.
+ 
+ [[2]] Modify the JNDI resource for jdbc/SIRH into this a HSQL DB datasource (make sure the file path is correct)
+ --------------------------------------
+ <Resource name="jdbc/SIRH"
+                auth="Container" 
+                driverClassName="org.hsqldb.jdbcDriver" 
+                maxActive="8" 
+                maxIdle="4"  
+                type="javax.sql.DataSource" 
+				url="jdbc:hsqldb:file:C:\SIRHDB\sirhdb;shutdown=true"
+                username="sa"
+                password="" 
+                />
+ --------------------------------------
+ 
+ [[3]] Modify the persistence dialect for Hibernate to communicate with HSQLDB
+ --------------------------------------
+ <persistence-unit name="sirhPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>nc.noumea.mairie.sirh.domain.Agent</class>
+      	<exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            <property name="hibernate.connection.charSet" value="UTF-8"/>
+        </properties>
+    </persistence-unit>
+ --------------------------------------
+ 
+ [[4]] Take out the database schema information annotation in the Agent.java class
+ --------------------------------------
+ @RooJpaActiveRecord(persistenceUnit="sirhPersistenceUnit", identifierColumn = "ID_AGENT", /*schema = "SIRH",*/ identifierField = "idAgent", identifierType = Integer.class, table = "AGENT", versionField="")
+ --------------------------------------
+
+ [[5]] Put the hsqldb driver jar in the tomcat lib folder (with the ojdbc-6 driver)
+ 
+ [[6]] Modify the oracle connection context to a new local one (Alphalog's) with a EAE user (password EAE)
+ --------------------------------------
+ <Resource name="jdbc/SIRH_EAE_WS" auth="Container" type="javax.sql.DataSource" 
+		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" 
+		maxWait="10000" initialSize="1" username="EAE" password="EAE" driverClassName="oracle.jdbc.driver.OracleDriver" 
+		url="jdbc:oracle:thin:@192.168.2.7:1521:XE" poolPreparedStatements="true" />
+ --------------------------------------
+ 
+ [[7]] Execute the create database script {{{../doc/environments/dev/create_insert_0.1.5-SNAPSHOT.sql}create_insert_0.1.5-SNAPSHOT.sql}}
+ 
+ [[8]] Execute the insert data script {{{../doc/environments/dev/0.1.5-SNAPSHOT-EAE.sql}0.1.5-SNAPSHOT-EAE.sql}}
+ 
+ [[9]] Execute the insert data script {{{../doc/environments/dev/0.1.5-SNAPSHOT-EAE_EVALUATEURS.sql}0.1.5-SNAPSHOT-EAE_EVALUATEURS.sql}}
+ 
+ [[10]] Execute the insert data script {{{../doc/environments/dev/0.1.5-SNAPSHOT-EAE_FICHE_POSTE.sql}0.1.5-SNAPSHOT-EAE_FICHE_POSTE.sql}}
+ 
+ [[11]] Remove the @Service annotation of the current SirhWSConsumer and put it on the mock: ~sirh.eae.mock.MockDevEnvSirhWsConsumer
+ 

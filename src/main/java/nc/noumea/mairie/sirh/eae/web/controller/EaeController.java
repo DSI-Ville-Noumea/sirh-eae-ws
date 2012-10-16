@@ -146,7 +146,7 @@ public class EaeController {
 	
 	@ResponseBody
 	@RequestMapping("tableauDeBord")
-	@Transactional
+	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaesDashboard(@RequestParam("idAgent") int idAgent) {
 		
 		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);

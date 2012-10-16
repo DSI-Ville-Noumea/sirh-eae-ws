@@ -26,9 +26,6 @@ public class MockSirhWsConsumer implements ISirhWsConsumer {
 		List<Integer> result = eaeQuery.getResultList();
 
 		return result;
-
-		// return new HashSet<Integer>(Arrays.asList(25944, 25945, 25946, 25947,
-		// 25948, 25949, 25950));
 	}
 
 }
