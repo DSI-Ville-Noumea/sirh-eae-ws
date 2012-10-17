@@ -12,6 +12,7 @@ import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
@@ -33,7 +34,9 @@ public class EaeListItemDtoTest {
 		agentEvalue.setIdAgent(12);
 		agentEvalue.setNomMarital("toto");
 		agentEvalue.setPrenom("titi");
-		eaeItem.setAgentEvalue(agentEvalue);
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setAgent(agentEvalue);
+		eaeItem.setEaeEvalue(evalue);
 		
 		Agent agentDelegataire = new Agent();
 		agentDelegataire.setIdAgent(45);
@@ -77,7 +80,7 @@ public class EaeListItemDtoTest {
 		
 		// Then
 		assertEquals(dto.getIdEae(), eaeItem.getIdEae());
-		assertEquals(dto.getAgentEvalue(), eaeItem.getAgentEvalue());
+		assertEquals(dto.getAgentEvalue(), eaeItem.getEaeEvalue().getAgent());
 		assertEquals(dto.getAgentDelegataire(), eaeItem.getAgentDelegataire());
 		assertEquals(dto.getEaeEvaluateurs().size(), eaeItem.getEaeEvaluateurs().size());
 		assertEquals(dto.getEaeEvaluateurs().get(0), eaeItem.getEaeEvaluateurs().iterator().next());

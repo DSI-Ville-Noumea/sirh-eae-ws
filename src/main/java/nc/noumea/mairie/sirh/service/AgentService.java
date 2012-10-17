@@ -14,8 +14,6 @@ public class AgentService implements IAgentService {
 	@Override
 	public Eae fillEaeWithAgents(Eae eaeToFill) {
 
-		eaeToFill.setAgentEvalue(getAgent(eaeToFill.getIdAgent()));
-		
 		if (eaeToFill.getEaeEvalue() != null)
 			fillEaeEvalueWithAgent(eaeToFill.getEaeEvalue());
 		

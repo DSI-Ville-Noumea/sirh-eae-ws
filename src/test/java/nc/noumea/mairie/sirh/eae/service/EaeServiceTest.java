@@ -24,6 +24,7 @@ import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
@@ -90,8 +91,8 @@ public class EaeServiceTest {
 		when(consumerMock.getListOfEaesForAgentId(9)).thenReturn(eaeIds);
 		
 		Eae eaeToReturn = new Eae();
-		eaeToReturn.setIdAgent(9);
 		eaeToReturn.setEtat(EaeEtatEnum.EC);
+		eaeToReturn.setEaeEvalue(new EaeEvalue());
 		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn));
 
 		// Mock the query to return a specific result
@@ -135,11 +136,11 @@ public class EaeServiceTest {
 		when(consumerMock.getListOfEaesForAgentId(2)).thenReturn(eaeIds);
 		
 		Eae eaeToReturn = new Eae();
-		eaeToReturn.setIdAgent(9);
 		eaeToReturn.setEtat(EaeEtatEnum.EC);
+		eaeToReturn.setEaeEvalue(new EaeEvalue());
 		Eae eaeToReturn2 = new Eae();
-		eaeToReturn2.setIdAgent(92);
 		eaeToReturn2.setEtat(EaeEtatEnum.EC);
+		eaeToReturn2.setEaeEvalue(new EaeEvalue());
 		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn, eaeToReturn2));
 
 		// Mock the query to return a specific result
@@ -603,17 +604,14 @@ public class EaeServiceTest {
 		titi.setIdAgent(21);
 		
 		Eae eaeToReturn1 = new Eae();
-		eaeToReturn1.setIdAgent(9);
 		eaeToReturn1.setEtat(EaeEtatEnum.EC);
 		eaeToReturn1.getEaeEvaluateurs().add(toto);
 		
 		Eae eaeToReturn2 = new Eae();
-		eaeToReturn2.setIdAgent(10);
 		eaeToReturn2.setEtat(EaeEtatEnum.EC);
 		eaeToReturn2.getEaeEvaluateurs().add(titi);
 		
 		Eae eaeToReturn3 = new Eae();
-		eaeToReturn3.setIdAgent(11);
 		eaeToReturn3.setEtat(EaeEtatEnum.EC);
 		eaeToReturn3.getEaeEvaluateurs().add(toto);
 		
@@ -668,16 +666,13 @@ public class EaeServiceTest {
 		toto.setIdAgent(19);
 		
 		Eae eaeToReturn1 = new Eae();
-		eaeToReturn1.setIdAgent(9);
 		eaeToReturn1.setEtat(EaeEtatEnum.EC);
 		eaeToReturn1.getEaeEvaluateurs().add(toto);
 		
 		Eae eaeToReturn2 = new Eae();
-		eaeToReturn2.setIdAgent(10);
 		eaeToReturn2.setEtat(EaeEtatEnum.NA);
 		
 		Eae eaeToReturn3 = new Eae();
-		eaeToReturn3.setIdAgent(11);
 		eaeToReturn3.setEtat(EaeEtatEnum.NA);
 		
 		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1, 2, 3));

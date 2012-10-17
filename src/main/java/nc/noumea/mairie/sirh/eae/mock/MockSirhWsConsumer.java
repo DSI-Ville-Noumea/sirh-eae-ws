@@ -20,7 +20,7 @@ public class MockSirhWsConsumer implements ISirhWsConsumer {
 	public List<Integer> getListOfEaesForAgentId(int agentId) {
 
 		TypedQuery<Integer> eaeQuery = eaeEntityManager.createQuery(
-				"select e.idEae from Eae e where e.idAgent = :idAgent",
+				"select e.idEae from Eae e, EaeEvalue ev where e.idEae = ev.eae.idEae and ev.idAgent = :idAgent",
 				Integer.class);
 		eaeQuery.setParameter("idAgent", agentId);
 		List<Integer> result = eaeQuery.getResultList();

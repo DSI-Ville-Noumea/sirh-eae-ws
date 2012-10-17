@@ -48,7 +48,6 @@ public class EaeListItemDto {
 	public EaeListItemDto(Eae eaeItem) {
 
 		this.setIdEae(eaeItem.getIdEae());
-		this.setAgentEvalue(eaeItem.getAgentEvalue());
 		this.setAgentDelegataire(eaeItem.getAgentDelegataire());
 		this.setEaeEvaluateurs(new ArrayList<EaeEvaluateur>(eaeItem.getEaeEvaluateurs()));
 		this.setEaeFichePoste(eaeItem.getEaeFichePoste());
@@ -58,6 +57,9 @@ public class EaeListItemDto {
 		this.setDateCreation(eaeItem.getDateCreation());
 		this.setDateFinalisation(eaeItem.getDateFinalisation());
 		this.setDateControle(eaeItem.getDateControle());
+		
+		if (eaeItem.getEaeEvalue() != null)
+			this.setAgentEvalue(eaeItem.getEaeEvalue().getAgent());
 		
 		if (eaeItem.getEaeEvaluation() != null && eaeItem.getEaeEvaluation().getAvancementDiff() != null)
 			this.setAvisShd(eaeItem.getEaeEvaluation().getAvancementDiff().toString());

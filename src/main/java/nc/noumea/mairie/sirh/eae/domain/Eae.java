@@ -30,11 +30,7 @@ public class Eae {
 
 	 /*
      * Mapped properties
-     */
-	@NotNull
-    @Column(name = "ID_AGENT")
-    private int idAgent;
-    
+     */    
     @Column(name = "STATUT")
 	private String statut;
     
@@ -107,10 +103,7 @@ public class Eae {
     
     /*
      * Transient properties (will be populated by AS400 entity manager)
-     */
-    @Transient
-    private Agent agentEvalue;
-        
+     */        
     @Transient
     private Agent agentDelegataire;
     

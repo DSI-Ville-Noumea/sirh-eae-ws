@@ -20,14 +20,6 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 privileged aspect Eae_Roo_JavaBean {
     
-    public int Eae.getIdAgent() {
-        return this.idAgent;
-    }
-    
-    public void Eae.setIdAgent(int idAgent) {
-        this.idAgent = idAgent;
-    }
-    
     public String Eae.getStatut() {
         return this.statut;
     }
@@ -202,14 +194,6 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setEaePlanActions(Set<EaePlanAction> eaePlanActions) {
         this.eaePlanActions = eaePlanActions;
-    }
-    
-    public Agent Eae.getAgentEvalue() {
-        return this.agentEvalue;
-    }
-    
-    public void Eae.setAgentEvalue(Agent agentEvalue) {
-        this.agentEvalue = agentEvalue;
     }
     
     public Agent Eae.getAgentDelegataire() {

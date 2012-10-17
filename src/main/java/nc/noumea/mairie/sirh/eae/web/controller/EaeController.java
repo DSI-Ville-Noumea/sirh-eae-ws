@@ -50,7 +50,7 @@ public class EaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "initialiserEae", produces = "application/json;charset=utf-8")
-	@Transactional
+	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> initializeEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
 		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
@@ -76,7 +76,7 @@ public class EaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "demarrerEae", produces = "application/json;charset=utf-8")
-	@Transactional
+	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> startEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
 		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
@@ -97,7 +97,7 @@ public class EaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "resetEae", method = RequestMethod.POST)
-	@Transactional
+	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
 		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
@@ -118,7 +118,7 @@ public class EaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.POST)
-	@Transactional
+	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setDelegataire(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue, @RequestParam("idDelegataire") int idDelegataire) {
 		
 		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);

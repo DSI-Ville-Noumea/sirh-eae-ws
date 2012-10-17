@@ -100,7 +100,6 @@ public class AgentServiceTest {
 		Eae eaeToReturn = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
 		evalue.setIdAgent(idAgent);
-		eaeToReturn.setIdAgent(idAgent);
 		eaeToReturn.setEaeEvalue(evalue);
 		eaeToReturn.setIdAgentDelegataire(idAgentDelegataire);
 		EaeFichePoste fdp = new EaeFichePoste();
@@ -112,10 +111,6 @@ public class AgentServiceTest {
 		agentToReturn.setIdAgent(idAgent);
 		agentToReturn.setNomPatronymique("Bilbo");
 
-		Agent.findAgent(idAgent);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
-		
-		// Once more for the EaeEvalue.agent
 		Agent.findAgent(idAgent);
 		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
 		
@@ -144,7 +139,7 @@ public class AgentServiceTest {
 		Eae result = service.fillEaeWithAgents(eaeToReturn);
 
 		// Then
-		assertEquals(agentToReturn, result.getAgentEvalue());
+		assertEquals(agentToReturn, result.getEaeEvalue().getAgent());
 		assertEquals(agentToReturn, result.getEaeEvalue().getAgent());
 		assertEquals(agentDelegataireToReturn, result.getAgentDelegataire());
 	}
@@ -155,7 +150,9 @@ public class AgentServiceTest {
 		// Given
 		int idAgent = 9;
 		Eae eaeToReturn = new Eae();
-		eaeToReturn.setIdAgent(idAgent);
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(idAgent);
+		eaeToReturn.setEaeEvalue(evalue);
 		
 		Set<EaeEvaluateur> evals = new HashSet<EaeEvaluateur>();
 		EaeEvaluateur eval1 = new EaeEvaluateur();
@@ -165,10 +162,10 @@ public class AgentServiceTest {
 		
 		// Mock the Agent find static method to return our agent
 		Agent agentToReturn = new Agent();
-		agentToReturn.setIdAgent(eaeToReturn.getIdAgent());
+		agentToReturn.setIdAgent(evalue.getIdAgent());
 		agentToReturn.setNomPatronymique("Bilbo");
 
-		Agent.findAgent(eaeToReturn.getIdAgent());
+		Agent.findAgent(evalue.getIdAgent());
 		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
 		
 		Agent agentToReturn2 = new Agent();
@@ -187,7 +184,7 @@ public class AgentServiceTest {
 		Eae result = service.fillEaeWithAgents(eaeToReturn);
 
 		// Then
-		assertEquals(agentToReturn, result.getAgentEvalue());
+		assertEquals(agentToReturn, result.getEaeEvalue().getAgent());
 		assertEquals(1, result.getEaeEvaluateurs().size());
 		assertEquals(agentToReturn2, result.getEaeEvaluateurs().iterator().next().getAgent());
 		
