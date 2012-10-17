@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
@@ -17,6 +18,8 @@ import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import flexjson.PathExpression;
+
 public class EaeIdentificationDtoTest {
 
 	private static Calendar c;
@@ -24,7 +27,8 @@ public class EaeIdentificationDtoTest {
 	@BeforeClass
 	public static void SetUp() {
 		c = new GregorianCalendar();
-		c.set(2012, 04, 17);
+		c.clear();
+		c.set(2012, 04, 17, 14, 05, 59);
 	}
 	
 	@Test
@@ -68,5 +72,63 @@ public class EaeIdentificationDtoTest {
 		assertEquals(parcours.iterator().next(), dto.getParcoursPros().get(0));
 		assertEquals(1, dto.getFormations().size());
 		assertEquals(formations.iterator().next(), dto.getFormations().get(0));
+	}
+	
+	@Test
+	public void testGetSerializerForEaeIdentificationDto_ListAllIncludesExcludes() {
+		
+		// When
+		List<PathExpression> includes = EaeIdentificationDto.getSerializerForEaeIdentificationDto().getIncludes();
+		List<PathExpression> excludes = EaeIdentificationDto.getSerializerForEaeIdentificationDto().getExcludes();
+		
+		// Then
+		assertEquals(7, includes.size());
+		assertEquals("[idEae]", includes.get(0).toString());
+		assertEquals("[dateEntretien]", includes.get(1).toString());
+		assertEquals("[evaluateurs]", includes.get(2).toString());
+		assertEquals("[agent]", includes.get(3).toString());
+		assertEquals("[diplomes]", includes.get(4).toString());
+		assertEquals("[parcoursPros]", includes.get(5).toString());
+		assertEquals("[formations]", includes.get(6).toString());
+		
+		assertEquals(1, excludes.size());
+		assertEquals("[*]", excludes.get(0).toString());
+	}
+	
+	@Test
+	public void testGetSerializerForEaeIdentificationDto_SerializeEmptyObject() {
+		
+		// Given
+		EaeIdentificationDto dto = new EaeIdentificationDto();
+		
+		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[],\"formations\":[],\"idEae\":0,\"parcoursPros\":[]}";
+		
+		// When
+		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);
+		
+		// Then
+		assertEquals(expectedResult, result);
+	}
+	
+	@Test
+	public void testGetSerializerForEaeIdentificationDto_SerializeFilledInObject() {
+		
+		// Given
+		EaeIdentificationDto dto = new EaeIdentificationDto();
+		dto.setIdEae(789);
+		dto.setDateEntretien(c.getTime());
+		dto.setAgent(new EaeEvalue());
+		dto.getEvaluateurs().add(new EaeEvaluateur());
+		dto.getDiplomes().add(new EaeDiplome());
+		dto.getFormations().add(new EaeFormation());
+		dto.getParcoursPros().add(new EaeParcoursPro());
+		
+		String expectedResult = "{\"agent\":{},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[{}],\"evaluateurs\":[{}],\"formations\":[{}],\"idEae\":789,\"parcoursPros\":[{}]}";
+		
+		// When
+		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);
+		
+		// Then
+		assertEquals(expectedResult, result);
 	}
 }

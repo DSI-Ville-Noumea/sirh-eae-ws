@@ -10,8 +10,12 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
+import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 
 import org.springframework.roo.addon.json.RooJson;
+
+import flexjson.JSONSerializer;
 
 @RooJson
 public class EaeIdentificationDto {
@@ -30,7 +34,7 @@ public class EaeIdentificationDto {
 		parcoursPros = new ArrayList<EaeParcoursPro>();
 		formations = new ArrayList<EaeFormation>();
 	}
-	
+
 	public EaeIdentificationDto(Eae eae) {
 		this();
 		this.idEae = eae.getIdEae();
@@ -41,7 +45,23 @@ public class EaeIdentificationDto {
 		this.parcoursPros.addAll(eae.getEaeParcoursPros());
 		this.formations.addAll(eae.getEaeFormations());
 	}
-	
+
+	public static JSONSerializer getSerializerForEaeIdentificationDto() {
+		
+		JSONSerializer serializer = new JSONSerializer()
+				.include("idEae")
+				.include("dateEntretien")
+				.include("evaluateurs")
+				.include("agent")
+				.include("diplomes")
+				.include("parcoursPros")
+				.include("formations")
+				.transform(new MSDateTransformer(), Date.class)
+				.transform(new ValueEnumTransformer(), Enum.class).exclude("*");
+
+		return serializer;
+	}
+
 	public int getIdEae() {
 		return idEae;
 	}
@@ -97,6 +117,5 @@ public class EaeIdentificationDto {
 	public void setFormations(List<EaeFormation> formations) {
 		this.formations = formations;
 	}
-	
-	
+
 }

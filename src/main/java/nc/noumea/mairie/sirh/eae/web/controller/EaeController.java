@@ -10,13 +10,13 @@ import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -30,15 +30,9 @@ public class EaeController {
 	
 	@Autowired
 	private IAgentMatriculeConverterService agentMatriculeConverterService;
-	
-	private HttpHeaders getJsonHeaders() {
-		HttpHeaders headers = new HttpHeaders();
-	    headers.add("Content-Type", "application/json; charset=utf-8");
-	    return headers;
-	}
-	
+		
 	@ResponseBody
-	@RequestMapping("listEaesByAgent")
+	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8")
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> listEaesByAgent(@RequestParam("idAgent") int idAgent) {
 		
@@ -51,11 +45,11 @@ public class EaeController {
 		
 		String jsonResult = EaeListItemDto.getSerializerForEaeListItemDto().serialize(result);
 		
-		return new ResponseEntity<String>(jsonResult, getJsonHeaders(), HttpStatus.OK);
+		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
 	}
 	
 	@ResponseBody
-	@RequestMapping("initialiserEae")
+	@RequestMapping(value = "initialiserEae", produces = "application/json;charset=utf-8")
 	@Transactional
 	public ResponseEntity<String> initializeEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
@@ -74,14 +68,14 @@ public class EaeController {
 		try {
 			eaeService.initializeEae(lastEae, previousEae);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	@ResponseBody
-	@RequestMapping("demarrerEae")
+	@RequestMapping(value = "demarrerEae", produces = "application/json;charset=utf-8")
 	@Transactional
 	public ResponseEntity<String> startEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
@@ -95,14 +89,14 @@ public class EaeController {
 		try {
 			eaeService.startEae(eaeToStart);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	@ResponseBody
-	@RequestMapping("resetEae")
+	@RequestMapping(value = "resetEae", method = RequestMethod.POST)
 	@Transactional
 	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
@@ -116,14 +110,14 @@ public class EaeController {
 		try {
 			eaeService.resetEaeEvaluateur(eaeToReset);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	@ResponseBody
-	@RequestMapping("affecterDelegataire")
+	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.POST)
 	@Transactional
 	public ResponseEntity<String> setDelegataire(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue, @RequestParam("idDelegataire") int idDelegataire) {
 		
@@ -138,14 +132,14 @@ public class EaeController {
 		try {
 			eaeService.setDelegataire(eae, convertedIdAgentDelegataire);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), getJsonHeaders(), HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
 	@ResponseBody
-	@RequestMapping("tableauDeBord")
+	@RequestMapping(value = "tableauDeBord", produces = "application/json;charset=utf-8")
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaesDashboard(@RequestParam("idAgent") int idAgent) {
 		
@@ -158,7 +152,7 @@ public class EaeController {
 		
 		String jsonResult = EaeDashboardItemDto.getSerializerForEaeDashboardItemDto().serialize(result);
 		
-		return new ResponseEntity<String>(jsonResult, getJsonHeaders(), HttpStatus.OK);
+		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
 	}
 }
 	
