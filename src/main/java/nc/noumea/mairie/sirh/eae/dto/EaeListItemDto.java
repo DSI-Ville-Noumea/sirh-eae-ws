@@ -112,7 +112,7 @@ public class EaeListItemDto {
 				.include("droitAffecterDelegataire")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new NullableIntegerTransformer(), Integer.class)
-				.transform(new SimpleAgentTransformer(), Agent.class)
+				.transform(new SimpleAgentTransformer(false), Agent.class)
 				.transform(new EaeEvaluateurToAgentFlatTransformer(), EaeEvaluateur.class)
 				.transform(new EaeFichePosteToEaeListTransformer(), EaeFichePoste.class)
 				.transform(new ValueEnumTransformer(), Enum.class).exclude("*");

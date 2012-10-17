@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
@@ -11,6 +12,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 
 import org.springframework.roo.addon.json.RooJson;
@@ -51,13 +53,19 @@ public class EaeIdentificationDto {
 		JSONSerializer serializer = new JSONSerializer()
 				.include("idEae")
 				.include("dateEntretien")
-				.include("evaluateurs")
+				.include("evaluateurs.agent")
+				.include("evaluateurs.fonction")
+				.include("evaluateurs.dateEntreeService")
+				.include("evaluateurs.dateEntreeCollectivite")
+				.include("evaluateurs.dateEntreeFonction")
 				.include("agent")
 				.include("diplomes")
 				.include("parcoursPros")
 				.include("formations")
 				.transform(new MSDateTransformer(), Date.class)
-				.transform(new ValueEnumTransformer(), Enum.class).exclude("*");
+				.transform(new SimpleAgentTransformer(true), Agent.class)
+				.transform(new ValueEnumTransformer(), Enum.class)
+				.exclude("*");
 
 		return serializer;
 	}

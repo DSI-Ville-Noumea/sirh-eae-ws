@@ -8,6 +8,7 @@ import java.util.Set;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 import org.junit.Test;
@@ -64,6 +65,30 @@ public class AgentServiceTest {
 		// Then
 		assertEquals(agentToReturn, fdp.getAgentShd());
 	}
+	
+	@Test
+	public void testFillAgentForEaeEvalue() {
+
+		// Given
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(995);
+
+		// Mock the agent find static method to return our agent
+		Agent agentToReturn = new Agent();
+		agentToReturn.setIdAgent(995);
+		agentToReturn.setNomPatronymique("Billy");
+
+		Agent.findAgent(995);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+
+		// When
+		AgentService service = new AgentService();
+		service.fillEaeEvalueWithAgent(evalue);
+
+		// Then
+		assertEquals(agentToReturn, evalue.getAgent());
+	}
 
 	@Test
 	public void testfillEaeWithAgents_When1DelegataireAnd1ShdNoEvaluateurs_returnFilledInObject() {
@@ -73,7 +98,10 @@ public class AgentServiceTest {
 		Integer idAgentDelegataire = 29;
 		Integer idAgentShd = 35;
 		Eae eaeToReturn = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(idAgent);
 		eaeToReturn.setIdAgent(idAgent);
+		eaeToReturn.setEaeEvalue(evalue);
 		eaeToReturn.setIdAgentDelegataire(idAgentDelegataire);
 		EaeFichePoste fdp = new EaeFichePoste();
 		fdp.setIdAgentShd(idAgentShd);
@@ -84,6 +112,10 @@ public class AgentServiceTest {
 		agentToReturn.setIdAgent(idAgent);
 		agentToReturn.setNomPatronymique("Bilbo");
 
+		Agent.findAgent(idAgent);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
+		
+		// Once more for the EaeEvalue.agent
 		Agent.findAgent(idAgent);
 		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
 		
@@ -113,6 +145,7 @@ public class AgentServiceTest {
 
 		// Then
 		assertEquals(agentToReturn, result.getAgentEvalue());
+		assertEquals(agentToReturn, result.getEaeEvalue().getAgent());
 		assertEquals(agentDelegataireToReturn, result.getAgentDelegataire());
 	}
 

@@ -1,15 +1,46 @@
 package nc.noumea.mairie.sirh.tools.transformer;
 
 import nc.noumea.mairie.sirh.domain.Agent;
+import flexjson.BasicType;
+import flexjson.TypeContext;
 import flexjson.transformer.AbstractTransformer;
+import flexjson.transformer.Inline;
 
-public class SimpleAgentTransformer extends AbstractTransformer {
+public class SimpleAgentTransformer extends AbstractTransformer implements Inline {
 
+	private boolean inline = Boolean.FALSE;
+	
+	@Override
+    public Boolean isInline() {
+        return inline;
+    }
+	
+	public SimpleAgentTransformer() {
+		
+	}
+	
+	public SimpleAgentTransformer(boolean _inline) {
+		this.inline = _inline;
+	}
+	
 	@Override
 	public void transform(Object arg0) {
-		Agent agent = (Agent) arg0;
-
-		getContext().writeOpenObject();
+		
+		TypeContext typeContext = getContext().peekTypeContext();
+	    
+	    boolean isObjectNotInline = false;
+	    
+	    if (typeContext == null || typeContext.getBasicType() != BasicType.OBJECT || !inline) {
+	        typeContext = getContext().writeOpenObject();
+	        isObjectNotInline = true;
+	    }
+	    
+	    Agent agent = (Agent) arg0;
+	    
+	    if (!typeContext.isFirst()) 
+	    	getContext().writeComma();
+	    
+	    typeContext.setFirst(false);
 		
 		getContext().writeName("idAgent");
 	    getContext().transform(agent.getIdAgent());
@@ -22,8 +53,9 @@ public class SimpleAgentTransformer extends AbstractTransformer {
 	    getContext().writeName("prenom");
 	    getContext().transform(agent.getDisplayPrenom());
 	    
-	    getContext().writeCloseObject();
-	    
+	    if (isObjectNotInline) {
+            getContext().writeCloseObject();
+        }
 	}
 
 }

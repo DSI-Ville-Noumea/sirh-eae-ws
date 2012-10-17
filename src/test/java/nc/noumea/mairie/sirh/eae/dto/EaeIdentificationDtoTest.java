@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
@@ -82,14 +83,18 @@ public class EaeIdentificationDtoTest {
 		List<PathExpression> excludes = EaeIdentificationDto.getSerializerForEaeIdentificationDto().getExcludes();
 		
 		// Then
-		assertEquals(7, includes.size());
+		assertEquals(11, includes.size());
 		assertEquals("[idEae]", includes.get(0).toString());
 		assertEquals("[dateEntretien]", includes.get(1).toString());
-		assertEquals("[evaluateurs]", includes.get(2).toString());
-		assertEquals("[agent]", includes.get(3).toString());
-		assertEquals("[diplomes]", includes.get(4).toString());
-		assertEquals("[parcoursPros]", includes.get(5).toString());
-		assertEquals("[formations]", includes.get(6).toString());
+		assertEquals("[evaluateurs,agent]", includes.get(2).toString());
+		assertEquals("[evaluateurs,fonction]", includes.get(3).toString());
+		assertEquals("[evaluateurs,dateEntreeService]", includes.get(4).toString());
+		assertEquals("[evaluateurs,dateEntreeCollectivite]", includes.get(5).toString());
+		assertEquals("[evaluateurs,dateEntreeFonction]", includes.get(6).toString());
+		assertEquals("[agent]", includes.get(7).toString());
+		assertEquals("[diplomes]", includes.get(8).toString());
+		assertEquals("[parcoursPros]", includes.get(9).toString());
+		assertEquals("[formations]", includes.get(10).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
@@ -123,7 +128,25 @@ public class EaeIdentificationDtoTest {
 		dto.getFormations().add(new EaeFormation());
 		dto.getParcoursPros().add(new EaeParcoursPro());
 		
-		String expectedResult = "{\"agent\":{},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[{}],\"evaluateurs\":[{}],\"formations\":[{}],\"idEae\":789,\"parcoursPros\":[{}]}";
+		String expectedResult = "{\"agent\":{},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[{}],\"evaluateurs\":[{\"agent\":null,\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[{}],\"idEae\":789,\"parcoursPros\":[{}]}";
+		
+		// When
+		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);
+		
+		// Then
+		assertEquals(expectedResult, result);
+	}
+	
+	@Test
+	public void testGetSerializerForEaeIdentificationDto_SerializeEvaluateursWithInlineAgentFormat() {
+		
+		// Given
+		EaeIdentificationDto dto = new EaeIdentificationDto();
+		EaeEvaluateur eval1 = new EaeEvaluateur();
+		eval1.setAgent(new Agent());
+		dto.getEvaluateurs().add(eval1);
+		
+		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[{\"idAgent\":null,\"nom\":null,\"prenom\":null,\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[],\"idEae\":0,\"parcoursPros\":[]}";
 		
 		// When
 		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);

@@ -4,6 +4,7 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import java.util.Date;
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 
@@ -143,6 +144,14 @@ privileged aspect EaeEvalue_Roo_JavaBean {
     
     public void EaeEvalue.setEae(Eae eae) {
         this.eae = eae;
+    }
+    
+    public Agent EaeEvalue.getAgent() {
+        return this.agent;
+    }
+    
+    public void EaeEvalue.setAgent(Agent agent) {
+        this.agent = agent;
     }
     
 }

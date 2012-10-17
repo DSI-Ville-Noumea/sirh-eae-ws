@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
+import nc.noumea.mairie.sirh.domain.Agent;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -66,4 +69,10 @@ public class EaeEvalue {
     @OneToOne
     @JoinColumn(name = "ID_EAE")
     private Eae eae;
+    
+    /*
+     * Transient properties (will be populated by AS400 entity manager)
+     */
+    @Transient
+    private Agent agent;
 }

@@ -16,19 +16,11 @@ import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
-import nc.noumea.mairie.sirh.tools.transformer.EaeEvaluateurToAgentFlatTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.EaeFichePosteToEaeListTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
-
-import flexjson.JSONSerializer;
 
 @RooJavaBean
 @RooToString
@@ -122,33 +114,6 @@ public class Eae {
     @Transient
     private Agent agentDelegataire;
     
-    public static JSONSerializer getSerializerForEaeList() {
-    	
-    	JSONSerializer serializer = new JSONSerializer()
-	    	.include("agentEvalue")
-	    	.include("etat")
-	    	.include("cap")
-	    	.include("docAttache")
-	    	.include("dateCreation")
-	    	.include("dateFinalisation")
-	    	.include("dateControle")
-	    	.include("dureeEntretien")
-	    	.include("agentDelegataire")
-	    	.include("eaeEvaluation.avisShd")
-	    	.include("idEae")
-	    	.include("eaeEvaluateurs")
-	    	.include("eaeFichePoste")
-	    	.transform(new MSDateTransformer(), Date.class)
-	    	.transform(new NullableIntegerTransformer(), Integer.class)
-	    	.transform(new SimpleAgentTransformer(), Agent.class)
-	    	.transform(new EaeEvaluateurToAgentFlatTransformer(), EaeEvaluateur.class)
-	    	.transform(new EaeFichePosteToEaeListTransformer(), EaeFichePoste.class)
-	    	.transform(new ValueEnumTransformer(), Enum.class)
-	    	.exclude("*");
-    	
-    	return serializer;
-    }
-
     public boolean isEvaluateur(int idAgent) {
 
     	for (EaeEvaluateur e : this.getEaeEvaluateurs()) {
