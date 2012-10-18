@@ -6,4 +6,6 @@ import nc.noumea.mairie.sirh.eae.dto.EaeIdentificationDto;
 public interface IEvaluationService {
 
 	public EaeIdentificationDto getEaeIdentification(Eae eae);
+	
+	public void setEaeIdentification(Eae eae, EaeIdentificationDto dto) throws EvaluationServiceException;
 }

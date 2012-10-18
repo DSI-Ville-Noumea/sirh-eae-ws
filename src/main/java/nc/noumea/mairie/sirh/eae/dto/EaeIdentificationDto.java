@@ -17,10 +17,11 @@ import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 
 import org.springframework.roo.addon.json.RooJson;
 
+import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 @RooJson
-public class EaeIdentificationDto {
+public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<EaeIdentificationDto> {
 
 	private int idEae;
 	private Date dateEntretien;
@@ -49,27 +50,40 @@ public class EaeIdentificationDto {
 	}
 
 	public static JSONSerializer getSerializerForEaeIdentificationDto() {
-		
-		JSONSerializer serializer = new JSONSerializer()
-				.include("idEae")
-				.include("dateEntretien")
-				.include("evaluateurs.agent")
+
+		JSONSerializer serializer = new JSONSerializer().include("idEae")
+				.include("dateEntretien").include("evaluateurs.agent")
 				.include("evaluateurs.fonction")
 				.include("evaluateurs.dateEntreeService")
 				.include("evaluateurs.dateEntreeCollectivite")
-				.include("evaluateurs.dateEntreeFonction")
-				.include("agent")
-				.include("diplomes")
-				.include("parcoursPros")
+				.include("evaluateurs.dateEntreeFonction").include("agent")
+				.include("diplomes").include("parcoursPros")
 				.include("formations")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new SimpleAgentTransformer(true), Agent.class)
-				.transform(new ValueEnumTransformer(), Enum.class)
-				.exclude("*");
+				.transform(new ValueEnumTransformer(), Enum.class).exclude("*");
 
 		return serializer;
 	}
 
+	public static JSONDeserializer<EaeIdentificationDto> getDeserializerForEaeIdentificationDto() {
+
+		JSONDeserializer<EaeIdentificationDto> deserializer = new JSONDeserializer<EaeIdentificationDto>()
+				.use(Date.class, new MSDateTransformer());
+
+		return deserializer;
+	}
+	
+	@Override
+	public EaeIdentificationDto deserializeFromJSON(String json) {
+		return getDeserializerForEaeIdentificationDto().deserializeInto(json, this);
+	}
+
+	@Override
+	public String serializeInJSON() {
+		return getSerializerForEaeIdentificationDto().serialize(this);
+	}
+	
 	public int getIdEae() {
 		return idEae;
 	}
@@ -125,5 +139,4 @@ public class EaeIdentificationDto {
 	public void setFormations(List<EaeFormation> formations) {
 		this.formations = formations;
 	}
-
 }

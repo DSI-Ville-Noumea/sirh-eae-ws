@@ -62,6 +62,21 @@ public class MSDateTransformerTest {
 	}
 	
 	@Test
+	public void testinstantiateValidDateWithDifferentNaming() {
+
+		// Given
+		String json = "\"/dAtE(1355270400000)/\"";
+		MSDateTransformer tr = new MSDateTransformer();
+		JSONDeserializer<Date> deserializer = new JSONDeserializer<Date>();
+
+		// When
+		Date d = deserializer.use(Date.class, tr).deserialize(json, Date.class);
+
+		// Then
+		assertEquals(1355270400000l, d.getTime());
+	}
+	
+	@Test
 	public void testinstantiateInvalidDate() {
 
 		// Given
@@ -75,7 +90,7 @@ public class MSDateTransformerTest {
 		}
 		catch (JSONException ex) {
 			// Then
-			assertEquals("Unable to parse '/DAT(1355270400000)/' as a valid date time. Expected format is '/DATE\\(([0-9]+)\\)/'", ex.getMessage());
+			assertEquals("Unable to parse '/DAT(1355270400000)/' as a valid date time. Expected format is '/[Dd][Aa][Tt][Ee]\\(([0-9]+)\\)/'", ex.getMessage());
 		}		
 	}
 }

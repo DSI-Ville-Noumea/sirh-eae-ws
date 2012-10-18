@@ -28,4 +28,11 @@ public class EvaluationService implements IEvaluationService {
 		return result;
 	}
 
+	@Override
+	public void setEaeIdentification(Eae eae, EaeIdentificationDto dto) throws EvaluationServiceException {
+
+		eae.setDateEntretien(dto.getDateEntretien());
+
+	}
+
 }

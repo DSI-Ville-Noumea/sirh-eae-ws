@@ -101,7 +101,7 @@ public class EaeIdentificationDtoTest {
 	}
 	
 	@Test
-	public void testGetSerializerForEaeIdentificationDto_SerializeEmptyObject() {
+	public void testSerializeInJSON_SerializeEmptyObject() {
 		
 		// Given
 		EaeIdentificationDto dto = new EaeIdentificationDto();
@@ -109,14 +109,14 @@ public class EaeIdentificationDtoTest {
 		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[],\"formations\":[],\"idEae\":0,\"parcoursPros\":[]}";
 		
 		// When
-		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);
+		String result = dto.serializeInJSON();
 		
 		// Then
 		assertEquals(expectedResult, result);
 	}
 	
 	@Test
-	public void testGetSerializerForEaeIdentificationDto_SerializeFilledInObject() {
+	public void testSerializeInJSON_SerializeFilledInObject() {
 		
 		// Given
 		EaeIdentificationDto dto = new EaeIdentificationDto();
@@ -131,14 +131,14 @@ public class EaeIdentificationDtoTest {
 		String expectedResult = "{\"agent\":{},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[{}],\"evaluateurs\":[{\"agent\":null,\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[{}],\"idEae\":789,\"parcoursPros\":[{}]}";
 		
 		// When
-		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);
+		String result = dto.serializeInJSON();
 		
 		// Then
 		assertEquals(expectedResult, result);
 	}
 	
 	@Test
-	public void testGetSerializerForEaeIdentificationDto_SerializeEvaluateursWithInlineAgentFormat() {
+	public void testSerializeInJSON_SerializeEvaluateursWithInlineAgentFormat() {
 		
 		// Given
 		EaeIdentificationDto dto = new EaeIdentificationDto();
@@ -149,9 +149,25 @@ public class EaeIdentificationDtoTest {
 		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[{\"idAgent\":null,\"nom\":null,\"prenom\":null,\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[],\"idEae\":0,\"parcoursPros\":[]}";
 		
 		// When
-		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);
+		String result = dto.serializeInJSON();
 		
 		// Then
 		assertEquals(expectedResult, result);
+	}
+	
+	@Test
+	public void testDeserializeFromJSON_dateEntretien() {
+		
+		// Given
+		Calendar c = new GregorianCalendar();
+		c.clear();
+		c.set(2012,  01, 18);
+		String json = "{\"dateEntretien\":\"/DATE(" + c.getTimeInMillis() + ")/\"}";
+
+		// When
+		EaeIdentificationDto dto = new EaeIdentificationDto().deserializeFromJSON(json);
+		
+		// Then
+		assertEquals(c.getTime(), dto.getDateEntretien());
 	}
 }

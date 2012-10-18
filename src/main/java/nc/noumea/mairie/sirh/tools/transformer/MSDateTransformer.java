@@ -14,7 +14,7 @@ import flexjson.transformer.AbstractTransformer;
 
 public class MSDateTransformer extends AbstractTransformer implements ObjectFactory {
 
-	private static final String msDateFormat = "/DATE\\(([0-9]+)\\)/";
+	private static final String msDateFormat = "/[Dd][Aa][Tt][Ee]\\(([0-9]+)\\)/";
 	private static final Pattern msDateFormatPattern = Pattern.compile(msDateFormat);
 	
 	@Override

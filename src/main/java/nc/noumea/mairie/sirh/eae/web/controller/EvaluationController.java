@@ -1,11 +1,11 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
-import java.util.Date;
-
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
+import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
+import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
-import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,14 +18,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import flexjson.JSONDeserializer;
-
 @Controller
 @RequestMapping("/evaluation")
 public class EvaluationController {
 
 	@Autowired
 	private IEvaluationService evaluationService;
+	
+	@Autowired
+	private IEaeService eaeService;
 	
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
@@ -34,13 +35,12 @@ public class EvaluationController {
 
 		Eae eae = Eae.findEae(idEae);
 		
-		if (eae == null) {
+		if (eae == null)
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-		}
 		
 		EaeIdentificationDto dto = evaluationService.getEaeIdentification(eae);
 		
-		String result = EaeIdentificationDto.getSerializerForEaeIdentificationDto().serialize(dto);
+		String result = dto.serializeInJSON();
 		
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 	}
@@ -48,10 +48,23 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestBody String dateEntretienJson) {
+	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestBody String eaeIdentificationDtoJson) {
 
-		Date dateEntretien = new JSONDeserializer<Date>().use(Date.class, new MSDateTransformer()).deserialize(dateEntretienJson, Date.class);
-
-		return new ResponseEntity<String>(dateEntretien.toString(), HttpStatus.OK);
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.startEae(eae);
+			EaeIdentificationDto dto = new EaeIdentificationDto().deserializeFromJSON(eaeIdentificationDtoJson);
+			evaluationService.setEaeIdentification(eae, dto);
+		} catch (EaeServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		} catch (EvaluationServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }
