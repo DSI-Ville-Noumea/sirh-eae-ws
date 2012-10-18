@@ -86,27 +86,6 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "demarrerEae", produces = "application/json;charset=utf-8")
-	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> startEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
-		
-		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
-    	
-		Eae eaeToStart = eaeService.findLastEaeByAgentId(convertedIdAgentEvalue);
-		
-		if (eaeToStart == null)
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-		
-		try {
-			eaeService.startEae(eaeToStart);
-		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
-		}
-		
-		return new ResponseEntity<String>(HttpStatus.OK);
-	}
-	
-	@ResponseBody
 	@RequestMapping(value = "resetEae", method = RequestMethod.POST)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
