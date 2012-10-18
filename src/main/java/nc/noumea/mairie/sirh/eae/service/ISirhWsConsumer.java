@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ISirhWsConsumer {
 
-	public List<Integer> getListOfEaesForAgentId(int agentId);
+	public List<Integer> getListOfEaesForAgentId(int agentId) throws SirhWSConsumerException;
 }

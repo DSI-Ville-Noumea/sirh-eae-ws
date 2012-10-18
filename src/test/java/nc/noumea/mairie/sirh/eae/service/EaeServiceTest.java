@@ -62,7 +62,7 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testlistEaesByAgentId_WhenNoEaeForAgent_returnNull() {
+	public void testlistEaesByAgentId_WhenNoEaeForAgent_returnNull() throws SirhWSConsumerException {
 
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>();
@@ -83,7 +83,7 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentsFilledIn() {
+	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentsFilledIn() throws SirhWSConsumerException {
 
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(98));
@@ -128,7 +128,7 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testlistEaesByAgentId_When2EaesForAgent_returnListOf2EaeWithAgentsFilledIn() {
+	public void testlistEaesByAgentId_When2EaesForAgent_returnListOf2EaeWithAgentsFilledIn() throws SirhWSConsumerException {
 
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(98, 67));
@@ -571,7 +571,7 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testGetEaesDashboard_NoEaeForAgentId_ReturnEmptyList() {
+	public void testGetEaesDashboard_NoEaeForAgentId_ReturnEmptyList()  throws SirhWSConsumerException {
 		
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>();
@@ -589,7 +589,7 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testGetEaesDashboard_3EaesForAgentId2Evaluateurs_ReturnDtoListOf2() {
+	public void testGetEaesDashboard_3EaesForAgentId2Evaluateurs_ReturnDtoListOf2() throws SirhWSConsumerException {
 		
 		// Given
 		Agent agent19 = new Agent();
@@ -655,7 +655,7 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testGetEaesDashboard_3EaesForAgentId1EvaluateurAnd2WithoutEvaluateur_ReturnDtoListOf2() {
+	public void testGetEaesDashboard_3EaesForAgentId1EvaluateurAnd2WithoutEvaluateur_ReturnDtoListOf2() throws SirhWSConsumerException {
 		
 		// Given
 		Agent agent19 = new Agent();

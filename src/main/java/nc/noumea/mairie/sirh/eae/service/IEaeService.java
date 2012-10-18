@@ -13,7 +13,7 @@ public interface IEaeService {
 	 * @param the agentId of the user
 	 * @return the list of EAEs
 	 */
-	List<EaeListItemDto> listEaesByAgentId(int agentId);
+	List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException;
 	
 	/**
 	 * Initializes an EAE based on the previous year's EAE (if existing)
@@ -49,7 +49,7 @@ public interface IEaeService {
 	 * @param idAgent viewing the dashboard
 	 * @return a list of Evaluateurs with their respective list of EAEs statuses
 	 */
-	List<EaeDashboardItemDto> getEaesDashboard(int idAgent);
+	List<EaeDashboardItemDto> getEaesDashboard(int idAgent) throws SirhWSConsumerException;
 	
 	/**
 	 * Find the last EAE of a given Agent

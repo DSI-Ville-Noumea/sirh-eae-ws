@@ -43,21 +43,6 @@
 			type="annotation" />
 	</context:component-scan>
 
-<!-- 	<bean class="org.apache.commons.dbcp.BasicDataSource" -->
-<!-- 		destroy-method="close" id="eaeOracleDataSource"> -->
-<!-- 		<property name="driverClassName" value="${database.driverClassName}" /> -->
-<!-- 		<property name="url" value="${database.url}" /> -->
-<!-- 		<property name="username" value="${database.username}" /> -->
-<!-- 		<property name="password" value="${database.password}" /> -->
-<!-- 		<property name="testOnBorrow" value="true" /> -->
-<!-- 		<property name="testOnReturn" value="true" /> -->
-<!-- 		<property name="testWhileIdle" value="true" /> -->
-<!-- 		<property name="timeBetweenEvictionRunsMillis" value="1800000" /> -->
-<!-- 		<property name="numTestsPerEvictionRun" value="3" /> -->
-<!-- 		<property name="minEvictableIdleTimeMillis" value="1800000" /> -->
-<!-- 		<property name="validationQuery" value="SELECT 1 FROM DUAL" /> -->
-<!-- 	</bean> -->
-
 	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/SIRH_EAE_WS"
 		resource-ref="true" />
 
@@ -88,6 +73,10 @@
 		id="sirhEntityManagerFactory">
 		<property name="persistenceUnitName" value="sirhPersistenceUnit" />
 		<property name="dataSource" ref="sirhDb400DataSource" />
+	</bean>
+	
+	<bean id="sirhWsEaeUrl" class="java.lang.String">
+	  <constructor-arg value="http://ws-qual.sirh.site-mairie.noumea.nc/eaes/listEaesByCampagne"/>
 	</bean>
 
 </beans>

@@ -8,7 +8,10 @@ import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
+import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/eaes")
 public class EaeController {
 	
+	private Logger logger = LoggerFactory.getLogger(EaeController.class);
+	
 	@Autowired
 	private IEaeService eaeService;
 	
@@ -38,7 +43,13 @@ public class EaeController {
 		
 		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
     	
-    	List<EaeListItemDto> result = eaeService.listEaesByAgentId(convertedId);
+    	List<EaeListItemDto> result;
+		try {
+			result = eaeService.listEaesByAgentId(convertedId);
+		} catch (SirhWSConsumerException e) {
+			logger.error(e.getMessage(), e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
 		if (result.isEmpty())
 			return new ResponseEntity<String>(HttpStatus.NO_CONTENT); 
@@ -145,7 +156,13 @@ public class EaeController {
 		
 		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
     	
-    	List<EaeDashboardItemDto> result = eaeService.getEaesDashboard(convertedId);
+    	List<EaeDashboardItemDto> result;
+		try {
+			result = eaeService.getEaesDashboard(convertedId);
+		} catch (SirhWSConsumerException e) {
+			logger.error(e.getMessage(), e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
 		if (result.isEmpty())
 			return new ResponseEntity<String>(HttpStatus.NO_CONTENT); 

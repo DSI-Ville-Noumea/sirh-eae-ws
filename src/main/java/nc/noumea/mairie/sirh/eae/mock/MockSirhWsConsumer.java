@@ -8,9 +8,6 @@ import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.eae.service.ISirhWsConsumer;
 
-import org.springframework.stereotype.Service;
-
-@Service
 public class MockSirhWsConsumer implements ISirhWsConsumer {
 
 	@PersistenceContext(unitName = "eaePersistenceUnit")

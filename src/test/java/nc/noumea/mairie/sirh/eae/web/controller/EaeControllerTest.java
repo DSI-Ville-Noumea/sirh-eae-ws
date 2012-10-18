@@ -19,6 +19,7 @@ import nc.noumea.mairie.sirh.eae.service.AgentMatriculeConverterServiceException
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
+import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class EaeControllerTest {
 	}
 	
 	@Test
-	public void testNoEaeForIdAgent_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException {
+	public void testNoEaeForIdAgent_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException, SirhWSConsumerException {
 		
 		// Given
 		EaeController controller = new EaeController();
@@ -63,7 +64,7 @@ public class EaeControllerTest {
 	}
 	
 	@Test
-	public void testlistEaesByAgent_1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException {
+	public void testlistEaesByAgent_1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException, SirhWSConsumerException {
 		
 		// Given
 		List<EaeListItemDto> resultOfService = new ArrayList<EaeListItemDto>(Arrays.asList(new EaeListItemDto()));
@@ -398,7 +399,7 @@ public class EaeControllerTest {
 	}
 	
 	@Test
-	public void testgetEaesDashboard_NoEaes_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException {
+	public void testgetEaesDashboard_NoEaes_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException, SirhWSConsumerException {
 		
 		// Given
 		EaeController controller = new EaeController();
@@ -418,7 +419,7 @@ public class EaeControllerTest {
 	}
 	
 	@Test
-	public void testgetEaesDashboard_1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException {
+	public void testgetEaesDashboard_1EaeForIdAgent_ReturnListWith1ItemAndHttpOK() throws AgentMatriculeConverterServiceException, SirhWSConsumerException {
 		
 		// Given
 		List<EaeDashboardItemDto> resultOfService = new ArrayList<EaeDashboardItemDto>(Arrays.asList(new EaeDashboardItemDto()));

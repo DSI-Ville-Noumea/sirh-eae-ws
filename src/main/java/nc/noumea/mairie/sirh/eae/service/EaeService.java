@@ -44,7 +44,7 @@ public class EaeService implements IEaeService {
 	 */
 	
 	@Override
-	public List<EaeListItemDto> listEaesByAgentId(int agentId) {
+	public List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException {
 
 		List<EaeListItemDto> result = new ArrayList<EaeListItemDto>();
 		
@@ -141,7 +141,7 @@ public class EaeService implements IEaeService {
 	}	
 	
 	@Override
-	public List<EaeDashboardItemDto> getEaesDashboard(int idAgent) {
+	public List<EaeDashboardItemDto> getEaesDashboard(int idAgent) throws SirhWSConsumerException {
 
 		List<EaeDashboardItemDto> result = new ArrayList<EaeDashboardItemDto>();
 		
