@@ -11,7 +11,9 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
+import nc.noumea.mairie.sirh.tools.transformer.EaeEvalueToAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.ObjectToStringTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 
@@ -51,17 +53,26 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 
 	public static JSONSerializer getSerializerForEaeIdentificationDto() {
 
-		JSONSerializer serializer = new JSONSerializer().include("idEae")
-				.include("dateEntretien").include("evaluateurs.agent")
+		JSONSerializer serializer = new JSONSerializer()
+				.include("idEae")
+				.include("dateEntretien")
+				.include("evaluateurs.agent")
 				.include("evaluateurs.fonction")
 				.include("evaluateurs.dateEntreeService")
 				.include("evaluateurs.dateEntreeCollectivite")
-				.include("evaluateurs.dateEntreeFonction").include("agent")
-				.include("diplomes").include("parcoursPros")
+				.include("evaluateurs.dateEntreeFonction")
+				.include("agent")
+				.include("diplomes")
+				.include("parcoursPros")
 				.include("formations")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new SimpleAgentTransformer(true), Agent.class)
-				.transform(new ValueEnumTransformer(), Enum.class).exclude("*");
+				.transform(new EaeEvalueToAgentTransformer(false), EaeEvalue.class)
+				.transform(new ObjectToStringTransformer("libelleDiplome", EaeDiplome.class), EaeDiplome.class)
+				.transform(new ObjectToStringTransformer("libelleParcoursPro", EaeParcoursPro.class), EaeParcoursPro.class)
+				.transform(new ObjectToStringTransformer("libelleFormation", EaeFormation.class), EaeFormation.class)
+				.transform(new ValueEnumTransformer(), Enum.class)
+				.exclude("*");
 
 		return serializer;
 	}

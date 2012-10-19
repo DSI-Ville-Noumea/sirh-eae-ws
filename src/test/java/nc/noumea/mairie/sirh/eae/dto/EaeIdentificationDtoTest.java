@@ -16,6 +16,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
 
+import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -119,16 +120,50 @@ public class EaeIdentificationDtoTest {
 	public void testSerializeInJSON_SerializeFilledInObject() {
 		
 		// Given
+		Agent agentEvalue = new Agent();
+		agentEvalue.setIdAgent(12);
+		agentEvalue.setNomMarital("michelle");
+		agentEvalue.setPrenom("michmich");
+		agentEvalue.setDateNaissance(new DateTime(1957, 02, 03, 0, 0, 0, 0).toDate());
+		
+		Agent agentEvaluateur = new Agent();
+		agentEvaluateur.setIdAgent(177);
+		agentEvaluateur.setNomMarital("bonno");
+		agentEvaluateur.setPrenom("patrice");
+		agentEvaluateur.setDateNaissance(new DateTime(1980, 02, 03, 0, 0, 0, 0).toDate());
+		
 		EaeIdentificationDto dto = new EaeIdentificationDto();
 		dto.setIdEae(789);
 		dto.setDateEntretien(c.getTime());
 		dto.setAgent(new EaeEvalue());
-		dto.getEvaluateurs().add(new EaeEvaluateur());
-		dto.getDiplomes().add(new EaeDiplome());
-		dto.getFormations().add(new EaeFormation());
-		dto.getParcoursPros().add(new EaeParcoursPro());
+		dto.getAgent().setAgent(agentEvalue);
+		EaeEvaluateur eval = new EaeEvaluateur();
+		eval.setAgent(agentEvaluateur);
+		dto.getEvaluateurs().add(eval);
 		
-		String expectedResult = "{\"agent\":{},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[{}],\"evaluateurs\":[{\"agent\":null,\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[{}],\"idEae\":789,\"parcoursPros\":[{}]}";
+		EaeDiplome d1 = new EaeDiplome();
+		d1.setLibelleDiplome("diplome 1");
+		dto.getDiplomes().add(d1);
+		EaeDiplome d2 = new EaeDiplome();
+		d2.setLibelleDiplome("diplome 2");
+		dto.getDiplomes().add(d2);
+		
+		EaeFormation f1 = new EaeFormation();
+		f1.setLibelleFormation("formation 1");
+		dto.getFormations().add(f1);
+		EaeFormation f2 = new EaeFormation();
+		f2.setLibelleFormation("formation 2");
+		dto.getFormations().add(f2);
+
+		EaeParcoursPro p1 = new EaeParcoursPro();
+		p1.setLibelleParcoursPro("parcours 1");
+		dto.getParcoursPros().add(p1);
+		
+		EaeParcoursPro p2 = new EaeParcoursPro();
+		p2.setLibelleParcoursPro("parcours 2");
+		dto.getParcoursPros().add(p2);
+		
+		String expectedResult = "{\"agent\":{\"idAgent\":12,\"nom\":\"michelle\",\"nomJeuneFille\":null,\"prenom\":\"michmich\",\"dateNaissance\":\"/DATE(-407415600000)/\"},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[\"diplome 1\",\"diplome 2\"],\"evaluateurs\":[{\"idAgent\":177,\"nom\":\"bonno\",\"prenom\":\"patrice\",\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[\"formation 1\",\"formation 2\"],\"idEae\":789,\"parcoursPros\":[\"parcours 1\",\"parcours 2\"]}";
 		
 		// When
 		String result = dto.serializeInJSON();
