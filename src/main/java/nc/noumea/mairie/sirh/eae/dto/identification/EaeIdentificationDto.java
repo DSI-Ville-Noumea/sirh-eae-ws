@@ -12,9 +12,11 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 import nc.noumea.mairie.sirh.eae.dto.IJSONDeserialize;
 import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvalueToAgentTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.EnumToListAndValueTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToStringTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
@@ -84,6 +86,8 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 				.transform(new ObjectToStringTransformer("libelleDiplome", EaeDiplome.class), EaeDiplome.class)
 				.transform(new ObjectToStringTransformer("libelleParcoursPro", EaeParcoursPro.class), EaeParcoursPro.class)
 				.transform(new ObjectToStringTransformer("libelleFormation", EaeFormation.class), EaeFormation.class)
+				.transform(new EnumToListAndValueTransformer(EaeAgentStatutEnum.class), EaeAgentStatutEnum.class)
+				.transform(new EnumToListAndValueTransformer(EaeAgentPositionAdministrativeEnum.class), EaeAgentPositionAdministrativeEnum.class)
 				.transform(new ValueEnumTransformer(), Enum.class)
 				.exclude("*");
 
