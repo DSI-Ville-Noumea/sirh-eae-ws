@@ -2,7 +2,7 @@ package nc.noumea.mairie.sirh.eae.service;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
-import nc.noumea.mairie.sirh.eae.dto.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.dto.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;

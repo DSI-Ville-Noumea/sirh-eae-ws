@@ -36,8 +36,8 @@ public class EaeEvalue {
     @Column(name = "STATUT")
     private String statut;
 
-    @Column(name = "ANCIENNETE_ECHELON")
-    private Integer ancienneteEchelon;
+    @Column(name = "ANCIENNETE_ECHELON_JOURS")
+    private Integer ancienneteEchelonJours;
 
     @Column(name = "CADRE")
     private String cadre;

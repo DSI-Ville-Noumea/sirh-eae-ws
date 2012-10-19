@@ -7,7 +7,8 @@ import static org.mockito.Mockito.verify;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
-import nc.noumea.mairie.sirh.eae.dto.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class EvaluationServiceTest {
 		EaeEvalue evalue = new EaeEvalue();
 		eae.setEaeEvalue(evalue);
 		IAgentService agentServiceMock = mock(IAgentService.class);
-		
+		eae.setEaeFichePoste(new EaeFichePoste());
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 

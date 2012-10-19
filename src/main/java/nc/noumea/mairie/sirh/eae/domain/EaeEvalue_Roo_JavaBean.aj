@@ -58,12 +58,12 @@ privileged aspect EaeEvalue_Roo_JavaBean {
         this.statut = statut;
     }
     
-    public Integer EaeEvalue.getAncienneteEchelon() {
-        return this.ancienneteEchelon;
+    public Integer EaeEvalue.getAncienneteEchelonJours() {
+        return this.ancienneteEchelonJours;
     }
     
-    public void EaeEvalue.setAncienneteEchelon(Integer ancienneteEchelon) {
-        this.ancienneteEchelon = ancienneteEchelon;
+    public void EaeEvalue.setAncienneteEchelonJours(Integer ancienneteEchelonJours) {
+        this.ancienneteEchelonJours = ancienneteEchelonJours;
     }
     
     public String EaeEvalue.getCadre() {

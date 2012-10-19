@@ -32,12 +32,9 @@ public class ObjectToStringTransformerTest {
 		// Given
 		EaeDiplome diplome1 = new EaeDiplome();
 		diplome1.setLibelleDiplome("poupou1");
-		EaeDiplome diplome2 = new EaeDiplome();
-		diplome2.setLibelleDiplome("poupou2");
 		
 		Eae eae = new Eae();
 		eae.getEaeDiplomes().add(diplome1);
-		eae.getEaeDiplomes().add(diplome2);
 		
 		// When
 		String json = new JSONSerializer()
@@ -47,6 +44,6 @@ public class ObjectToStringTransformerTest {
 				.serialize(eae);
 		
 		// Then
-		assertEquals("{\"eaeDiplomes\":[\"poupou1\",\"poupou2\"]}", json);
+		assertEquals("{\"eaeDiplomes\":[\"poupou1\"]}", json);
 	}
 }

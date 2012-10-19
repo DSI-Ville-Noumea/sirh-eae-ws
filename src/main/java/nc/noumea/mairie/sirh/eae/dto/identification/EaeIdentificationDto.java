@@ -1,4 +1,4 @@
-package nc.noumea.mairie.sirh.eae.dto;
+package nc.noumea.mairie.sirh.eae.dto.identification;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +11,8 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
+import nc.noumea.mairie.sirh.eae.dto.IJSONDeserialize;
+import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvalueToAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToStringTransformer;
@@ -32,7 +34,9 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 	private List<EaeDiplome> diplomes;
 	private List<EaeParcoursPro> parcoursPros;
 	private List<EaeFormation> formations;
-
+	private EaeIdentificationSituationDto situation;
+	private EaeIdentificationStatutDto statut;
+	
 	public EaeIdentificationDto() {
 		evaluateurs = new ArrayList<EaeEvaluateur>();
 		diplomes = new ArrayList<EaeDiplome>();
@@ -49,11 +53,14 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 		this.diplomes.addAll(eae.getEaeDiplomes());
 		this.parcoursPros.addAll(eae.getEaeParcoursPros());
 		this.formations.addAll(eae.getEaeFormations());
+		this.situation = new EaeIdentificationSituationDto(eae);
+		this.statut = new EaeIdentificationStatutDto(eae.getEaeEvalue());
 	}
 
 	public static JSONSerializer getSerializerForEaeIdentificationDto() {
 
 		JSONSerializer serializer = new JSONSerializer()
+				.exclude("*.class")
 				.include("idEae")
 				.include("dateEntretien")
 				.include("evaluateurs.agent")
@@ -65,6 +72,8 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 				.include("diplomes")
 				.include("parcoursPros")
 				.include("formations")
+				.include("situation.*")
+				.include("statut.*")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new SimpleAgentTransformer(true), Agent.class)
 				.transform(new EaeEvalueToAgentTransformer(false), EaeEvalue.class)
@@ -150,4 +159,22 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 	public void setFormations(List<EaeFormation> formations) {
 		this.formations = formations;
 	}
+
+	public EaeIdentificationSituationDto getSituation() {
+		return situation;
+	}
+
+	public void setSituation(EaeIdentificationSituationDto situation) {
+		this.situation = situation;
+	}
+
+	public EaeIdentificationStatutDto getStatut() {
+		return statut;
+	}
+
+	public void setStatut(EaeIdentificationStatutDto statut) {
+		this.statut = statut;
+	}
+	
+
 }

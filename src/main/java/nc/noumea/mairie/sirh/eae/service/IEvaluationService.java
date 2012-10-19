@@ -1,7 +1,7 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.dto.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 
 public interface IEvaluationService {
 
