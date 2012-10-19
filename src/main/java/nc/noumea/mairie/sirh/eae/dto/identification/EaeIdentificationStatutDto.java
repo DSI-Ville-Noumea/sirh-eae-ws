@@ -3,13 +3,11 @@ package nc.noumea.mairie.sirh.eae.dto.identification;
 import java.util.Date;
 
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 
 public class EaeIdentificationStatutDto {
 	
-	private String statut;
-	private String position;
-	private String precision;
-	
+	private EaeAgentStatutEnum statut;	
 	private String cadre;
 	private String grade;
 	private String echelon;
@@ -19,6 +17,7 @@ public class EaeIdentificationStatutDto {
 	private String nouvGrade;
 	private String nouvEchelon;
 	private Date dateEffet;
+	private String statutPrecision;
 	
 	public EaeIdentificationStatutDto() {
 		
@@ -34,30 +33,24 @@ public class EaeIdentificationStatutDto {
 		this.nouvGrade = eaeEvalue.getNouvGrade();
 		this.nouvEchelon = eaeEvalue.getNouvEchelon();
 		this.dateEffet = eaeEvalue.getDateEffetAvancement();
-	}
-
-	public String getStatut() {
+		this.statutPrecision = eaeEvalue.getStatutPrecision();
+		this.statut = eaeEvalue.getStatut();
+	}	
+	
+	public EaeAgentStatutEnum getStatut() {
 		return statut;
 	}
 
-	public void setStatut(String statut) {
+	public void setStatut(EaeAgentStatutEnum statut) {
 		this.statut = statut;
 	}
 
-	public String getPosition() {
-		return position;
+	public String getStatutPrecision() {
+		return statutPrecision;
 	}
 
-	public void setPosition(String position) {
-		this.position = position;
-	}
-
-	public String getPrecision() {
-		return precision;
-	}
-
-	public void setPrecision(String precision) {
-		this.precision = precision;
+	public void setStatutPrecision(String statutPrecision) {
+		this.statutPrecision = statutPrecision;
 	}
 
 	public String getCadre() {

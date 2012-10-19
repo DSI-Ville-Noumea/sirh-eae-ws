@@ -3,7 +3,7 @@ package nc.noumea.mairie.sirh.eae.dto;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasse;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasseEnum;
 
 import org.springframework.roo.addon.json.RooJson;
 
@@ -77,7 +77,7 @@ public class EaeDashboardItemDto {
 				break;
 		}
 		
-		if (eae.getEaeEvaluation().getChangementClasse() != null && eae.getEaeEvaluation().getChangementClasse() == EaeAvisChangementClasse.FAVORABLE) {
+		if (eae.getEaeEvaluation().getChangementClasse() != null && eae.getEaeEvaluation().getChangementClasse() == EaeAvisChangementClasseEnum.FAVORABLE) {
 			changClasse++;
 			return;
 		}

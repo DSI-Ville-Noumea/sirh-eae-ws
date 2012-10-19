@@ -11,6 +11,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
 import nc.noumea.mairie.sirh.eae.dto.IJSONDeserialize;
 import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvalueToAgentTransformer;
@@ -36,6 +37,7 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 	private List<EaeFormation> formations;
 	private EaeIdentificationSituationDto situation;
 	private EaeIdentificationStatutDto statut;
+	private EaeAgentPositionAdministrativeEnum position;
 	
 	public EaeIdentificationDto() {
 		evaluateurs = new ArrayList<EaeEvaluateur>();
@@ -55,6 +57,7 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 		this.formations.addAll(eae.getEaeFormations());
 		this.situation = new EaeIdentificationSituationDto(eae);
 		this.statut = new EaeIdentificationStatutDto(eae.getEaeEvalue());
+		this.position = eae.getEaeEvalue().getPosition();
 	}
 
 	public static JSONSerializer getSerializerForEaeIdentificationDto() {
@@ -74,6 +77,7 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 				.include("formations")
 				.include("situation.*")
 				.include("statut.*")
+				.include("position")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new SimpleAgentTransformer(true), Agent.class)
 				.transform(new EaeEvalueToAgentTransformer(false), EaeEvalue.class)
@@ -175,6 +179,12 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 	public void setStatut(EaeIdentificationStatutDto statut) {
 		this.statut = statut;
 	}
-	
 
+	public EaeAgentPositionAdministrativeEnum getPosition() {
+		return position;
+	}
+
+	public void setPosition(EaeAgentPositionAdministrativeEnum position) {
+		this.position = position;
+	}
 }

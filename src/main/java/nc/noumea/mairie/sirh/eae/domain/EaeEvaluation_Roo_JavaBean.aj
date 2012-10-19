@@ -7,7 +7,7 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasse;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasseEnum;
 
 privileged aspect EaeEvaluation_Roo_JavaBean {
     
@@ -67,11 +67,11 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
         this.avancementDiff = avancementDiff;
     }
     
-    public EaeAvisChangementClasse EaeEvaluation.getChangementClasse() {
+    public EaeAvisChangementClasseEnum EaeEvaluation.getChangementClasse() {
         return this.changementClasse;
     }
     
-    public void EaeEvaluation.setChangementClasse(EaeAvisChangementClasse changementClasse) {
+    public void EaeEvaluation.setChangementClasse(EaeAvisChangementClasseEnum changementClasse) {
         this.changementClasse = changementClasse;
     }
     

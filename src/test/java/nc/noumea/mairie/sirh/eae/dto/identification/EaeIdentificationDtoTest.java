@@ -17,6 +17,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
 
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
@@ -47,6 +48,7 @@ public class EaeIdentificationDtoTest {
 		eae.setEaeEvaluateurs(evals);
 		
 		EaeEvalue evalue = new EaeEvalue();
+		evalue.setPosition(EaeAgentPositionAdministrativeEnum.AC);
 		eae.setEaeEvalue(evalue);
 		
 		Set<EaeDiplome> diplomes = new HashSet<EaeDiplome>();
@@ -78,6 +80,7 @@ public class EaeIdentificationDtoTest {
 		assertEquals(parcours.iterator().next(), dto.getParcoursPros().get(0));
 		assertEquals(1, dto.getFormations().size());
 		assertEquals(formations.iterator().next(), dto.getFormations().get(0));
+		assertEquals(EaeAgentPositionAdministrativeEnum.AC, dto.getPosition());
 		assertNotNull(dto.getSituation());
 	}
 	
@@ -89,7 +92,7 @@ public class EaeIdentificationDtoTest {
 		List<PathExpression> excludes = EaeIdentificationDto.getSerializerForEaeIdentificationDto().getExcludes();
 		
 		// Then
-		assertEquals(13, includes.size());
+		assertEquals(14, includes.size());
 		assertEquals("[idEae]", includes.get(0).toString());
 		assertEquals("[dateEntretien]", includes.get(1).toString());
 		assertEquals("[evaluateurs,agent]", includes.get(2).toString());
@@ -103,6 +106,7 @@ public class EaeIdentificationDtoTest {
 		assertEquals("[formations]", includes.get(10).toString());
 		assertEquals("[situation,*]", includes.get(11).toString());
 		assertEquals("[statut,*]", includes.get(12).toString());
+		assertEquals("[position]", includes.get(13).toString());
 		
 		assertEquals(2, excludes.size());
 		assertEquals("[*,class]", excludes.get(0).toString());
@@ -115,7 +119,7 @@ public class EaeIdentificationDtoTest {
 		// Given
 		EaeIdentificationDto dto = new EaeIdentificationDto();
 		
-		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[],\"formations\":[],\"idEae\":0,\"parcoursPros\":[],\"situation\":null,\"statut\":null}";
+		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[],\"formations\":[],\"idEae\":0,\"parcoursPros\":[],\"position\":null,\"situation\":null,\"statut\":null}";
 		
 		// When
 		String result = dto.serializeInJSON();
@@ -174,7 +178,7 @@ public class EaeIdentificationDtoTest {
 		dto.setSituation(new EaeIdentificationSituationDto());
 		dto.setStatut(new EaeIdentificationStatutDto());
 		
-		String expectedResult = "{\"agent\":{\"idAgent\":12,\"nom\":\"michelle\",\"nomJeuneFille\":null,\"prenom\":\"michmich\",\"dateNaissance\":\"/DATE(-407415600000)/\"},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[\"diplome 1\",\"diplome 2\"],\"evaluateurs\":[{\"idAgent\":177,\"nom\":\"bonno\",\"prenom\":\"patrice\",\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[\"formation 1\",\"formation 2\"],\"idEae\":789,\"parcoursPros\":[\"parcours 1\",\"parcours 2\"],\"situation\":{\"dateEntreeAdministration\":null,\"dateEntreeFonction\":null,\"dateEntreeFonctionnaire\":null,\"directionService\":null,\"emploi\":null,\"fonction\":null},\"statut\":{\"ancienneteEchelonJours\":null,\"cadre\":null,\"categorie\":null,\"classification\":null,\"dateEffet\":null,\"echelon\":null,\"grade\":null,\"nouvEchelon\":null,\"nouvGrade\":null,\"position\":null,\"precision\":null,\"statut\":null}}";
+		String expectedResult = "{\"agent\":{\"idAgent\":12,\"nom\":\"michelle\",\"nomJeuneFille\":null,\"prenom\":\"michmich\",\"dateNaissance\":\"/DATE(-407415600000)/\"},\"dateEntretien\":\"/DATE(1337223959000)/\",\"diplomes\":[\"diplome 1\",\"diplome 2\"],\"evaluateurs\":[{\"idAgent\":177,\"nom\":\"bonno\",\"prenom\":\"patrice\",\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[\"formation 1\",\"formation 2\"],\"idEae\":789,\"parcoursPros\":[\"parcours 1\",\"parcours 2\"],\"position\":null,\"situation\":{\"dateEntreeAdministration\":null,\"dateEntreeFonction\":null,\"dateEntreeFonctionnaire\":null,\"directionService\":null,\"emploi\":null,\"fonction\":null},\"statut\":{\"ancienneteEchelonJours\":null,\"cadre\":null,\"categorie\":null,\"classification\":null,\"dateEffet\":null,\"echelon\":null,\"grade\":null,\"nouvEchelon\":null,\"nouvGrade\":null,\"statut\":null,\"statutPrecision\":null}}";
 		
 		// When
 		String result = dto.serializeInJSON();
@@ -192,7 +196,7 @@ public class EaeIdentificationDtoTest {
 		eval1.setAgent(new Agent());
 		dto.getEvaluateurs().add(eval1);
 		
-		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[{\"idAgent\":null,\"nom\":null,\"prenom\":null,\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[],\"idEae\":0,\"parcoursPros\":[],\"situation\":null,\"statut\":null}";
+		String expectedResult = "{\"agent\":null,\"dateEntretien\":null,\"diplomes\":[],\"evaluateurs\":[{\"idAgent\":null,\"nom\":null,\"prenom\":null,\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[],\"idEae\":0,\"parcoursPros\":[],\"position\":null,\"situation\":null,\"statut\":null}";
 		
 		// When
 		String result = dto.serializeInJSON();

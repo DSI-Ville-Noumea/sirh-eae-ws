@@ -20,14 +20,6 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 privileged aspect Eae_Roo_JavaBean {
     
-    public String Eae.getStatut() {
-        return this.statut;
-    }
-    
-    public void Eae.setStatut(String statut) {
-        this.statut = statut;
-    }
-    
     public EaeEtatEnum Eae.getEtat() {
         return this.etat;
     }

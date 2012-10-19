@@ -30,10 +30,7 @@ public class Eae {
 
 	 /*
      * Mapped properties
-     */    
-    @Column(name = "STATUT")
-	private String statut;
-    
+     */
     @NotNull
     @Column(name = "ETAT")
     @Enumerated(EnumType.STRING)

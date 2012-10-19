@@ -7,6 +7,8 @@ import java.util.Date;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 
 privileged aspect EaeEvalue_Roo_JavaBean {
     
@@ -50,12 +52,20 @@ privileged aspect EaeEvalue_Roo_JavaBean {
         this.dateEntreeAdministration = dateEntreeAdministration;
     }
     
-    public String EaeEvalue.getStatut() {
+    public EaeAgentStatutEnum EaeEvalue.getStatut() {
         return this.statut;
     }
     
-    public void EaeEvalue.setStatut(String statut) {
+    public void EaeEvalue.setStatut(EaeAgentStatutEnum statut) {
         this.statut = statut;
+    }
+    
+    public String EaeEvalue.getStatutPrecision() {
+        return this.statutPrecision;
+    }
+    
+    public void EaeEvalue.setStatutPrecision(String statutPrecision) {
+        this.statutPrecision = statutPrecision;
     }
     
     public Integer EaeEvalue.getAncienneteEchelonJours() {
@@ -136,6 +146,14 @@ privileged aspect EaeEvalue_Roo_JavaBean {
     
     public void EaeEvalue.setTypeAvancement(Integer typeAvancement) {
         this.typeAvancement = typeAvancement;
+    }
+    
+    public EaeAgentPositionAdministrativeEnum EaeEvalue.getPosition() {
+        return this.position;
+    }
+    
+    public void EaeEvalue.setPosition(EaeAgentPositionAdministrativeEnum position) {
+        this.position = position;
     }
     
     public Eae EaeEvalue.getEae() {

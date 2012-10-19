@@ -1,13 +1,13 @@
 package nc.noumea.mairie.sirh.eae.domain.enums;
 
-public enum EaeAvisChangementClasse {
+public enum EaeAvisChangementClasseEnum {
 	
 	FAVORABLE("Favorable"),
 	DEFAVORABLE("Défavorable");
 	
 	private String avisAvancement;
 	
-	private EaeAvisChangementClasse(String _avisAvancement) {
+	private EaeAvisChangementClasseEnum(String _avisAvancement) {
 		this.avisAvancement = _avisAvancement;
 	}
 	

@@ -3,11 +3,15 @@ package nc.noumea.mairie.sirh.eae.domain;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import nc.noumea.mairie.sirh.domain.Agent;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -34,7 +38,11 @@ public class EaeEvalue {
     private Date dateEntreeAdministration;
 
     @Column(name = "STATUT")
-    private String statut;
+    @Enumerated(EnumType.STRING)
+    private EaeAgentStatutEnum statut;
+    
+    @Column(name = "STATUT_PRECISION")
+    private String statutPrecision;
 
     @Column(name = "ANCIENNETE_ECHELON_JOURS")
     private Integer ancienneteEchelonJours;
@@ -65,6 +73,10 @@ public class EaeEvalue {
 
     @Column(name = "TYPE_AVCT")
     private Integer typeAvancement;
+    
+    @Column(name = "POSITION")
+    @Enumerated(EnumType.STRING)
+    private EaeAgentPositionAdministrativeEnum position;
     
     @OneToOne
     @JoinColumn(name = "ID_EAE")
