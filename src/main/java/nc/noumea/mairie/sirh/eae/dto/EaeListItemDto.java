@@ -50,7 +50,7 @@ public class EaeListItemDto {
 		this.setIdEae(eaeItem.getIdEae());
 		this.setAgentDelegataire(eaeItem.getAgentDelegataire());
 		this.setEaeEvaluateurs(new ArrayList<EaeEvaluateur>(eaeItem.getEaeEvaluateurs()));
-		this.setEaeFichePoste(eaeItem.getEaeFichePoste());
+		this.setEaeFichePoste(eaeItem.getPrimaryFichePoste());
 		this.setEtat(eaeItem.getEtat());
 		this.setCap(eaeItem.isCap());
 		this.setDocAttache(eaeItem.isDocAttache());

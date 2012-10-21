@@ -26,7 +26,8 @@ public class EaeFichePosteToEaeListTransformerTest {
 		fdp.setService("svc");
 		fdp.setSectionService("section");
 		fdp.setAgentShd(agentShd);
-		eae.setEaeFichePoste(fdp);
+		fdp.setPrimary(true);
+		eae.getEaeFichePostes().add(fdp);
 
 		// When
 		String json = serializer.transform(tr, EaeFichePoste.class).serialize(eae);

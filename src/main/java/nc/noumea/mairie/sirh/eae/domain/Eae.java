@@ -80,8 +80,8 @@ public class Eae {
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
     private EaeEvalue eaeEvalue;
     
-    @OneToOne(optional = false, mappedBy = "eae", fetch = FetchType.LAZY)
-    private EaeFichePoste eaeFichePoste;
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    private Set<EaeFichePoste> eaeFichePostes = new HashSet<EaeFichePoste>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
 	private Set<EaeDiplome> eaeDiplomes = new HashSet<EaeDiplome>();
@@ -103,6 +103,16 @@ public class Eae {
      */        
     @Transient
     private Agent agentDelegataire;
+    
+    public EaeFichePoste getPrimaryFichePoste() {
+    	
+    	for(EaeFichePoste fdp : this.getEaeFichePostes()) {
+    		if (fdp.isPrimary())
+    			return fdp;
+    	}
+    	
+    	return null;
+    }
     
     public boolean isEvaluateur(int idAgent) {
 

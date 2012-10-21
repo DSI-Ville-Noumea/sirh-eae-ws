@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.dto.identification;
 import java.util.Date;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 import org.springframework.roo.addon.json.RooJson;
 
@@ -21,11 +22,12 @@ public class EaeIdentificationSituationDto {
 	}
 	
 	public EaeIdentificationSituationDto(Eae eae) {
-		this.directionService = eae.getEaeFichePoste().getDirectionService();
-		this.fonction = eae.getEaeFichePoste().getFonction();
-		this.emploi = eae.getEaeFichePoste().getEmploi();
+		EaeFichePoste fdp = eae.getPrimaryFichePoste();
+		this.directionService = fdp.getDirectionService();
+		this.fonction = fdp.getFonction();
+		this.emploi = fdp.getEmploi();
 		this.dateEntreeAdministration = eae.getEaeEvalue().getDateEntreeAdministration();
-		this.dateEntreeFonction = eae.getEaeFichePoste().getDateEntreeFonction();
+		this.dateEntreeFonction = fdp.getDateEntreeFonction();
 		this.dateEntreeFonctionnaire = eae.getEaeEvalue().getDateEntreeFonctionnaire();
 	}
 	

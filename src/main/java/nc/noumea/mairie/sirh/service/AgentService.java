@@ -17,8 +17,9 @@ public class AgentService implements IAgentService {
 		if (eaeToFill.getEaeEvalue() != null)
 			fillEaeEvalueWithAgent(eaeToFill.getEaeEvalue());
 		
-		if (eaeToFill.getEaeFichePoste() != null)
-			fillEaeFichePosteWithAgent(eaeToFill.getEaeFichePoste());
+		if (eaeToFill.getEaeFichePostes() != null)
+			for (EaeFichePoste fdp : eaeToFill.getEaeFichePostes())
+				fillEaeFichePosteWithAgent(fdp);
 		
 		if (eaeToFill.getIdAgentDelegataire() != null)
 			eaeToFill.setAgentDelegataire(getAgent(eaeToFill.getIdAgentDelegataire()));

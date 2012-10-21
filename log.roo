@@ -245,3 +245,10 @@ hint
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-19 08:16:47
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-19 09:17:48
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-19 09:19:16
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-19 16:00:24
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-22 08:00:06
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-22 09:56:26
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-22 09:56:32
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-22 09:57:25
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-22 09:59:45
+field boolean --class ~.sirh.eae.domain.EaeFichePoste --fieldName isPrimaire

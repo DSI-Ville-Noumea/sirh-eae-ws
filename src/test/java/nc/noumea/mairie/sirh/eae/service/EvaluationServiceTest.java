@@ -27,7 +27,9 @@ public class EvaluationServiceTest {
 		EaeEvalue evalue = new EaeEvalue();
 		eae.setEaeEvalue(evalue);
 		IAgentService agentServiceMock = mock(IAgentService.class);
-		eae.setEaeFichePoste(new EaeFichePoste());
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setPrimary(true);
+		eae.getEaeFichePostes().add(fdp);
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 

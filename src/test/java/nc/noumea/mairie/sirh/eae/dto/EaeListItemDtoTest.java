@@ -57,7 +57,8 @@ public class EaeListItemDtoTest {
 		fdp.setService("service");
 		fdp.setDirectionService("direction service");
 		fdp.setSectionService("section service");
-		eaeItem.setEaeFichePoste(fdp);
+		fdp.setPrimary(true);
+		eaeItem.getEaeFichePostes().add(fdp);
 		
 		eaeItem.setEtat(EaeEtatEnum.ND);
 		eaeItem.setCap(true);

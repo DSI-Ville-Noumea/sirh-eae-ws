@@ -20,7 +20,8 @@ public class EaeIdentificationSituationDtoTest {
 		fp.setFonction("fonction");
 		fp.setEmploi("emploi");
 		fp.setDirectionService("direction service");
-		eae.setEaeFichePoste(fp);
+		fp.setPrimary(true);
+		eae.getEaeFichePostes().add(fp);
 		
 		EaeEvalue eaeEvalue = new EaeEvalue();
 		eaeEvalue.setDateEntreeAdministration(new DateTime(2006, 5, 3, 0, 0, 0, 0).toDate());

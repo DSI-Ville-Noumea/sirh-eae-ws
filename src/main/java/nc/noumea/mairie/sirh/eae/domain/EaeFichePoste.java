@@ -6,23 +6,25 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 
+import org.hibernate.annotations.Type;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_FICHE_POSTE", identifierField = "idEaeFichePoste", identifierType = Integer.class, table = "EAE_FICHE_POSTE", sequenceName="EAE_S_FICHE_POSTE")
+@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_FICHE_POSTE", identifierField = "idEaeFichePoste", identifierType = Integer.class, table = "EAE_FICHE_POSTE", sequenceName = "EAE_S_FICHE_POSTE")
 public class EaeFichePoste {
 
-	@Column(name = "TYPE_FDP")
-    private String typeFdp;
+    @Column(name = "PRIMAIRE", nullable = false)
+    @Type(type="boolean")
+    private boolean primary;
 
     @Column(name = "DIRECTION_SERVICE")
     private String directionService;
@@ -53,14 +55,14 @@ public class EaeFichePoste {
 
     @Column(name = "ID_SHD")
     private Integer idAgentShd;
-     
-    @OneToOne(optional = false)
-    @JoinColumn(name = "ID_EAE", unique = true, nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
     private Eae eae;
-    
+
     @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY)
-	private Set<EaeFdpActivite> eaeFdbActivites;
-    
+    private Set<EaeFdpActivite> eaeFdbActivites;
+
     @Transient
     private Agent agentShd;
 }

@@ -441,9 +441,10 @@ public class EaeServiceTest {
 		
 		EaeFichePoste fdp = new EaeFichePoste();
 		fdp.setIdAgentShd(10000);
+		fdp.setPrimary(true);
 		fdp.setFonctionResponsable("fonction responsable");
 		
-		eaeToDelete.setEaeFichePoste(fdp);
+		eaeToDelete.getEaeFichePostes().add(fdp);
 		
 		EaeService service = new EaeService();
 
@@ -471,9 +472,10 @@ public class EaeServiceTest {
 		
 		EaeFichePoste fdp = new EaeFichePoste();
 		fdp.setIdAgentShd(10000);
+		fdp.setPrimary(true);
 		fdp.setFonctionResponsable("fonction responsable");
 		
-		eaeToDelete.setEaeFichePoste(fdp);
+		eaeToDelete.getEaeFichePostes().add(fdp);
 		
 		EaeService service = new EaeService();
 
@@ -502,9 +504,10 @@ public class EaeServiceTest {
 
 		EaeFichePoste fdp = new EaeFichePoste();
 		fdp.setIdAgentShd(10000);
+		fdp.setPrimary(true);
 		fdp.setFonctionResponsable("fonction responsable");
 		
-		eaeToDelete.setEaeFichePoste(fdp);
+		eaeToDelete.getEaeFichePostes().add(fdp);
 		
 		EaeService service = new EaeService();
 

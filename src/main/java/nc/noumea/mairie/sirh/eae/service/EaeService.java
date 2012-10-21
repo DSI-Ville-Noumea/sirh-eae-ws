@@ -13,6 +13,7 @@ import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
@@ -122,10 +123,12 @@ public class EaeService implements IEaeService {
 		eaeToReset.getEaeEvaluateurs().clear();
 		eaeToReset.flush();
 		
+		EaeFichePoste primaryFichePoste = eaeToReset.getPrimaryFichePoste();
+		
 		EaeEvaluateur evaluateur = new EaeEvaluateur();
 		evaluateur.setEae(eaeToReset);
-		evaluateur.setIdAgent(eaeToReset.getEaeFichePoste().getIdAgentShd());
-		evaluateur.setFonction(eaeToReset.getEaeFichePoste().getFonctionResponsable());
+		evaluateur.setIdAgent(primaryFichePoste.getIdAgentShd());
+		evaluateur.setFonction(primaryFichePoste.getFonctionResponsable());
 		eaeToReset.getEaeEvaluateurs().add(evaluateur);
 	}
 	

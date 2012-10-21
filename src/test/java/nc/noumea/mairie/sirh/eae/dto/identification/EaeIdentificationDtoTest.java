@@ -63,7 +63,9 @@ public class EaeIdentificationDtoTest {
 		formations.add(new EaeFormation());
 		eae.setEaeFormations(formations);
 		
-		eae.setEaeFichePoste(new EaeFichePoste());
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setPrimary(true);
+		eae.getEaeFichePostes().add(fdp);
 		
 		// When
 		EaeIdentificationDto dto = new EaeIdentificationDto(eae);

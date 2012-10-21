@@ -104,7 +104,7 @@ public class AgentServiceTest {
 		eaeToReturn.setIdAgentDelegataire(idAgentDelegataire);
 		EaeFichePoste fdp = new EaeFichePoste();
 		fdp.setIdAgentShd(idAgentShd);
-		eaeToReturn.setEaeFichePoste(fdp);
+		eaeToReturn.getEaeFichePostes().add(fdp);
 		
 		// Mock the Agent find static method to return our agent
 		Agent agentToReturn = new Agent();

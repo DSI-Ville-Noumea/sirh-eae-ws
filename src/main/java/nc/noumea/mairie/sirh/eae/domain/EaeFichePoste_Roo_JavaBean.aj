@@ -12,12 +12,12 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 privileged aspect EaeFichePoste_Roo_JavaBean {
     
-    public String EaeFichePoste.getTypeFdp() {
-        return this.typeFdp;
+    public boolean EaeFichePoste.isPrimary() {
+        return this.primary;
     }
     
-    public void EaeFichePoste.setTypeFdp(String typeFdp) {
-        this.typeFdp = typeFdp;
+    public void EaeFichePoste.setPrimary(boolean primary) {
+        this.primary = primary;
     }
     
     public String EaeFichePoste.getDirectionService() {

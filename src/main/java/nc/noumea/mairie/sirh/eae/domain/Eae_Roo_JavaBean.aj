@@ -140,12 +140,12 @@ privileged aspect Eae_Roo_JavaBean {
         this.eaeEvalue = eaeEvalue;
     }
     
-    public EaeFichePoste Eae.getEaeFichePoste() {
-        return this.eaeFichePoste;
+    public Set<EaeFichePoste> Eae.getEaeFichePostes() {
+        return this.eaeFichePostes;
     }
     
-    public void Eae.setEaeFichePoste(EaeFichePoste eaeFichePoste) {
-        this.eaeFichePoste = eaeFichePoste;
+    public void Eae.setEaeFichePostes(Set<EaeFichePoste> eaeFichePostes) {
+        this.eaeFichePostes = eaeFichePostes;
     }
     
     public Set<EaeDiplome> Eae.getEaeDiplomes() {
