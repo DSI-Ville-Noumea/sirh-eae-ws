@@ -6,7 +6,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
@@ -153,5 +158,52 @@ public class EvaluationControllerTest {
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(0)).setEaeIdentification(Mockito.eq(eaeToReturn), Mockito.any(EaeIdentificationDto.class));
 	}
+
+	@Test
+	public void testGetEaeFichePoste_nonExistingEae_ReturnCode404() {
+		// Given
+		EvaluationController controller = new EvaluationController();
+		
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = null;
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		// When
+		ResponseEntity<String> result = controller.getEaeFichePoste(789);
+		
+		// Then
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertFalse(result.hasBody());
+	}
 	
+	@Test
+	public void testGetEaeFichePoste_ExistingEae_ReturnJsonAndCode200() {
+		// Given
+		List<EaeFichePosteDto> dtos = new ArrayList<EaeFichePosteDto>();
+		
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = new Eae();
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		IEvaluationService evaluationServiceMock = Mockito.mock(IEvaluationService.class);
+		when(evaluationServiceMock.getEaeFichePoste(eaeToReturn)).thenReturn(dtos);
+		
+		EvaluationController controller = new EvaluationController();
+		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.getEaeFichePoste(789);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertTrue(result.hasBody());
+		
+		verify(evaluationServiceMock, times(1)).getEaeFichePoste(eaeToReturn);
+	}
 }

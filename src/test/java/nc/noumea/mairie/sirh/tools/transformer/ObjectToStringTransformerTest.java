@@ -19,7 +19,7 @@ public class ObjectToStringTransformerTest {
 		agent.setNomUsage("poupou");
 		
 		// When
-		String json = new JSONSerializer().transform(new ObjectToStringTransformer("nomUsage", Agent.class), Agent.class)
+		String json = new JSONSerializer().transform(new ObjectToPropertyTransformer("nomUsage", Agent.class), Agent.class)
 				.serialize(agent);
 		
 		// Then
@@ -39,7 +39,7 @@ public class ObjectToStringTransformerTest {
 		// When
 		String json = new JSONSerializer()
 				.include("eaeDiplomes")
-				.transform(new ObjectToStringTransformer("libelleDiplome", EaeDiplome.class), EaeDiplome.class)
+				.transform(new ObjectToPropertyTransformer("libelleDiplome", EaeDiplome.class), EaeDiplome.class)
 				.exclude("*")
 				.serialize(eae);
 		

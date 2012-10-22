@@ -3,7 +3,7 @@ package nc.noumea.mairie.sirh.eae.domain.enums;
 public enum EaeTypeCompetenceEnum {
 
 	SA("Savoir"),
-	SF("Savoir être"),
+	SF("Savoir faire"),
 	CP("Compétence professionnelle");
 	
 	private String type;

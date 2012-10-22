@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -56,6 +57,10 @@ public class EaeFichePoste {
 
     @Column(name = "ID_SHD")
     private Integer idAgentShd;
+    
+    @Column(name = "MISSIONS")
+    @Lob
+    private String missions;
 
     @ManyToOne
     @JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")

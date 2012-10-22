@@ -1,7 +1,12 @@
 package nc.noumea.mairie.sirh.eae.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
+import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
@@ -30,9 +35,20 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	public void setEaeIdentification(Eae eae, EaeIdentificationDto dto) throws EvaluationServiceException {
-
 		eae.setDateEntretien(dto.getDateEntretien());
+	}
 
+	@Override
+	public List<EaeFichePosteDto> getEaeFichePoste(Eae eae) {
+		
+		List<EaeFichePosteDto> result = new ArrayList<EaeFichePosteDto>();
+		
+		for (EaeFichePoste fdp : eae.getEaeFichePostes()) {
+			agentService.fillEaeFichePosteWithAgent(fdp);
+			result.add(new EaeFichePosteDto(fdp));
+		}
+		
+		return result;
 	}
 
 }

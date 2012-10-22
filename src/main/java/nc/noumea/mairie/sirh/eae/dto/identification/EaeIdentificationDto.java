@@ -18,7 +18,7 @@ import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvalueToAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.EnumToListAndValueTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.ObjectToStringTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 
@@ -83,9 +83,9 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new SimpleAgentTransformer(true), Agent.class)
 				.transform(new EaeEvalueToAgentTransformer(false), EaeEvalue.class)
-				.transform(new ObjectToStringTransformer("libelleDiplome", EaeDiplome.class), EaeDiplome.class)
-				.transform(new ObjectToStringTransformer("libelleParcoursPro", EaeParcoursPro.class), EaeParcoursPro.class)
-				.transform(new ObjectToStringTransformer("libelleFormation", EaeFormation.class), EaeFormation.class)
+				.transform(new ObjectToPropertyTransformer("libelleDiplome", EaeDiplome.class), EaeDiplome.class)
+				.transform(new ObjectToPropertyTransformer("libelleParcoursPro", EaeParcoursPro.class), EaeParcoursPro.class)
+				.transform(new ObjectToPropertyTransformer("libelleFormation", EaeFormation.class), EaeFormation.class)
 				.transform(new EnumToListAndValueTransformer(EaeAgentStatutEnum.class), EaeAgentStatutEnum.class)
 				.transform(new EnumToListAndValueTransformer(EaeAgentPositionAdministrativeEnum.class), EaeAgentPositionAdministrativeEnum.class)
 				.transform(new ValueEnumTransformer(), Enum.class)
