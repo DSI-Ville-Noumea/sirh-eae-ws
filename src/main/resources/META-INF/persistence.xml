@@ -10,6 +10,7 @@
         <class>nc.noumea.mairie.sirh.eae.domain.EaeEvalue</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeFichePoste</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeFormation</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeDiplome</class>

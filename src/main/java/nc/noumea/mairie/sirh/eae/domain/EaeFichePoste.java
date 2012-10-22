@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -61,7 +62,10 @@ public class EaeFichePoste {
     private Eae eae;
 
     @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY)
-    private Set<EaeFdpActivite> eaeFdbActivites;
+    private Set<EaeFdpActivite> eaeFdpActivites = new HashSet<EaeFdpActivite>();
+    
+    @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY)
+    private Set<EaeFdpCompetence> eaeFdpCompetences = new HashSet<EaeFdpCompetence>();
 
     @Transient
     private Agent agentShd;

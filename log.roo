@@ -252,3 +252,4 @@ hint
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-22 09:57:25
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-22 09:59:45
 field boolean --class ~.sirh.eae.domain.EaeFichePoste --fieldName isPrimaire
+entity jpa --class ~.sirh.eae.domain.EaeFdpCompetence --identifierColumn ID_EAE_FDP_COMPETENCE --table EAE_FDP_COMPETENCE --identifierType java.lang.Integer

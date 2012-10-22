@@ -8,6 +8,7 @@ import java.util.Set;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite;
+import nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 privileged aspect EaeFichePoste_Roo_JavaBean {
@@ -108,12 +109,20 @@ privileged aspect EaeFichePoste_Roo_JavaBean {
         this.eae = eae;
     }
     
-    public Set<EaeFdpActivite> EaeFichePoste.getEaeFdbActivites() {
-        return this.eaeFdbActivites;
+    public Set<EaeFdpActivite> EaeFichePoste.getEaeFdpActivites() {
+        return this.eaeFdpActivites;
     }
     
-    public void EaeFichePoste.setEaeFdbActivites(Set<EaeFdpActivite> eaeFdbActivites) {
-        this.eaeFdbActivites = eaeFdbActivites;
+    public void EaeFichePoste.setEaeFdpActivites(Set<EaeFdpActivite> eaeFdpActivites) {
+        this.eaeFdpActivites = eaeFdpActivites;
+    }
+    
+    public Set<EaeFdpCompetence> EaeFichePoste.getEaeFdpCompetences() {
+        return this.eaeFdpCompetences;
+    }
+    
+    public void EaeFichePoste.setEaeFdpCompetences(Set<EaeFdpCompetence> eaeFdpCompetences) {
+        this.eaeFdpCompetences = eaeFdpCompetences;
     }
     
     public Agent EaeFichePoste.getAgentShd() {

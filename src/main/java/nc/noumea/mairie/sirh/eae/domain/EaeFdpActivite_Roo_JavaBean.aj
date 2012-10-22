@@ -8,20 +8,12 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 privileged aspect EaeFdpActivite_Roo_JavaBean {
     
-    public String EaeFdpActivite.getTypeActivite() {
-        return this.typeActivite;
+    public String EaeFdpActivite.getLibelle() {
+        return this.libelle;
     }
     
-    public void EaeFdpActivite.setTypeActivite(String typeActivite) {
-        this.typeActivite = typeActivite;
-    }
-    
-    public String EaeFdpActivite.getLibelleActivite() {
-        return this.libelleActivite;
-    }
-    
-    public void EaeFdpActivite.setLibelleActivite(String libelleActivite) {
-        this.libelleActivite = libelleActivite;
+    public void EaeFdpActivite.setLibelle(String libelle) {
+        this.libelle = libelle;
     }
     
     public EaeFichePoste EaeFdpActivite.getEaeFichePoste() {

@@ -13,11 +13,8 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_FDP_ACTIVITE", identifierField = "idEaeFdpActivite", identifierType = Integer.class, table = "EAE_FDP_ACTIVITE", sequenceName="EAE_S_FDP_ACTIVITE")
 public class EaeFdpActivite {
 
-    @Column(name = "TYPE_ACTIVITE")
-    private String typeActivite;
-
     @Column(name = "LIBELLE_ACTIVITE")
-    private String libelleActivite;
+    private String libelle;
     
     @ManyToOne
 	@JoinColumn(name = "ID_EAE_FICHE_POSTE", referencedColumnName = "ID_EAE_FICHE_POSTE")
