@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Set;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
@@ -122,6 +123,14 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setEaeEvaluation(EaeEvaluation eaeEvaluation) {
         this.eaeEvaluation = eaeEvaluation;
+    }
+    
+    public EaeCommentaire Eae.getCommentaire() {
+        return this.commentaire;
+    }
+    
+    public void Eae.setCommentaire(EaeCommentaire commentaire) {
+        this.commentaire = commentaire;
     }
     
     public Set<EaeEvaluateur> Eae.getEaeEvaluateurs() {

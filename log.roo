@@ -253,3 +253,10 @@ hint
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-22 09:59:45
 field boolean --class ~.sirh.eae.domain.EaeFichePoste --fieldName isPrimaire
 entity jpa --class ~.sirh.eae.domain.EaeFdpCompetence --identifierColumn ID_EAE_FDP_COMPETENCE --table EAE_FDP_COMPETENCE --identifierType java.lang.Integer
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-22 15:32:23
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-22 16:08:51
+entity jpa --class ~.sirh.eae.domain.EaeCommentaire --table EAE_COMMENTAIRE --identifierColumn ID_EAE_COMMENTAIRE --identifierField idEaeCommentaire --identifierType java.lang.Integer --sequenceName EAE_S_COMMENTAIRE --persistenceUnit eaePersistenceUnit
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-22 16:13:32
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-23 08:02:13
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-23 08:08:25
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-23 08:09:55

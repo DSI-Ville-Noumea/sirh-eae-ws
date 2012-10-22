@@ -4,6 +4,7 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 
@@ -25,11 +26,11 @@ privileged aspect EaeResultat_Roo_JavaBean {
         this.resultat = resultat;
     }
     
-    public String EaeResultat.getCommentaire() {
+    public EaeCommentaire EaeResultat.getCommentaire() {
         return this.commentaire;
     }
     
-    public void EaeResultat.setCommentaire(String commentaire) {
+    public void EaeResultat.setCommentaire(EaeCommentaire commentaire) {
         this.commentaire = commentaire;
     }
     

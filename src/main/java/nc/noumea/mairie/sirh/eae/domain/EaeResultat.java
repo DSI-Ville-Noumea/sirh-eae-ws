@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.domain;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -18,15 +19,18 @@ public class EaeResultat {
 	
 	@Column(name = "RESULTAT")
 	private String resultat;
-	
-	@Column(name = "COMMENTAIRE")
-	private String commentaire;
+
+	@OneToOne
+	@JoinColumn(name = "ID_EAE_COMMENTAIRE")
+	private EaeCommentaire commentaire;
 	
 	@OneToOne
 	@JoinColumn(name = "ID_EAE_TYPE_OBJECTIF")
+	@NotNull
     private EaeTypeObjectif typeObjectif;
     
     @OneToOne
     @JoinColumn(name = "ID_EAE")
+    @NotNull
     private Eae eae;
 }

@@ -7,6 +7,7 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
@@ -49,6 +50,11 @@ public class EvaluationService implements IEvaluationService {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public EaeResultatsDto getEaeResultats(Eae eae) {
+		return new EaeResultatsDto(eae);
 	}
 
 }

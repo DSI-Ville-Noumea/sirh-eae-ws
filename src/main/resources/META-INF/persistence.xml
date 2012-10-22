@@ -17,6 +17,7 @@
         <class>nc.noumea.mairie.sirh.eae.domain.EaeResultat</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaePlanAction</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeCommentaire</class>
       	<exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>

@@ -12,6 +12,7 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
@@ -205,5 +206,53 @@ public class EvaluationControllerTest {
 		assertTrue(result.hasBody());
 		
 		verify(evaluationServiceMock, times(1)).getEaeFichePoste(eaeToReturn);
+	}
+	
+	@Test
+	public void testGetEaeResultats_nonExistingEae_ReturnCode404() {
+		// Given
+		EvaluationController controller = new EvaluationController();
+		
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = null;
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		// When
+		ResponseEntity<String> result = controller.getEaeResultats(789);
+		
+		// Then
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertFalse(result.hasBody());
+	}
+	
+	@Test
+	public void testGetEaeResultats_ExistingEae_ReturnJsonAndCode200() {
+		// Given
+		EaeResultatsDto dto = new EaeResultatsDto();
+		
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = new Eae();
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		IEvaluationService evaluationServiceMock = Mockito.mock(IEvaluationService.class);
+		when(evaluationServiceMock.getEaeResultats(eaeToReturn)).thenReturn(dto);
+		
+		EvaluationController controller = new EvaluationController();
+		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.getEaeResultats(789);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertTrue(result.hasBody());
+		
+		verify(evaluationServiceMock, times(1)).getEaeResultats(eaeToReturn);
 	}
 }

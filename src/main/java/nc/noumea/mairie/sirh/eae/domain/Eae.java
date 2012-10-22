@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
@@ -73,6 +74,10 @@ public class Eae {
     
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private EaeEvaluation eaeEvaluation;
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "ID_EAE_COMMENTAIRE")
+    private EaeCommentaire commentaire;
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeEvaluateur> eaeEvaluateurs = new HashSet<EaeEvaluateur>();

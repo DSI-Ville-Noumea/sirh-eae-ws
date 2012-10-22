@@ -9,10 +9,14 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
@@ -109,5 +113,43 @@ public class EvaluationServiceTest {
 
 		verify(agentServiceMock, times(1)).fillEaeFichePosteWithAgent(fdp);
 		verify(agentServiceMock, times(1)).fillEaeFichePosteWithAgent(fdp2);
+	}
+	
+	@Test
+	public void testGetEaeResultats_WithEae_FillResultatsDtoAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		EaeCommentaire com = new EaeCommentaire();
+		com.setText("the comment text");
+		eae.setCommentaire(com);
+		
+		EaeTypeObjectif t1 = new EaeTypeObjectif();
+		t1.setLibelleTypeObjectif("PROFESSIONNEL");
+		
+		EaeTypeObjectif t2 = new EaeTypeObjectif();
+		t2.setLibelleTypeObjectif("INDIVIDUEL");
+		
+		EaeTypeObjectif t3 = new EaeTypeObjectif();
+		t3.setLibelleTypeObjectif("AUTRE");
+		
+		EaeResultat res1 = new EaeResultat();
+		res1.setTypeObjectif(t1);
+		res1.setObjectif("obj1");
+		eae.getEaeResultats().add(res1);
+		
+		EaeResultat res2 = new EaeResultat();
+		res2.setTypeObjectif(t2);
+		res2.setObjectif("obj2");
+		eae.getEaeResultats().add(res2);
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		EaeResultatsDto result = service.getEaeResultats(eae);
+		
+		// Then
+		assertEquals(789, result.getIdEae());
 	}
 }
