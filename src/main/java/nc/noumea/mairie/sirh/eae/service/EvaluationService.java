@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
+import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -111,6 +114,36 @@ public class EvaluationService implements IEvaluationService {
 				else if (existingResultat.getCommentaire() != null)
 					existingResultat.setCommentaire(null);
 			}
+		}
+	}
+
+	@Override
+	public EaeAppreciationsDto getEaeAppreciations(Eae eae) {
+		return new EaeAppreciationsDto(eae);
+	}
+
+	@Override
+	public void setEaeAppreciations(Eae eae, EaeAppreciationsDto dto) {
+
+		eae.getEaeAppreciations().clear();
+		eae.flush();
+		
+		fillAppreciationsWithArray(eae, dto.getTechniqueEvalue(), dto.getTechniqueEvaluateur(), EaeTypeAppreciationEnum.TE);
+		fillAppreciationsWithArray(eae, dto.getSavoirEtreEvalue(), dto.getSavoirEtreEvaluateur(), EaeTypeAppreciationEnum.SE);
+		fillAppreciationsWithArray(eae, dto.getManagerialEvalue(), dto.getManagerialEvaluateur(), EaeTypeAppreciationEnum.MA);
+		fillAppreciationsWithArray(eae, dto.getResultatsEvalue(), dto.getResultatsEvaluateur(), EaeTypeAppreciationEnum.RE);
+
+	}
+
+	private void fillAppreciationsWithArray(Eae eae, String[] arrayOfAppreciationsEvalue, String[] arrayOfAppreciationsEvaluateur, EaeTypeAppreciationEnum appreciationType) {
+		for (int i = 0; i < arrayOfAppreciationsEvalue.length ; i++) {
+			EaeAppreciation app = new EaeAppreciation();
+			app.setEae(eae);
+			app.setNumero(i);
+			app.setNoteEvalue(arrayOfAppreciationsEvalue[i]);
+			app.setNoteEvaluateur(arrayOfAppreciationsEvaluateur[i]);
+			app.setTypeAppreciation(appreciationType);
+			eae.getEaeAppreciations().add(app);
 		}
 	}
 

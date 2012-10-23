@@ -20,13 +20,11 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE", identifierField = "idEae", identifierType = Integer.class, table = "EAE", sequenceName="EAE_S_EAE")
-@RooJson
 public class Eae {
 
 	 /*
@@ -85,23 +83,26 @@ public class Eae {
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
     private EaeEvalue eaeEvalue;
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<EaeFichePoste> eaeFichePostes = new HashSet<EaeFichePoste>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<EaeDiplome> eaeDiplomes = new HashSet<EaeDiplome>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<EaeParcoursPro> eaeParcoursPros = new HashSet<EaeParcoursPro>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<EaeFormation> eaeFormations = new HashSet<EaeFormation>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
    	private Set<EaeResultat> eaeResultats = new HashSet<EaeResultat>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
    	private Set<EaePlanAction> eaePlanActions = new HashSet<EaePlanAction>();
+    
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+   	private Set<EaeAppreciation> eaeAppreciations = new HashSet<EaeAppreciation>();
     
     /*
      * Transient properties (will be populated by AS400 entity manager)

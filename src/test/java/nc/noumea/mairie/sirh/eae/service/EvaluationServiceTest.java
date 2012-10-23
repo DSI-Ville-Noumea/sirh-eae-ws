@@ -18,6 +18,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
+import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -323,5 +324,49 @@ public class EvaluationServiceTest {
 		assertEquals("new obj", resultat.getObjectif());
 		assertEquals("new res", resultat.getResultat());
 		assertEquals("new obj comment", resultat.getCommentaire().getText());
+	}
+	
+	@Test
+	public void testGetEaeAppreciations_WithEae_FillResultatsDtoAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		EaeAppreciationsDto result = service.getEaeAppreciations(eae);
+		
+		// Then
+		assertEquals(789, result.getIdEae());
+	}
+	
+	@Test
+	public void testSetEaeAppreciations_NoAppreciations_CreateEaeAppreciations() {
+
+		// Given
+		Eae eae = spy(new Eae());
+		org.mockito.Mockito.doNothing().when(eae).flush();
+		
+		eae.setIdEae(789);
+		EaeAppreciationsDto dto = new EaeAppreciationsDto();
+		dto.setIdEae(789);
+		dto.setTechniqueEvalue(new String[]{"A", "B", "C", "D"});
+		dto.setTechniqueEvaluateur(new String[]{"A", "B", "C", "D"});
+		dto.setSavoirEtreEvalue(new String[]{"A", "B", "C", "D"});
+		dto.setSavoirEtreEvaluateur(new String[]{"A", "B", "C", "D"});
+		dto.setManagerialEvalue(new String[]{"A", "B", "C", "D"});
+		dto.setManagerialEvaluateur(new String[]{"A", "B", "C", "D"});
+		dto.setResultatsEvaluateur(new String[]{"A", "B", "C", "D"});
+		dto.setResultatsEvalue(new String[]{"A", "B", "C", "D"});
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		service.setEaeAppreciations(eae, dto);
+		
+		// Then
+		assertEquals(16, eae.getEaeAppreciations().size());
 	}
 }

@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.service;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -32,7 +33,7 @@ public interface IEvaluationService {
 	public List<EaeFichePosteDto> getEaeFichePoste(Eae eae);
 	
 	/**
-	 * Returns the data for viewing/fillinf in the results of last year's EAE objectives
+	 * Returns the data for viewing/filling in the results of last year's EAE objectives
 	 * @param eae
 	 * @return
 	 */
@@ -45,4 +46,18 @@ public interface IEvaluationService {
 	 * @throws EvaluationServiceException
 	 */
 	public void setEaeResultats(Eae eae, EaeResultatsDto dto) throws EvaluationServiceException;
+	
+	/**
+	 * Returns the data for viewing/filling in appreciations in someone's EAE
+	 * @param eae
+	 * @return
+	 */
+	public EaeAppreciationsDto getEaeAppreciations(Eae eae);
+	
+	/**
+	 * Saves the filled in appreciations for someone's EAE
+	 * @param eae
+	 * @param dto
+	 */
+	public void setEaeAppreciations(Eae eae, EaeAppreciationsDto dto);
 }

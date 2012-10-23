@@ -2,13 +2,13 @@
 -- Connecte en EAE_ADM
 ----------------------------------------------------------------
 
-alter table EAE drop column id_agent;
 alter table EAE_EVALUE rename column ANCIENNETE_ECHELON to ANCIENNETE_ECHELON_JOURS;
 alter table EAE_EVALUE add (STATUT_PRECISION VARCHAR2(50));
 alter table EAE_EVALUE modify (STATUT VARCHAR2(2));
 update EAE_EVALUE set POSITION = 'AC';
 alter table EAE_EVALUE modify (POSITION VARCHAR2(2));
 update EAE_EVALUE set VERSION = 0 where VERSION is null;
+alter table EAE_EVALUE modify (VERSION number default 0 not null);
 alter table EAE drop column STATUT;
 
 update EAE_FICHE_POSTE set VERSION = 0 where VERSION is null;
@@ -27,5 +27,24 @@ alter table EAE_RESULTAT add CONSTRAINT FK_EAE_RESULTAT_EAE_COMMENTAIRE FOREIGN 
 update EAE_RESULTAT set VERSION = 0 where VERSION is null;
 alter table EAE_RESULTAT modify (VERSION NUMBER DEFAULT 0 not null);
 
+alter table EAE drop column id_agent;
 alter table EAE add (ID_EAE_COMMENTAIRE NUMBER(*,0));
 alter table EAE add CONSTRAINT FK_EAE_EAE_COMMENTAIRE FOREIGN KEY (ID_EAE_COMMENTAIRE) REFERENCES EAE_COMMENTAIRE (ID_EAE_COMMENTAIRE);
+
+update EAE_PARCOURS_PRO set VERSION = 0 where VERSION is null;
+alter table EAE_PARCOURS_PRO modify (VERSION number default 0 not null);
+
+update EAE_FORMATION set VERSION = 0 where VERSION is null;
+alter table EAE_FORMATION modify (VERSION number default 0 not null);
+
+update EAE_EVALUATION set VERSION = 0 where VERSION is null;
+alter table EAE_EVALUATION modify (VERSION number default 0 not null);
+
+update EAE_DIPLOME set VERSION = 0 where VERSION is null;
+alter table EAE_DIPLOME modify (VERSION number default 0 not null);
+
+alter table EAE_APPRECIATION add (TYPE_APPRECIATION varchar2(2) not null);
+alter table EAE_APPRECIATION add (VERSION number default 0 not null);
+alter table EAE_APPRECIATION modify (NUMERO number(2,0) not null);
+alter table EAE_APPRECIATION add constraint EAE_UNIQUE_APPRECIATION unique(ID_EAE,NUMERO,TYPE_APPRECIATION);
+drop index EAE_APPRECIATION_index;

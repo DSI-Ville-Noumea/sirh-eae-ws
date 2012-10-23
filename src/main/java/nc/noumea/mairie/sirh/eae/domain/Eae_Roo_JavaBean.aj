@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Set;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
@@ -195,6 +196,14 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setEaePlanActions(Set<EaePlanAction> eaePlanActions) {
         this.eaePlanActions = eaePlanActions;
+    }
+    
+    public Set<EaeAppreciation> Eae.getEaeAppreciations() {
+        return this.eaeAppreciations;
+    }
+    
+    public void Eae.setEaeAppreciations(Set<EaeAppreciation> eaeAppreciations) {
+        this.eaeAppreciations = eaeAppreciations;
     }
     
     public Agent Eae.getAgentDelegataire() {
