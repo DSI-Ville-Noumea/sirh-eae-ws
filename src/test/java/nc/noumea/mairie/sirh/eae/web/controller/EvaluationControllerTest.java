@@ -92,7 +92,7 @@ public class EvaluationControllerTest {
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, null);
+		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 0, null);
 		
 		// Then
 		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
@@ -119,7 +119,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, json);
+		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 0, json);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -150,7 +150,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, json);
+		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 0, json);
 			
 		// Then
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());

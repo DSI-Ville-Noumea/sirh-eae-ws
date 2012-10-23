@@ -56,9 +56,9 @@ public class EaeServiceTest {
 		when(helperMock.getCurrentDate()).thenReturn(c.getTime());
 		
 		t1 = new EaeTypeObjectif();
-		t1.setLibelleTypeObjectif("INDIVIDUEL");
+		t1.setLibelle("INDIVIDUEL");
 		t2 = new EaeTypeObjectif();
-		t2.setLibelleTypeObjectif("EQUIPE");
+		t2.setLibelle("EQUIPE");
 	}
 	
 	@Test

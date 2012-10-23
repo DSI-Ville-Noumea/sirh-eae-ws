@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -19,6 +22,9 @@ public class EvaluationService implements IEvaluationService {
 
 	@Autowired
 	private IAgentService agentService;
+	
+	@Autowired
+	private ITypeObjectifService typeObjectifService;
 	
 	@Override
 	public EaeIdentificationDto getEaeIdentification(Eae eae) {
@@ -55,6 +61,57 @@ public class EvaluationService implements IEvaluationService {
 	@Override
 	public EaeResultatsDto getEaeResultats(Eae eae) {
 		return new EaeResultatsDto(eae);
+	}
+
+	@Override
+	public void setEaeResultats(Eae eae, EaeResultatsDto dto) throws EvaluationServiceException {
+
+		if (eae.getCommentaire() == null)
+			eae.setCommentaire(new EaeCommentaire());
+		
+		eae.getCommentaire().setText(dto.getCommentaireGeneral());
+		
+		for (EaeResultat resPro : dto.getObjectifsProfessionnels()) {
+			if (resPro.getIdEaeResultat() == null || resPro.getIdEaeResultat() == 0)
+				createAndAddNewEaeResultat(eae, resPro, EaeTypeObjectifEnum.PROFESSIONNEL);
+			else
+				fillExistingEaeResultat(eae, resPro);
+		}
+		
+		for (EaeResultat resInd : dto.getObjectifsIndividuels()) {
+			if (resInd.getIdEaeResultat() == null || resInd.getIdEaeResultat() == 0)
+				createAndAddNewEaeResultat(eae, resInd, EaeTypeObjectifEnum.INDIVIDUEL);
+			else
+				fillExistingEaeResultat(eae, resInd);
+		}
+		
+		eae.flush();
+	}
+
+	private void createAndAddNewEaeResultat(Eae eae, EaeResultat resPro, EaeTypeObjectifEnum type) {
+		resPro.setTypeObjectif(typeObjectifService.getTypeObjectifForLibelle(type.name()));
+		eae.getEaeResultats().add(resPro);
+		resPro.setEae(eae);
+	}
+
+	private void fillExistingEaeResultat(Eae eae, EaeResultat resultat) {
+		for(EaeResultat existingResultat : eae.getEaeResultats()) {
+			
+			if (existingResultat.getIdEaeResultat().equals(resultat.getIdEaeResultat())) {
+			
+				existingResultat.setObjectif(resultat.getObjectif());
+				existingResultat.setResultat(resultat.getResultat());
+				
+				if (resultat.getCommentaire() != null) {
+					if (existingResultat.getCommentaire() != null)
+						existingResultat.getCommentaire().setText(resultat.getCommentaire().getText());
+					else
+						existingResultat.setCommentaire(resultat.getCommentaire());
+				}
+				else if (existingResultat.getCommentaire() != null)
+					existingResultat.setCommentaire(null);
+			}
+		}
 	}
 
 }

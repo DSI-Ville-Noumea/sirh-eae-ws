@@ -1,11 +1,16 @@
 package nc.noumea.mairie.sirh.tools.transformer;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
+import flexjson.JSONException;
+import flexjson.ObjectBinder;
+import flexjson.ObjectFactory;
 import flexjson.transformer.AbstractTransformer;
 
-public class ObjectToPropertyTransformer extends AbstractTransformer {
+public class ObjectToPropertyTransformer extends AbstractTransformer implements ObjectFactory {
 
 	private String property;
 	private Class objectClass;
@@ -59,6 +64,27 @@ public class ObjectToPropertyTransformer extends AbstractTransformer {
 			getContext().write(null);
 		else
 			getContext().writeQuoted(value.toString());
+	}
+
+	@Override
+	public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
+		
+		Object obj = null;
+		
+		try {
+			Constructor c = objectClass.getDeclaredConstructors()[0];
+			obj = c.newInstance(null);
+
+			Field f = objectClass.getDeclaredField(property);
+			f.setAccessible(true);
+			f.set(obj, value);
+			
+		} catch (Exception ex) {
+			throw new JSONException(String.format("Unable to parse '%s' as a valid property value for the given object. Target class is '%s', target property is '%s'", 
+					value.toString(), objectClass.toString(), property), ex);
+		}
+		
+		return obj;
 	}
 
 }

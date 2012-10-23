@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -20,7 +21,7 @@ public class EaeResultat {
 	@Column(name = "RESULTAT")
 	private String resultat;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "ID_EAE_COMMENTAIRE")
 	private EaeCommentaire commentaire;
 	

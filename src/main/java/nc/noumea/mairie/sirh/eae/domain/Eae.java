@@ -75,7 +75,7 @@ public class Eae {
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private EaeEvaluation eaeEvaluation;
     
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ID_EAE_COMMENTAIRE")
     private EaeCommentaire commentaire;
     

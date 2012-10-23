@@ -52,7 +52,7 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestBody String eaeIdentificationDtoJson) {
+	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam("idEvaluateur") int idEvaluateur, @RequestBody String eaeIdentificationDtoJson) {
 
 		Eae eae = Eae.findEae(idEae);
 		
@@ -104,5 +104,28 @@ public class EvaluationController {
 		String result = dto.serializeInJSON();
 		
 		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "eaeResultats", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
+	@Transactional(value = "eaeTransactionManager")
+	public ResponseEntity<String> setEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idEvaluateur") int idEvaluateur, @RequestBody String eaeResultatsDtoJson) {
+
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.startEae(eae);
+			EaeResultatsDto dto = new EaeResultatsDto().deserializeFromJSON(eaeResultatsDtoJson);
+			evaluationService.setEaeResultats(eae, dto);
+		} catch (EaeServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		} catch (EvaluationServiceException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }

@@ -6,10 +6,12 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
+import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
-public class EaeResultatsDto implements IJSONSerialize {
+public class EaeResultatsDto implements IJSONSerialize, IJSONDeserialize<EaeResultatsDto> {
 
 	private int idEae;
 	private String commentaireGeneral;
@@ -29,9 +31,9 @@ public class EaeResultatsDto implements IJSONSerialize {
 			commentaireGeneral = eae.getCommentaire().getText();
 
 		for (EaeResultat resultat : eae.getEaeResultats()) {
-			if (resultat.getTypeObjectif().getLibelleTypeObjectif() == "PROFESSIONNEL")
+			if (resultat.getTypeObjectif().getLibelle().equals(EaeTypeObjectifEnum.PROFESSIONNEL.name()))
 				objectifsProfessionnels.add(resultat);
-			else if (resultat.getTypeObjectif().getLibelleTypeObjectif() == "INDIVIDUEL")
+			else if (resultat.getTypeObjectif().getLibelle().equals(EaeTypeObjectifEnum.INDIVIDUEL.name()))
 				objectifsIndividuels.add(resultat);
 		}
 	}
@@ -39,9 +41,11 @@ public class EaeResultatsDto implements IJSONSerialize {
 	public static JSONSerializer getSerializerForEaeResultatDto() {
 		return new JSONSerializer().include("idEae")
 				.include("commentaireGeneral")
+				.include("objectifsIndividuels.idEaeResultat")
 				.include("objectifsIndividuels.objectif")
 				.include("objectifsIndividuels.resultat")
 				.include("objectifsIndividuels.commentaire")
+				.include("objectifsProfessionnels.idEaeResultat")
 				.include("objectifsProfessionnels.objectif")
 				.include("objectifsProfessionnels.resultat")
 				.include("objectifsProfessionnels.commentaire")
@@ -53,6 +57,11 @@ public class EaeResultatsDto implements IJSONSerialize {
 	@Override
 	public String serializeInJSON() {
 		return getSerializerForEaeResultatDto().serialize(this);
+	}
+	
+	@Override
+	public EaeResultatsDto deserializeFromJSON(String json) {
+		return new JSONDeserializer<EaeResultatsDto>().use(EaeCommentaire.class, new ObjectToPropertyTransformer("text", EaeCommentaire.class)).deserializeInto(json, this);
 	}
 
 	public int getIdEae() {
@@ -87,5 +96,4 @@ public class EaeResultatsDto implements IJSONSerialize {
 	public void setObjectifsIndividuels(List<EaeResultat> objectifsIndividuels) {
 		this.objectifsIndividuels = objectifsIndividuels;
 	}
-
 }

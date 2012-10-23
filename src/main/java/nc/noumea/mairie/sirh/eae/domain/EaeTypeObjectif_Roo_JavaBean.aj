@@ -7,12 +7,12 @@ import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 
 privileged aspect EaeTypeObjectif_Roo_JavaBean {
     
-    public String EaeTypeObjectif.getLibelleTypeObjectif() {
-        return this.libelleTypeObjectif;
+    public String EaeTypeObjectif.getLibelle() {
+        return this.libelle;
     }
     
-    public void EaeTypeObjectif.setLibelleTypeObjectif(String libelleTypeObjectif) {
-        this.libelleTypeObjectif = libelleTypeObjectif;
+    public void EaeTypeObjectif.setLibelle(String libelle) {
+        this.libelle = libelle;
     }
     
 }

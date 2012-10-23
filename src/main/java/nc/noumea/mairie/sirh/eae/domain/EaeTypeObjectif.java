@@ -12,5 +12,5 @@ import org.springframework.roo.addon.tostring.RooToString;
 public class EaeTypeObjectif {
 	
 	@Column(name = "LIBELLE_TYPE_OBJECTIF")
-	private String libelleTypeObjectif;
+	private String libelle;
 }
