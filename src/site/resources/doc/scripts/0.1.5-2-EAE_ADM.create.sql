@@ -49,7 +49,7 @@ create table EAE_COMMENTAIRE
    TEXT CLOB,
    VERSION NUMBER DEFAULT 0 not null,
    constraint PK_EAE_COMMENTAIRE
-   primary key (ID_COMMENTAIRE)
+   primary key (ID_EAE_COMMENTAIRE)
 )
 TABLESPACE TS_SIRHR_DATA;
 
