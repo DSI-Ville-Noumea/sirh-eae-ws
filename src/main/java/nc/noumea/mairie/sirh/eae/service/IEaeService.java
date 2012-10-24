@@ -71,4 +71,11 @@ public interface IEaeService {
 	 * @return the list of EAEs corresponding to the Ids
 	 */
 	List<Eae> findEaesByIds(List<Integer> eaeIds);
+	
+	/**
+	 * Returns an EAE by its technical Id
+	 * @param idEae
+	 * @return the EAE corresponding to the given Id
+	 */
+	Eae getEae(int idEae);
 }

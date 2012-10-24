@@ -234,4 +234,9 @@ public class EaeService implements IEaeService {
 		List<Eae> queryResult = eaeQuery.getResultList();
 		return queryResult;
 	}
+
+	@Override
+	public Eae getEae(int idEae) {
+		return Eae.findEae(idEae);
+	}
 }

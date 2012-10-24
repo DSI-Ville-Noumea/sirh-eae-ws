@@ -172,12 +172,12 @@ public class EaeControllerTest {
 		
 		// Given
 		int agentId = 12;
-		int agentEvalueId = 13;
+		int eaeId = 13;
 		Eae lastEae = new Eae();
 		EaeServiceException ex = new EaeServiceException("message");
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.findLastEaeByAgentId(agentEvalueId)).thenReturn(lastEae);
+		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
 		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock).resetEaeEvaluateur(lastEae);
 		
 		EaeController controller = new EaeController();
@@ -185,7 +185,7 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.resetEaeEvaluateur(agentId, agentEvalueId);
+		ResponseEntity<String> result = controller.resetEaeEvaluateur(eaeId, agentId);
 
 		// Then
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
@@ -198,18 +198,18 @@ public class EaeControllerTest {
 		
 		// Given
 		int agentId = 12;
-		int agentEvalueId = 13;
+		int eaeId = 13;
 		Eae lastEae = new Eae();
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.findLastEaeByAgentId(agentEvalueId)).thenReturn(lastEae);
+		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.resetEaeEvaluateur(agentId, agentEvalueId);
+		ResponseEntity<String> result = controller.resetEaeEvaluateur(eaeId, agentId);
 
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -223,18 +223,18 @@ public class EaeControllerTest {
 		
 		// Given
 		int agentId = 12;
-		int agentEvalueId = 13;
+		int eaeId = 13;
 		Eae lastEae = null;
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.findLastEaeByAgentId(agentEvalueId)).thenReturn(lastEae);
+		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.resetEaeEvaluateur(agentId, agentEvalueId);
+		ResponseEntity<String> result = controller.resetEaeEvaluateur(eaeId, agentId);
 
 		// Then
 		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
@@ -248,13 +248,13 @@ public class EaeControllerTest {
 		
 		// Given
 		int agentId = 12;
-		int agentEvalueId = 13;
+		int eaeId = 13;
 		int agentDelegataireId = 14;
 		Eae lastEae = new Eae();
 		EaeServiceException ex = new EaeServiceException("message");
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.findLastEaeByAgentId(agentEvalueId)).thenReturn(lastEae);
+		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
 		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock).setDelegataire(lastEae, agentDelegataireId);
 		
 		EaeController controller = new EaeController();
@@ -262,7 +262,7 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.setDelegataire(agentId, agentEvalueId, agentDelegataireId);
+		ResponseEntity<String> result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
 
 		// Then
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
@@ -275,19 +275,19 @@ public class EaeControllerTest {
 		
 		// Given
 		int agentId = 12;
-		int agentEvalueId = 13;
+		int eaeId = 13;
 		int agentDelegataireId = 14;
 		Eae lastEae = new Eae();
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.findLastEaeByAgentId(agentEvalueId)).thenReturn(lastEae);
+		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.setDelegataire(agentId, agentEvalueId, agentDelegataireId);
+		ResponseEntity<String> result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
 
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -301,19 +301,19 @@ public class EaeControllerTest {
 		
 		// Given
 		int agentId = 12;
-		int agentEvalueId = 13;
+		int eaeId = 13;
 		int agentDelegataireId = 14;
 		Eae lastEae = null;
 		
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.findLastEaeByAgentId(agentEvalueId)).thenReturn(lastEae);
+		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		
 		// When
-		ResponseEntity<String> result = controller.setDelegataire(agentId, agentEvalueId, agentDelegataireId);
+		ResponseEntity<String> result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
 
 		// Then
 		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());

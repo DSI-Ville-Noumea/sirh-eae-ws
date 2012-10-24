@@ -86,11 +86,11 @@ public class EaeController {
 	@ResponseBody
 	@RequestMapping(value = "resetEae", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
+	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 		
-		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
+//		Integer convertedIdAgent = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
     	
-		Eae eaeToReset = eaeService.findLastEaeByAgentId(convertedIdAgentEvalue);
+		Eae eaeToReset = eaeService.getEae(idEae);
 		
 		if (eaeToReset == null)
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
@@ -107,12 +107,11 @@ public class EaeController {
 	@ResponseBody
 	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setDelegataire(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue, @RequestParam("idDelegataire") int idDelegataire) {
+	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam("idDelegataire") int idDelegataire) {
 		
-		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
 		Integer convertedIdAgentDelegataire = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idDelegataire);
     	
-		Eae eae = eaeService.findLastEaeByAgentId(convertedIdAgentEvalue);
+		Eae eae = eaeService.getEae(idEae);
 		
 		if (eae == null)
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
