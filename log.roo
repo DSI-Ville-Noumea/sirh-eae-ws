@@ -266,3 +266,7 @@ entity jpa --class ~.sirh.eae.domain.EaeAppreciation --table EAE_APPRECIATION --
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-23 14:20:29
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-23 14:27:07
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-23 14:28:09
+exit
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-23 16:33:17
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-23 16:40:54
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-24 08:01:09

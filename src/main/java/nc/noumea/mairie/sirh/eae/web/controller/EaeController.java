@@ -35,7 +35,7 @@ public class EaeController {
 	private IAgentMatriculeConverterService agentMatriculeConverterService;
 		
 	@ResponseBody
-	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> listEaesByAgent(@RequestParam("idAgent") int idAgent) {
 		
@@ -58,7 +58,7 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "initialiserEae", produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "initialiserEae", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> initializeEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
@@ -84,7 +84,7 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "resetEae", method = RequestMethod.POST)
+	@RequestMapping(value = "resetEae", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
 		
@@ -105,7 +105,7 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.POST)
+	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setDelegataire(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue, @RequestParam("idDelegataire") int idDelegataire) {
 		
@@ -127,7 +127,7 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "tableauDeBord", produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "tableauDeBord", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaesDashboard(@RequestParam("idAgent") int idAgent) {
 		
