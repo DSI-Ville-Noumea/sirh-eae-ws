@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-eae-ws</artifactId>
 	<packaging>war</packaging>
-	<version>0.1.5-SNAPSHOT</version>
+	<version>0.1.5</version>
 	<name>sirh-eae-ws</name>
 	<properties>
 		<aspectj.version>1.7.0.RC1</aspectj.version>
@@ -23,13 +24,13 @@
 		<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</developerConnection>
 		<url>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</url>
 	</scm>
-    <distributionManagement>
-        <site>
-            <id>sirheaews.website.prod</id>
-            <name>SIRH EAE Website Prod</name>
-            <url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH-EAE-WS\</url>
-        </site>
-    </distributionManagement>
+	<distributionManagement>
+		<site>
+			<id>sirheaews.website.prod</id>
+			<name>SIRH EAE Website Prod</name>
+			<url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH-EAE-WS\</url>
+		</site>
+	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>spring-maven-release</id>
@@ -125,9 +126,9 @@
 			<version>3.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.sun.jersey</groupId>
-		    <artifactId>jersey-client</artifactId>
-		    <version>1.14</version>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.14</version>
 		</dependency>
 		<!-- ROO dependencies -->
 		<dependency>
