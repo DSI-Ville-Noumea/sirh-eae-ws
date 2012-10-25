@@ -439,27 +439,27 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pdf-plugin</artifactId>
-				<!-- ne marche pas en 1.1 -->
-				<version>1.0</version>
-				<executions>
-					<execution>
-						<id>pdf</id>
-						<phase>site</phase>
-						<goals>
-							<goal>pdf</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.reporting.outputDirectory}
-							</outputDirectory>
-							<aggregate>false</aggregate>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-pdf-plugin</artifactId> -->
+<!-- 				ne marche pas en 1.1 -->
+<!-- 				<version>1.0</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>pdf</id> -->
+<!-- 						<phase>site</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>pdf</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<outputDirectory> -->
+<!-- 								${project.reporting.outputDirectory} -->
+<!-- 							</outputDirectory> -->
+<!-- 							<aggregate>false</aggregate> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

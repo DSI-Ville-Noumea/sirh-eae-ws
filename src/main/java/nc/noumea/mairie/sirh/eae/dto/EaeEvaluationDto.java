@@ -4,9 +4,9 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
-import nc.noumea.mairie.sirh.tools.transformer.EnumToListAndValueTransformer;
+import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 import nc.noumea.mairie.sirh.tools.transformer.MinutesToHoursAndMinutesTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 
 import org.joda.time.Period;
 
@@ -20,9 +20,9 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	private Integer noteAnneeN1;
 	private Integer noteAnneeN2;
 	private Integer noteAnneeN3;
-	private EaeAvisEnum avisRevalorisation;
-	private EaeAvancementEnum propositionAvancement;
-	private EaeAvisEnum avisChangementClasse;
+	private Boolean avisRevalorisation;
+	private ValueWithListDto propositionAvancement;
+	private Boolean avisChangementClasse;
 	private EaeNiveau niveau;
 	private EaeCommentaire commentaireEvaluateur;
 	private EaeCommentaire commentaireEvalue;
@@ -42,7 +42,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
 		avisRevalorisation = eaeEvaluation.getAvisRevalorisation();
 		avisChangementClasse = eaeEvaluation.getAvisChangementClasse();
-		propositionAvancement = eaeEvaluation.getPropositionAvancement();
+		propositionAvancement = new ValueWithListDto(eaeEvaluation.getPropositionAvancement(), EaeAvancementEnum.class);
 		niveau = eaeEvaluation.getNiveauEae();
 		commentaireEvaluateur = eaeEvaluation.getCommentaireEvaluateur();
 		commentaireEvalue = eaeEvaluation.getCommentaireEvalue();
@@ -52,13 +52,14 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	public static JSONSerializer getSerializerForEaeEvaluationDto() {
 		return new JSONSerializer()
+			.exclude("*.class")
 			.include("idEae")
 			.include("noteAnnee")
 			.include("noteAnneeN1")
 			.include("noteAnneeN2")
 			.include("noteAnneeN3")
 			.include("avisRevalorisation")
-			.include("propositionAvancement")
+			.include("propositionAvancement.*")
 			.include("avisChangementClasse")
 			.include("niveau")
 			.include("commentaireEvaluateur")
@@ -67,7 +68,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 			.include("commentaireAvctEvalue")
 			.include("dureeEntretien")
 			.transform(new MinutesToHoursAndMinutesTransformer(), Period.class)
-			.transform(new EnumToListAndValueTransformer(EaeAvancementEnum.class), "propositionAvancement")
+			.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class)
 			.exclude("*");
 	}
 
@@ -130,27 +131,27 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		this.noteAnneeN3 = noteAnneeN3;
 	}
 
-	public EaeAvisEnum getAvisRevalorisation() {
+	public Boolean getAvisRevalorisation() {
 		return avisRevalorisation;
 	}
 
-	public void setAvisRevalorisation(EaeAvisEnum avisRevalorisation) {
+	public void setAvisRevalorisation(Boolean avisRevalorisation) {
 		this.avisRevalorisation = avisRevalorisation;
 	}
 
-	public EaeAvancementEnum getPropositionAvancement() {
+	public ValueWithListDto getPropositionAvancement() {
 		return propositionAvancement;
 	}
 
-	public void setPropositionAvancement(EaeAvancementEnum propositionAvancement) {
+	public void setPropositionAvancement(ValueWithListDto propositionAvancement) {
 		this.propositionAvancement = propositionAvancement;
 	}
 
-	public EaeAvisEnum getAvisChangementClasse() {
+	public Boolean getAvisChangementClasse() {
 		return avisChangementClasse;
 	}
 
-	public void setAvisChangementClasse(EaeAvisEnum avisChangementClasse) {
+	public void setAvisChangementClasse(Boolean avisChangementClasse) {
 		this.avisChangementClasse = avisChangementClasse;
 	}
 

@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -33,8 +32,7 @@ public class EaeEvaluation {
     private Integer noteAnneeN3;
 
     @Column(name = "AVIS_REVALORISATION")
-    @Enumerated(EnumType.STRING)
-    private EaeAvisEnum avisRevalorisation;
+    private Boolean avisRevalorisation;
     
     @Column(name = "AVIS_SHD")
     private String avisShd;
@@ -44,8 +42,7 @@ public class EaeEvaluation {
     private EaeAvancementEnum propositionAvancement;
 
     @Column(name = "AVIS_CHANGEMENT_CLASSE")
-    @Enumerated(EnumType.STRING)
-    private EaeAvisEnum avisChangementClasse;
+    private Boolean avisChangementClasse;
 
     @OneToOne
 	@JoinColumn(name = "ID_EAE_NIVEAU")

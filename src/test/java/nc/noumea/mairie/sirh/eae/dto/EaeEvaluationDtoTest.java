@@ -1,6 +1,8 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -9,7 +11,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
+import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 
 import org.junit.Test;
 
@@ -29,8 +31,8 @@ public class EaeEvaluationDtoTest {
 		eval.setNoteAnneeN1(13);
 		eval.setNoteAnneeN2(14);
 		eval.setNoteAnneeN3(15);
-		eval.setAvisRevalorisation(EaeAvisEnum.FAVORABLE);
-		eval.setAvisChangementClasse(EaeAvisEnum.DEFAVORABLE);
+		eval.setAvisRevalorisation(true);
+		eval.setAvisChangementClasse(false);
 		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
 		eval.setNiveauEae(new EaeNiveau());
 		eval.setCommentaireAvctEvaluateur(new EaeCommentaire());
@@ -40,7 +42,7 @@ public class EaeEvaluationDtoTest {
 		
 		// When
 		EaeEvaluationDto dto = new EaeEvaluationDto(eval);
-			
+		
 		// Then
 		assertEquals(123, dto.getIdEae());
 		assertEquals(new Integer(127), dto.getDureeEntretien());
@@ -48,15 +50,14 @@ public class EaeEvaluationDtoTest {
 		assertEquals(new Integer(13), dto.getNoteAnneeN1());
 		assertEquals(new Integer(14), dto.getNoteAnneeN2());
 		assertEquals(new Integer(15), dto.getNoteAnneeN3());
-		assertEquals(EaeAvisEnum.FAVORABLE, dto.getAvisRevalorisation());
-		assertEquals(EaeAvisEnum.DEFAVORABLE, dto.getAvisChangementClasse());
-		assertEquals(EaeAvancementEnum.MAXI, dto.getPropositionAvancement());
+		assertTrue(dto.getAvisRevalorisation());
+		assertFalse(dto.getAvisChangementClasse());
+		assertEquals(EaeAvancementEnum.MAXI.name(), dto.getPropositionAvancement().getCourant());
 		assertEquals(eval.getNiveauEae(), dto.getNiveau());
 		assertEquals(eval.getCommentaireAvctEvaluateur(), dto.getCommentaireAvctEvaluateur());
 		assertEquals(eval.getCommentaireAvctEvalue(), dto.getCommentaireAvctEvalue());
 		assertEquals(eval.getCommentaireEvaluateur(), dto.getCommentaireEvaluateur());
 		assertEquals(eval.getCommentaireEvalue(), dto.getCommentaireEvalue());
-		
 	}
 	
 	@Test
@@ -74,7 +75,7 @@ public class EaeEvaluationDtoTest {
 		assertEquals("[noteAnneeN2]", includes.get(3).toString());
 		assertEquals("[noteAnneeN3]", includes.get(4).toString());
 		assertEquals("[avisRevalorisation]", includes.get(5).toString());
-		assertEquals("[propositionAvancement]", includes.get(6).toString());
+		assertEquals("[propositionAvancement,*]", includes.get(6).toString());
 		assertEquals("[avisChangementClasse]", includes.get(7).toString());
 		assertEquals("[niveau]", includes.get(8).toString());
 		assertEquals("[commentaireEvaluateur]", includes.get(9).toString());
@@ -83,12 +84,12 @@ public class EaeEvaluationDtoTest {
 		assertEquals("[commentaireAvctEvalue]", includes.get(12).toString());
 		assertEquals("[dureeEntretien]", includes.get(13).toString());
 		
-		assertEquals(1, excludes.size());
-		assertEquals("[*]", excludes.get(0).toString());
-		
+		assertEquals(2, excludes.size());
+		assertEquals("[*,class]", excludes.get(0).toString());
+		assertEquals("[*]", excludes.get(1).toString());
 	}
 	
-	//@Test
+	@Test
 	public void testSerializeInJSON_emptyObject() {
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
@@ -101,7 +102,7 @@ public class EaeEvaluationDtoTest {
 		assertEquals(expectedJson, json);
 	}
 	
-	//@Test
+	@Test
 	public void testSerializeInJSON_FilledObject() {
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
@@ -111,9 +112,10 @@ public class EaeEvaluationDtoTest {
 		dto.setNoteAnneeN1(13);
 		dto.setNoteAnneeN2(14);
 		dto.setNoteAnneeN3(15);
-		dto.setAvisRevalorisation(EaeAvisEnum.FAVORABLE);
-		dto.setAvisChangementClasse(EaeAvisEnum.DEFAVORABLE);
-		dto.setPropositionAvancement(EaeAvancementEnum.MAXI);
+		dto.setAvisRevalorisation(true);
+		dto.setAvisChangementClasse(false);
+		ValueWithListDto subDto = new ValueWithListDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
+		dto.setPropositionAvancement(subDto);
 		EaeNiveau niv = new EaeNiveau();
 		niv.setIdEaeNiveau(2);
 		niv.setLibelleNiveauEae("Satisfaisant");
@@ -132,7 +134,7 @@ public class EaeEvaluationDtoTest {
 		dto.setCommentaireEvalue(com4);
 		
 		
-		String expectedJson = "{\"avisChangementClasse\":null,\"avisRevalorisation\":null,\"commentaireAvctEvaluateur\":null,\"commentaireAvctEvalue\":null,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"dureeEntretien\":null,\"idEae\":0,\"niveau\":null,\"noteAnnee\":null,\"noteAnneeN1\":null,\"noteAnneeN2\":null,\"noteAnneeN3\":null,\"propositionAvancement\":null}";
+		String expectedJson = "{\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":127,\"idEae\":13,\"niveau\":{},\"noteAnnee\":12,\"noteAnneeN1\":13,\"noteAnneeN2\":14,\"noteAnneeN3\":15,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Minimale\"},{\"code\":\"MOY\",\"valeur\":\"Moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Maximale\"}]}}";
 		
 		// When
 		String json = dto.serializeInJSON();

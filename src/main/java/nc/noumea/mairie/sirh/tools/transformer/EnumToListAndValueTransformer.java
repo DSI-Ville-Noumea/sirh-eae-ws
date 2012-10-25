@@ -5,12 +5,15 @@ import flexjson.transformer.AbstractTransformer;
 
 public class EnumToListAndValueTransformer extends AbstractTransformer {
 
+	@SuppressWarnings("rawtypes")
 	private Class enumClass;
 	
+	@SuppressWarnings("rawtypes")
 	public EnumToListAndValueTransformer(Class _enumClass) {
 		this.enumClass = _enumClass;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void transform(Object object) {
 

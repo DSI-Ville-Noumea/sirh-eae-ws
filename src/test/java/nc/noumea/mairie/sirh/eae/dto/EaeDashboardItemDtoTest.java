@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 import org.junit.Test;
@@ -71,7 +70,7 @@ public class EaeDashboardItemDtoTest {
 		eae.setEtat(EaeEtatEnum.C);
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
-		eval.setAvisChangementClasse(EaeAvisEnum.DEFAVORABLE);
+		eval.setAvisChangementClasse(false);
 		eae.setEaeEvaluation(eval);
 		
 		// When
@@ -100,7 +99,7 @@ public class EaeDashboardItemDtoTest {
 		eae.setEtat(EaeEtatEnum.EC);
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setPropositionAvancement(EaeAvancementEnum.MOY);
-		eval.setAvisChangementClasse(EaeAvisEnum.FAVORABLE);
+		eval.setAvisChangementClasse(true);
 		eae.setEaeEvaluation(eval);
 		
 		// When

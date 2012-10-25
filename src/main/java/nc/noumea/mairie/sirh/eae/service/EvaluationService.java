@@ -12,6 +12,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -145,6 +146,19 @@ public class EvaluationService implements IEvaluationService {
 			app.setTypeAppreciation(appreciationType);
 			eae.getEaeAppreciations().add(app);
 		}
+	}
+
+	@Override
+	public EaeEvaluationDto getEaeEvaluation(Eae eae) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setEaeEvaluation(Eae eae, EaeEvaluationDto dto)
+			throws EvaluationServiceException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

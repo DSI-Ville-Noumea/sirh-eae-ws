@@ -30,6 +30,7 @@ public class MSDateTransformer extends AbstractTransformer implements ObjectFact
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
 		

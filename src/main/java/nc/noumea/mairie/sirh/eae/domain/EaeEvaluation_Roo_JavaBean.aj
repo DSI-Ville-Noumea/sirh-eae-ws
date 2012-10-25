@@ -8,7 +8,6 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 
 privileged aspect EaeEvaluation_Roo_JavaBean {
     
@@ -44,11 +43,11 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
         this.noteAnneeN3 = noteAnneeN3;
     }
     
-    public EaeAvisEnum EaeEvaluation.getAvisRevalorisation() {
+    public Boolean EaeEvaluation.getAvisRevalorisation() {
         return this.avisRevalorisation;
     }
     
-    public void EaeEvaluation.setAvisRevalorisation(EaeAvisEnum avisRevalorisation) {
+    public void EaeEvaluation.setAvisRevalorisation(Boolean avisRevalorisation) {
         this.avisRevalorisation = avisRevalorisation;
     }
     
@@ -68,11 +67,11 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
         this.propositionAvancement = propositionAvancement;
     }
     
-    public EaeAvisEnum EaeEvaluation.getAvisChangementClasse() {
+    public Boolean EaeEvaluation.getAvisChangementClasse() {
         return this.avisChangementClasse;
     }
     
-    public void EaeEvaluation.setAvisChangementClasse(EaeAvisEnum avisChangementClasse) {
+    public void EaeEvaluation.setAvisChangementClasse(Boolean avisChangementClasse) {
         this.avisChangementClasse = avisChangementClasse;
     }
     
