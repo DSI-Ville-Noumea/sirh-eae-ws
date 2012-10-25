@@ -25,7 +25,7 @@ public class MSDateTransformer extends AbstractTransformer implements ObjectFact
 		if (theDate == null)
 			getContext().write(null);
 		else {
-			theDateInString = String.format("/DATE(%s)/", theDate.getTime());
+			theDateInString = String.format("/Date(%s)/", theDate.getTime());
 			getContext().writeQuoted(theDateInString);
 		}
 	}

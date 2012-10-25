@@ -43,7 +43,7 @@ public class MSDateTransformerTest {
 		String json = serializer.transform(tr, Date.class).serialize(c.getTime());
 
 		// Then
-		assertEquals("\"/DATE(1357909200000)/\"", json);
+		assertEquals("\"/Date(1357909200000)/\"", json);
 	}
 	
 	@Test
