@@ -4,10 +4,11 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasseEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 
 privileged aspect EaeEvaluation_Roo_JavaBean {
     
@@ -43,12 +44,12 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
         this.noteAnneeN3 = noteAnneeN3;
     }
     
-    public String EaeEvaluation.getAvis() {
-        return this.avis;
+    public EaeAvisEnum EaeEvaluation.getAvisRevalorisation() {
+        return this.avisRevalorisation;
     }
     
-    public void EaeEvaluation.setAvis(String avis) {
-        this.avis = avis;
+    public void EaeEvaluation.setAvisRevalorisation(EaeAvisEnum avisRevalorisation) {
+        this.avisRevalorisation = avisRevalorisation;
     }
     
     public String EaeEvaluation.getAvisShd() {
@@ -59,20 +60,20 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
         this.avisShd = avisShd;
     }
     
-    public EaeAvancementEnum EaeEvaluation.getAvancementDiff() {
-        return this.avancementDiff;
+    public EaeAvancementEnum EaeEvaluation.getPropositionAvancement() {
+        return this.propositionAvancement;
     }
     
-    public void EaeEvaluation.setAvancementDiff(EaeAvancementEnum avancementDiff) {
-        this.avancementDiff = avancementDiff;
+    public void EaeEvaluation.setPropositionAvancement(EaeAvancementEnum propositionAvancement) {
+        this.propositionAvancement = propositionAvancement;
     }
     
-    public EaeAvisChangementClasseEnum EaeEvaluation.getChangementClasse() {
-        return this.changementClasse;
+    public EaeAvisEnum EaeEvaluation.getAvisChangementClasse() {
+        return this.avisChangementClasse;
     }
     
-    public void EaeEvaluation.setChangementClasse(EaeAvisChangementClasseEnum changementClasse) {
-        this.changementClasse = changementClasse;
+    public void EaeEvaluation.setAvisChangementClasse(EaeAvisEnum avisChangementClasse) {
+        this.avisChangementClasse = avisChangementClasse;
     }
     
     public EaeNiveau EaeEvaluation.getNiveauEae() {
@@ -81,6 +82,38 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
     
     public void EaeEvaluation.setNiveauEae(EaeNiveau niveauEae) {
         this.niveauEae = niveauEae;
+    }
+    
+    public EaeCommentaire EaeEvaluation.getCommentaireEvaluateur() {
+        return this.commentaireEvaluateur;
+    }
+    
+    public void EaeEvaluation.setCommentaireEvaluateur(EaeCommentaire commentaireEvaluateur) {
+        this.commentaireEvaluateur = commentaireEvaluateur;
+    }
+    
+    public EaeCommentaire EaeEvaluation.getCommentaireEvalue() {
+        return this.commentaireEvalue;
+    }
+    
+    public void EaeEvaluation.setCommentaireEvalue(EaeCommentaire commentaireEvalue) {
+        this.commentaireEvalue = commentaireEvalue;
+    }
+    
+    public EaeCommentaire EaeEvaluation.getCommentaireAvctEvaluateur() {
+        return this.commentaireAvctEvaluateur;
+    }
+    
+    public void EaeEvaluation.setCommentaireAvctEvaluateur(EaeCommentaire commentaireAvctEvaluateur) {
+        this.commentaireAvctEvaluateur = commentaireAvctEvaluateur;
+    }
+    
+    public EaeCommentaire EaeEvaluation.getCommentaireAvctEvalue() {
+        return this.commentaireAvctEvalue;
+    }
+    
+    public void EaeEvaluation.setCommentaireAvctEvalue(EaeCommentaire commentaireAvctEvalue) {
+        this.commentaireAvctEvalue = commentaireAvctEvalue;
     }
     
     public Eae EaeEvaluation.getEae() {

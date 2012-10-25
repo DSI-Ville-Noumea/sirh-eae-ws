@@ -72,7 +72,7 @@ public class EaeListItemDtoTest {
 		eaeItem.setDateControle(c.getTime());
 		
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setAvancementDiff(EaeAvancementEnum.MINI);
+		eval.setPropositionAvancement(EaeAvancementEnum.MINI);
 		
 		eaeItem.setEaeEvaluation(eval);
 		
@@ -91,7 +91,7 @@ public class EaeListItemDtoTest {
 		assertEquals(dto.getDateCreation(), eaeItem.getDateCreation());
 		assertEquals(dto.getDateFinalisation(), eaeItem.getDateFinalisation());
 		assertEquals(dto.getDateControle(), eaeItem.getDateControle());
-		assertEquals(dto.getAvisShd(), eaeItem.getEaeEvaluation().getAvancementDiff().toString());
+		assertEquals(dto.getAvisShd(), eaeItem.getEaeEvaluation().getPropositionAvancement().toString());
 	}
 	
 	@Test

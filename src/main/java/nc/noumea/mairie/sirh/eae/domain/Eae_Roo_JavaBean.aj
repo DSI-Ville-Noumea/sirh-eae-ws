@@ -70,12 +70,12 @@ privileged aspect Eae_Roo_JavaBean {
         this.dateEntretien = dateEntretien;
     }
     
-    public Integer Eae.getDureeEntretien() {
-        return this.dureeEntretien;
+    public Integer Eae.getDureeEntretienMinutes() {
+        return this.dureeEntretienMinutes;
     }
     
-    public void Eae.setDureeEntretien(Integer dureeEntretien) {
-        this.dureeEntretien = dureeEntretien;
+    public void Eae.setDureeEntretienMinutes(Integer dureeEntretienMinutes) {
+        this.dureeEntretienMinutes = dureeEntretienMinutes;
     }
     
     public Date Eae.getDateFinalisation() {

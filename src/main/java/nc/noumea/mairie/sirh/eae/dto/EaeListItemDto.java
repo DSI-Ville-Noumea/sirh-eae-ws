@@ -61,8 +61,8 @@ public class EaeListItemDto {
 		if (eaeItem.getEaeEvalue() != null)
 			this.setAgentEvalue(eaeItem.getEaeEvalue().getAgent());
 		
-		if (eaeItem.getEaeEvaluation() != null && eaeItem.getEaeEvaluation().getAvancementDiff() != null)
-			this.setAvisShd(eaeItem.getEaeEvaluation().getAvancementDiff().toString());
+		if (eaeItem.getEaeEvaluation() != null && eaeItem.getEaeEvaluation().getPropositionAvancement() != null)
+			this.setAvisShd(eaeItem.getEaeEvaluation().getPropositionAvancement().toString());
 	}
 	
 	public void setAccessRightsForAgentId(Eae eae, int idAgent) {

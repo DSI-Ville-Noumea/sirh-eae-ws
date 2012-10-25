@@ -53,7 +53,7 @@ public class Eae {
     private Date dateEntretien;
 
     @Column(name = "DUREE_ENTRETIEN", nullable = true)
-    private Integer dureeEntretien;
+    private Integer dureeEntretienMinutes;
     
     @Column(name = "DATE_FINALISE")
     private Date dateFinalisation;

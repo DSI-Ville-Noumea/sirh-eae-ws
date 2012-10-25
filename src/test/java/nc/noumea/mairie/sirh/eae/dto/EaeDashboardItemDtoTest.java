@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasseEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class EaeDashboardItemDtoTest {
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.ND);
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setAvancementDiff(EaeAvancementEnum.MINI);
+		eval.setPropositionAvancement(EaeAvancementEnum.MINI);
 		eae.setEaeEvaluation(eval);
 		
 		// When
@@ -70,8 +70,8 @@ public class EaeDashboardItemDtoTest {
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.C);
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setAvancementDiff(EaeAvancementEnum.MAXI);
-		eval.setChangementClasse(EaeAvisChangementClasseEnum.DEFAVORABLE);
+		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
+		eval.setAvisChangementClasse(EaeAvisEnum.DEFAVORABLE);
 		eae.setEaeEvaluation(eval);
 		
 		// When
@@ -99,8 +99,8 @@ public class EaeDashboardItemDtoTest {
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.EC);
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setAvancementDiff(EaeAvancementEnum.MOY);
-		eval.setChangementClasse(EaeAvisChangementClasseEnum.FAVORABLE);
+		eval.setPropositionAvancement(EaeAvancementEnum.MOY);
+		eval.setAvisChangementClasse(EaeAvisEnum.FAVORABLE);
 		eae.setEaeEvaluation(eval);
 		
 		// When

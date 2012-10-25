@@ -1,13 +1,15 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisChangementClasseEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -30,23 +32,40 @@ public class EaeEvaluation {
     @Column(name = "NOTE_ANNEE_N3")
     private Integer noteAnneeN3;
 
-    @Column(name = "AVIS")
-    private String avis;
+    @Column(name = "AVIS_REVALORISATION")
+    @Enumerated(EnumType.STRING)
+    private EaeAvisEnum avisRevalorisation;
     
     @Column(name = "AVIS_SHD")
     private String avisShd;
 
-    @Column(name = "AVANCEMENT_DIFF")
+    @Column(name = "PROPOSITION_AVANCEMENT")
     @Enumerated(EnumType.STRING)
-    private EaeAvancementEnum avancementDiff;
+    private EaeAvancementEnum propositionAvancement;
 
-    @Column(name = "CHANGEMENT_CLASSE")
+    @Column(name = "AVIS_CHANGEMENT_CLASSE")
     @Enumerated(EnumType.STRING)
-    private EaeAvisChangementClasseEnum changementClasse;
+    private EaeAvisEnum avisChangementClasse;
 
     @OneToOne
 	@JoinColumn(name = "ID_EAE_NIVEAU")
     private EaeNiveau niveauEae;
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ID_EAE_COM_EVALUATEUR")
+    private EaeCommentaire commentaireEvaluateur;
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ID_EAE_COM_EVALUE")
+    private EaeCommentaire commentaireEvalue;
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ID_EAE_COM_AVCT_EVALUATEUR")
+    private EaeCommentaire commentaireAvctEvaluateur;
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ID_EAE_COM_AVCT_EVALUE")
+    private EaeCommentaire commentaireAvctEvalue;
     
     @OneToOne
     @JoinColumn(name = "ID_EAE")
