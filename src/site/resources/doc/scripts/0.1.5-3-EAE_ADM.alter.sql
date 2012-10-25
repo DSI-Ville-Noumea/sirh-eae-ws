@@ -9,8 +9,6 @@ update EAE_EVALUE set POSITION = 'AC';
 alter table EAE_EVALUE modify (POSITION VARCHAR2(2));
 alter table EAE drop column STATUT;
 
-update EAE_FICHE_POSTE set VERSION = 0 where VERSION is null;
-alter table EAE_FICHE_POSTE modify (VERSION NUMBER DEFAULT 0 not null);
 alter table EAE_FICHE_POSTE add (PRIMAIRE number(1) default 0 not null check(PRIMAIRE in (0, 1)));
 update EAE_FICHE_POSTE set PRIMAIRE = 1;
 alter table EAE_FICHE_POSTE drop column TYPE_FDP;
