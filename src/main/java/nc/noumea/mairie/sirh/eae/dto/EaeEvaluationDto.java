@@ -10,6 +10,7 @@ import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 
 import org.joda.time.Period;
 
+import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEvaluationDto> {
@@ -23,7 +24,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	private Boolean avisRevalorisation;
 	private ValueWithListDto propositionAvancement;
 	private Boolean avisChangementClasse;
-	private EaeNiveau niveau;
+	private ValueWithListDto niveau;
 	private EaeCommentaire commentaireEvaluateur;
 	private EaeCommentaire commentaireEvalue;
 	private EaeCommentaire commentaireAvctEvaluateur;
@@ -43,7 +44,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		avisRevalorisation = eaeEvaluation.getAvisRevalorisation();
 		avisChangementClasse = eaeEvaluation.getAvisChangementClasse();
 		propositionAvancement = new ValueWithListDto(eaeEvaluation.getPropositionAvancement(), EaeAvancementEnum.class);
-		niveau = eaeEvaluation.getNiveauEae();
+		niveau = new ValueWithListDto(eaeEvaluation.getNiveauEae(), EaeNiveau.findAllEaeNiveaus());
 		commentaireEvaluateur = eaeEvaluation.getCommentaireEvaluateur();
 		commentaireEvalue = eaeEvaluation.getCommentaireEvalue();
 		commentaireAvctEvaluateur = eaeEvaluation.getCommentaireAvctEvaluateur();
@@ -61,7 +62,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 			.include("avisRevalorisation")
 			.include("propositionAvancement.*")
 			.include("avisChangementClasse")
-			.include("niveau")
+			.include("niveau.*")
 			.include("commentaireEvaluateur")
 			.include("commentaireEvalue")
 			.include("commentaireAvctEvaluateur")
@@ -79,8 +80,10 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	@Override
 	public EaeEvaluationDto deserializeFromJSON(String json) {
-		// TODO Auto-generated method stub
-		return null;
+		return new JSONDeserializer<EaeEvaluationDto>()
+				.use(EaeCommentaire.class, new ObjectToPropertyTransformer("text", EaeCommentaire.class))
+				.use("dureeEntretien", new MinutesToHoursAndMinutesTransformer())
+				.deserializeInto(json, this);
 	}
 
 	public int getIdEae() {
@@ -155,11 +158,11 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		this.avisChangementClasse = avisChangementClasse;
 	}
 
-	public EaeNiveau getNiveau() {
+	public ValueWithListDto getNiveau() {
 		return niveau;
 	}
 
-	public void setNiveau(EaeNiveau niveau) {
+	public void setNiveau(ValueWithListDto niveau) {
 		this.niveau = niveau;
 	}
 
