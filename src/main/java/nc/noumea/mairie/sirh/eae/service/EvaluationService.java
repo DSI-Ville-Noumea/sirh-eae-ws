@@ -12,6 +12,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
@@ -165,7 +166,6 @@ public class EvaluationService implements IEvaluationService {
 		evaluation.setAvisChangementClasse(dto.getAvisChangementClasse());
 		evaluation.setAvisRevalorisation(dto.getAvisRevalorisation());
 		
-		
 		// Check the Niveau if it's valid and/or not set
 		if (dto.getNiveau().getCourant() == null)
 			throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est manquante.");
@@ -197,6 +197,8 @@ public class EvaluationService implements IEvaluationService {
 		
 		evaluation.setPropositionAvancement(selectedAvancement);
 		
+		// Calculate Avis SHD based on what has been modified
+		calculateAvisShd(eae);
 		
 		// For all the comments, check if a comment already exists and update it, or assign the new one
 		if (evaluation.getCommentaireEvaluateur() == null)
@@ -218,6 +220,29 @@ public class EvaluationService implements IEvaluationService {
 			evaluation.setCommentaireAvctEvalue(dto.getCommentaireAvctEvalue());
 		else if (dto.getCommentaireAvctEvalue() != null)
 			evaluation.getCommentaireAvctEvalue().setText(dto.getCommentaireAvctEvalue().getText());
+	}
+	
+	protected void calculateAvisShd(Eae eae) {
+		
+		Integer avct = eae.getEaeEvalue().getTypeAvancement();
+		
+		if (avct == null)
+			return;
+		
+		switch (avct) {
+			case 4:
+				if (eae.getEaeEvaluation().getAvisChangementClasse() != null)
+					eae.getEaeEvaluation().setAvisShd(EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisChangementClasse()).toString());
+				break;
+			case 5:
+				if (eae.getEaeEvaluation().getAvisRevalorisation() != null)
+					eae.getEaeEvaluation().setAvisShd(EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisRevalorisation()).toString());
+				break;
+			case 7:
+				if (eae.getEaeEvaluation().getPropositionAvancement() != null)
+					eae.getEaeEvaluation().setAvisShd(eae.getEaeEvaluation().getPropositionAvancement().toString());
+				break;
+		}
 	}
 
 }

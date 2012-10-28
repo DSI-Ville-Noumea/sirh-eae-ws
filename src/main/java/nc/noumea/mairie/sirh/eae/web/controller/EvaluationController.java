@@ -66,8 +66,10 @@ public class EvaluationController {
 			EaeIdentificationDto dto = new EaeIdentificationDto().deserializeFromJSON(eaeIdentificationDtoJson);
 			evaluationService.setEaeIdentification(eae, dto);
 		} catch (EaeServiceException e) {
+			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (EvaluationServiceException e) {
+			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
@@ -123,8 +125,10 @@ public class EvaluationController {
 			EaeResultatsDto dto = new EaeResultatsDto().deserializeFromJSON(eaeResultatsDtoJson);
 			evaluationService.setEaeResultats(eae, dto);
 		} catch (EaeServiceException e) {
+			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (EvaluationServiceException e) {
+			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
@@ -163,6 +167,7 @@ public class EvaluationController {
 			EaeAppreciationsDto dto = new EaeAppreciationsDto().deserializeFromJSON(eaeAppreciationsDtoJson);
 			evaluationService.setEaeAppreciations(eae, dto);
 		} catch (EaeServiceException e) {
+			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
@@ -200,9 +205,12 @@ public class EvaluationController {
 			eaeService.startEae(eae);
 			EaeEvaluationDto dto = new EaeEvaluationDto().deserializeFromJSON(eaeEvaluationDtoJson);
 			evaluationService.setEaeEvaluation(eae, dto);
+			eae.flush();
 		} catch (EaeServiceException e) {
+			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (EvaluationServiceException e) {
+			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		

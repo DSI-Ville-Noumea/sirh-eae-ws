@@ -447,6 +447,7 @@ public class EvaluationServiceTest {
 		EaeEvaluation eval = new EaeEvaluation();
 		eae.setEaeEvaluation(eval);
 		eval.setEae(eae);
+		eae.setEaeEvalue(new EaeEvalue());
 		
 		EaeNiveau niveau = new EaeNiveau();
 		niveau.setIdEaeNiveau(2);
@@ -511,6 +512,7 @@ public class EvaluationServiceTest {
 		dto.setCommentaireEvalue(com4);
 		
 		Eae eae = new Eae();
+		eae.setEaeEvalue(new EaeEvalue());
 		EaeEvaluation eval = new EaeEvaluation();
 		eae.setEaeEvaluation(eval);
 		eval.setEae(eae);
@@ -689,5 +691,131 @@ public class EvaluationServiceTest {
 		}
 		
 		fail("Should have thrown an exception here!");
+	}
+	
+	@Test
+	public void testCalculateAvisShd_typeAvctIs5AndAvisFalse() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setTypeAvancement(5);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setAvisRevalorisation(false);
+		eae.setEaeEvaluation(evaluation);
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.calculateAvisShd(eae);
+		
+		// Then
+		assertEquals("Défavorable", evaluation.getAvisShd());
+	}
+	
+	@Test
+	public void testCalculateAvisShd_typeAvctIs5AndAvisTrue() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setTypeAvancement(5);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setAvisRevalorisation(true);
+		eae.setEaeEvaluation(evaluation);
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.calculateAvisShd(eae);
+		
+		// Then
+		assertEquals("Favorable", evaluation.getAvisShd());
+	}
+	
+	@Test
+	public void testCalculateAvisShd_typeAvctIs4AndAvisFalse() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setTypeAvancement(4);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setAvisChangementClasse(false);
+		eae.setEaeEvaluation(evaluation);
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.calculateAvisShd(eae);
+		
+		// Then
+		assertEquals("Défavorable", evaluation.getAvisShd());
+	}
+	
+	@Test
+	public void testCalculateAvisShd_typeAvctIs4AndAvisTrue() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setTypeAvancement(4);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setAvisChangementClasse(true);
+		eae.setEaeEvaluation(evaluation);
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.calculateAvisShd(eae);
+		
+		// Then
+		assertEquals("Favorable", evaluation.getAvisShd());
+	}
+	
+	@Test
+	public void testCalculateAvisShd_typeAvctIs7AndAvisMINI() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setTypeAvancement(7);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setPropositionAvancement(EaeAvancementEnum.MINI);
+		eae.setEaeEvaluation(evaluation);
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.calculateAvisShd(eae);
+		
+		// Then
+		assertEquals("Minimale", evaluation.getAvisShd());
+	}
+	
+	@Test
+	public void testCalculateAvisShd_typeAvctIs7AndAvisMAXI() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setTypeAvancement(7);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setPropositionAvancement(EaeAvancementEnum.MAXI);
+		eae.setEaeEvaluation(evaluation);
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.calculateAvisShd(eae);
+		
+		// Then
+		assertEquals("Maximale", evaluation.getAvisShd());
 	}
 }

@@ -15,4 +15,8 @@ public enum EaeAvisEnum {
 	public String toString() {
 		return avisAvancement;
 	}
+	
+	public static EaeAvisEnum fromBooleanToAvisEnum(boolean value) {
+		return value ? FAVORABLE : DEFAVORABLE;
+	}
 }

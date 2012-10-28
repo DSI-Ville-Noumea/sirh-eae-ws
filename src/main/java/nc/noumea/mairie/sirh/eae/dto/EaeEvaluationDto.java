@@ -7,9 +7,6 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 import nc.noumea.mairie.sirh.tools.transformer.MinutesToHoursAndMinutesTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
-
-import org.joda.time.Period;
-
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
@@ -36,7 +33,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	public EaeEvaluationDto(EaeEvaluation eaeEvaluation) {
 		idEae = eaeEvaluation.getEae().getIdEae();
-		dureeEntretien =eaeEvaluation.getEae().getDureeEntretienMinutes();
+		dureeEntretien = eaeEvaluation.getEae().getDureeEntretienMinutes();
 		noteAnnee = eaeEvaluation.getNoteAnnee();
 		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1();
 		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
@@ -68,7 +65,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 			.include("commentaireAvctEvaluateur")
 			.include("commentaireAvctEvalue")
 			.include("dureeEntretien")
-			.transform(new MinutesToHoursAndMinutesTransformer(), Period.class)
+			.transform(new MinutesToHoursAndMinutesTransformer(), "dureeEntretien")
 			.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class)
 			.exclude("*");
 	}
