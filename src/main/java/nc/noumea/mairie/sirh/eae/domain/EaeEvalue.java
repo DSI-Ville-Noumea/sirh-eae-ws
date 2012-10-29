@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -72,7 +73,8 @@ public class EaeEvalue {
     private String nouvEchelon;
 
     @Column(name = "TYPE_AVCT")
-    private Integer typeAvancement;
+    @Enumerated(EnumType.STRING)
+    private EaeTypeAvctEnum typeAvancement;
     
     @Column(name = "POSITION")
     @Enumerated(EnumType.STRING)

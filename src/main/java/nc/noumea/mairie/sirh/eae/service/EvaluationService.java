@@ -20,6 +20,8 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.service.dataConsistency.EaeDataConsistencyServiceException;
+import nc.noumea.mairie.sirh.eae.service.dataConsistency.IEaeDataConsistencyService;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class EvaluationService implements IEvaluationService {
 	
 	@Autowired
 	private ITypeObjectifService typeObjectifService;
+	
+	@Autowired
+	private IEaeDataConsistencyService eaeDataConsistencyService;
 	
 	@Override
 	public EaeIdentificationDto getEaeIdentification(Eae eae) {
@@ -220,27 +225,33 @@ public class EvaluationService implements IEvaluationService {
 			evaluation.setCommentaireAvctEvalue(dto.getCommentaireAvctEvalue());
 		else if (dto.getCommentaireAvctEvalue() != null)
 			evaluation.getCommentaireAvctEvalue().setText(dto.getCommentaireAvctEvalue().getText());
+		
+		try {
+			eaeDataConsistencyService.checkDataConsistencyForEaeEvaluation(eae);
+		} catch (EaeDataConsistencyServiceException e) {
+			throw new EvaluationServiceException(e.getMessage(), e);
+		}
 	}
 	
 	protected void calculateAvisShd(Eae eae) {
 		
-		Integer avct = eae.getEaeEvalue().getTypeAvancement();
-		
-		if (avct == null)
+		if (eae.getEaeEvalue().getTypeAvancement() == null)
 			return;
 		
-		switch (avct) {
-			case 4:
+		switch (eae.getEaeEvalue().getTypeAvancement()) {
+			case AD:
 				if (eae.getEaeEvaluation().getAvisChangementClasse() != null)
 					eae.getEaeEvaluation().setAvisShd(EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisChangementClasse()).toString());
 				break;
-			case 5:
+			case REVA:
 				if (eae.getEaeEvaluation().getAvisRevalorisation() != null)
 					eae.getEaeEvaluation().setAvisShd(EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisRevalorisation()).toString());
 				break;
-			case 7:
+			case AVCT:
 				if (eae.getEaeEvaluation().getPropositionAvancement() != null)
 					eae.getEaeEvaluation().setAvisShd(eae.getEaeEvaluation().getPropositionAvancement().toString());
+				break;
+			default:
 				break;
 		}
 	}

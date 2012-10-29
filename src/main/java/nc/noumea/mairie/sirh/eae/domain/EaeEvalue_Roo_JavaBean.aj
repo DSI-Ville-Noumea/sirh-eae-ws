@@ -9,6 +9,7 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 
 privileged aspect EaeEvalue_Roo_JavaBean {
     
@@ -140,11 +141,11 @@ privileged aspect EaeEvalue_Roo_JavaBean {
         this.nouvEchelon = nouvEchelon;
     }
     
-    public Integer EaeEvalue.getTypeAvancement() {
+    public EaeTypeAvctEnum EaeEvalue.getTypeAvancement() {
         return this.typeAvancement;
     }
     
-    public void EaeEvalue.setTypeAvancement(Integer typeAvancement) {
+    public void EaeEvalue.setTypeAvancement(EaeTypeAvctEnum typeAvancement) {
         this.typeAvancement = typeAvancement;
     }
     

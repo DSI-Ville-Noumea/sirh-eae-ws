@@ -26,12 +26,15 @@ import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
+import nc.noumea.mairie.sirh.eae.service.dataConsistency.EaeDataConsistencyServiceException;
+import nc.noumea.mairie.sirh.eae.service.dataConsistency.IEaeDataConsistencyService;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
 import org.junit.Test;
@@ -406,7 +409,7 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testSetEaeEvaluation_valuesInDto_setEaeEvaluationValues() throws EvaluationServiceException {
+	public void testSetEaeEvaluation_valuesInDto_setEaeEvaluationValues() throws EvaluationServiceException, EaeDataConsistencyServiceException {
 		
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
@@ -455,7 +458,10 @@ public class EvaluationServiceTest {
 		AnnotationDrivenStaticEntityMockingControl.expectReturn(niveau);
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
+		IEaeDataConsistencyService dcService = mock(IEaeDataConsistencyService.class);
+		
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dcService);
 		
 		// When
 		service.setEaeEvaluation(eae, dto);
@@ -474,7 +480,7 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testSetEaeEvaluation_valuesInDtoAndExistingValuesInEvaluation_overwriteValues() throws EvaluationServiceException {
+	public void testSetEaeEvaluation_valuesInDtoAndExistingValuesInEvaluation_overwriteValues() throws EvaluationServiceException, EaeDataConsistencyServiceException {
 		
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
@@ -539,7 +545,10 @@ public class EvaluationServiceTest {
 		AnnotationDrivenStaticEntityMockingControl.expectReturn(niveau);
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
+		IEaeDataConsistencyService dcService = mock(IEaeDataConsistencyService.class);
+		
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dcService);
 		
 		// When
 		service.setEaeEvaluation(eae, dto);
@@ -694,12 +703,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIs5AndAvisFalse() {
+	public void testCalculateAvisShd_typeAvctIsREVAAndAvisFalse() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(5);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.REVA);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setAvisRevalorisation(false);
@@ -715,12 +724,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIs5AndAvisTrue() {
+	public void testCalculateAvisShd_typeAvctIsREVAAndAvisTrue() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(5);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.REVA);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setAvisRevalorisation(true);
@@ -736,12 +745,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIs4AndAvisFalse() {
+	public void testCalculateAvisShd_typeAvctIsADAndAvisFalse() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(4);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.AD);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setAvisChangementClasse(false);
@@ -757,12 +766,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIs4AndAvisTrue() {
+	public void testCalculateAvisShd_typeAvctIsADAndAvisTrue() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(4);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.AD);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setAvisChangementClasse(true);
@@ -778,12 +787,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIs7AndAvisMINI() {
+	public void testCalculateAvisShd_typeAvctIsAVCTAndAvisMINI() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(7);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.AVCT);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MINI);
@@ -799,12 +808,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIs7AndAvisMAXI() {
+	public void testCalculateAvisShd_typeAvctIsAVCTAndAvisMAXI() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(7);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.AVCT);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MAXI);
