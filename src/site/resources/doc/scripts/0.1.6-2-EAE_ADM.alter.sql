@@ -22,3 +22,5 @@ alter table EAE_EVALUATION modify (AVIS_REVALORISATION NUMBER(1,0));
 
 update EAE_EVALUE set TYPE_AVCT = null;
 alter table EAE_EVALUE modify (TYPE_AVCT varchar2(5));
+
+alter table EAE_AUTO_EVALUATION add (VERSION number default 0 not null);

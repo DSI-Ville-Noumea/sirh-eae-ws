@@ -4,6 +4,9 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class EaeDataConsistencyService implements IEaeDataConsistencyService {
 
 	@Override
