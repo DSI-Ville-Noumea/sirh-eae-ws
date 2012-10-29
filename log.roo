@@ -282,3 +282,8 @@ exit
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-26 08:27:23
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-26 15:07:10
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-29 07:55:36
+entity jpa --class ~.sirh.eae.domain.EaeAutoEvaluation --persistenceUnit eaePersistenceUnit --table EAE_AUTO_EVALUATION --identifierColumn ID_EAE_AUTO_EVALUATION --identifierField idEaeAutoEvaluation --identifierType java.lang.Integer --sequenceName  EAE_S_AUTO_EVALUATION
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-29 14:12:25
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-30 08:00:33
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-10-30 09:12:08
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-10-30 09:31:01

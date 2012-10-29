@@ -8,12 +8,12 @@
 	<version>0.1.6-SNAPSHOT</version>
 	<name>sirh-eae-ws</name>
 	<properties>
-		<aspectj.version>1.7.0.RC1</aspectj.version>
+		<aspectj.version>1.7.0</aspectj.version>
 		<java.version>6</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<roo.version>1.2.2.RELEASE</roo.version>
 		<slf4j.version>1.6.4</slf4j.version>
-		<spring.version>3.1.1.RELEASE</spring.version>
+		<spring.version>3.1.2.RELEASE</spring.version>
 	</properties>
 	<issueManagement>
 		<system>JIRA</system>
@@ -173,12 +173,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.6.9.Final</version>
+			<version>4.1.7.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.6.9.Final</version>
+			<version>4.1.7.Final</version>
 			<exclusions>
 				<exclusion>
 					<groupId>cglib</groupId>
