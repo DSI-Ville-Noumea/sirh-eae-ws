@@ -8,6 +8,7 @@ import java.util.Set;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
+import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
@@ -204,6 +205,14 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setEaeAppreciations(Set<EaeAppreciation> eaeAppreciations) {
         this.eaeAppreciations = eaeAppreciations;
+    }
+    
+    public EaeAutoEvaluation Eae.getEaeAutoEvaluation() {
+        return this.eaeAutoEvaluation;
+    }
+    
+    public void Eae.setEaeAutoEvaluation(EaeAutoEvaluation eaeAutoEvaluation) {
+        this.eaeAutoEvaluation = eaeAutoEvaluation;
     }
     
     public Agent Eae.getAgentDelegataire() {

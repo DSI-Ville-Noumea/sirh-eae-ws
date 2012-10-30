@@ -73,9 +73,5 @@ public class MinutesToHoursAndMinutesTransformerTest {
 		public Integer getDureeEntretien() {
 			return dureeEntretien;
 		}
-
-		public void setDureeEntretien(Integer dureeEntretien) {
-			this.dureeEntretien = dureeEntretien;
-		}
 	}
 }

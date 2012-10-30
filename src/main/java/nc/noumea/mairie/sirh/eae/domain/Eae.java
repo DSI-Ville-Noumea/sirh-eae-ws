@@ -77,7 +77,7 @@ public class Eae {
     @Column(name = "ID_DELEGATAIRE")
     private Integer idAgentDelegataire;
     
-    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private EaeEvaluation eaeEvaluation;
     
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -110,6 +110,9 @@ public class Eae {
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
    	private Set<EaeAppreciation> eaeAppreciations = new HashSet<EaeAppreciation>();
+    
+    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private EaeAutoEvaluation eaeAutoEvaluation;
     
     /*
      * Transient properties (will be populated by AS400 entity manager)

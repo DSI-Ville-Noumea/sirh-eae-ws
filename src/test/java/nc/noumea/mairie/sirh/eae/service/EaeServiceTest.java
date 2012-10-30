@@ -41,6 +41,7 @@ import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingCo
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
+@SuppressWarnings("unchecked")
 @MockStaticEntityMethods
 public class EaeServiceTest {
 

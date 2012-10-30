@@ -21,4 +21,12 @@ alter table EAE_EVALUATION modify (AVIS_REVALORISATION NUMBER(1,0));
 update EAE_EVALUE set TYPE_AVCT = null;
 alter table EAE_EVALUE modify (TYPE_AVCT varchar2(5));
 
+alter table EAE_AUTO_EVALUATION drop column OBJECTIF_ATTEINT;
+alter table EAE_AUTO_EVALUATION drop column ELEMENTS;
+alter table EAE_AUTO_EVALUATION drop column COMPETENCES_ACQUISES;
+alter table EAE_AUTO_EVALUATION drop column SUCCES;
+alter table EAE_AUTO_EVALUATION add (PARTICULARITES CLOB);
+alter table EAE_AUTO_EVALUATION add (PARTICULARITES CLOB);
+alter table EAE_AUTO_EVALUATION add (ACQUIS CLOB);
+alter table EAE_AUTO_EVALUATION add (SUCCES_DIFFICULTES CLOB);
 alter table EAE_AUTO_EVALUATION add (VERSION number default 0 not null);

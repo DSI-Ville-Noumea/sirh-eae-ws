@@ -15,6 +15,7 @@ import javax.transaction.SystemException;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
@@ -636,5 +637,136 @@ public class EvaluationControllerTest {
 		
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(1)).setEaeEvaluation(Mockito.eq(eaeToReturn), Mockito.any(EaeEvaluationDto.class));
+	}
+	
+	@Test
+	public void testGetEaeAutoEvaluation_nonExistingEae_ReturnCode404() {
+		// Given
+		EvaluationController controller = new EvaluationController();
+		
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = null;
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		// When
+		ResponseEntity<String> result = controller.getEaeAutoEvaluation(789);
+		
+		// Then
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertFalse(result.hasBody());
+	}
+	
+	@Test
+	public void testGetEaeAutoEvaluation_ExistingEae_ReturnJsonAndCode200() {
+		// Given
+		EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto();
+		
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = new Eae();
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		IEvaluationService evaluationServiceMock = Mockito.mock(IEvaluationService.class);
+		when(evaluationServiceMock.getEaeAutoEvaluation(eaeToReturn)).thenReturn(dto);
+		
+		EvaluationController controller = new EvaluationController();
+		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.getEaeAutoEvaluation(789);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertTrue(result.hasBody());
+		
+		verify(evaluationServiceMock, times(1)).getEaeAutoEvaluation(eaeToReturn);
+	}
+	
+	@Test
+	public void testSetEaeAutoEvaluation_nonExistingEae_ReturnCode404() throws IllegalStateException, SecurityException, SystemException {
+		// Given
+		EvaluationController controller = new EvaluationController();
+		
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = null;
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		// When
+		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 0, null);
+		
+		// Then
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertFalse(result.hasBody());
+	}
+	
+	@Test
+	public void testSetEaeAutoEvaluation_updateExistingEae_ReturnCode200() throws EvaluationServiceException, EaeServiceException, IllegalStateException, SecurityException, SystemException {
+		// Given
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = spy(new Eae());
+		Mockito.doNothing().when(eaeToReturn).flush();
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		String json = "{}";
+		
+		IEvaluationService evaluationServiceMock = Mockito.mock(IEvaluationService.class);
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		
+		EvaluationController controller = new EvaluationController();
+		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 0, json);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertFalse(result.hasBody());
+		
+		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
+		verify(evaluationServiceMock, times(1)).setEaeAutoEvaluation(Mockito.eq(eaeToReturn), Mockito.any(EaeAutoEvaluationDto.class));
+	}
+	
+	@Test
+	public void testSetEaeAutoEvaluation_EaeCannotBeStarted_ReturnCode409() throws EvaluationServiceException, EaeServiceException, IllegalStateException, SecurityException, SystemException {
+		// Given
+		// Mock the Eae find static method to return our null eae
+		Eae eaeToReturn = spy(new Eae());
+		Mockito.doNothing().when(eaeToReturn).clear();
+
+		Eae.findEae(789);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
+		AnnotationDrivenStaticEntityMockingControl.playback();
+		
+		String json = "{}";
+		
+		IEvaluationService evaluationServiceMock = Mockito.mock(IEvaluationService.class);
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		Mockito.doThrow(new EaeServiceException("message")).when(eaeServiceMock).startEae(eaeToReturn);
+		
+		EvaluationController controller = new EvaluationController();
+		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 0, json);
+			
+		// Then
+		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+		assertEquals("message", result.getBody());
+		
+		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
+		verify(evaluationServiceMock, times(0)).setEaeAutoEvaluation(Mockito.eq(eaeToReturn), Mockito.any(EaeAutoEvaluationDto.class));
 	}
 }

@@ -17,6 +17,7 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
@@ -28,6 +29,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
@@ -826,5 +828,74 @@ public class EvaluationServiceTest {
 		
 		// Then
 		assertEquals("Maximale", evaluation.getAvisShd());
+	}
+	
+	@Test
+	public void testGetEaeAutoEvaluation_WithEae_FillResultatsDtoAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		EaeAutoEvaluation eval = new EaeAutoEvaluation();
+		eval.setEae(eae);
+		eae.setEaeAutoEvaluation(eval);
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		EaeAutoEvaluationDto result = service.getEaeAutoEvaluation(eae);
+		
+		// Then
+		assertEquals(789, result.getIdEae());
+	}
+	
+	@Test
+	public void testSetEaeAutoEvaluation_WithEaeAutoEvalAlreadyExisting_FillResultatsFromDtoAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		EaeAutoEvaluation eval = new EaeAutoEvaluation();
+		eval.setEae(eae);
+		eae.setEaeAutoEvaluation(eval);
+		
+		EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto();
+		dto.setParticularites("particularités");
+		dto.setAcquis("acquis");
+		dto.setSuccesDifficultes("succès");
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		service.setEaeAutoEvaluation(eae, dto);
+		
+		// Then
+		assertEquals("particularités", eae.getEaeAutoEvaluation().getParticularites());
+		assertEquals("acquis", eae.getEaeAutoEvaluation().getAcquis());
+		assertEquals("succès", eae.getEaeAutoEvaluation().getSuccesDifficultes());
+	}
+	
+	@Test
+	public void testSetEaeAutoEvaluation_WithNoEaeAutoEvalxisting_FillResultatsFromDtoAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		
+		EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto();
+		dto.setParticularites("particularités");
+		dto.setAcquis("acquis");
+		dto.setSuccesDifficultes("succès");
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		service.setEaeAutoEvaluation(eae, dto);
+		
+		// Then
+		assertEquals(new Integer(789), eae.getEaeAutoEvaluation().getEae().getIdEae());
+		assertEquals("particularités", eae.getEaeAutoEvaluation().getParticularites());
+		assertEquals("acquis", eae.getEaeAutoEvaluation().getAcquis());
+		assertEquals("succès", eae.getEaeAutoEvaluation().getSuccesDifficultes());
 	}
 }

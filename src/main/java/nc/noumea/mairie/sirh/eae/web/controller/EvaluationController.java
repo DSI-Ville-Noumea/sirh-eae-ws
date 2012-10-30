@@ -4,6 +4,7 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
@@ -210,6 +211,46 @@ public class EvaluationController {
 			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (EvaluationServiceException e) {
+			eae.clear();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ResponseEntity<String> getEaeAutoEvaluation(@RequestParam("idEae") int idEae) {
+
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		EaeAutoEvaluationDto dto = evaluationService.getEaeAutoEvaluation(eae);
+		
+		String result = dto.serializeInJSON();
+		
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
+	@Transactional(value = "eaeTransactionManager")
+	public ResponseEntity<String> setEaeAutoEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idEvaluateur") int idEvaluateur, @RequestBody String eaeAutoEvaluationDtoJson) {
+
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.startEae(eae);
+			EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto().deserializeFromJSON(eaeAutoEvaluationDtoJson);
+			evaluationService.setEaeAutoEvaluation(eae, dto);
+			eae.flush();
+		} catch (EaeServiceException e) {
 			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}

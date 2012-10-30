@@ -5,6 +5,7 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
+import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
@@ -16,6 +17,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
@@ -254,6 +256,27 @@ public class EvaluationService implements IEvaluationService {
 			default:
 				break;
 		}
+	}
+
+	@Override
+	public EaeAutoEvaluationDto getEaeAutoEvaluation(Eae eae) {
+		return new EaeAutoEvaluationDto(eae);
+	}
+
+	@Override
+	public void setEaeAutoEvaluation(Eae eae, EaeAutoEvaluationDto dto) {
+		
+		EaeAutoEvaluation autoEval = eae.getEaeAutoEvaluation();
+		
+		if (autoEval == null) {
+			autoEval = new EaeAutoEvaluation();
+			eae.setEaeAutoEvaluation(autoEval);
+			autoEval.setEae(eae);
+		}
+		
+		autoEval.setParticularites(dto.getParticularites());
+		autoEval.setAcquis(dto.getAcquis());
+		autoEval.setSuccesDifficultes(dto.getSuccesDifficultes());
 	}
 
 }
