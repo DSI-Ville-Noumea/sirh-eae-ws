@@ -12,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -44,21 +46,26 @@ public class Eae {
     private boolean docAttache;
     
     @Column(name = "DATE_CREATION")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreation;
     
     @Column(name = "DATE_FIN")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateFin;
     
     @Column(name = "DATE_ENTRETIEN")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEntretien;
 
     @Column(name = "DUREE_ENTRETIEN", nullable = true)
     private Integer dureeEntretienMinutes;
     
     @Column(name = "DATE_FINALISE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateFinalisation;
     
     @Column(name = "DATE_CONTROLE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateControle;
 
     @Column(name = "HEURE_CONTROLE")

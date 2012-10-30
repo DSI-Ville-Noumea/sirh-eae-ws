@@ -43,11 +43,11 @@ public class MSDateTransformerTest {
 		String json = serializer.transform(tr, Date.class).serialize(c.getTime());
 
 		// Then
-		assertEquals("\"/Date(1357909200000)/\"", json);
+		assertEquals("\"/Date(1357909200000+1100)/\"", json);
 	}
 	
 	@Test
-	public void testinstantiateValidDate() {
+	public void testinstantiateValidDateWithoutTimezone() {
 
 		// Given
 		String json = "\"/DATE(1355270400000)/\"";
@@ -58,6 +58,27 @@ public class MSDateTransformerTest {
 		Date d = deserializer.use(Date.class, tr).deserialize(json, Date.class);
 
 		// Then
+		Calendar c = new GregorianCalendar();
+		c.clear();
+		c.setTime(d);
+		assertEquals(1355270400000l, d.getTime());
+	}
+	
+	@Test
+	public void testinstantiateValidDateWithTimezone() {
+
+		// Given
+		String json = "\"/DATE(1355270400000+0500)/\"";
+		MSDateTransformer tr = new MSDateTransformer();
+		JSONDeserializer<Date> deserializer = new JSONDeserializer<Date>();
+
+		// When
+		Date d = deserializer.use(Date.class, tr).deserialize(json, Date.class);
+
+		// Then
+		Calendar c = new GregorianCalendar();
+		c.clear();
+		c.setTime(d);
 		assertEquals(1355270400000l, d.getTime());
 	}
 	
@@ -86,11 +107,11 @@ public class MSDateTransformerTest {
 		
 		try {
 			// When
-			Date d = deserializer.use(Date.class, tr).deserialize(json, Date.class);
+			deserializer.use(Date.class, tr).deserialize(json, Date.class);
 		}
 		catch (JSONException ex) {
 			// Then
-			assertEquals("Unable to parse '/DAT(1355270400000)/' as a valid date time. Expected format is '/[Dd][Aa][Tt][Ee]\\(([0-9]+)\\)/'", ex.getMessage());
-		}		
+			assertEquals("Unable to parse '/DAT(1355270400000)/' as a valid date time. Expected format is '/[Dd][Aa][Tt][Ee]\\(([0-9]+)([\\+\\-]{1}[0-9]{4})*\\)/'", ex.getMessage());
+		}
 	}
 }

@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import nc.noumea.mairie.sirh.domain.Agent;
@@ -44,6 +46,7 @@ public class EaeFichePoste {
     private String fonction;
 
     @Column(name = "DATE_ENTREE_FONCTION")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEntreeFonction;
 
     @Column(name = "GRADE_POSTE")

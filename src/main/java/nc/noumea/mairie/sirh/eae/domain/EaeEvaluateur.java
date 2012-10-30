@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import nc.noumea.mairie.sirh.domain.Agent;
@@ -27,12 +29,15 @@ public class EaeEvaluateur {
 	private String fonction;
 
 	@Column(name = "DATE_ENTREE_SERVICE")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date dateEntreeService;
 	
 	@Column(name = "DATE_ENTREE_COLLECTIVITE")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date dateEntreeCollectivite;
 	
 	@Column(name = "DATE_ENTREE_FONCTION")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date dateEntreeFonction;
 	
 	@ManyToOne

@@ -1,11 +1,13 @@
 package nc.noumea.mairie.sirh.tools.transformer;
 
 import java.lang.reflect.Type;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
 import flexjson.JSONException;
 import flexjson.ObjectBinder;
@@ -14,20 +16,27 @@ import flexjson.transformer.AbstractTransformer;
 
 public class MSDateTransformer extends AbstractTransformer implements ObjectFactory {
 
-	private static final String msDateFormat = "/[Dd][Aa][Tt][Ee]\\(([0-9]+)\\)/";
+	private static final String msDateFormat = "/[Dd][Aa][Tt][Ee]\\(([0-9]+)([\\+\\-]{1}[0-9]{4})*\\)/";
 	private static final Pattern msDateFormatPattern = Pattern.compile(msDateFormat);
 	
 	@Override
 	public void transform(Object arg0) {
-		Date theDate = (Date) arg0;
-		String theDateInString;
-
-		if (theDate == null)
+		
+		if (arg0 == null) {
 			getContext().write(null);
-		else {
-			theDateInString = String.format("/Date(%s)/", theDate.getTime());
-			getContext().writeQuoted(theDateInString);
+			return;
 		}
+		
+		DateTime dt = new DateTime(arg0);
+		
+		DateTimeFormatter formater = new DateTimeFormatterBuilder()
+			.appendLiteral("/Date(")
+			.appendLiteral(String.format("%s", dt.getMillis()))
+			.appendPattern("Z")
+			.appendLiteral(")/")
+			.toFormatter();
+		
+		getContext().writeQuoted(formater.print(dt));
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -35,13 +44,21 @@ public class MSDateTransformer extends AbstractTransformer implements ObjectFact
 	public Object instantiate(ObjectBinder context, Object value, Type targetType, Class targetClass) {
 		
 		Matcher matcher = msDateFormatPattern.matcher(value.toString());
-		Calendar c = new GregorianCalendar();
 		
 		try {
 			matcher.find();	
+			
 			String timestamp = matcher.group(1);
-			c.setTimeInMillis(Long.parseLong(timestamp));
-			return c.getTime();
+			String timeZone = matcher.group(2);
+			
+			DateTime dt;
+			
+			if (timeZone != null)
+				dt = new DateTime(Long.parseLong(timestamp), DateTimeZone.forID(timeZone));
+			else
+				dt = new DateTime(Long.parseLong(timestamp), DateTimeZone.UTC);
+			
+			return dt.toDate();
 		}
 		catch(Exception ex) {
 			throw new JSONException(String.format("Unable to parse '%s' as a valid date time. Expected format is '%s'", value.toString(), msDateFormat), ex);

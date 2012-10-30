@@ -7,6 +7,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import nc.noumea.mairie.sirh.domain.Agent;
@@ -27,15 +29,19 @@ public class EaeEvalue {
     private int idAgent;
 
     @Column(name = "DATE_ENTREE_SERVICE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEntreeService;
 
     @Column(name = "DATE_ENTREE_COLLECTIVITE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEntreeCollectivite;
 
     @Column(name = "DATE_ENTREE_FONCTIONNAIRE")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEntreeFonctionnaire;
 
     @Column(name = "DATE_ENTREE_ADMINISTRATION")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateEntreeAdministration;
 
     @Column(name = "STATUT")

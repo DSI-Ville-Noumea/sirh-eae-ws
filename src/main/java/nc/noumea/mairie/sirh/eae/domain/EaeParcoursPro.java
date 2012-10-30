@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -16,9 +18,11 @@ import org.springframework.roo.addon.tostring.RooToString;
 public class EaeParcoursPro {
 	
 	@Column(name = "DATE_DEBUT")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date dateDebut;
 	
 	@Column(name = "DATE_FIN")
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date dateFin;
 	
 	@Column(name = "LIBELLE_PARCOURS_PRO")
