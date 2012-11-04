@@ -292,3 +292,4 @@ entity jpa --class ~.sirh.eae.domain.EaeAutoEvaluation --persistenceUnit eaePers
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-02 13:41:41
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-02 14:03:19
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-02 16:23:24
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-05 08:23:23
