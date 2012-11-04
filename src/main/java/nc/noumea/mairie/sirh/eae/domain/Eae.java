@@ -105,7 +105,7 @@ public class Eae {
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
    	private Set<EaeResultat> eaeResultats = new HashSet<EaeResultat>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
    	private Set<EaePlanAction> eaePlanActions = new HashSet<EaePlanAction>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

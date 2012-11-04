@@ -1,6 +1,9 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
+
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -13,4 +16,9 @@ public class EaeTypeObjectif {
 	
 	@Column(name = "LIBELLE_TYPE_OBJECTIF")
 	private String libelle;
+	
+	@Transient
+	public EaeTypeObjectifEnum getTypeObjectifAsEnum() {
+    	return EaeTypeObjectifEnum.valueOf(libelle);
+    }
 }

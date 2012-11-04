@@ -9,6 +9,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
 
 public interface IEvaluationService {
 
@@ -92,4 +93,19 @@ public interface IEvaluationService {
 	 * @throws EvaluationServiceException
 	 */
 	public void setEaeAutoEvaluation(Eae eae, EaeAutoEvaluationDto dto);
+	
+	/**
+	 * Returns the data for viewing/filling in the auto evaluation part of an EAE
+	 * @param eae
+	 * @return
+	 */
+	public EaePlanActionDto getEaePlanAction(Eae eae);
+	
+	/**
+	 * Saves the filled in auto evaluation for someone's EAE
+	 * @param eae
+	 * @param dto
+	 * @throws EvaluationServiceException
+	 */
+	public void setEaePlanAction(Eae eae, EaePlanActionDto dto);
 }

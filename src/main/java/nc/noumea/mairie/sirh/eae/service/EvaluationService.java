@@ -11,6 +11,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
+import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
@@ -22,6 +23,8 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.PlanActionItemDto;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.EaeDataConsistencyServiceException;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.IEaeDataConsistencyService;
 import nc.noumea.mairie.sirh.service.IAgentService;
@@ -174,7 +177,7 @@ public class EvaluationService implements IEvaluationService {
 		evaluation.setAvisRevalorisation(dto.getAvisRevalorisation());
 		
 		// Check the Niveau if it's valid and/or not set
-		if (dto.getNiveau().getCourant() == null)
+		if (dto.getNiveau() == null || dto.getNiveau().getCourant() == null)
 			throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est manquante.");
 		
 		EaeNiveau selectedNiveau = null;
@@ -194,7 +197,7 @@ public class EvaluationService implements IEvaluationService {
 		// Check the propositionAvancement validity
 		EaeAvancementEnum selectedAvancement = null;
 		
-		if (dto.getPropositionAvancement().getCourant() != null) {
+		if (dto.getPropositionAvancement() != null && dto.getPropositionAvancement().getCourant() != null) {
 			try {
 				selectedAvancement = EaeAvancementEnum.valueOf(dto.getPropositionAvancement().getCourant());
 			} catch(IllegalArgumentException ex) {
@@ -277,6 +280,47 @@ public class EvaluationService implements IEvaluationService {
 		autoEval.setParticularites(dto.getParticularites());
 		autoEval.setAcquis(dto.getAcquis());
 		autoEval.setSuccesDifficultes(dto.getSuccesDifficultes());
+	}
+
+	@Override
+	public EaePlanActionDto getEaePlanAction(Eae eae) {
+		return new EaePlanActionDto(eae);
+	}
+
+	@Override
+	public void setEaePlanAction(Eae eae, EaePlanActionDto dto) {
+		
+		// Clear previous plan actions items
+		eae.getEaePlanActions().clear();
+		
+		for(PlanActionItemDto item : dto.getObjectifsProfessionnels()) {
+			CreateAndAddPlanAction(eae, item.getObjectif(), item.getIndicateur(), EaeTypeObjectifEnum.PROFESSIONNEL);
+		}
+		
+		for(String s : dto.getObjectifsIndividuels()) {
+			CreateAndAddPlanAction(eae, s, null, EaeTypeObjectifEnum.INDIVIDUEL);
+		}
+		
+		for(String s : dto.getMoyensFinanciers()) {
+			CreateAndAddPlanAction(eae, s, null, EaeTypeObjectifEnum.FINANCIERS);
+		}
+		
+		for(String s : dto.getMoyensMateriels()) {
+			CreateAndAddPlanAction(eae, s, null, EaeTypeObjectifEnum.MATERIELS);
+		}
+		
+		for(String s : dto.getMoyensAutres()) {
+			CreateAndAddPlanAction(eae, s, null, EaeTypeObjectifEnum.AUTRES);
+		}
+	}
+
+	protected void CreateAndAddPlanAction(Eae eae, String objectif, String mesure, EaeTypeObjectifEnum typeObjectif) {
+		EaePlanAction pa = new EaePlanAction();
+		pa.setObjectif(objectif);
+		pa.setMesure(mesure);
+		pa.setTypeObjectif(typeObjectifService.getTypeObjectifForLibelle(typeObjectif.name()));
+		pa.setEae(eae);
+		eae.getEaePlanActions().add(pa);
 	}
 
 }

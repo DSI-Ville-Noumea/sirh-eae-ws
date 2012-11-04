@@ -3,7 +3,10 @@ package nc.noumea.mairie.sirh.eae.domain.enums;
 public enum EaeTypeObjectifEnum {
 
 	PROFESSIONNEL("Professionnel"),
-	INDIVIDUEL("Individuel");
+	INDIVIDUEL("Individuel"),
+	MATERIELS("Matériels"),
+	FINANCIERS("Financiers"),
+	AUTRES("Autres");
 	
 	private String type;
 	

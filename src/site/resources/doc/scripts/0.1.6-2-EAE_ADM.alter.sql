@@ -30,3 +30,5 @@ alter table EAE_AUTO_EVALUATION add (PARTICULARITES CLOB);
 alter table EAE_AUTO_EVALUATION add (ACQUIS CLOB);
 alter table EAE_AUTO_EVALUATION add (SUCCES_DIFFICULTES CLOB);
 alter table EAE_AUTO_EVALUATION add (VERSION number default 0 not null);
+
+drop index EAE_PLAN_ACTION_index;

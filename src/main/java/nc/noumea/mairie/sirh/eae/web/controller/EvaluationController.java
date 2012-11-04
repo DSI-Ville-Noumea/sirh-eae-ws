@@ -9,6 +9,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
@@ -249,6 +250,46 @@ public class EvaluationController {
 			eaeService.startEae(eae);
 			EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto().deserializeFromJSON(eaeAutoEvaluationDtoJson);
 			evaluationService.setEaeAutoEvaluation(eae, dto);
+			eae.flush();
+		} catch (EaeServiceException e) {
+			eae.clear();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ResponseEntity<String> getEaePlanAction(@RequestParam("idEae") int idEae) {
+
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		EaePlanActionDto dto = evaluationService.getEaePlanAction(eae);
+		
+		String result = dto.serializeInJSON();
+		
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
+	@Transactional(value = "eaeTransactionManager")
+	public ResponseEntity<String> setEaePlanAction(@RequestParam("idEae") int idEae, @RequestParam("idEvaluateur") int idEvaluateur, @RequestBody String eaePlanActionDtoJson) {
+
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.startEae(eae);
+			EaePlanActionDto dto = new EaePlanActionDto().deserializeFromJSON(eaePlanActionDtoJson);
+			evaluationService.setEaePlanAction(eae, dto);
 			eae.flush();
 		} catch (EaeServiceException e) {
 			eae.clear();

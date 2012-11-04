@@ -24,6 +24,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
+import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
@@ -34,11 +35,14 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.PlanActionItemDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.EaeDataConsistencyServiceException;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.IEaeDataConsistencyService;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
@@ -47,6 +51,28 @@ import org.springframework.test.util.ReflectionTestUtils;
 @MockStaticEntityMethods
 public class EvaluationServiceTest {
 
+	private static ITypeObjectifService objService;
+	
+	@BeforeClass
+	public static void SetUp() {
+		objService = mock(ITypeObjectifService.class);
+		EaeTypeObjectif t1 = new EaeTypeObjectif();
+		t1.setLibelle("PROFESSIONNEL");
+		when(objService.getTypeObjectifForLibelle("PROFESSIONNEL")).thenReturn(t1);
+		EaeTypeObjectif t2 = new EaeTypeObjectif();
+		t2.setLibelle("INDIVIDUEL");
+		when(objService.getTypeObjectifForLibelle("INDIVIDUEL")).thenReturn(t2);
+		EaeTypeObjectif t3 = new EaeTypeObjectif();
+		t3.setLibelle("FINANCIERS");
+		when(objService.getTypeObjectifForLibelle("FINANCIERS")).thenReturn(t3);
+		EaeTypeObjectif t4 = new EaeTypeObjectif();
+		t4.setLibelle("MATERIELS");
+		when(objService.getTypeObjectifForLibelle("MATERIELS")).thenReturn(t4);
+		EaeTypeObjectif t5 = new EaeTypeObjectif();
+		t5.setLibelle("AUTRES");
+		when(objService.getTypeObjectifForLibelle("AUTRES")).thenReturn(t5);
+	}
+	
 	@Test
 	public void testGetEaeIdentification_WithEae_FillAgentsAndReturn() {
 
@@ -235,11 +261,6 @@ public class EvaluationServiceTest {
 		Eae eae = spy(new Eae());
 		org.mockito.Mockito.doNothing().when(eae).flush();
 		
-		ITypeObjectifService objService = mock(ITypeObjectifService.class);
-		EaeTypeObjectif t1 = new EaeTypeObjectif();
-		t1.setLibelle("PROFESSIONNEL");
-		when(objService.getTypeObjectifForLibelle("PROFESSIONNEL")).thenReturn(t1);
-		
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "typeObjectifService", objService);
 
@@ -275,11 +296,6 @@ public class EvaluationServiceTest {
 		
 		Eae eae = spy(new Eae());
 		org.mockito.Mockito.doNothing().when(eae).flush();
-		
-		ITypeObjectifService objService = mock(ITypeObjectifService.class);
-		EaeTypeObjectif t2 = new EaeTypeObjectif();
-		t2.setLibelle("INDIVIDUEL");
-		when(objService.getTypeObjectifForLibelle("INDIVIDUEL")).thenReturn(t2);
 		
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "typeObjectifService", objService);
@@ -897,5 +913,89 @@ public class EvaluationServiceTest {
 		assertEquals("particularités", eae.getEaeAutoEvaluation().getParticularites());
 		assertEquals("acquis", eae.getEaeAutoEvaluation().getAcquis());
 		assertEquals("succès", eae.getEaeAutoEvaluation().getSuccesDifficultes());
+	}
+	
+	@Test
+	public void testGetEaePlanAction_WithEae_FillPlanActionDtoAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		EaePlanActionDto result = service.getEaePlanAction(eae);
+		
+		// Then
+		assertEquals(789, result.getIdEae());
+	}
+	
+	@Test
+	public void testSetEaePlanAction_EmptyEaeEvaluation_FillPlanActionfromDto() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		
+		EaePlanActionDto dto = new EaePlanActionDto();
+		dto.setIdEae(789);
+		
+		PlanActionItemDto item = new PlanActionItemDto();
+		item.setObjectif("obj1");
+		item.setIndicateur("mes1");
+		dto.getObjectifsProfessionnels().add(item);
+		
+		dto.getObjectifsIndividuels().add("obj2");
+		dto.getMoyensMateriels().add("moy1");
+		dto.getMoyensFinanciers().add("moy2");
+		dto.getMoyensAutres().add("moy3");
+		
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "typeObjectifService", objService);
+		
+		// When
+		service.setEaePlanAction(eae, dto);
+		
+		// Then
+		assertEquals(5, eae.getEaePlanActions().size());
+	}
+	
+	@Test
+	public void testSetEaePlanAction_8ExistingEaeEvaluations_FillPlanActionfromDto() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		eae.getEaePlanActions().add(new EaePlanAction());
+		eae.getEaePlanActions().add(new EaePlanAction());
+		eae.getEaePlanActions().add(new EaePlanAction());
+		eae.getEaePlanActions().add(new EaePlanAction());
+		eae.getEaePlanActions().add(new EaePlanAction());
+		eae.getEaePlanActions().add(new EaePlanAction());
+		eae.getEaePlanActions().add(new EaePlanAction());
+		eae.getEaePlanActions().add(new EaePlanAction());
+		
+		EaePlanActionDto dto = new EaePlanActionDto();
+		dto.setIdEae(789);
+		
+		PlanActionItemDto item = new PlanActionItemDto();
+		item.setObjectif("obj1");
+		item.setIndicateur("mes1");
+		dto.getObjectifsProfessionnels().add(item);
+		
+		dto.getObjectifsIndividuels().add("obj2");
+		dto.getMoyensMateriels().add("moy1");
+		dto.getMoyensFinanciers().add("moy2");
+		dto.getMoyensAutres().add("moy3");
+		
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "typeObjectifService", objService);
+		
+		// When
+		service.setEaePlanAction(eae, dto);
+		
+		// Then
+		assertEquals(5, eae.getEaePlanActions().size());
 	}
 }
