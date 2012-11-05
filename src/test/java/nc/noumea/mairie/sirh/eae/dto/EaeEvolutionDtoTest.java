@@ -144,30 +144,30 @@ public class EaeEvolutionDtoTest {
 		assertEquals(1, dto.getSouhaitsSuggestions().size());
 		assertEquals(evolution.getEaeEvolutionSouhaits().iterator().next(), dto.getSouhaitsSuggestions().get(0));
 		
-		assertEquals(1, dto.getConnaissances().size());
-		assertEquals(dev1, dto.getConnaissances().get(0));
+		assertEquals(1, dto.getDeveloppementConnaissances().size());
+		assertEquals(dev1, dto.getDeveloppementConnaissances().get(0));
 		
-		assertEquals(1, dto.getCompetences().size());
-		assertEquals(dev2, dto.getCompetences().get(0));
+		assertEquals(1, dto.getDeveloppementCompetences().size());
+		assertEquals(dev2, dto.getDeveloppementCompetences().get(0));
 		
-		assertEquals(1, dto.getExamensConcours().size());
-		assertEquals(dev3, dto.getExamensConcours().get(0));
+		assertEquals(1, dto.getDeveloppementExamensConcours().size());
+		assertEquals(dev3, dto.getDeveloppementExamensConcours().get(0));
 		
-		assertEquals(1, dto.getPersonnel().size());
-		assertEquals(dev4, dto.getPersonnel().get(0));
+		assertEquals(1, dto.getDeveloppementPersonnel().size());
+		assertEquals(dev4, dto.getDeveloppementPersonnel().get(0));
 		
-		assertEquals(1, dto.getComportement().size());
-		assertEquals(dev5, dto.getComportement().get(0));
+		assertEquals(1, dto.getDeveloppementComportement().size());
+		assertEquals(dev5, dto.getDeveloppementComportement().get(0));
 		
-		assertEquals(1, dto.getFormateur().size());
-		assertEquals(dev6, dto.getFormateur().get(0));
+		assertEquals(1, dto.getDeveloppementFormateur().size());
+		assertEquals(dev6, dto.getDeveloppementFormateur().get(0));
 	}
 	
 	@Test
 	public void testSerializeInJSON_emptyDto() {
 		// Given
 		EaeEvolutionDto dto = new EaeEvolutionDto();
-		String expectedJson = "{\"autrePerspective\":false,\"changementMetier\":false,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"commentaireEvolution\":null,\"competences\":[],\"comportement\":[],\"concours\":false,\"connaissances\":[],\"dateRetraite\":null,\"delaiEnvisage\":{\"courant\":null,\"liste\":[{\"code\":\"MOINS1AN\",\"valeur\":\"inférieur à 1 an\"},{\"code\":\"ENTRE1ET2ANS\",\"valeur\":\"entre 1 et 2 ans\"},{\"code\":\"ENTRE2ET4ANS\",\"valeur\":\"entre 2 et 4 ans\"}]},\"examensConcours\":[],\"formateur\":[],\"idEae\":0,\"libelleAutrePerspective\":null,\"mobiliteAutre\":false,\"mobiliteCollectivite\":false,\"mobiliteDirection\":false,\"mobiliteFonctionnelle\":false,\"mobiliteGeo\":false,\"mobiliteService\":false,\"nomCollectivite\":null,\"nomConcours\":null,\"nomDiplome\":null,\"personnel\":[],\"pourcentageTempsPartiel\":0,\"retraite\":false,\"souhaitsSuggestions\":[],\"tempsPartiel\":false,\"vae\":false}";
+		String expectedJson = "{\"autrePerspective\":false,\"changementMetier\":false,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"commentaireEvolution\":null,\"concours\":false,\"dateRetraite\":null,\"delaiEnvisage\":{\"courant\":null,\"liste\":[{\"code\":\"MOINS1AN\",\"valeur\":\"inférieur à 1 an\"},{\"code\":\"ENTRE1ET2ANS\",\"valeur\":\"entre 1 et 2 ans\"},{\"code\":\"ENTRE2ET4ANS\",\"valeur\":\"entre 2 et 4 ans\"}]},\"developpementCompetences\":[],\"developpementComportement\":[],\"developpementConnaissances\":[],\"developpementExamensConcours\":[],\"developpementFormateur\":[],\"developpementPersonnel\":[],\"idEae\":0,\"libelleAutrePerspective\":null,\"mobiliteAutre\":false,\"mobiliteCollectivite\":false,\"mobiliteDirection\":false,\"mobiliteFonctionnelle\":false,\"mobiliteGeo\":false,\"mobiliteService\":false,\"nomCollectivite\":null,\"nomConcours\":null,\"nomDiplome\":null,\"pourcentageTempsPartiel\":0,\"retraite\":false,\"souhaitsSuggestions\":[],\"tempsPartiel\":false,\"vae\":false}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -222,39 +222,39 @@ public class EaeEvolutionDtoTest {
 		dev1.setIdEaeDeveloppement(10);
 		dev1.setLibelle("libelle CONNAISSANCE");
 		dev1.setTypeDeveloppement(EaeTypeDeveloppementEnum.CONNAISSANCE);
-		dto.getConnaissances().add(dev1);
+		dto.getDeveloppementConnaissances().add(dev1);
 
 		EaeDeveloppement dev2 = new EaeDeveloppement();
 		dev2.setIdEaeDeveloppement(20);
 		dev2.setLibelle("libelle COMPETENCE");
 		dev2.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE);
-		dto.getCompetences().add(dev2);
+		dto.getDeveloppementCompetences().add(dev2);
 
 		EaeDeveloppement dev3 = new EaeDeveloppement();
 		dev3.setIdEaeDeveloppement(30);
 		dev3.setLibelle("libelle CONCOURS");
 		dev3.setTypeDeveloppement(EaeTypeDeveloppementEnum.CONCOURS);
-		dto.getExamensConcours().add(dev3);
+		dto.getDeveloppementExamensConcours().add(dev3);
 
 		EaeDeveloppement dev4 = new EaeDeveloppement();
 		dev4.setIdEaeDeveloppement(40);
 		dev4.setLibelle("libelle PERSONNEL");
 		dev4.setTypeDeveloppement(EaeTypeDeveloppementEnum.PERSONNEL);
-		dto.getPersonnel().add(dev4);
+		dto.getDeveloppementPersonnel().add(dev4);
 
 		EaeDeveloppement dev5 = new EaeDeveloppement();
 		dev5.setIdEaeDeveloppement(50);
 		dev5.setLibelle("libelle COMPORTEMENT");
 		dev5.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
-		dto.getComportement().add(dev5);
+		dto.getDeveloppementComportement().add(dev5);
 
 		EaeDeveloppement dev6 = new EaeDeveloppement();
 		dev6.setIdEaeDeveloppement(60);
 		dev6.setLibelle("libelle FORMATEUR");
 		dev6.setTypeDeveloppement(EaeTypeDeveloppementEnum.FORMATEUR);
-		dto.getFormateur().add(dev6);
+		dto.getDeveloppementFormateur().add(dev6);
 		
-		String expectedJson = "{\"autrePerspective\":true,\"changementMetier\":true,\"commentaireEvaluateur\":\"commentaire evaluateur\",\"commentaireEvalue\":\"commentaire evalue\",\"commentaireEvolution\":\"commentaire evolution\",\"competences\":[{\"echeance\":null,\"idEaeDeveloppement\":20,\"libelle\":\"libelle COMPETENCE\",\"priorisation\":0}],\"comportement\":[{\"echeance\":null,\"idEaeDeveloppement\":50,\"libelle\":\"libelle COMPORTEMENT\",\"priorisation\":0}],\"concours\":true,\"connaissances\":[{\"echeance\":null,\"idEaeDeveloppement\":10,\"libelle\":\"libelle CONNAISSANCE\",\"priorisation\":0}],\"dateRetraite\":\"/Date(1397826000000+1100)/\",\"delaiEnvisage\":{\"courant\":\"ENTRE1ET2ANS\",\"liste\":[{\"code\":\"MOINS1AN\",\"valeur\":\"inférieur à 1 an\"},{\"code\":\"ENTRE1ET2ANS\",\"valeur\":\"entre 1 et 2 ans\"},{\"code\":\"ENTRE2ET4ANS\",\"valeur\":\"entre 2 et 4 ans\"}]},\"examensConcours\":[{\"echeance\":null,\"idEaeDeveloppement\":30,\"libelle\":\"libelle CONCOURS\",\"priorisation\":0}],\"formateur\":[{\"echeance\":null,\"idEaeDeveloppement\":60,\"libelle\":\"libelle FORMATEUR\",\"priorisation\":0}],\"idEae\":19,\"libelleAutrePerspective\":\"autre perspective\",\"mobiliteAutre\":true,\"mobiliteCollectivite\":true,\"mobiliteDirection\":true,\"mobiliteFonctionnelle\":true,\"mobiliteGeo\":true,\"mobiliteService\":true,\"nomCollectivite\":\"nom collectivité\",\"nomConcours\":\"nom concours\",\"nomDiplome\":\"nom diplome\",\"personnel\":[{\"echeance\":null,\"idEaeDeveloppement\":40,\"libelle\":\"libelle PERSONNEL\",\"priorisation\":0}],\"pourcentageTempsPartiel\":50,\"retraite\":true,\"souhaitsSuggestions\":[{\"idEaeEvolutionSouhait\":9,\"souhait\":\"le souhait\",\"suggestion\":\"la suggestion\"}],\"tempsPartiel\":true,\"vae\":true}";
+		String expectedJson = "{\"autrePerspective\":true,\"changementMetier\":true,\"commentaireEvaluateur\":\"commentaire evaluateur\",\"commentaireEvalue\":\"commentaire evalue\",\"commentaireEvolution\":\"commentaire evolution\",\"concours\":true,\"dateRetraite\":\"/Date(1397826000000+1100)/\",\"delaiEnvisage\":{\"courant\":\"ENTRE1ET2ANS\",\"liste\":[{\"code\":\"MOINS1AN\",\"valeur\":\"inférieur à 1 an\"},{\"code\":\"ENTRE1ET2ANS\",\"valeur\":\"entre 1 et 2 ans\"},{\"code\":\"ENTRE2ET4ANS\",\"valeur\":\"entre 2 et 4 ans\"}]},\"developpementCompetences\":[{\"echeance\":null,\"idEaeDeveloppement\":20,\"libelle\":\"libelle COMPETENCE\",\"priorisation\":0}],\"developpementComportement\":[{\"echeance\":null,\"idEaeDeveloppement\":50,\"libelle\":\"libelle COMPORTEMENT\",\"priorisation\":0}],\"developpementConnaissances\":[{\"echeance\":null,\"idEaeDeveloppement\":10,\"libelle\":\"libelle CONNAISSANCE\",\"priorisation\":0}],\"developpementExamensConcours\":[{\"echeance\":null,\"idEaeDeveloppement\":30,\"libelle\":\"libelle CONCOURS\",\"priorisation\":0}],\"developpementFormateur\":[{\"echeance\":null,\"idEaeDeveloppement\":60,\"libelle\":\"libelle FORMATEUR\",\"priorisation\":0}],\"developpementPersonnel\":[{\"echeance\":null,\"idEaeDeveloppement\":40,\"libelle\":\"libelle PERSONNEL\",\"priorisation\":0}],\"idEae\":19,\"libelleAutrePerspective\":\"autre perspective\",\"mobiliteAutre\":true,\"mobiliteCollectivite\":true,\"mobiliteDirection\":true,\"mobiliteFonctionnelle\":true,\"mobiliteGeo\":true,\"mobiliteService\":true,\"nomCollectivite\":\"nom collectivité\",\"nomConcours\":\"nom concours\",\"nomDiplome\":\"nom diplome\",\"pourcentageTempsPartiel\":50,\"retraite\":true,\"souhaitsSuggestions\":[{\"idEaeEvolutionSouhait\":9,\"souhait\":\"le souhait\",\"suggestion\":\"la suggestion\"}],\"tempsPartiel\":true,\"vae\":true}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -294,30 +294,30 @@ public class EaeEvolutionDtoTest {
 		assertEquals("[souhaitsSuggestions,idEaeEvolutionSouhait]", includes.get(20).toString());
 		assertEquals("[souhaitsSuggestions,souhait]", includes.get(21).toString());
 		assertEquals("[souhaitsSuggestions,suggestion]", includes.get(22).toString());
-		assertEquals("[connaissances,idEaeDeveloppement]", includes.get(23).toString());
-		assertEquals("[connaissances,libelle]", includes.get(24).toString());
-		assertEquals("[connaissances,echeance]", includes.get(25).toString());
-		assertEquals("[connaissances,priorisation]", includes.get(26).toString());
-		assertEquals("[competences,idEaeDeveloppement]", includes.get(27).toString());
-		assertEquals("[competences,libelle]", includes.get(28).toString());
-		assertEquals("[competences,echeance]", includes.get(29).toString());
-		assertEquals("[competences,priorisation]", includes.get(30).toString());
-		assertEquals("[examensConcours,idEaeDeveloppement]", includes.get(31).toString());
-		assertEquals("[examensConcours,libelle]", includes.get(32).toString());
-		assertEquals("[examensConcours,echeance]", includes.get(33).toString());
-		assertEquals("[examensConcours,priorisation]", includes.get(34).toString());
-		assertEquals("[personnel,idEaeDeveloppement]", includes.get(35).toString());
-		assertEquals("[personnel,libelle]", includes.get(36).toString());
-		assertEquals("[personnel,echeance]", includes.get(37).toString());
-		assertEquals("[personnel,priorisation]", includes.get(38).toString());
-		assertEquals("[comportement,idEaeDeveloppement]", includes.get(39).toString());
-		assertEquals("[comportement,libelle]", includes.get(40).toString());
-		assertEquals("[comportement,echeance]", includes.get(41).toString());
-		assertEquals("[comportement,priorisation]", includes.get(42).toString());
-		assertEquals("[formateur,idEaeDeveloppement]", includes.get(43).toString());
-		assertEquals("[formateur,libelle]", includes.get(44).toString());
-		assertEquals("[formateur,echeance]", includes.get(45).toString());
-		assertEquals("[formateur,priorisation]", includes.get(46).toString());
+		assertEquals("[developpementConnaissances,idEaeDeveloppement]", includes.get(23).toString());
+		assertEquals("[developpementConnaissances,libelle]", includes.get(24).toString());
+		assertEquals("[developpementConnaissances,echeance]", includes.get(25).toString());
+		assertEquals("[developpementConnaissances,priorisation]", includes.get(26).toString());
+		assertEquals("[developpementCompetences,idEaeDeveloppement]", includes.get(27).toString());
+		assertEquals("[developpementCompetences,libelle]", includes.get(28).toString());
+		assertEquals("[developpementCompetences,echeance]", includes.get(29).toString());
+		assertEquals("[developpementCompetences,priorisation]", includes.get(30).toString());
+		assertEquals("[developpementExamensConcours,idEaeDeveloppement]", includes.get(31).toString());
+		assertEquals("[developpementExamensConcours,libelle]", includes.get(32).toString());
+		assertEquals("[developpementExamensConcours,echeance]", includes.get(33).toString());
+		assertEquals("[developpementExamensConcours,priorisation]", includes.get(34).toString());
+		assertEquals("[developpementPersonnel,idEaeDeveloppement]", includes.get(35).toString());
+		assertEquals("[developpementPersonnel,libelle]", includes.get(36).toString());
+		assertEquals("[developpementPersonnel,echeance]", includes.get(37).toString());
+		assertEquals("[developpementPersonnel,priorisation]", includes.get(38).toString());
+		assertEquals("[developpementComportement,idEaeDeveloppement]", includes.get(39).toString());
+		assertEquals("[developpementComportement,libelle]", includes.get(40).toString());
+		assertEquals("[developpementComportement,echeance]", includes.get(41).toString());
+		assertEquals("[developpementComportement,priorisation]", includes.get(42).toString());
+		assertEquals("[developpementFormateur,idEaeDeveloppement]", includes.get(43).toString());
+		assertEquals("[developpementFormateur,libelle]", includes.get(44).toString());
+		assertEquals("[developpementFormateur,echeance]", includes.get(45).toString());
+		assertEquals("[developpementFormateur,priorisation]", includes.get(46).toString());
 		assertEquals("[commentaireEvolution]", includes.get(47).toString());
 		assertEquals("[commentaireEvaluateur]", includes.get(48).toString());
 		assertEquals("[commentaireEvalue]", includes.get(49).toString());
@@ -330,7 +330,7 @@ public class EaeEvolutionDtoTest {
 	@Test
 	public void testDeserializeFromJson() {
 		// Given
-		String json = "{\"autrePerspective\":true,\"changementMetier\":true,\"commentaireEvaluateur\":\"commentaire evaluateur\",\"commentaireEvalue\":\"commentaire evalue\",\"commentaireEvolution\":\"commentaire evolution\",\"competences\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":20,\"libelle\":\"libelle COMPETENCE\",\"priorisation\":1}],\"comportement\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":50,\"libelle\":\"libelle COMPORTEMENT\",\"priorisation\":2}],\"concours\":true,\"connaissances\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":10,\"libelle\":\"libelle CONNAISSANCE\",\"priorisation\":3}],\"dateRetraite\":\"/Date(1397826000000+1100)/\",\"delaiEnvisage\":{\"courant\":\"ENTRE1ET2ANS\",\"liste\":[{\"code\":\"MOINS1AN\",\"valeur\":\"inférieur à 1 an\"},{\"code\":\"ENTRE1ET2ANS\",\"valeur\":\"entre 1 et 2 ans\"},{\"code\":\"ENTRE2ET4ANS\",\"valeur\":\"entre 2 et 4 ans\",\"priorisation\":4}]},\"examensConcours\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":30,\"libelle\":\"libelle CONCOURS\",\"priorisation\":5}],\"formateur\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":60,\"libelle\":\"libelle FORMATEUR\",\"priorisation\":6}],\"idEae\":19,\"libelleAutrePerspective\":\"autre perspective\",\"mobiliteAutre\":true,\"mobiliteCollectivite\":true,\"mobiliteDirection\":true,\"mobiliteFonctionnelle\":true,\"mobiliteGeo\":true,\"mobiliteService\":true,\"nomCollectivite\":\"nom collectivité\",\"nomConcours\":\"nom concours\",\"nomDiplome\":\"nom diplome\",\"personnel\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":40,\"libelle\":\"libelle PERSONNEL\",\"priorisation\":7}],\"pourcentageTempsPartiel\":50,\"retraite\":true,\"souhaitsSuggestions\":[{\"idEaeEvolutionSouhait\":9,\"souhait\":\"le souhait\",\"suggestion\":\"la suggestion\"}],\"tempsPartiel\":true,\"vae\":true}";
+		String json = "{\"autrePerspective\":true,\"changementMetier\":true,\"commentaireEvaluateur\":\"commentaire evaluateur\",\"commentaireEvalue\":\"commentaire evalue\",\"commentaireEvolution\":\"commentaire evolution\",\"developpementCompetences\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":20,\"libelle\":\"libelle COMPETENCE\",\"priorisation\":1}],\"developpementComportement\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":50,\"libelle\":\"libelle COMPORTEMENT\",\"priorisation\":2}],\"concours\":true,\"developpementConnaissances\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":10,\"libelle\":\"libelle CONNAISSANCE\",\"priorisation\":3}],\"dateRetraite\":\"/Date(1397826000000+1100)/\",\"delaiEnvisage\":{\"courant\":\"ENTRE1ET2ANS\",\"liste\":[{\"code\":\"MOINS1AN\",\"valeur\":\"inférieur à 1 an\"},{\"code\":\"ENTRE1ET2ANS\",\"valeur\":\"entre 1 et 2 ans\"},{\"code\":\"ENTRE2ET4ANS\",\"valeur\":\"entre 2 et 4 ans\",\"priorisation\":4}]},\"developpementExamensConcours\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":30,\"libelle\":\"libelle CONCOURS\",\"priorisation\":5}],\"developpementFormateur\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":60,\"libelle\":\"libelle FORMATEUR\",\"priorisation\":6}],\"idEae\":19,\"libelleAutrePerspective\":\"autre perspective\",\"mobiliteAutre\":true,\"mobiliteCollectivite\":true,\"mobiliteDirection\":true,\"mobiliteFonctionnelle\":true,\"mobiliteGeo\":true,\"mobiliteService\":true,\"nomCollectivite\":\"nom collectivité\",\"nomConcours\":\"nom concours\",\"nomDiplome\":\"nom diplome\",\"developpementPersonnel\":[{\"echeance\":\"/Date(1397826000000+1100)/\",\"idEaeDeveloppement\":40,\"libelle\":\"libelle PERSONNEL\",\"priorisation\":7}],\"pourcentageTempsPartiel\":50,\"retraite\":true,\"souhaitsSuggestions\":[{\"idEaeEvolutionSouhait\":9,\"souhait\":\"le souhait\",\"suggestion\":\"la suggestion\"}],\"tempsPartiel\":true,\"vae\":true}";
 		
 		// When
 		EaeEvolutionDto dto = new EaeEvolutionDto().deserializeFromJSON(json);
@@ -364,40 +364,40 @@ public class EaeEvolutionDtoTest {
 		assertEquals("le souhait", dto.getSouhaitsSuggestions().get(0).getSouhait());
 		assertEquals("la suggestion", dto.getSouhaitsSuggestions().get(0).getSuggestion());
 		
-		assertEquals(1, dto.getConnaissances().size());
-		assertEquals(new Integer(10), dto.getConnaissances().get(0).getIdEaeDeveloppement());
-		assertEquals("libelle CONNAISSANCE", dto.getConnaissances().get(0).getLibelle());
-		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getConnaissances().get(0).getEcheance());
-		assertEquals(3, dto.getConnaissances().get(0).getPriorisation());
+		assertEquals(1, dto.getDeveloppementConnaissances().size());
+		assertEquals(new Integer(10), dto.getDeveloppementConnaissances().get(0).getIdEaeDeveloppement());
+		assertEquals("libelle CONNAISSANCE", dto.getDeveloppementConnaissances().get(0).getLibelle());
+		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getDeveloppementConnaissances().get(0).getEcheance());
+		assertEquals(3, dto.getDeveloppementConnaissances().get(0).getPriorisation());
 		
-		assertEquals(1, dto.getCompetences().size());
-		assertEquals(new Integer(20), dto.getCompetences().get(0).getIdEaeDeveloppement());
-		assertEquals("libelle COMPETENCE", dto.getCompetences().get(0).getLibelle());
-		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getCompetences().get(0).getEcheance());
-		assertEquals(1, dto.getCompetences().get(0).getPriorisation());
+		assertEquals(1, dto.getDeveloppementCompetences().size());
+		assertEquals(new Integer(20), dto.getDeveloppementCompetences().get(0).getIdEaeDeveloppement());
+		assertEquals("libelle COMPETENCE", dto.getDeveloppementCompetences().get(0).getLibelle());
+		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getDeveloppementCompetences().get(0).getEcheance());
+		assertEquals(1, dto.getDeveloppementCompetences().get(0).getPriorisation());
 		
-		assertEquals(1, dto.getExamensConcours().size());
-		assertEquals(new Integer(30), dto.getExamensConcours().get(0).getIdEaeDeveloppement());
-		assertEquals("libelle CONCOURS", dto.getExamensConcours().get(0).getLibelle());
-		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getExamensConcours().get(0).getEcheance());
-		assertEquals(5, dto.getExamensConcours().get(0).getPriorisation());
+		assertEquals(1, dto.getDeveloppementExamensConcours().size());
+		assertEquals(new Integer(30), dto.getDeveloppementExamensConcours().get(0).getIdEaeDeveloppement());
+		assertEquals("libelle CONCOURS", dto.getDeveloppementExamensConcours().get(0).getLibelle());
+		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getDeveloppementExamensConcours().get(0).getEcheance());
+		assertEquals(5, dto.getDeveloppementExamensConcours().get(0).getPriorisation());
 		
-		assertEquals(1, dto.getPersonnel().size());
-		assertEquals(new Integer(40), dto.getPersonnel().get(0).getIdEaeDeveloppement());
-		assertEquals("libelle PERSONNEL", dto.getPersonnel().get(0).getLibelle());
-		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getPersonnel().get(0).getEcheance());
-		assertEquals(7, dto.getPersonnel().get(0).getPriorisation());
+		assertEquals(1, dto.getDeveloppementPersonnel().size());
+		assertEquals(new Integer(40), dto.getDeveloppementPersonnel().get(0).getIdEaeDeveloppement());
+		assertEquals("libelle PERSONNEL", dto.getDeveloppementPersonnel().get(0).getLibelle());
+		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getDeveloppementPersonnel().get(0).getEcheance());
+		assertEquals(7, dto.getDeveloppementPersonnel().get(0).getPriorisation());
 		
-		assertEquals(1, dto.getComportement().size());
-		assertEquals(new Integer(50), dto.getComportement().get(0).getIdEaeDeveloppement());
-		assertEquals("libelle COMPORTEMENT", dto.getComportement().get(0).getLibelle());
-		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getComportement().get(0).getEcheance());
-		assertEquals(2, dto.getComportement().get(0).getPriorisation());
+		assertEquals(1, dto.getDeveloppementComportement().size());
+		assertEquals(new Integer(50), dto.getDeveloppementComportement().get(0).getIdEaeDeveloppement());
+		assertEquals("libelle COMPORTEMENT", dto.getDeveloppementComportement().get(0).getLibelle());
+		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getDeveloppementComportement().get(0).getEcheance());
+		assertEquals(2, dto.getDeveloppementComportement().get(0).getPriorisation());
 		
-		assertEquals(1, dto.getFormateur().size());
-		assertEquals(new Integer(60), dto.getFormateur().get(0).getIdEaeDeveloppement());
-		assertEquals("libelle FORMATEUR", dto.getFormateur().get(0).getLibelle());
-		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getFormateur().get(0).getEcheance());
-		assertEquals(6, dto.getFormateur().get(0).getPriorisation());
+		assertEquals(1, dto.getDeveloppementFormateur().size());
+		assertEquals(new Integer(60), dto.getDeveloppementFormateur().get(0).getIdEaeDeveloppement());
+		assertEquals("libelle FORMATEUR", dto.getDeveloppementFormateur().get(0).getLibelle());
+		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), dto.getDeveloppementFormateur().get(0).getEcheance());
+		assertEquals(6, dto.getDeveloppementFormateur().get(0).getPriorisation());
 	}
 }

@@ -44,21 +44,21 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 	private EaeCommentaire commentaireEvalue;
 	
 	private List<EaeEvolutionSouhait> souhaitsSuggestions;
-	private List<EaeDeveloppement> connaissances;
-	private List<EaeDeveloppement> competences;
-	private List<EaeDeveloppement> examensConcours;
-	private List<EaeDeveloppement> personnel;
-	private List<EaeDeveloppement> comportement;
-	private List<EaeDeveloppement> formateur;
+	private List<EaeDeveloppement> developpementConnaissances;
+	private List<EaeDeveloppement> developpementCompetences;
+	private List<EaeDeveloppement> developpementExamensConcours;
+	private List<EaeDeveloppement> developpementPersonnel;
+	private List<EaeDeveloppement> developpementComportement;
+	private List<EaeDeveloppement> developpementFormateur;
 	
 	public EaeEvolutionDto() {
 		souhaitsSuggestions = new ArrayList<EaeEvolutionSouhait>();
-		connaissances = new ArrayList<EaeDeveloppement>();
-		competences = new ArrayList<EaeDeveloppement>();
-		examensConcours = new ArrayList<EaeDeveloppement>();
-		personnel = new ArrayList<EaeDeveloppement>();
-		comportement = new ArrayList<EaeDeveloppement>();
-		formateur = new ArrayList<EaeDeveloppement>();
+		developpementConnaissances = new ArrayList<EaeDeveloppement>();
+		developpementCompetences = new ArrayList<EaeDeveloppement>();
+		developpementExamensConcours = new ArrayList<EaeDeveloppement>();
+		developpementPersonnel = new ArrayList<EaeDeveloppement>();
+		developpementComportement = new ArrayList<EaeDeveloppement>();
+		developpementFormateur = new ArrayList<EaeDeveloppement>();
 		delaiEnvisage = new ValueWithListDto(null, EaeDelaiEnum.class);
 	}
 
@@ -106,22 +106,22 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		for (EaeDeveloppement dev : developpements) {
 			switch(dev.getTypeDeveloppement()) {
 				case CONNAISSANCE:
-					connaissances.add(dev);
+					developpementConnaissances.add(dev);
 					break;
 				case COMPETENCE:
-					competences.add(dev);
+					developpementCompetences.add(dev);
 					break;
 				case CONCOURS:
-					examensConcours.add(dev);
+					developpementExamensConcours.add(dev);
 					break;
 				case PERSONNEL:
-					personnel.add(dev);
+					developpementPersonnel.add(dev);
 					break;
 				case COMPORTEMENT:
-					comportement.add(dev);
+					developpementComportement.add(dev);
 					break;
 				case FORMATEUR:
-					formateur.add(dev);
+					developpementFormateur.add(dev);
 					break;
 			}
 		}
@@ -153,30 +153,30 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 			.include("souhaitsSuggestions.idEaeEvolutionSouhait")
 			.include("souhaitsSuggestions.souhait")
 			.include("souhaitsSuggestions.suggestion")
-			.include("connaissances.idEaeDeveloppement")
-			.include("connaissances.libelle")
-			.include("connaissances.echeance")
-			.include("connaissances.priorisation")
-			.include("competences.idEaeDeveloppement")
-			.include("competences.libelle")
-			.include("competences.echeance")
-			.include("competences.priorisation")
-			.include("examensConcours.idEaeDeveloppement")
-			.include("examensConcours.libelle")
-			.include("examensConcours.echeance")
-			.include("examensConcours.priorisation")
-			.include("personnel.idEaeDeveloppement")
-			.include("personnel.libelle")
-			.include("personnel.echeance")
-			.include("personnel.priorisation")
-			.include("comportement.idEaeDeveloppement")
-			.include("comportement.libelle")
-			.include("comportement.echeance")
-			.include("comportement.priorisation")
-			.include("formateur.idEaeDeveloppement")
-			.include("formateur.libelle")
-			.include("formateur.echeance")
-			.include("formateur.priorisation")
+			.include("developpementConnaissances.idEaeDeveloppement")
+			.include("developpementConnaissances.libelle")
+			.include("developpementConnaissances.echeance")
+			.include("developpementConnaissances.priorisation")
+			.include("developpementCompetences.idEaeDeveloppement")
+			.include("developpementCompetences.libelle")
+			.include("developpementCompetences.echeance")
+			.include("developpementCompetences.priorisation")
+			.include("developpementExamensConcours.idEaeDeveloppement")
+			.include("developpementExamensConcours.libelle")
+			.include("developpementExamensConcours.echeance")
+			.include("developpementExamensConcours.priorisation")
+			.include("developpementPersonnel.idEaeDeveloppement")
+			.include("developpementPersonnel.libelle")
+			.include("developpementPersonnel.echeance")
+			.include("developpementPersonnel.priorisation")
+			.include("developpementComportement.idEaeDeveloppement")
+			.include("developpementComportement.libelle")
+			.include("developpementComportement.echeance")
+			.include("developpementComportement.priorisation")
+			.include("developpementFormateur.idEaeDeveloppement")
+			.include("developpementFormateur.libelle")
+			.include("developpementFormateur.echeance")
+			.include("developpementFormateur.priorisation")
 			.include("commentaireEvolution")
 			.include("commentaireEvaluateur")
 			.include("commentaireEvalue")
@@ -367,52 +367,58 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		this.libelleAutrePerspective = libelleAutrePerspective;
 	}
 
-	public List<EaeDeveloppement> getConnaissances() {
-		return connaissances;
+	public List<EaeDeveloppement> getDeveloppementConnaissances() {
+		return developpementConnaissances;
 	}
 
-	public void setConnaissances(List<EaeDeveloppement> connaissances) {
-		this.connaissances = connaissances;
+	public void setDeveloppementConnaissances(
+			List<EaeDeveloppement> developpementConnaissances) {
+		this.developpementConnaissances = developpementConnaissances;
 	}
 
-	public List<EaeDeveloppement> getCompetences() {
-		return competences;
+	public List<EaeDeveloppement> getDeveloppementCompetences() {
+		return developpementCompetences;
 	}
 
-	public void setCompetences(List<EaeDeveloppement> competences) {
-		this.competences = competences;
+	public void setDeveloppementCompetences(
+			List<EaeDeveloppement> developpementCompetences) {
+		this.developpementCompetences = developpementCompetences;
 	}
 
-	public List<EaeDeveloppement> getExamensConcours() {
-		return examensConcours;
+	public List<EaeDeveloppement> getDeveloppementExamensConcours() {
+		return developpementExamensConcours;
 	}
 
-	public void setExamensConcours(List<EaeDeveloppement> examensConcours) {
-		this.examensConcours = examensConcours;
+	public void setDeveloppementExamensConcours(
+			List<EaeDeveloppement> developpementExamensConcours) {
+		this.developpementExamensConcours = developpementExamensConcours;
 	}
 
-	public List<EaeDeveloppement> getPersonnel() {
-		return personnel;
+	public List<EaeDeveloppement> getDeveloppementPersonnel() {
+		return developpementPersonnel;
 	}
 
-	public void setPersonnel(List<EaeDeveloppement> personnel) {
-		this.personnel = personnel;
+	public void setDeveloppementPersonnel(
+			List<EaeDeveloppement> developpementPersonnel) {
+		this.developpementPersonnel = developpementPersonnel;
 	}
 
-	public List<EaeDeveloppement> getComportement() {
-		return comportement;
+	public List<EaeDeveloppement> getDeveloppementComportement() {
+		return developpementComportement;
 	}
 
-	public void setComportement(List<EaeDeveloppement> comportement) {
-		this.comportement = comportement;
+	public void setDeveloppementComportement(
+			List<EaeDeveloppement> developpementComportement) {
+		this.developpementComportement = developpementComportement;
 	}
 
-	public List<EaeDeveloppement> getFormateur() {
-		return formateur;
+	public List<EaeDeveloppement> getDeveloppementFormateur() {
+		return developpementFormateur;
 	}
 
-	public void setFormateur(List<EaeDeveloppement> formateur) {
-		this.formateur = formateur;
+	public void setDeveloppementFormateur(
+			List<EaeDeveloppement> developpementFormateur) {
+		this.developpementFormateur = developpementFormateur;
 	}
 
 	public EaeCommentaire getCommentaireEvaluateur() {
