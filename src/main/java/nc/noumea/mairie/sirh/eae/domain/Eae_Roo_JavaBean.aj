@@ -14,6 +14,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
@@ -213,6 +214,14 @@ privileged aspect Eae_Roo_JavaBean {
     
     public void Eae.setEaeAutoEvaluation(EaeAutoEvaluation eaeAutoEvaluation) {
         this.eaeAutoEvaluation = eaeAutoEvaluation;
+    }
+    
+    public EaeEvolution Eae.getEaeEvolution() {
+        return this.eaeEvolution;
+    }
+    
+    public void Eae.setEaeEvolution(EaeEvolution eaeEvolution) {
+        this.eaeEvolution = eaeEvolution;
     }
     
     public Agent Eae.getAgentDelegataire() {
