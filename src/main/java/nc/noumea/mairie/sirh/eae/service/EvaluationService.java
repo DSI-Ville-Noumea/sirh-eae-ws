@@ -20,6 +20,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -321,6 +322,17 @@ public class EvaluationService implements IEvaluationService {
 		pa.setTypeObjectif(typeObjectifService.getTypeObjectifForLibelle(typeObjectif.name()));
 		pa.setEae(eae);
 		eae.getEaePlanActions().add(pa);
+	}
+
+	@Override
+	public EaeEvolutionDto getEaeEvolution(Eae eae) {
+		return new EaeEvolutionDto(eae);
+	}
+
+	@Override
+	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

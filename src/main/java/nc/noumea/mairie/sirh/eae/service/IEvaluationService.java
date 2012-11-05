@@ -6,6 +6,7 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -108,4 +109,20 @@ public interface IEvaluationService {
 	 * @throws EvaluationServiceException
 	 */
 	public void setEaePlanAction(Eae eae, EaePlanActionDto dto);
+	
+
+	/**
+	 * Returns the data for viewing/filling in the evolution part of an EAE
+	 * @param eae
+	 * @return
+	 */
+	public EaeEvolutionDto getEaeEvolution(Eae eae);
+	
+	/**
+	 * Saves the filled in evolution for someone's EAE
+	 * @param eae
+	 * @param dto
+	 * @throws EvaluationServiceException
+	 */
+	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto);
 }

@@ -32,6 +32,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -997,5 +998,21 @@ public class EvaluationServiceTest {
 		
 		// Then
 		assertEquals(5, eae.getEaePlanActions().size());
+	}
+	
+	@Test
+	public void testGetEaeEvolution_WithEae_FillEvolutionDtoAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(789);
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		EaeEvolutionDto result = service.getEaeEvolution(eae);
+		
+		// Then
+		assertEquals(789, result.getIdEae());
 	}
 }

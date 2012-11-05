@@ -6,6 +6,7 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -290,6 +291,46 @@ public class EvaluationController {
 			eaeService.startEae(eae);
 			EaePlanActionDto dto = new EaePlanActionDto().deserializeFromJSON(eaePlanActionDtoJson);
 			evaluationService.setEaePlanAction(eae, dto);
+			eae.flush();
+		} catch (EaeServiceException e) {
+			eae.clear();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "eaeEvolution", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ResponseEntity<String> getEaeEvolution(@RequestParam("idEae") int idEae) {
+
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		EaeEvolutionDto dto = evaluationService.getEaeEvolution(eae);
+		
+		String result = dto.serializeInJSON();
+		
+		return new ResponseEntity<String>(result, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "eaeEvolution", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
+	@Transactional(value = "eaeTransactionManager")
+	public ResponseEntity<String> setEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idEvaluateur") int idEvaluateur, @RequestBody String eaeEvolutionDtoJson) {
+
+		Eae eae = Eae.findEae(idEae);
+		
+		if (eae == null)
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		
+		try {
+			eaeService.startEae(eae);
+			EaeEvolutionDto dto = new EaeEvolutionDto().deserializeFromJSON(eaeEvolutionDtoJson);
+			evaluationService.setEaeEvolution(eae, dto);
 			eae.flush();
 		} catch (EaeServiceException e) {
 			eae.clear();
