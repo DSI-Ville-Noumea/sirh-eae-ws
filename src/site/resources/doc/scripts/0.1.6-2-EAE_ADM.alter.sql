@@ -1,6 +1,6 @@
-----------------------------------------------------------------
--- Connecte en EAE_ADM
-----------------------------------------------------------------
+-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-- connecte en EAE_ADM
+-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 alter table EAE_EVALUATION add (ID_EAE_COM_EVALUATEUR NUMBER(*,0));
 alter table EAE_EVALUATION add CONSTRAINT FK_EAE_COM_EVALUATEUR FOREIGN KEY (ID_EAE_COM_EVALUATEUR) REFERENCES EAE_COMMENTAIRE (ID_EAE_COMMENTAIRE);
