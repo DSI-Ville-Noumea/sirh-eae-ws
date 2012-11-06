@@ -124,5 +124,5 @@ public interface IEvaluationService {
 	 * @param dto
 	 * @throws EvaluationServiceException
 	 */
-	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto);
+	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto) throws EvaluationServiceException;
 }

@@ -32,7 +32,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 	private boolean concours;
 	private String nomConcours;
 	private boolean vae;
-	private String nomDiplome;
+	private String nomVae;
 	private boolean tempsPartiel;
 	private int pourcentageTempsPartiel;
 	private boolean retraite;
@@ -83,9 +83,9 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		concours = evolution.isConcours();
 		nomConcours = evolution.getNomConcours();
 		vae = evolution.isVae();
-		nomDiplome = evolution.getNomVae();
+		nomVae = evolution.getNomVae();
 		tempsPartiel = evolution.isTempsPartiel();
-		pourcentageTempsPartiel = evolution.getPourcentageTempsParciel();
+		pourcentageTempsPartiel = evolution.getPourcentageTempsPartiel();
 		retraite = evolution.isRetraite();
 		dateRetraite = evolution.getDateRetraite();
 		autrePerspective = evolution.isAutrePerspective();
@@ -143,7 +143,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 			.include("concours")
 			.include("nomConcours")
 			.include("vae")
-			.include("nomDiplome")
+			.include("nomVae")
 			.include("tempsPartiel")
 			.include("pourcentageTempsPartiel")
 			.include("retraite")
@@ -311,12 +311,12 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		this.vae = vae;
 	}
 
-	public String getNomDiplome() {
-		return nomDiplome;
+	public String getNomVae() {
+		return nomVae;
 	}
 
-	public void setNomDiplome(String nomDiplome) {
-		this.nomDiplome = nomDiplome;
+	public void setNomVae(String nomVae) {
+		this.nomVae = nomVae;
 	}
 
 	public boolean isTempsPartiel() {

@@ -82,7 +82,7 @@ public class EaeEvolution {
 	private boolean tempsPartiel;
 	
 	@Column(name = "POURC_TEMPS_PARTIEL")
-	private int pourcentageTempsParciel;
+	private int pourcentageTempsPartiel;
 	
 	@Column(name = "RETRAITE", nullable = false)
     @Type(type="boolean")

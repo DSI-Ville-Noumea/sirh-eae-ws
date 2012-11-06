@@ -298,3 +298,4 @@ entity jpa --class ~.sirh.eae.domain.EaeEvolutionSouhait --persistenceUnit eaePe
 entity jpa --class ~.sirh.eae.domain.EaeDeveloppement --persistenceUnit eaePersistenceUnit --table EAE_DEVELOPPEMENT --identifierColumn ID_EAE_DEVELOPPEMENT --identifierField idEaeDeveloppement --identifierType java.lang.Integer --sequenceName EAE_S_DEVELOPPEMENT
 entity jpa --class ~.sirh.eae.domain.EaeTypeDeveloppement --persistenceUnit eaePersistenceUnit --table EAE_TYPE_DEVELOPPEMENT --identifierColumn ID_EAE_TYPE_DEVELOPPEMENT --identifierField idEaeTypeDeveloppement --identifierType java.lang.Integer --sequenceName EAE_S_TYPE_DEVELOPPEMENT
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-05 16:43:57
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-06 08:32:07

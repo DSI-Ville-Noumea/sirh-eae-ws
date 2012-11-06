@@ -7,15 +7,20 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
 import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
+import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
@@ -121,14 +126,7 @@ public class EvaluationService implements IEvaluationService {
 				existingResultat.setObjectif(resultat.getObjectif());
 				existingResultat.setResultat(resultat.getResultat());
 				
-				if (resultat.getCommentaire() != null) {
-					if (existingResultat.getCommentaire() != null)
-						existingResultat.getCommentaire().setText(resultat.getCommentaire().getText());
-					else
-						existingResultat.setCommentaire(resultat.getCommentaire());
-				}
-				else if (existingResultat.getCommentaire() != null)
-					existingResultat.setCommentaire(null);
+				resultat.setCommentaire(updateEaeCommentaire(existingResultat.getCommentaire(), (resultat.getCommentaire())));
 			}
 		}
 	}
@@ -212,25 +210,10 @@ public class EvaluationService implements IEvaluationService {
 		calculateAvisShd(eae);
 		
 		// For all the comments, check if a comment already exists and update it, or assign the new one
-		if (evaluation.getCommentaireEvaluateur() == null)
-			evaluation.setCommentaireEvaluateur(dto.getCommentaireEvaluateur());
-		else if (dto.getCommentaireEvaluateur() != null)
-			evaluation.getCommentaireEvaluateur().setText(dto.getCommentaireEvaluateur().getText());
-		
-		if (evaluation.getCommentaireEvalue() == null)
-			evaluation.setCommentaireEvalue(dto.getCommentaireEvalue());
-		else if (dto.getCommentaireEvalue() != null)
-			evaluation.getCommentaireEvalue().setText(dto.getCommentaireEvalue().getText());
-		
-		if (evaluation.getCommentaireAvctEvaluateur() == null)
-			evaluation.setCommentaireAvctEvaluateur(dto.getCommentaireAvctEvaluateur());
-		else if (dto.getCommentaireAvctEvaluateur() != null)
-			evaluation.getCommentaireAvctEvaluateur().setText(dto.getCommentaireAvctEvaluateur().getText());
-		
-		if (evaluation.getCommentaireAvctEvalue() == null)
-			evaluation.setCommentaireAvctEvalue(dto.getCommentaireAvctEvalue());
-		else if (dto.getCommentaireAvctEvalue() != null)
-			evaluation.getCommentaireAvctEvalue().setText(dto.getCommentaireAvctEvalue().getText());
+		evaluation.setCommentaireEvaluateur(updateEaeCommentaire(evaluation.getCommentaireEvaluateur(), dto.getCommentaireEvaluateur()));
+		evaluation.setCommentaireEvalue(updateEaeCommentaire(evaluation.getCommentaireEvalue(), dto.getCommentaireEvalue()));
+		evaluation.setCommentaireAvctEvaluateur(updateEaeCommentaire(evaluation.getCommentaireAvctEvaluateur(), dto.getCommentaireAvctEvaluateur()));
+		evaluation.setCommentaireAvctEvalue(updateEaeCommentaire(evaluation.getCommentaireAvctEvalue(), dto.getCommentaireAvctEvalue()));
 		
 		try {
 			eaeDataConsistencyService.checkDataConsistencyForEaeEvaluation(eae);
@@ -330,9 +313,102 @@ public class EvaluationService implements IEvaluationService {
 	}
 
 	@Override
-	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto) {
-		// TODO Auto-generated method stub
+	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto) throws EvaluationServiceException{
+
+		EaeEvolution evolution = eae.getEaeEvolution();
 		
+		if (evolution == null) {
+			evolution = new EaeEvolution();
+			evolution.setEae(eae);
+			eae.setEaeEvolution(evolution);
+		}
+		
+		EaeDelaiEnum delai = null;
+		
+		if (dto.getDelaiEnvisage() != null && dto.getDelaiEnvisage().getCourant() != null) {
+			try {
+				delai = EaeDelaiEnum.valueOf(dto.getDelaiEnvisage().getCourant());
+			} catch(IllegalArgumentException ex) {
+				throw new EvaluationServiceException("La propriété 'delaiEnvisage' de l'évalolution est incorrecte.");
+			}
+		}
+
+		evolution.setDelaiEnvisage(delai);
+		
+		evolution.setMobiliteGeo(dto.isMobiliteGeo());
+		evolution.setMobiliteFonctionnelle(dto.isMobiliteFonctionnelle());
+		evolution.setChangementMetier(dto.isChangementMetier());
+		evolution.setMobiliteService(dto.isMobiliteService());
+		evolution.setMobiliteDirection(dto.isMobiliteDirection());
+		evolution.setMobiliteCollectivite(dto.isMobiliteCollectivite());
+		evolution.setNomCollectivite(dto.getNomCollectivite());
+		evolution.setMobiliteAutre(dto.isMobiliteAutre());
+		evolution.setConcours(dto.isConcours());
+		evolution.setNomConcours(dto.getNomConcours());
+		evolution.setVae(dto.isVae());
+		evolution.setNomVae(dto.getNomVae());
+		evolution.setTempsPartiel(dto.isTempsPartiel());
+		evolution.setPourcentageTempsPartiel(dto.getPourcentageTempsPartiel());
+		evolution.setRetraite(dto.isRetraite());
+		evolution.setDateRetraite(dto.getDateRetraite());
+		evolution.setAutrePerspective(dto.isAutrePerspective());
+		evolution.setLibelleAutrePerspective(dto.getLibelleAutrePerspective());
+
+		evolution.setCommentaireEvolution(updateEaeCommentaire(evolution.getCommentaireEvolution(), dto.getCommentaireEvolution()));
+		evolution.setCommentaireEvaluateur(updateEaeCommentaire(evolution.getCommentaireEvaluateur(), dto.getCommentaireEvaluateur()));
+		evolution.setCommentaireEvalue(updateEaeCommentaire(evolution.getCommentaireEvalue(), dto.getCommentaireEvalue()));
+		
+		for (EaeEvolutionSouhait evolSouhait : dto.getSouhaitsSuggestions()) {
+			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait().equals(0))
+				evolution.getEaeEvolutionSouhaits().add(evolSouhait);
+			else {
+				for (EaeEvolutionSouhait existingEvolSouhait : evolution.getEaeEvolutionSouhaits()) {
+					if (existingEvolSouhait.getIdEaeEvolutionSouhait() == evolSouhait.getIdEaeEvolutionSouhait()) {
+						existingEvolSouhait.setSouhait(evolSouhait.getSouhait());
+						existingEvolSouhait.setSuggestion(evolSouhait.getSuggestion());
+					}
+				}
+			}
+		}
+		
+		updateEaeDeveloppements(evolution, dto.getDeveloppementConnaissances(), EaeTypeDeveloppementEnum.CONNAISSANCE);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementCompetences(), EaeTypeDeveloppementEnum.COMPETENCE);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementExamensConcours(), EaeTypeDeveloppementEnum.CONCOURS);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementPersonnel(), EaeTypeDeveloppementEnum.PERSONNEL);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementComportement(), EaeTypeDeveloppementEnum.COMPORTEMENT);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementFormateur(), EaeTypeDeveloppementEnum.FORMATEUR);
+	}
+
+	protected void updateEaeDeveloppements(EaeEvolution evolution, List<EaeDeveloppement> dtoDeveloppements, EaeTypeDeveloppementEnum typeDeveloppement) {
+		
+		for (EaeDeveloppement dev : dtoDeveloppements) {
+			if (dev.getIdEaeDeveloppement() == null || dev.getIdEaeDeveloppement().equals(0)) {
+				dev.setTypeDeveloppement(typeDeveloppement);
+				evolution.getEaeDeveloppements().add(dev);
+			}
+			else {
+				for (EaeDeveloppement existingDev : evolution.getEaeDeveloppements()) {
+					if (existingDev.getIdEaeDeveloppement() == dev.getIdEaeDeveloppement()) {
+						existingDev.setLibelle(dev.getLibelle());
+						existingDev.setEcheance(dev.getEcheance());
+						existingDev.setPriorisation(dev.getPriorisation());
+					}
+				}
+			}
+		}
+	}
+	
+	protected EaeCommentaire updateEaeCommentaire(EaeCommentaire oldCommentaire, EaeCommentaire newCommentaire) {
+		
+		if (newCommentaire == null)
+			return null;
+		
+		if (oldCommentaire == null)
+			return newCommentaire;
+		
+		oldCommentaire.setText(newCommentaire.getText());
+		
+		return oldCommentaire;
 	}
 
 }

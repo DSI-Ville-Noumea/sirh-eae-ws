@@ -335,6 +335,9 @@ public class EvaluationController {
 		} catch (EaeServiceException e) {
 			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		} catch (EvaluationServiceException e) {
+			eae.clear();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
 		return new ResponseEntity<String>(HttpStatus.OK);

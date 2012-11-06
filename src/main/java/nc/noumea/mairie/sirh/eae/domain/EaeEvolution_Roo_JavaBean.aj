@@ -126,12 +126,12 @@ privileged aspect EaeEvolution_Roo_JavaBean {
         this.tempsPartiel = tempsPartiel;
     }
     
-    public int EaeEvolution.getPourcentageTempsParciel() {
-        return this.pourcentageTempsParciel;
+    public int EaeEvolution.getPourcentageTempsPartiel() {
+        return this.pourcentageTempsPartiel;
     }
     
-    public void EaeEvolution.setPourcentageTempsParciel(int pourcentageTempsParciel) {
-        this.pourcentageTempsParciel = pourcentageTempsParciel;
+    public void EaeEvolution.setPourcentageTempsPartiel(int pourcentageTempsPartiel) {
+        this.pourcentageTempsPartiel = pourcentageTempsPartiel;
     }
     
     public boolean EaeEvolution.isRetraite() {

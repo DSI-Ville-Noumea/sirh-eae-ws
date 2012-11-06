@@ -19,16 +19,21 @@ import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
+import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
@@ -43,6 +48,7 @@ import nc.noumea.mairie.sirh.eae.service.dataConsistency.EaeDataConsistencyServi
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.IEaeDataConsistencyService;
 import nc.noumea.mairie.sirh.service.IAgentService;
 
+import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
@@ -1014,5 +1020,231 @@ public class EvaluationServiceTest {
 		
 		// Then
 		assertEquals(789, result.getIdEae());
+	}
+	
+	@Test
+	public void testSetEaeEvolution_EmptyEaeEvolutionSetPropertiesAndCommentaire_FillEvolutionfromDto() throws EvaluationServiceException {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(19);
+		
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setIdEae(19);
+		dto.setMobiliteGeo(true);
+		dto.setMobiliteFonctionnelle(true);
+		dto.setChangementMetier(true);
+		dto.setDelaiEnvisage(new ValueWithListDto(EaeDelaiEnum.ENTRE1ET2ANS, EaeDelaiEnum.class));
+		dto.setMobiliteService(true);
+		dto.setMobiliteDirection(true);
+		dto.setMobiliteCollectivite(true);
+		dto.setNomCollectivite("nom collectivité");
+		dto.setMobiliteAutre(true);
+		dto.setConcours(true);
+		dto.setNomConcours("nom concours");
+		dto.setVae(true);
+		dto.setNomVae("nom diplome");
+		dto.setTempsPartiel(true);
+		dto.setPourcentageTempsPartiel(50);
+		dto.setRetraite(true);
+		dto.setDateRetraite(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate());
+		dto.setAutrePerspective(true);
+		dto.setLibelleAutrePerspective("autre perspective");
+		
+		dto.setCommentaireEvolution(new EaeCommentaire());
+		dto.getCommentaireEvolution().setText("commentaire evolution");
+		
+		dto.setCommentaireEvaluateur(new EaeCommentaire());
+		dto.getCommentaireEvaluateur().setText("commentaire evaluateur");
+		
+		dto.setCommentaireEvalue(new EaeCommentaire());
+		dto.getCommentaireEvalue().setText("commentaire evalue");
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.setEaeEvolution(eae, dto);
+		
+		// Then
+		EaeEvolution evo = eae.getEaeEvolution();
+		assertTrue(evo.isMobiliteGeo());
+		assertTrue(evo.isMobiliteFonctionnelle());
+		assertTrue(evo.isChangementMetier());
+		assertEquals("ENTRE1ET2ANS", evo.getDelaiEnvisage().name());
+		assertTrue(evo.isMobiliteService());
+		assertTrue(evo.isMobiliteDirection());
+		assertTrue(evo.isMobiliteCollectivite());
+		assertEquals("nom collectivité", evo.getNomCollectivite());
+		assertTrue(evo.isMobiliteAutre());
+		assertTrue(evo.isConcours());
+		assertEquals("nom concours", evo.getNomConcours());
+		assertTrue(evo.isVae());
+		assertEquals("nom diplome", evo.getNomVae());
+		assertTrue(evo.isTempsPartiel());
+		assertEquals(50, evo.getPourcentageTempsPartiel());
+		assertTrue(evo.isRetraite());
+		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), evo.getDateRetraite());
+		assertTrue(evo.isAutrePerspective());
+		assertEquals("autre perspective", evo.getLibelleAutrePerspective());
+		assertEquals("commentaire evolution", evo.getCommentaireEvolution().getText());
+		assertEquals("commentaire evaluateur", evo.getCommentaireEvaluateur().getText());
+		assertEquals("commentaire evalue", evo.getCommentaireEvalue().getText());
+	}
+	
+	@Test
+	public void testSetEaeEvolution_EmptyEaeEvolutionSetSouhaitsAndDeveloppements_FillEvolutionfromDto() throws EvaluationServiceException {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(19);
+		
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setIdEae(19);
+		
+		// 1 new souhait
+		EaeEvolutionSouhait souhait = new EaeEvolutionSouhait();
+		souhait.setSouhait("le souhait");
+		souhait.setSuggestion("la suggestion");
+		dto.getSouhaitsSuggestions().add(souhait);
+		
+		// 1 development per type
+		EaeDeveloppement dev1 = new EaeDeveloppement();
+		dev1.setLibelle("libelle CONNAISSANCE");
+		dev1.setTypeDeveloppement(EaeTypeDeveloppementEnum.CONNAISSANCE);
+		dto.getDeveloppementConnaissances().add(dev1);
+
+		EaeDeveloppement dev2 = new EaeDeveloppement();
+		dev2.setLibelle("libelle COMPETENCE");
+		dev2.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE);
+		dto.getDeveloppementCompetences().add(dev2);
+
+		EaeDeveloppement dev3 = new EaeDeveloppement();
+		dev3.setLibelle("libelle CONCOURS");
+		dev3.setTypeDeveloppement(EaeTypeDeveloppementEnum.CONCOURS);
+		dto.getDeveloppementExamensConcours().add(dev3);
+
+		EaeDeveloppement dev4 = new EaeDeveloppement();
+		dev4.setLibelle("libelle PERSONNEL");
+		dev4.setTypeDeveloppement(EaeTypeDeveloppementEnum.PERSONNEL);
+		dto.getDeveloppementPersonnel().add(dev4);
+
+		EaeDeveloppement dev5 = new EaeDeveloppement();
+		dev5.setLibelle("libelle COMPORTEMENT");
+		dev5.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dto.getDeveloppementComportement().add(dev5);
+
+		EaeDeveloppement dev6 = new EaeDeveloppement();
+		dev6.setLibelle("libelle FORMATEUR");
+		dev6.setTypeDeveloppement(EaeTypeDeveloppementEnum.FORMATEUR);
+		dto.getDeveloppementFormateur().add(dev6);
+		
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.setEaeEvolution(eae, dto);
+		
+		// Then
+		EaeEvolution evo = eae.getEaeEvolution();
+		
+		assertEquals(1, evo.getEaeEvolutionSouhaits().size());
+		assertEquals("le souhait", evo.getEaeEvolutionSouhaits().iterator().next().getSouhait());
+		assertEquals("la suggestion", evo.getEaeEvolutionSouhaits().iterator().next().getSuggestion());
+		
+		assertEquals(6, evo.getEaeDeveloppements().size());
+		
+		for (EaeDeveloppement dev : evo.getEaeDeveloppements()) {
+			if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.CONNAISSANCE)
+				assertEquals("libelle CONNAISSANCE", dev.getLibelle());
+			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.COMPETENCE)
+				assertEquals("libelle COMPETENCE", dev.getLibelle());
+			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.CONCOURS)
+				assertEquals("libelle CONCOURS", dev.getLibelle());
+			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.PERSONNEL)
+				assertEquals("libelle PERSONNEL", dev.getLibelle());
+			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.COMPORTEMENT)
+				assertEquals("libelle COMPORTEMENT", dev.getLibelle());
+			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.FORMATEUR)
+				assertEquals("libelle FORMATEUR", dev.getLibelle());
+			else
+				fail("test failed");
+		}
+	}
+	
+	@Test
+	public void testSetEaeEvolution_ExistingEaeEvolutionSetSouhait_ReplaceEvolutionfromDto() throws EvaluationServiceException {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(19);
+		EaeEvolution evol = new EaeEvolution();
+		eae.setEaeEvolution(evol);
+		
+		EaeEvolutionSouhait s1 = new EaeEvolutionSouhait();
+		s1.setIdEaeEvolutionSouhait(89);
+		s1.setSouhait("souhait");
+		s1.setSuggestion("suggestion");
+		evol.getEaeEvolutionSouhaits().add(s1);
+		
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setIdEae(19);
+		
+		// 1 existing souhait
+		EaeEvolutionSouhait existingSouhait = new EaeEvolutionSouhait();
+		existingSouhait.setIdEaeEvolutionSouhait(89);
+		existingSouhait.setSouhait("le souhait existant");
+		existingSouhait.setSuggestion("la suggestion existante");
+		dto.getSouhaitsSuggestions().add(existingSouhait);
+
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.setEaeEvolution(eae, dto);
+		
+		// Then
+		EaeEvolution evo = eae.getEaeEvolution();
+		
+		assertEquals(1, evo.getEaeEvolutionSouhaits().size());
+		assertEquals("le souhait existant", evo.getEaeEvolutionSouhaits().iterator().next().getSouhait());
+		assertEquals("la suggestion existante", evo.getEaeEvolutionSouhaits().iterator().next().getSuggestion());
+	}
+	
+	@Test
+	public void testSetEaeEvolution_ExistingEaeEvolutionSetDeveloppement_ReplaceEvolutionfromDto() throws EvaluationServiceException {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(19);
+		EaeEvolution evol = new EaeEvolution();
+		eae.setEaeEvolution(evol);
+		
+		EaeDeveloppement existingDeveloppement = new EaeDeveloppement();
+		existingDeveloppement.setIdEaeDeveloppement(89);
+		existingDeveloppement.setLibelle("comportement existant");
+		existingDeveloppement.setEcheance(new DateTime(2009, 12, 12, 13, 57, 0, 0).toDate());
+		existingDeveloppement.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		evol.getEaeDeveloppements().add(existingDeveloppement);
+		
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setIdEae(19);
+		
+		// 1 existing developpement
+		EaeDeveloppement dtoExistingDeveloppement = new EaeDeveloppement();
+		dtoExistingDeveloppement.setIdEaeDeveloppement(89);
+		dtoExistingDeveloppement.setLibelle("comportement existant");
+		dtoExistingDeveloppement.setEcheance(new DateTime(2012, 12, 12, 13, 57, 0, 0).toDate());
+		dto.getDeveloppementComportement().add(dtoExistingDeveloppement);
+
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.setEaeEvolution(eae, dto);
+		
+		// Then
+		EaeEvolution evo = eae.getEaeEvolution();
+		
+		assertEquals(1, evo.getEaeDeveloppements().size());
+		assertEquals("comportement existant", evo.getEaeDeveloppements().iterator().next().getLibelle());
+		assertEquals(new DateTime(2012, 12, 12, 13, 57, 0, 0).toDate(), evo.getEaeDeveloppements().iterator().next().getEcheance());
+		
 	}
 }
