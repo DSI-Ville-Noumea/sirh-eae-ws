@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -1060,7 +1061,10 @@ public class EvaluationServiceTest {
 		dto.setCommentaireEvalue(new EaeCommentaire());
 		dto.getCommentaireEvalue().setText("commentaire evalue");
 		
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
 		
 		// When
 		service.setEaeEvolution(eae, dto);
@@ -1138,7 +1142,10 @@ public class EvaluationServiceTest {
 		dev6.setTypeDeveloppement(EaeTypeDeveloppementEnum.FORMATEUR);
 		dto.getDeveloppementFormateur().add(dev6);
 		
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
 		
 		// When
 		service.setEaeEvolution(eae, dto);
@@ -1195,7 +1202,10 @@ public class EvaluationServiceTest {
 		existingSouhait.setSuggestion("la suggestion existante");
 		dto.getSouhaitsSuggestions().add(existingSouhait);
 
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
 		
 		// When
 		service.setEaeEvolution(eae, dto);
@@ -1234,7 +1244,10 @@ public class EvaluationServiceTest {
 		dtoExistingDeveloppement.setEcheance(new DateTime(2012, 12, 12, 13, 57, 0, 0).toDate());
 		dto.getDeveloppementComportement().add(dtoExistingDeveloppement);
 
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
 		
 		// When
 		service.setEaeEvolution(eae, dto);
@@ -1244,7 +1257,117 @@ public class EvaluationServiceTest {
 		
 		assertEquals(1, evo.getEaeDeveloppements().size());
 		assertEquals("comportement existant", evo.getEaeDeveloppements().iterator().next().getLibelle());
-		assertEquals(new DateTime(2012, 12, 12, 13, 57, 0, 0).toDate(), evo.getEaeDeveloppements().iterator().next().getEcheance());
+		assertEquals(new DateTime(2012, 12, 12, 13, 57, 0, 0).toDate(), evo.getEaeDeveloppements().iterator().next().getEcheance());		
+	}
+	
+	@Test
+	public void testSetEaeEvolution_ExistingEaeEvolutionWithDeveloppement_RemoveDeveloppementfromEvolution() throws EvaluationServiceException {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(19);
+		EaeEvolution evol = new EaeEvolution();
+		eae.setEaeEvolution(evol);
 		
+		EaeDeveloppement existingDeveloppement = new EaeDeveloppement();
+		existingDeveloppement.setIdEaeDeveloppement(89);
+		existingDeveloppement.setLibelle("comportement existant");
+		existingDeveloppement.setEcheance(new DateTime(2009, 12, 12, 13, 57, 0, 0).toDate());
+		existingDeveloppement.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		existingDeveloppement.setEaeEvolution(evol);
+		evol.getEaeDeveloppements().add(existingDeveloppement);
+		
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setIdEae(19);
+		
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		
+		// When
+		service.setEaeEvolution(eae, dto);
+		
+		// Then
+		EaeEvolution evo = eae.getEaeEvolution();
+		
+		assertEquals(0, evo.getEaeDeveloppements().size());
+	}
+	
+	@Test
+	public void testSetEaeEvolution_ExistingEaeEvolutionWithEvolSouhait_RemoveEvolSouhaitfromEvolution() throws EvaluationServiceException {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(19);
+		EaeEvolution evol = new EaeEvolution();
+		eae.setEaeEvolution(evol);
+		
+		EaeEvolutionSouhait existingSouhait = new EaeEvolutionSouhait();
+		existingSouhait.setIdEaeEvolutionSouhait(89);
+		evol.getEaeEvolutionSouhaits().add(existingSouhait);
+		
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setIdEae(19);
+		
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		
+		// When
+		service.setEaeEvolution(eae, dto);
+		
+		// Then
+		EaeEvolution evo = eae.getEaeEvolution();
+		
+		assertEquals(0, evo.getEaeEvolutionSouhaits().size());
+	}
+	
+	@Test
+	public void testSetEaeEvolution_DelaiEnvisageIsNotValid_throwException() {
+		// Given
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setDelaiEnvisage(new ValueWithListDto());
+		dto.getDelaiEnvisage().setCourant("");
+		
+		EvaluationService service = new EvaluationService();
+		
+		try {
+			// When
+			service.setEaeEvolution(new Eae(), dto);
+		}
+		catch (EvaluationServiceException ex) {
+			// Then
+			assertEquals("La propriété 'delaiEnvisage' de l'évolution est incorrecte.", ex.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown exception");
+	}
+	
+	@Test
+	public void testSetEaeEvolution_ErrorDuringDataConsistency_throwException() throws EaeDataConsistencyServiceException {
+		// Given
+		Eae eae = new Eae();
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		doThrow(new EaeDataConsistencyServiceException("La propriété 'delaiEnvisage' de l'évolution est incorrecte.")).when(dataConsistencyService).checkDataConsistencyForEaeEvolution(eae);
+		
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		
+		try {
+			// When
+			service.setEaeEvolution(eae, dto);
+		}
+		catch (EvaluationServiceException ex) {
+			// Then
+			assertEquals("La propriété 'delaiEnvisage' de l'évolution est incorrecte.", ex.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown exception");
 	}
 }

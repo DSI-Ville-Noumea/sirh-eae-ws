@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
+import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 
 import org.junit.Test;
@@ -81,5 +83,122 @@ public class EaeDataConsistencyServiceTest {
 		}
 		
 		fail("Shoud have thrown an exception");
+	}
+	
+	@Test
+	public void testCheckDataConsistencyForEaeEvolution_validDeveloppementsPriorisation_doNothing() throws EaeDataConsistencyServiceException {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvolution evolution = new EaeEvolution();
+		EaeDeveloppement dev1 = new EaeDeveloppement();
+		dev1.setPriorisation(1);
+		evolution.getEaeDeveloppements().add(dev1);
+		
+		EaeDeveloppement dev2 = new EaeDeveloppement();
+		dev2.setPriorisation(2);
+		evolution.getEaeDeveloppements().add(dev2);
+
+		eae.setEaeEvolution(evolution);
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+		
+		// When
+		service.checkDataConsistencyForEaeEvolution(eae);
+		
+		// Then
+		// nothing happens
+	}
+	
+	@Test
+	public void testCheckDataConsistencyForEaeEvolution_validDeveloppementsPriorisationStartAt0_throwException() throws EaeDataConsistencyServiceException {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvolution evolution = new EaeEvolution();
+		EaeDeveloppement dev1 = new EaeDeveloppement();
+		dev1.setPriorisation(1);
+		evolution.getEaeDeveloppements().add(dev1);
+		
+		EaeDeveloppement dev2 = new EaeDeveloppement();
+		dev2.setPriorisation(0);
+		evolution.getEaeDeveloppements().add(dev2);
+
+		eae.setEaeEvolution(evolution);
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+		
+		try {
+			// When
+			service.checkDataConsistencyForEaeEvolution(eae);
+		} catch (EaeDataConsistencyServiceException e) {
+			// Then
+			assertEquals("La priorisation des développements n'est pas valide.", e.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown exception");
+	}
+	
+	@Test
+	public void testCheckDataConsistencyForEaeEvolution_invalidDeveloppementsPriorisationSameNumberTwice_throwException() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvolution evolution = new EaeEvolution();
+		EaeDeveloppement dev1 = new EaeDeveloppement();
+		dev1.setPriorisation(1);
+		evolution.getEaeDeveloppements().add(dev1);
+		
+		EaeDeveloppement dev2 = new EaeDeveloppement();
+		dev2.setPriorisation(1);
+		evolution.getEaeDeveloppements().add(dev2);
+		
+		eae.setEaeEvolution(evolution);
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+		
+		
+		try {
+			// When
+			service.checkDataConsistencyForEaeEvolution(eae);
+		} catch (EaeDataConsistencyServiceException e) {
+			// Then
+			assertEquals("La priorisation des développements n'est pas valide.", e.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown exception");
+	}
+	
+	@Test
+	public void testCheckDataConsistencyForEaeEvolution_invalidDeveloppementsPriorisationMissingNumber_throwException() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvolution evolution = new EaeEvolution();
+		EaeDeveloppement dev1 = new EaeDeveloppement();
+		dev1.setPriorisation(3);
+		evolution.getEaeDeveloppements().add(dev1);
+		
+		EaeDeveloppement dev2 = new EaeDeveloppement();
+		dev2.setPriorisation(1);
+		evolution.getEaeDeveloppements().add(dev2);
+
+		eae.setEaeEvolution(evolution);
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+		
+		
+		try {
+			// When
+			service.checkDataConsistencyForEaeEvolution(eae);
+		} catch (EaeDataConsistencyServiceException e) {
+			// Then
+			assertEquals("La priorisation des développements n'est pas valide.", e.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown exception");
 	}
 }

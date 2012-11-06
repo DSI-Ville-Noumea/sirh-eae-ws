@@ -111,10 +111,10 @@ public class EaeEvolution {
     @JoinColumn(name = "ID_EAE_COM_EVALUE")
 	private EaeCommentaire commentaireEvalue;
 	
-	@OneToMany(mappedBy = "eaeEvolution", fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(mappedBy = "eaeEvolution", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeEvolutionSouhait> eaeEvolutionSouhaits = new HashSet<EaeEvolutionSouhait>();
 	
-	@OneToMany(mappedBy = "eaeEvolution", fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(mappedBy = "eaeEvolution", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeDeveloppement> eaeDeveloppements = new HashSet<EaeDeveloppement>();
 	
 	@ManyToOne

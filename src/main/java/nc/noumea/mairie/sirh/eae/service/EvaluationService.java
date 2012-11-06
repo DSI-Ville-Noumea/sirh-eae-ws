@@ -1,7 +1,9 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
@@ -329,12 +331,13 @@ public class EvaluationService implements IEvaluationService {
 			try {
 				delai = EaeDelaiEnum.valueOf(dto.getDelaiEnvisage().getCourant());
 			} catch(IllegalArgumentException ex) {
-				throw new EvaluationServiceException("La propriété 'delaiEnvisage' de l'évalolution est incorrecte.");
+				throw new EvaluationServiceException("La propriété 'delaiEnvisage' de l'évolution est incorrecte.");
 			}
 		}
 
 		evolution.setDelaiEnvisage(delai);
 		
+		// Inline properties
 		evolution.setMobiliteGeo(dto.isMobiliteGeo());
 		evolution.setMobiliteFonctionnelle(dto.isMobiliteFonctionnelle());
 		evolution.setChangementMetier(dto.isChangementMetier());
@@ -354,9 +357,13 @@ public class EvaluationService implements IEvaluationService {
 		evolution.setAutrePerspective(dto.isAutrePerspective());
 		evolution.setLibelleAutrePerspective(dto.getLibelleAutrePerspective());
 
+		// Commentaires
 		evolution.setCommentaireEvolution(updateEaeCommentaire(evolution.getCommentaireEvolution(), dto.getCommentaireEvolution()));
 		evolution.setCommentaireEvaluateur(updateEaeCommentaire(evolution.getCommentaireEvaluateur(), dto.getCommentaireEvaluateur()));
 		evolution.setCommentaireEvalue(updateEaeCommentaire(evolution.getCommentaireEvalue(), dto.getCommentaireEvalue()));
+		
+		// List of EvolutionSouhaits
+		List<Integer> eaeEvolSouhaitsProcessedIds = new ArrayList<Integer>();
 		
 		for (EaeEvolutionSouhait evolSouhait : dto.getSouhaitsSuggestions()) {
 			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait().equals(0))
@@ -366,20 +373,68 @@ public class EvaluationService implements IEvaluationService {
 					if (existingEvolSouhait.getIdEaeEvolutionSouhait() == evolSouhait.getIdEaeEvolutionSouhait()) {
 						existingEvolSouhait.setSouhait(evolSouhait.getSouhait());
 						existingEvolSouhait.setSuggestion(evolSouhait.getSuggestion());
+						eaeEvolSouhaitsProcessedIds.add(existingEvolSouhait.getIdEaeEvolutionSouhait());
 					}
 				}
 			}
 		}
 		
-		updateEaeDeveloppements(evolution, dto.getDeveloppementConnaissances(), EaeTypeDeveloppementEnum.CONNAISSANCE);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementCompetences(), EaeTypeDeveloppementEnum.COMPETENCE);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementExamensConcours(), EaeTypeDeveloppementEnum.CONCOURS);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementPersonnel(), EaeTypeDeveloppementEnum.PERSONNEL);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementComportement(), EaeTypeDeveloppementEnum.COMPORTEMENT);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementFormateur(), EaeTypeDeveloppementEnum.FORMATEUR);
+		deleteEaeEvolutionSouhaits(eaeEvolSouhaitsProcessedIds, evolution.getEaeEvolutionSouhaits());
+		
+		// List of Developpements
+		List<Integer> eaeDeveloppementProcessedIds = new ArrayList<Integer>();
+		
+		updateEaeDeveloppements(evolution, dto.getDeveloppementConnaissances(), EaeTypeDeveloppementEnum.CONNAISSANCE, eaeDeveloppementProcessedIds);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementCompetences(), EaeTypeDeveloppementEnum.COMPETENCE, eaeDeveloppementProcessedIds);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementExamensConcours(), EaeTypeDeveloppementEnum.CONCOURS, eaeDeveloppementProcessedIds);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementPersonnel(), EaeTypeDeveloppementEnum.PERSONNEL, eaeDeveloppementProcessedIds);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementComportement(), EaeTypeDeveloppementEnum.COMPORTEMENT, eaeDeveloppementProcessedIds);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementFormateur(), EaeTypeDeveloppementEnum.FORMATEUR, eaeDeveloppementProcessedIds);
+		
+		deleteEaeDeveloppements(eaeDeveloppementProcessedIds, evolution.getEaeDeveloppements());
+		
+		try {
+			eaeDataConsistencyService.checkDataConsistencyForEaeEvolution(eae);
+		} catch (EaeDataConsistencyServiceException e) {
+			throw new EvaluationServiceException(e.getMessage(), e);
+		}
 	}
 
-	protected void updateEaeDeveloppements(EaeEvolution evolution, List<EaeDeveloppement> dtoDeveloppements, EaeTypeDeveloppementEnum typeDeveloppement) {
+	protected void deleteEaeDeveloppements(List<Integer> processedIds, Set<EaeDeveloppement> eaeDeveloppements) {
+		
+		for (Iterator<EaeDeveloppement> i = eaeDeveloppements.iterator(); i.hasNext();) {
+			
+			EaeDeveloppement developpement = i.next();
+			
+			// New item in the list, dont delete it
+			if (developpement.getIdEaeDeveloppement() == null || developpement.getIdEaeDeveloppement() == 0)
+				continue;
+			
+			// If the item does not belong to the processed ids, delete it
+			if (!processedIds.contains(developpement.getIdEaeDeveloppement())) {
+				i.remove();
+			}
+		}
+	}
+	
+	protected void deleteEaeEvolutionSouhaits(List<Integer> processedIds, Set<EaeEvolutionSouhait> eaeEvolutionSouhaits) {
+		
+		for (Iterator<EaeEvolutionSouhait> i = eaeEvolutionSouhaits.iterator(); i.hasNext();) {
+			
+			EaeEvolutionSouhait evolSouhait = i.next();
+			
+			// New item in the list, dont delete it
+			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait() == 0)
+				continue;
+			
+			// If the item does not belong to the processed ids, delete it
+			if (!processedIds.contains(evolSouhait.getIdEaeEvolutionSouhait())) {
+				i.remove();
+			}
+		}
+	}
+	
+	protected void updateEaeDeveloppements(EaeEvolution evolution, List<EaeDeveloppement> dtoDeveloppements, EaeTypeDeveloppementEnum typeDeveloppement, List<Integer> processedIds) {
 		
 		for (EaeDeveloppement dev : dtoDeveloppements) {
 			if (dev.getIdEaeDeveloppement() == null || dev.getIdEaeDeveloppement().equals(0)) {
@@ -392,6 +447,7 @@ public class EvaluationService implements IEvaluationService {
 						existingDev.setLibelle(dev.getLibelle());
 						existingDev.setEcheance(dev.getEcheance());
 						existingDev.setPriorisation(dev.getPriorisation());
+						processedIds.add(existingDev.getIdEaeDeveloppement());
 					}
 				}
 			}
