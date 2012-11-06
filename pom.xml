@@ -5,7 +5,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-eae-ws</artifactId>
 	<packaging>war</packaging>
-	<version>0.1.6-SNAPSHOT</version>
+	<version>0.1.6</version>
 	<name>sirh-eae-ws</name>
 	<properties>
 		<aspectj.version>1.7.0</aspectj.version>
