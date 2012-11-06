@@ -48,7 +48,7 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 			return agentIds;
 		
 		TypedQuery<Integer> eaeQuery = eaeEntityManager.createQuery(
-				"select e.idEae from Eae e where e.idAgent in (:idAgents)",
+				"select e.idEae from Eae e where e.eaeEvalue.idAgent in (:idAgents)",
 				Integer.class);
 		eaeQuery.setParameter("idAgents", agentIds);
 		List<Integer> result = eaeQuery.getResultList();
