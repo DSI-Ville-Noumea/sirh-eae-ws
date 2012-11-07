@@ -29,7 +29,7 @@ grant R_EAE_READ to EAE_READ;
 -- Creation des tablespaces : finaliser les nomns de fichiers par le SIE
 
 -- petit, prevoir des extends de 20 Mo, initial 20 Mo
-CREATE TABLESPACE TS_SIRHR_PARAM DATAFILE
+CREATE TABLESPACE TS_EAE_PARAM DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 20M AUTOEXTEND ON NEXT 20M MAXSIZE 100M
 LOGGING
@@ -42,7 +42,7 @@ FLASHBACK OFF;
 
 
 -- prevoir des extends de 100 Mo, initial 50 Mo
-CREATE TABLESPACE TS_SIRHR_DATA DATAFILE
+CREATE TABLESPACE TS_EAE_DATA DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 50M AUTOEXTEND ON NEXT 100M MAXSIZE 2000M
 LOGGING
@@ -55,7 +55,7 @@ FLASHBACK OFF;
 
 
 -- moyen, prevoir des extends de 100 Mo, initial 20 Mo
-CREATE TABLESPACE TS_SIRHR_INDEX DATAFILE
+CREATE TABLESPACE TS_EAE_INDEX DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 20M AUTOEXTEND ON NEXT 100M MAXSIZE 2000M
 LOGGING
@@ -68,7 +68,7 @@ FLASHBACK OFF;
 
 
 -- le plus petit possible, pas d'extend, bloque
-CREATE TABLESPACE TS_SIRHR_DEFAULT DATAFILE
+CREATE TABLESPACE TS_EAE_DEFAULT DATAFILE
 'E:\oradata\ORADEV\dbfusers\ORADEV_ts_dev.dbf'
 SIZE 10M AUTOEXTEND OFF MAXSIZE 2000M
 LOGGING
@@ -79,11 +79,11 @@ BLOCKSIZE 8K
 SEGMENT SPACE MANAGEMENT AUTO
 FLASHBACK OFF;
 
-alter tablespace TS_DEFAULT read only;
+alter tablespace TS_EAE_DEFAULT read only;
 
 
 -- on redirige par defaut sur le tablespace USERS pour flagger les mises en recette sauvages...
-alter user EAE_ADM default tablespace TS_DEFAULT;
+alter user EAE_ADM default tablespace TS_EAE_DEFAULT;
 
 -- fin de la section admin bdd
 
@@ -116,7 +116,7 @@ create table EAE_CAMPAGNE_EAE
    constraint PK_CAMPAGNE_EAE
    primary key (ID_CAMPAGNE_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_CAMPAGNE_EAE for EAE_CAMPAGNE_EAE;
 grant select, insert, update, delete on EAE_CAMPAGNE_EAE to R_EAE_USR;
@@ -154,7 +154,7 @@ create table EAE_CAMPAGNE_ACTION
          foreign key (ID_CAMPAGNE_EAE)
          references EAE_CAMPAGNE_EAE(ID_CAMPAGNE_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_CAMPAGNE_ACTION for EAE_CAMPAGNE_ACTION;
 grant select, insert, update, delete on EAE_CAMPAGNE_ACTION to R_EAE_USR;
@@ -184,7 +184,7 @@ create table EAE_CAMPAGNE_ACTEURS
          foreign key (ID_CAMPAGNE_ACTION)
          references EAE_CAMPAGNE_ACTION(ID_CAMPAGNE_ACTION)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_CAMPAGNE_ACTEURS for EAE_CAMPAGNE_ACTEURS;
 grant select, insert, update, delete on EAE_CAMPAGNE_ACTEURS to R_EAE_USR;
@@ -231,7 +231,7 @@ create table EAE
          foreign key (ID_CAMPAGNE_EAE)
          references EAE_CAMPAGNE_EAE(ID_CAMPAGNE_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE for EAE;
 grant select, insert, update, delete on EAE to R_EAE_USR;
@@ -268,7 +268,7 @@ create table EAE_EVALUATEUR
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_EVALUATEUR for EAE_EVALUATEUR;
 grant select, insert, update, delete on EAE_EVALUATEUR to R_EAE_USR;
@@ -316,7 +316,7 @@ create table EAE_EVALUE
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_EVALUE for EAE_EVALUE;
 grant select, insert, update, delete on EAE_EVALUE to R_EAE_USR;
@@ -361,7 +361,7 @@ create table EAE_FICHE_POSTE
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_FICHE_POSTE for EAE_FICHE_POSTE;
 grant select, insert, update, delete on EAE_FICHE_POSTE to R_EAE_USR;
@@ -395,7 +395,7 @@ create table EAE_FDP_ACTIVITE
          foreign key (ID_EAE_FICHE_POSTE)
          references EAE_FICHE_POSTE(ID_EAE_FICHE_POSTE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_FDP_ACTIVITE for EAE_FDP_ACTIVITE;
 grant select, insert, update, delete on EAE_FDP_ACTIVITE to R_EAE_USR;
@@ -427,7 +427,7 @@ create table EAE_DIPLOME
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_DIPLOME for EAE_DIPLOME;
 grant select, insert, update, delete on EAE_DIPLOME to R_EAE_USR;
@@ -462,7 +462,7 @@ create table EAE_PARCOURS_PRO
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_PARCOURS_PRO for EAE_PARCOURS_PRO;
 grant select, insert, update, delete on EAE_PARCOURS_PRO to R_EAE_USR;
@@ -498,7 +498,7 @@ create table EAE_FORMATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_FORMATION for EAE_FORMATION;
 grant select, insert, update, delete on EAE_FORMATION to R_EAE_USR;
@@ -528,7 +528,7 @@ create table EAE_TYPE_OBJECTIF
    constraint PK_EAE_TYPE_OBJECTIF
    primary key (ID_EAE_TYPE_RESULTAT)
 )
-TABLESPACE TS_SIRHR_PARAM;
+TABLESPACE TS_EAE_PARAM;
 
 create public synonym EAE_TYPE_OBJECTIF for EAE_TYPE_OBJECTIF;
 grant select, insert, update, delete on EAE_TYPE_OBJECTIF to R_EAE_USR;
@@ -565,7 +565,7 @@ create table EAE_RESULTAT
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_RESULTAT for EAE_RESULTAT;
 grant select, insert, update, delete on EAE_RESULTAT to R_EAE_USR;
@@ -605,7 +605,7 @@ create table EAE_PLAN_ACTION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_PLAN_ACTION for EAE_PLAN_ACTION;
 grant select, insert, update, delete on EAE_PLAN_ACTION to R_EAE_USR;
@@ -636,7 +636,7 @@ create table EAE_NIVEAU
    constraint PK_EAE_NIVEAU_EAE
    primary key (ID_EAE_NIVEAU_EAE)
 )
-TABLESPACE TS_SIRHR_PARAM;
+TABLESPACE TS_EAE_PARAM;
 
 create public synonym EAE_NIVEAU for EAE_NIVEAU;
 grant select, insert, update, delete on EAE_NIVEAU to R_EAE_USR;
@@ -679,7 +679,7 @@ create table EAE_EVALUATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_EVALUATION for EAE_EVALUATION;
 grant select, insert, update, delete on EAE_EVALUATION to R_EAE_USR;
@@ -710,7 +710,7 @@ create table EAE_DOCUMENT
          foreign key (ID_CAMPAGNE_EAE)
          references EAE_CAMPAGNE_EAE(ID_CAMPAGNE_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_DOCUMENT for EAE_DOCUMENT;
 grant select, insert, update, delete on EAE_DOCUMENT to R_EAE_USR;
@@ -743,7 +743,7 @@ create table EAE_APPRECIATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_APPRECIATION for EAE_APPRECIATION;
 grant select, insert, update, delete on EAE_APPRECIATION to R_EAE_USR;
@@ -780,7 +780,7 @@ create table EAE_AUTO_EVALUATION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_AUTO_EVALUATION for EAE_AUTO_EVALUATION;
 grant select, insert, update, delete on EAE_AUTO_EVALUATION to R_EAE_USR;
@@ -830,7 +830,7 @@ create table EAE_EVOLUTION
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_EVOLUTION for EAE_EVOLUTION;
 grant select, insert, update, delete on EAE_EVOLUTION to R_EAE_USR;
@@ -863,7 +863,7 @@ create table EAE_EVOL_SOUHAIT
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_EVOL_SOUHAIT for EAE_EVOL_SOUHAIT;
 grant select, insert, update, delete on EAE_EVOL_SOUHAIT to R_EAE_USR;
@@ -890,7 +890,7 @@ create table EAE_TYPE_DEVELOPPEMENT
    constraint PK_EAE_TYPE_DEVELOPPEMENT
    primary key (ID_EAE_TYPE_DEVELOPPEMENT)
 )
-TABLESPACE TS_SIRHR_PARAM;
+TABLESPACE TS_EAE_PARAM;
 
 create public synonym EAE_TYPE_DEVELOPPEMENT for EAE_TYPE_DEVELOPPEMENT;
 grant select, insert, update, delete on EAE_TYPE_DEVELOPPEMENT to R_EAE_USR;
@@ -927,7 +927,7 @@ create table EAE_DEVELOPPEMENT
          foreign key (ID_EAE)
          references EAE(ID_EAE)
 )
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_DEVELOPPEMENT for EAE_DEVELOPPEMENT;
 grant select, insert, update, delete on EAE_DEVELOPPEMENT to R_EAE_USR;

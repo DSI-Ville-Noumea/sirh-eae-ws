@@ -12,5 +12,5 @@ grant R_SIRH_WS_RO to SIRH_WS_RO;
 grant R_SIRH_USR to SIRH_USR;
 
 
-alter user SIRH_WS_RO default tablespace TS_DEFAULT;
+alter user SIRH_WS_RO default tablespace TS_EAE_DEFAULT;
 

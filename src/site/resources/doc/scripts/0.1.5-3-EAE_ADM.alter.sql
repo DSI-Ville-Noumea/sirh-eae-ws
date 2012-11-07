@@ -29,5 +29,5 @@ alter table EAE_EVALUATION modify (VERSION number default 0 not null);
 alter table EAE_APPRECIATION add (TYPE_APPRECIATION varchar2(2) not null);
 alter table EAE_APPRECIATION add (VERSION number default 0 not null);
 alter table EAE_APPRECIATION modify (NUMERO number(2,0) not null);
-alter table EAE_APPRECIATION add constraint EAE_UNIQUE_APPRECIATION unique(ID_EAE,NUMERO,TYPE_APPRECIATION) USING INDEX TABLESPACE TS_SIRHR_INDEX;
+alter table EAE_APPRECIATION add constraint EAE_UNIQUE_APPRECIATION unique(ID_EAE,NUMERO,TYPE_APPRECIATION) USING INDEX TABLESPACE TS_EAE_INDEX;
 drop index EAE_APPRECIATION_index;
