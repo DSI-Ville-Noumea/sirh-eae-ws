@@ -13,11 +13,7 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath*:META-INF/spring/applicationContext*.xml</param-value>
 	</context-param>
-	<context-param>
-		<param-name>VERSION</param-name>
-		<param-value>0.1.6</param-value>
-	</context-param>
-
+	
 	<filter>
 		<filter-name>CharacterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

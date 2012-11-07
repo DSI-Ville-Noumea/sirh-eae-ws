@@ -301,3 +301,4 @@ entity jpa --class ~.sirh.eae.domain.EaeTypeDeveloppement --persistenceUnit eaeP
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-06 08:32:07
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-06 13:39:53
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-06 14:21:11
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-07 08:56:51
