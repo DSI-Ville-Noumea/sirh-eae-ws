@@ -55,6 +55,9 @@ public class EvaluationService implements IEvaluationService {
 	@Override
 	public EaeIdentificationDto getEaeIdentification(Eae eae) {
 		
+		if (eae == null)
+			return null;
+		
 		for (EaeEvaluateur eval : eae.getEaeEvaluateurs()) {
 			agentService.fillEaeEvaluateurWithAgent(eval);
 		}
@@ -74,6 +77,9 @@ public class EvaluationService implements IEvaluationService {
 	@Override
 	public List<EaeFichePosteDto> getEaeFichePoste(Eae eae) {
 		
+		if (eae == null)
+			return null;
+		
 		List<EaeFichePosteDto> result = new ArrayList<EaeFichePosteDto>();
 		
 		for (EaeFichePoste fdp : eae.getEaeFichePostes()) {
@@ -86,6 +92,10 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	public EaeResultatsDto getEaeResultats(Eae eae) {
+		
+		if (eae == null)
+			return null;
+		
 		return new EaeResultatsDto(eae);
 	}
 
@@ -135,6 +145,10 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	public EaeAppreciationsDto getEaeAppreciations(Eae eae) {
+		
+		if (eae == null)
+			return null;
+		
 		return new EaeAppreciationsDto(eae);
 	}
 
@@ -165,6 +179,10 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	public EaeEvaluationDto getEaeEvaluation(Eae eae) {
+		
+		if (eae == null)
+			return null;
+		
 		return new EaeEvaluationDto(eae.getEaeEvaluation());
 	}
 
@@ -249,6 +267,10 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	public EaeAutoEvaluationDto getEaeAutoEvaluation(Eae eae) {
+		
+		if (eae == null)
+			return null;
+		
 		return new EaeAutoEvaluationDto(eae);
 	}
 
@@ -270,6 +292,10 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	public EaePlanActionDto getEaePlanAction(Eae eae) {
+		
+		if (eae == null)
+			return null;
+		
 		return new EaePlanActionDto(eae);
 	}
 
@@ -311,6 +337,10 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	public EaeEvolutionDto getEaeEvolution(Eae eae) {
+		
+		if (eae == null)
+			return null;
+		
 		return new EaeEvolutionDto(eae);
 	}
 
@@ -367,7 +397,10 @@ public class EvaluationService implements IEvaluationService {
 		
 		for (EaeEvolutionSouhait evolSouhait : dto.getSouhaitsSuggestions()) {
 			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait().equals(0))
+			{	
 				evolution.getEaeEvolutionSouhaits().add(evolSouhait);
+				evolSouhait.setEaeEvolution(evolution);
+			}
 			else {
 				for (EaeEvolutionSouhait existingEvolSouhait : evolution.getEaeEvolutionSouhaits()) {
 					if (existingEvolSouhait.getIdEaeEvolutionSouhait() == evolSouhait.getIdEaeEvolutionSouhait()) {
@@ -438,6 +471,7 @@ public class EvaluationService implements IEvaluationService {
 		
 		for (EaeDeveloppement dev : dtoDeveloppements) {
 			if (dev.getIdEaeDeveloppement() == null || dev.getIdEaeDeveloppement().equals(0)) {
+				dev.setEaeEvolution(evolution);
 				dev.setTypeDeveloppement(typeDeveloppement);
 				evolution.getEaeDeveloppements().add(dev);
 			}

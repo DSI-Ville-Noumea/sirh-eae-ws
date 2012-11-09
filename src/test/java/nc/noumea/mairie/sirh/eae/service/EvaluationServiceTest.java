@@ -1154,12 +1154,14 @@ public class EvaluationServiceTest {
 		EaeEvolution evo = eae.getEaeEvolution();
 		
 		assertEquals(1, evo.getEaeEvolutionSouhaits().size());
+		assertEquals(evo, evo.getEaeEvolutionSouhaits().iterator().next().getEaeEvolution());
 		assertEquals("le souhait", evo.getEaeEvolutionSouhaits().iterator().next().getSouhait());
 		assertEquals("la suggestion", evo.getEaeEvolutionSouhaits().iterator().next().getSuggestion());
 		
 		assertEquals(6, evo.getEaeDeveloppements().size());
 		
 		for (EaeDeveloppement dev : evo.getEaeDeveloppements()) {
+			assertEquals(evo, dev.getEaeEvolution());
 			if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.CONNAISSANCE)
 				assertEquals("libelle CONNAISSANCE", dev.getLibelle());
 			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.COMPETENCE)
