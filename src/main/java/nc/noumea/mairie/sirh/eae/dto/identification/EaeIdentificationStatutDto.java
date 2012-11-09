@@ -7,7 +7,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 
 public class EaeIdentificationStatutDto {
 	
-	private EaeAgentStatutEnum statut;	
+	private EaeAgentStatutEnum statut;
 	private String cadre;
 	private String grade;
 	private String echelon;
