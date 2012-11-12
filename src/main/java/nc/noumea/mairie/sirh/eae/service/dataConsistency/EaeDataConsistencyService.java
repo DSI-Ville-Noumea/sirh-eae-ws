@@ -16,6 +16,9 @@ public class EaeDataConsistencyService implements IEaeDataConsistencyService {
 		
 		EaeEvaluation evaluation = eae.getEaeEvaluation();
 		
+		if (evaluation.getAvisRevalorisation() == null && evaluation.getAvisChangementClasse() == null && evaluation.getPropositionAvancement() == null)
+			throw new EaeDataConsistencyServiceException("L'une des trois options suivantes doit être renseignée: 'Avis de revalorisation/reclassification (contractuels)', 'Avis de changement de classe' ou 'Avancement différencié'.");
+		
 		if (evaluation.getPropositionAvancement() != null && evaluation.getPropositionAvancement() != EaeAvancementEnum.MOY
 				&& (evaluation.getCommentaireAvctEvaluateur() == null || evaluation.getCommentaireAvctEvaluateur().getText() == null || evaluation.getCommentaireAvctEvaluateur().getText() == ""))
 			throw new EaeDataConsistencyServiceException("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de MOYEN.");

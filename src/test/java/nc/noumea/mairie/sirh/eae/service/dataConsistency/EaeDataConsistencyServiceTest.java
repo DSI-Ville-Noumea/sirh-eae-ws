@@ -86,6 +86,28 @@ public class EaeDataConsistencyServiceTest {
 	}
 	
 	@Test
+	public void testCheckDataConsistencyForEaeEvaluationEverythingEmpty_throwException() {
+		
+		// Given
+		Eae eae = new Eae();
+		EaeEvaluation eval = new EaeEvaluation();
+		eae.setEaeEvaluation(eval);
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+		
+		try {
+			// When
+			service.checkDataConsistencyForEaeEvaluation(eae);
+		}
+		catch (EaeDataConsistencyServiceException ex) {
+			assertEquals("L'une des trois options suivantes doit être renseignée: 'Avis de revalorisation/reclassification (contractuels)', 'Avis de changement de classe' ou 'Avancement différencié'.", ex.getMessage());
+			return;
+		}
+		
+		fail("Shoud have thrown an exception");
+	}
+	
+	@Test
 	public void testCheckDataConsistencyForEaeEvolution_validDeveloppementsPriorisation_doNothing() throws EaeDataConsistencyServiceException {
 		
 		// Given
