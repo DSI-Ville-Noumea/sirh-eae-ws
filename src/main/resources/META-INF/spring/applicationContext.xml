@@ -43,10 +43,10 @@
 			type="annotation" />
 	</context:component-scan>
 
-	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/SIRH_EAE_WS"
+	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/EAE_WS_DS1"
 		resource-ref="true" />
 
-	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/SIRH"
+	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/EAE_WS_DS2"
 		resource-ref="true" />
 
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"

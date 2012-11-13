@@ -28,12 +28,12 @@
 <!-- 		maxWait="10000" initialSize="1" username="EAE_NICO" password="EAE_NICO" driverClassName="oracle.jdbc.driver.OracleDriver"  -->
 <!-- 		url="***REMOVED***" poolPreparedStatements="true" /> -->
 
-	<Resource name="jdbc/SIRH_EAE_WS" auth="Container" type="javax.sql.DataSource" 
+	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource" 
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" 
 		maxWait="10000" initialSize="1" username="EAE" password="EAE" driverClassName="oracle.jdbc.driver.OracleDriver" 
 		url="***REMOVED***" poolPreparedStatements="true" />
 		
-	<Resource name="jdbc/SIRH" auth="Container" type="javax.sql.DataSource"
+	<Resource name="jdbc/EAE_WS_DS2" auth="Container" type="javax.sql.DataSource"
 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory"
 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
 		validationQuery="select 1 from sysibm.sysdummy1" validationInterval="30000"
