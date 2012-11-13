@@ -303,3 +303,25 @@ entity jpa --class ~.sirh.eae.domain.EaeTypeDeveloppement --persistenceUnit eaeP
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-06 14:21:11
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-07 08:56:51
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-07 16:13:10
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-08 10:04:28
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-08 16:11:51
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-09 10:57:09
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-09 16:08:55
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-12 08:47:09
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-12 10:51:54
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-12 11:24:06
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-12 15:07:53
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-12 15:08:58
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-12 15:57:11
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-13 08:38:33
+osgi start --url http://spring-roo-addons.googlecode.com/files/net.tzolov.httprepresentations.roo.addon-2.0.0.jar
+osgi ps
+help
+// [failed] http resource representation setup
+// [failed] http resource representation setup
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-13 11:09:41
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-13 11:21:00
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-13 11:26:39
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-13 11:31:38
+// [failed] http resource representation setup
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-13 13:52:42

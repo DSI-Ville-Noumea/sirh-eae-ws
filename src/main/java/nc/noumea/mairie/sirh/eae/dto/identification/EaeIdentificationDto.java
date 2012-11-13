@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
@@ -28,6 +30,7 @@ import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 @RooJson
+@XmlRootElement
 public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<EaeIdentificationDto> {
 
 	private int idEae;
