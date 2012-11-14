@@ -79,4 +79,12 @@
 	  <constructor-arg value="http://ws-qual.sirh.site-mairie.noumea.nc/eaes/listEaesByCampagne"/>
 	</bean>
 
+	<bean id="reportingBaseUrl" class="java.lang.String">
+		<constructor-arg value="http://172.16.24.14:8085/birt/"/>
+	</bean>
+	
+	<bean id="remoteVirtualFolderPath" class="java.lang.String">
+		<constructor-arg value="c:\Alphalog\Mairie\sirh-eae-ws\"/>
+	</bean>
+	
 </beans>

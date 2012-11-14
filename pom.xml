@@ -343,6 +343,16 @@
            	<artifactId>spring-oxm</artifactId>
            	<version>${spring.version}</version>
        	</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-vfs2</artifactId>
+			<version>2.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>sirh-eae-ws##${maven.build.timestamp}-${project.version}</finalName>
@@ -607,26 +617,6 @@
 					</webAppConfig>
 				</configuration>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.cxf</groupId> -->
-<!-- 				<artifactId>cxf-java2ws-plugin</artifactId> -->
-<!-- 				<version>${cxf.version}</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>generate-test-sources</id> -->
-<!-- 						<phase>generate-test-sources</phase> -->
-<!-- 						<configuration> -->
-<!-- 							<className>nc.noumea.mairie.sirh.eae.web.soap.EvaluationWebService</className> -->
-<!-- 							<genWsdl>true</genWsdl> -->
-<!-- 							<verbose>true</verbose> -->
-<!-- 							<soap12>true</soap12> -->
-<!-- 						</configuration> -->
-<!-- 						<goals> -->
-<!-- 							<goal>java2ws</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
 		</plugins>
 	</build>
 	<description>SIRH-EAE-WS is a web application responsible for exposing REST web services allowing consumers to perform CRUD operations on the SIRH EAE module.</description>

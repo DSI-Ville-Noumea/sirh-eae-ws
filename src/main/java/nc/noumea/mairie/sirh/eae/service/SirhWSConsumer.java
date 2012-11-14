@@ -19,7 +19,7 @@ import flexjson.JSONDeserializer;
 public class SirhWSConsumer implements ISirhWsConsumer {
 
 	@Autowired
-	@Qualifier(value = "sirhWsEaeUrl")
+	@Qualifier("sirhWsEaeUrl")
 	private String sirhWsEaeUrl;
 	
 	public String getSirhWsEaeUrl() {

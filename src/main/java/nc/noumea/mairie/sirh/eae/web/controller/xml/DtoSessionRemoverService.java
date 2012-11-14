@@ -1,4 +1,4 @@
-package nc.noumea.mairie.sirh.eae.web.soap;
+package nc.noumea.mairie.sirh.eae.web.controller.xml;
 
 import org.springframework.stereotype.Service;
 

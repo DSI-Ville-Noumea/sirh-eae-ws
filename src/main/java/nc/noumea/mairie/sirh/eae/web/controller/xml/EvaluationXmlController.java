@@ -1,11 +1,10 @@
-package nc.noumea.mairie.sirh.eae.web.controller;
+package nc.noumea.mairie.sirh.eae.web.controller.xml;
 
 import javax.jws.WebParam;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
-import nc.noumea.mairie.sirh.eae.web.soap.DtoSessionRemoverService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
