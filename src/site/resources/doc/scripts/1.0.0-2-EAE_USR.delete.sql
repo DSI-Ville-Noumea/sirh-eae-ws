@@ -1,3 +1,7 @@
+-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-- connecte en EAE_USR
+-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 delete from EAE_APPRECIATION;
 delete from EAE_AUTO_EVALUATION;
 delete from EAE_EVALUATION;
