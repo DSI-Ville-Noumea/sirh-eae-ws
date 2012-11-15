@@ -23,13 +23,11 @@
 	<!-- <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" 
 		/> -->
 
-	<!-- <Resource name="jdbc/SIRH_EAE_WS" auth="Container" type="javax.sql.DataSource" -->
-	<!-- maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 
-		from dual" -->
-	<!-- maxWait="10000" initialSize="1" username="EAE_NICO" password="EAE_NICO" 
-		driverClassName="oracle.jdbc.driver.OracleDriver" -->
-	<!-- url="***REMOVED***" poolPreparedStatements="true" 
-		/> -->
+<!-- 	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource" -->
+<!-- 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" -->
+<!-- 		maxWait="10000" initialSize="1" username="EAE_NICO" password="EAE_NICO" -->
+<!-- 		driverClassName="oracle.jdbc.driver.OracleDriver" url="***REMOVED***" -->
+<!-- 		poolPreparedStatements="true" /> -->
 
 	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual"
@@ -47,6 +45,13 @@
 		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea" />
 
-	<Resource name="jdbc/REPORTINGURL" description="Base url for reporting engine" type="java.lang.String"
-		override="true" value="http://172.16.24.14:8085/birt/" />
+	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
+		value="http://ws-qual.sirh.site-mairie.noumea.nc/eaes/listEaesByCampagne" />
+
+	<Environment name="EAE_TARGET_REPORT_PATH" type="java.lang.String"
+		value="c:\Alphalog\Mairie\sirh-eae-ws\" />
+
+	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
+		value="http://172.16.24.14:8085/birt/" />
+
 </Context>

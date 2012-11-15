@@ -75,16 +75,10 @@
 		<property name="dataSource" ref="sirhDb400DataSource" />
 	</bean>
 	
-	<bean id="sirhWsEaeUrl" class="java.lang.String">
-	  <constructor-arg value="http://ws-qual.sirh.site-mairie.noumea.nc/eaes/listEaesByCampagne"/>
-	</bean>
-
-	<bean id="reportingBaseUrl" class="java.lang.String">
-		<constructor-arg value="http://172.16.24.14:8085/birt/"/>
-	</bean>
+	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_BASE_URL" expected-type="java.lang.String"/>
 	
-	<bean id="remoteVirtualFolderPath" class="java.lang.String">
-		<constructor-arg value="c:\Alphalog\Mairie\sirh-eae-ws\"/>
-	</bean>
+	<jee:jndi-lookup id="targetReportPath" jndi-name="EAE_TARGET_REPORT_PATH" expected-type="java.lang.String"/>
+	
+	<jee:jndi-lookup id="reportingBaseUrl" jndi-name="REPORTING_BASE_URL" expected-type="java.lang.String"/>
 	
 </beans>

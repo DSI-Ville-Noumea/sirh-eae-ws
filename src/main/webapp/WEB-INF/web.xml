@@ -3,17 +3,15 @@
 	version="2.5"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-
 	<display-name>sirh-eae-ws</display-name>
 
-	<description>Roo generated sirh-eae-ws application</description>
-
+	<description>sirh-eae-ws application</description>
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath*:META-INF/spring/applicationContext*.xml</param-value>
 	</context-param>
-	
+		
 	<filter>
 		<filter-name>CharacterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

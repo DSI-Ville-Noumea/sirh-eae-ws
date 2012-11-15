@@ -26,7 +26,7 @@ public class EaeReportingService implements IEaeReportingService {
 	private String reportingBaseUrl;
 	
 	@Autowired
-	@Qualifier("remoteVirtualFolderPath")
+	@Qualifier("targetReportPath")
 	private String remoteVirtualFolderPath;
 	
 	private static final String REPORTING_PAGE = "frameset";
@@ -47,21 +47,27 @@ public class EaeReportingService implements IEaeReportingService {
 		
 		byte[] fileAsBytes = getEaeReportAsByteArray(idEae, "PDF");
 		
+		saveFileToRemoteFileSystem(fileAsBytes, "filename.pdf");
+	}
+
+	@Override
+	public void saveFileToRemoteFileSystem(byte[] fileAsBytes, String filename) throws EaeReportingServiceException {
+
 		BufferedOutputStream bos = null;
 		FileObject pdfFile = null;
 		
 		try {
 			
 			FileSystemManager fsManager = VFS.getManager();
-			pdfFile = fsManager.resolveFile(String.format("%s%s", remoteVirtualFolderPath, "fileName.pdf"));
+			pdfFile = fsManager.resolveFile(String.format("%s%s", remoteVirtualFolderPath, filename));
 			bos = new BufferedOutputStream(pdfFile.getContent().getOutputStream());
 			IOUtils.write(fileAsBytes, bos);
 			
 		} catch (Exception e) {
 			throw new EaeReportingServiceException(
 					String.format(
-							"An error occured while writing the report file to the following path '%s' (eaeId '%s' and format 'PDF').",
-							reportingBaseUrl, idEae));
+							"An error occured while writing the report file to the following path '%s'.",
+							reportingBaseUrl));
 		} finally {
 			
 			IOUtils.closeQuietly(bos);
@@ -75,7 +81,7 @@ public class EaeReportingService implements IEaeReportingService {
 			}
 		}
 	}
-
+	
 	@Override
 	public byte[] getEaeReportAsByteArray(int idEae, String format) throws EaeReportingServiceException {
 		
@@ -124,4 +130,5 @@ public class EaeReportingService implements IEaeReportingService {
 		
 		return reponseData;
 	}
+
 }
