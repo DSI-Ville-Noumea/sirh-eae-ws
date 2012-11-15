@@ -29,9 +29,10 @@ public class EaeReportingService implements IEaeReportingService {
 	@Qualifier("targetReportPath")
 	private String remoteVirtualFolderPath;
 	
-	private static final String REPORTING_PAGE = "frameset";
-	private static final String REPORT_URL_REPORT_PARAM = "__report";
-	private static final String REPORT_URL_FORMAT_PARAM = "__format";
+	private static final String REPORT_PAGE = "frameset";
+	private static final String REPORT_SERVER_PATH = "sirh-eae-reports/";
+	private static final String PARAM_REPORT = "__report";
+	private static final String PARAM_FORMAT = "__format";
 	
 	public EaeReportingService() {
 		
@@ -95,9 +96,9 @@ public class EaeReportingService implements IEaeReportingService {
 		Client client = Client.create();
 
 		WebResource webResource = client
-				.resource(reportingBaseUrl + REPORTING_PAGE)
-				.queryParam(REPORT_URL_REPORT_PARAM, "eae.rptdesign")
-				.queryParam(REPORT_URL_FORMAT_PARAM, format)
+				.resource(reportingBaseUrl + REPORT_PAGE)
+				.queryParam(PARAM_REPORT, REPORT_SERVER_PATH + "eae.rptdesign")
+				.queryParam(PARAM_FORMAT, format)
 				.queryParam("idEae", String.valueOf(idEae));
 
 		ClientResponse response = webResource.get(ClientResponse.class);

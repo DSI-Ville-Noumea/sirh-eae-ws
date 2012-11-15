@@ -30,6 +30,7 @@
         	<item name="Datasource dans Tomcat" href="exploitation/datasourceTomcat.html"/>
         	<item name="Fichier context.xml" href="exploitation/context.html"/>
 			<item name="Base de données" href="exploitation/baseDeDonnees.html"/>
+			<item name="Intégration avec BIRT" href="exploitation/IntegrationBirt.html"/>
         </menu>
 		<menu name="Développement">
         	<item name="Application" href="developpement/configuration.html"/>
