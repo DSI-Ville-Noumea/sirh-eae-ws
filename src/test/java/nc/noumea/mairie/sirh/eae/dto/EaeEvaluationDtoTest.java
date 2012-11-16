@@ -151,7 +151,7 @@ public class EaeEvaluationDtoTest {
 		com4.setText("com4");
 		dto.setCommentaireEvalue(com4);
 		
-		String expectedJson = "{\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"2\",\"liste\":[{\"code\":\"2\",\"valeur\":\"Satisfaisant\"},{\"code\":\"4\",\"valeur\":\"Cool\"}]},\"noteAnnee\":12,\"noteAnneeN1\":13,\"noteAnneeN2\":14,\"noteAnneeN3\":15,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Minimale\"},{\"code\":\"MOY\",\"valeur\":\"Moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Maximale\"}]}}";
+		String expectedJson = "{\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"2\",\"liste\":[{\"code\":\"2\",\"valeur\":\"Satisfaisant\"},{\"code\":\"4\",\"valeur\":\"Cool\"}]},\"noteAnnee\":12,\"noteAnneeN1\":13,\"noteAnneeN2\":14,\"noteAnneeN3\":15,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]}}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -163,7 +163,7 @@ public class EaeEvaluationDtoTest {
 	@Test
 	public void testDeserializeFromNullObjectJSON() {
 		// Given
-		String json = "{\"avisChangementClasse\":null,\"avisRevalorisation\":null,\"commentaireAvctEvaluateur\":null,\"commentaireAvctEvalue\":null,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"dureeEntretien\":null,\"idEae\":194,\"niveau\":{\"courant\":null,\"liste\":[{\"code\":\"1\",\"valeur\":\"EXCELLENT\"},{\"code\":\"2\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"3\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"4\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnnee\":null,\"noteAnneeN1\":null,\"noteAnneeN2\":null,\"noteAnneeN3\":null,\"propositionAvancement\":{\"courant\":null,\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Minimale\"},{\"code\":\"MOY\",\"valeur\":\"Moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Maximale\"}]}}";
+		String json = "{\"avisChangementClasse\":null,\"avisRevalorisation\":null,\"commentaireAvctEvaluateur\":null,\"commentaireAvctEvalue\":null,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"dureeEntretien\":null,\"idEae\":194,\"niveau\":{\"courant\":null,\"liste\":[{\"code\":\"1\",\"valeur\":\"EXCELLENT\"},{\"code\":\"2\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"3\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"4\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnnee\":null,\"noteAnneeN1\":null,\"noteAnneeN2\":null,\"noteAnneeN3\":null,\"propositionAvancement\":{\"courant\":null,\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]}}";
 	
 		// When
 		EaeEvaluationDto dto = new EaeEvaluationDto().deserializeFromJSON(json);

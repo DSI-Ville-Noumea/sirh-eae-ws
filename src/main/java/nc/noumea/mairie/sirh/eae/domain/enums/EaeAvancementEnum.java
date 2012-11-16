@@ -2,9 +2,9 @@ package nc.noumea.mairie.sirh.eae.domain.enums;
 
 public enum EaeAvancementEnum {
 	
-	MINI("Minimale"),
-	MOY("Moyenne"),
-	MAXI("Maximale");
+	MINI("Durée minimale"),
+	MOY("Durée moyenne"),
+	MAXI("Durée maximale");
 	
 	private String typeAvancement;
 	

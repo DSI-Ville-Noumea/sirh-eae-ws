@@ -37,6 +37,6 @@ public class EaeFdpCompetenceTest {
 		c.setLibelle("un libellé");
 		
 		// Then
-		assertEquals("Compétence professionnelle - un libellé", c.getFullLabel());
+		assertEquals("Comportement professionnel - un libellé", c.getFullLabel());
 	}
 }

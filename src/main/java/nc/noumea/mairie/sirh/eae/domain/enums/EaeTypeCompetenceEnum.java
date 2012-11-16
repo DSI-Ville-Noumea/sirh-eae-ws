@@ -4,7 +4,7 @@ public enum EaeTypeCompetenceEnum {
 
 	SA("Savoir"),
 	SF("Savoir faire"),
-	CP("Compétence professionnelle");
+	CP("Comportement professionnel");
 	
 	private String type;
 	

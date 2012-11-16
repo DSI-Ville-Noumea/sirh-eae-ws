@@ -830,7 +830,7 @@ public class EvaluationServiceTest {
 		service.calculateAvisShd(eae);
 		
 		// Then
-		assertEquals("Minimale", evaluation.getAvisShd());
+		assertEquals("Durée minimale", evaluation.getAvisShd());
 	}
 	
 	@Test
@@ -851,7 +851,7 @@ public class EvaluationServiceTest {
 		service.calculateAvisShd(eae);
 		
 		// Then
-		assertEquals("Maximale", evaluation.getAvisShd());
+		assertEquals("Durée maximale", evaluation.getAvisShd());
 	}
 	
 	@Test

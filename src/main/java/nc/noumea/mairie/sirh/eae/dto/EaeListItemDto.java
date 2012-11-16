@@ -73,6 +73,7 @@ public class EaeListItemDto {
 		switch (getEtat()) {
 			case ND:
 				setDroitInitialiser(isEvaluateurOrDelegataire);
+				setDroitAffecterDelegataire(isEvaluateur);
 				break;
 				
 			case C:
@@ -80,6 +81,7 @@ public class EaeListItemDto {
 				setDroitDemarrer(isEvaluateurOrDelegataire);
 				setDroitAcceder(true);
 				setDroitReinitialiser(isEvaluateurOrDelegataire);
+				setDroitAffecterDelegataire(isEvaluateur);
 				break;
 				
 			case F:
@@ -87,7 +89,6 @@ public class EaeListItemDto {
 				break;
 				
 			default:
-				setDroitAffecterDelegataire(isEvaluateur);
 				break;
 		}
 	}
