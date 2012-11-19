@@ -21,7 +21,7 @@ public class EaeDataConsistencyService implements IEaeDataConsistencyService {
 		
 		if (evaluation.getPropositionAvancement() != null && evaluation.getPropositionAvancement() != EaeAvancementEnum.MOY
 				&& (evaluation.getCommentaireAvctEvaluateur() == null || evaluation.getCommentaireAvctEvaluateur().getText() == null || evaluation.getCommentaireAvctEvaluateur().getText() == ""))
-			throw new EaeDataConsistencyServiceException("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de MOYEN.");
+			throw new EaeDataConsistencyServiceException("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de 'Durée Moyenne'.");
 
 	}
 
@@ -40,6 +40,14 @@ public class EaeDataConsistencyService implements IEaeDataConsistencyService {
 		} catch(IndexOutOfBoundsException ex) {
 			throw new EaeDataConsistencyServiceException("La priorisation des développements n'est pas valide.");
 		}
+	}
+
+	@Override
+	public void checkDataConsistencyForEaeIdentification(Eae eae) throws EaeDataConsistencyServiceException {
+	
+		if (eae.getDateEntretien() == null)
+			throw new EaeDataConsistencyServiceException("La date d'entretien est obligatoire.");
+		
 	}
 
 }

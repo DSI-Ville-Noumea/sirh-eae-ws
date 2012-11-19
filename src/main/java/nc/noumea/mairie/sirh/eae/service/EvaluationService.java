@@ -15,12 +15,12 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
-import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
@@ -199,16 +199,15 @@ public class EvaluationService implements IEvaluationService {
 		if (dto.getNiveau() == null || dto.getNiveau().getCourant() == null)
 			throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est manquante.");
 		
-		EaeNiveau selectedNiveau = null;
-		
-		try {
-			selectedNiveau = EaeNiveau.findEaeNiveau(Integer.parseInt(dto.getNiveau().getCourant()));
-		} catch(NumberFormatException ex) {
-			selectedNiveau = null;
+		EaeNiveauEnum selectedNiveau = null;
+
+		if (dto.getNiveau() != null && dto.getNiveau().getCourant() != null) {
+			try {
+				selectedNiveau = EaeNiveauEnum.valueOf(dto.getNiveau().getCourant());
+			} catch(IllegalArgumentException ex) {
+				throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est incorrecte.");
+			}
 		}
-		
-		if (selectedNiveau == null)
-			throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est incorrecte.");
 		
 		evaluation.setNiveauEae(selectedNiveau);
 		

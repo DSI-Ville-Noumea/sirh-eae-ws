@@ -236,10 +236,10 @@ public class EaeServiceTest {
 		previousEae.getEaePlanActions().add(p2);
 		
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setNoteAnnee(13);
-		eval.setNoteAnneeN1(14);
-		eval.setNoteAnneeN2(15);
-		eval.setNoteAnneeN3(16);
+		eval.setNoteAnnee(13.03f);
+		eval.setNoteAnneeN1(14.04f);
+		eval.setNoteAnneeN2(15.05f);
+		eval.setNoteAnneeN3(16.06f);
 		
 		previousEae.setEaeEvaluation(eval);
 		
@@ -249,9 +249,9 @@ public class EaeServiceTest {
 		// Then
 		assertFalse(eaeToInit.getEaeResultats().isEmpty());
 		assertNull(eaeToInit.getEaeEvaluation().getNoteAnnee());
-		assertEquals(new Integer(13), eaeToInit.getEaeEvaluation().getNoteAnneeN1());
-		assertEquals(new Integer(14), eaeToInit.getEaeEvaluation().getNoteAnneeN2());
-		assertEquals(new Integer(15), eaeToInit.getEaeEvaluation().getNoteAnneeN3());
+		assertEquals(new Float(13.03), eaeToInit.getEaeEvaluation().getNoteAnneeN1());
+		assertEquals(new Float(14.04), eaeToInit.getEaeEvaluation().getNoteAnneeN2());
+		assertEquals(new Float(15.05), eaeToInit.getEaeEvaluation().getNoteAnneeN3());
 		assertEquals(2, eaeToInit.getEaeResultats().size());
 		
 		List<EaeResultat> resultats = new ArrayList<EaeResultat>();

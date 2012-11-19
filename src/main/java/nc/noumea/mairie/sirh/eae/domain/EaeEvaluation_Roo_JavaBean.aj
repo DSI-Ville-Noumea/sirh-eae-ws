@@ -6,40 +6,40 @@ package nc.noumea.mairie.sirh.eae.domain;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
-import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 
 privileged aspect EaeEvaluation_Roo_JavaBean {
     
-    public Integer EaeEvaluation.getNoteAnnee() {
+    public Float EaeEvaluation.getNoteAnnee() {
         return this.noteAnnee;
     }
     
-    public void EaeEvaluation.setNoteAnnee(Integer noteAnnee) {
+    public void EaeEvaluation.setNoteAnnee(Float noteAnnee) {
         this.noteAnnee = noteAnnee;
     }
     
-    public Integer EaeEvaluation.getNoteAnneeN1() {
+    public Float EaeEvaluation.getNoteAnneeN1() {
         return this.noteAnneeN1;
     }
     
-    public void EaeEvaluation.setNoteAnneeN1(Integer noteAnneeN1) {
+    public void EaeEvaluation.setNoteAnneeN1(Float noteAnneeN1) {
         this.noteAnneeN1 = noteAnneeN1;
     }
     
-    public Integer EaeEvaluation.getNoteAnneeN2() {
+    public Float EaeEvaluation.getNoteAnneeN2() {
         return this.noteAnneeN2;
     }
     
-    public void EaeEvaluation.setNoteAnneeN2(Integer noteAnneeN2) {
+    public void EaeEvaluation.setNoteAnneeN2(Float noteAnneeN2) {
         this.noteAnneeN2 = noteAnneeN2;
     }
     
-    public Integer EaeEvaluation.getNoteAnneeN3() {
+    public Float EaeEvaluation.getNoteAnneeN3() {
         return this.noteAnneeN3;
     }
     
-    public void EaeEvaluation.setNoteAnneeN3(Integer noteAnneeN3) {
+    public void EaeEvaluation.setNoteAnneeN3(Float noteAnneeN3) {
         this.noteAnneeN3 = noteAnneeN3;
     }
     
@@ -75,11 +75,11 @@ privileged aspect EaeEvaluation_Roo_JavaBean {
         this.avisChangementClasse = avisChangementClasse;
     }
     
-    public EaeNiveau EaeEvaluation.getNiveauEae() {
+    public EaeNiveauEnum EaeEvaluation.getNiveauEae() {
         return this.niveauEae;
     }
     
-    public void EaeEvaluation.setNiveauEae(EaeNiveau niveauEae) {
+    public void EaeEvaluation.setNiveauEae(EaeNiveauEnum niveauEae) {
         this.niveauEae = niveauEae;
     }
     

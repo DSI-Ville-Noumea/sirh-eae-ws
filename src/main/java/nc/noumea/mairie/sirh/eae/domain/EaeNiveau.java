@@ -1,6 +1,9 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
+
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -13,4 +16,9 @@ public class EaeNiveau {
 	
 	@Column(name = "LIBELLE_NIVEAU_EAE")
 	private String libelleNiveauEae;
+	
+	@Transient
+	public EaeNiveauEnum getEaeNiveauAsEnum() {
+    	return EaeNiveauEnum.valueOf(libelleNiveauEae);
+    }
 }

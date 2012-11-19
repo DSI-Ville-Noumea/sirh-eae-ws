@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -19,17 +20,17 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_EVALUATION", identifierField = "idEaeEvaluation", identifierType = Integer.class, table = "EAE_EVALUATION", sequenceName="EAE_S_EVALUATION")
 public class EaeEvaluation {
 
-    @Column(name = "NOTE_ANNEE")
-    private Integer noteAnnee;
+    @Column(name = "NOTE_ANNEE", scale = 2, precision = 4, columnDefinition="NUMBER(4,2)")
+    private Float noteAnnee;
 
-    @Column(name = "NOTE_ANNEE_N1")
-    private Integer noteAnneeN1;
+    @Column(name = "NOTE_ANNEE_N1", scale = 2, precision = 4, columnDefinition="NUMBER(4,2)")
+    private Float noteAnneeN1;
 
-    @Column(name = "NOTE_ANNEE_N2")
-    private Integer noteAnneeN2;
+    @Column(name = "NOTE_ANNEE_N2", scale = 2, precision = 4, columnDefinition="NUMBER(4,2)")
+    private Float noteAnneeN2;
 
-    @Column(name = "NOTE_ANNEE_N3")
-    private Integer noteAnneeN3;
+    @Column(name = "NOTE_ANNEE_N3", scale = 2, precision = 4, columnDefinition="NUMBER(4,2)")
+    private Float noteAnneeN3;
 
     @Column(name = "AVIS_REVALORISATION")
     private Boolean avisRevalorisation;
@@ -44,9 +45,9 @@ public class EaeEvaluation {
     @Column(name = "AVIS_CHANGEMENT_CLASSE")
     private Boolean avisChangementClasse;
 
-    @OneToOne
-	@JoinColumn(name = "ID_EAE_NIVEAU")
-    private EaeNiveau niveauEae;
+    @Column(name = "NIVEAU")
+    @Enumerated(EnumType.STRING)
+    private EaeNiveauEnum niveauEae;
     
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ID_EAE_COM_EVALUATEUR")

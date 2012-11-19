@@ -5,19 +5,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
-import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 
 import org.junit.Test;
-import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 
 import flexjson.PathExpression;
@@ -33,24 +30,18 @@ public class EaeEvaluationDtoTest {
 		eae.setDureeEntretienMinutes(127);
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setEae(eae);
-		eval.setNoteAnnee(12);
-		eval.setNoteAnneeN1(13);
-		eval.setNoteAnneeN2(14);
-		eval.setNoteAnneeN3(15);
+		eval.setNoteAnnee(12f);
+		eval.setNoteAnneeN1(13f);
+		eval.setNoteAnneeN2(14f);
+		eval.setNoteAnneeN3(15f);
 		eval.setAvisRevalorisation(true);
 		eval.setAvisChangementClasse(false);
 		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
-		eval.setNiveauEae(new EaeNiveau());
-		eval.getNiveauEae().setIdEaeNiveau(1);
+		eval.setNiveauEae(EaeNiveauEnum.INSUFFISANT);
 		eval.setCommentaireAvctEvaluateur(new EaeCommentaire());
 		eval.setCommentaireAvctEvalue(new EaeCommentaire());
 		eval.setCommentaireEvaluateur(new EaeCommentaire());
 		eval.setCommentaireEvalue(new EaeCommentaire());
-		
-		List<EaeNiveau> niveauList = new ArrayList<EaeNiveau>();
-		EaeNiveau.findAllEaeNiveaus();
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(niveauList);
-		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		// When
 		EaeEvaluationDto dto = new EaeEvaluationDto(eval);
@@ -58,18 +49,37 @@ public class EaeEvaluationDtoTest {
 		// Then
 		assertEquals(123, dto.getIdEae());
 		assertEquals(new Integer(127), dto.getDureeEntretien());
-		assertEquals(new Integer(12), dto.getNoteAnnee());
-		assertEquals(new Integer(13), dto.getNoteAnneeN1());
-		assertEquals(new Integer(14), dto.getNoteAnneeN2());
-		assertEquals(new Integer(15), dto.getNoteAnneeN3());
+		assertEquals(new Float(12), dto.getNoteAnnee());
+		assertEquals(new Float(13), dto.getNoteAnneeN1());
+		assertEquals(new Float(14), dto.getNoteAnneeN2());
+		assertEquals(new Float(15), dto.getNoteAnneeN3());
 		assertTrue(dto.getAvisRevalorisation());
 		assertFalse(dto.getAvisChangementClasse());
 		assertEquals(EaeAvancementEnum.MAXI.name(), dto.getPropositionAvancement().getCourant());
-		assertEquals(eval.getNiveauEae().getIdEaeNiveau().toString(), dto.getNiveau().getCourant());
+		assertEquals(EaeNiveauEnum.INSUFFISANT.toString(), dto.getNiveau().getCourant());
 		assertEquals(eval.getCommentaireAvctEvaluateur(), dto.getCommentaireAvctEvaluateur());
 		assertEquals(eval.getCommentaireAvctEvalue(), dto.getCommentaireAvctEvalue());
 		assertEquals(eval.getCommentaireEvaluateur(), dto.getCommentaireEvaluateur());
 		assertEquals(eval.getCommentaireEvalue(), dto.getCommentaireEvalue());
+	}
+	
+	@Test
+	public void testConstructor_withDefaultValuesWhenNull() {
+		// Given 
+		Eae eae = new Eae();
+		eae.setIdEae(123);
+		EaeEvaluation eval = new EaeEvaluation();
+		eae.setEaeEvaluation(eval);
+		eval.setEae(eae);
+		
+		// When
+		EaeEvaluationDto dto = new EaeEvaluationDto(eval);
+		
+		// Then
+		assertEquals(123, dto.getIdEae());
+		assertTrue(dto.getAvisRevalorisation());
+		assertTrue(dto.getAvisChangementClasse());
+		assertEquals(EaeAvancementEnum.MOY.name(), dto.getPropositionAvancement().getCourant());
 	}
 	
 	@Test
@@ -120,23 +130,16 @@ public class EaeEvaluationDtoTest {
 		EaeEvaluationDto dto = new EaeEvaluationDto();
 		dto.setIdEae(13);
 		dto.setDureeEntretien(127);
-		dto.setNoteAnnee(12);
-		dto.setNoteAnneeN1(13);
-		dto.setNoteAnneeN2(14);
-		dto.setNoteAnneeN3(15);
+		dto.setNoteAnnee(12.02f);
+		dto.setNoteAnneeN1(13.03f);
+		dto.setNoteAnneeN2(14.04f);
+		dto.setNoteAnneeN3(15.05f);
 		dto.setAvisRevalorisation(true);
 		dto.setAvisChangementClasse(false);
 		ValueWithListDto subDto = new ValueWithListDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
 		dto.setPropositionAvancement(subDto);
 		
-		EaeNiveau niv = new EaeNiveau();
-		niv.setIdEaeNiveau(2);
-		niv.setLibelleNiveauEae("Satisfaisant");
-		EaeNiveau niv2 = new EaeNiveau();
-		niv2.setIdEaeNiveau(4);
-		niv2.setLibelleNiveauEae("Cool");
-		
-		ValueWithListDto subDto2 = new ValueWithListDto(niv, Arrays.asList(niv, niv2));
+		ValueWithListDto subDto2 = new ValueWithListDto(EaeNiveauEnum.EXCELLENT, EaeNiveauEnum.class);
 		dto.setNiveau(subDto2);
 		EaeCommentaire com1 = new EaeCommentaire();
 		com1.setText("com1");
@@ -151,7 +154,7 @@ public class EaeEvaluationDtoTest {
 		com4.setText("com4");
 		dto.setCommentaireEvalue(com4);
 		
-		String expectedJson = "{\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"2\",\"liste\":[{\"code\":\"2\",\"valeur\":\"Satisfaisant\"},{\"code\":\"4\",\"valeur\":\"Cool\"}]},\"noteAnnee\":12,\"noteAnneeN1\":13,\"noteAnneeN2\":14,\"noteAnneeN3\":15,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]}}";
+		String expectedJson = "{\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"EXCELLENT\",\"liste\":[{\"code\":\"EXCELLENT\",\"valeur\":\"EXCELLENT\"},{\"code\":\"SATISFAISANT\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"NECESSITANT_DES_PROGRES\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"INSUFFISANT\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnnee\":12.02,\"noteAnneeN1\":13.03,\"noteAnneeN2\":14.04,\"noteAnneeN3\":15.05,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]}}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -184,7 +187,7 @@ public class EaeEvaluationDtoTest {
 	@Test
 	public void testDeserializeFromFilledObjectJSON() {
 		// Given
-		String json = "{\"avisChangementClasse\":true,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com3\",\"commentaireAvctEvalue\":\"com4\",\"commentaireEvaluateur\":\"com1\",\"commentaireEvalue\":\"com2\",\"dureeEntretien\":{\"heures\":1,\"minutes\":43},\"idEae\":194,\"niveau\":{\"courant\":\"2\",\"liste\":[{\"code\":\"1\",\"valeur\":\"EXCELLENT\"},{\"code\":\"2\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"3\",\"valeur\":\"NECESSITANTDESPROGRES\"},{\"code\":\"4\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnnee\":13,\"noteAnneeN1\":1,\"noteAnneeN2\":2,\"noteAnneeN3\":3,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Minimale\"},{\"code\":\"MOY\",\"valeur\":\"Moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Maximale\"}]}}";
+		String json = "{\"avisChangementClasse\":true,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com3\",\"commentaireAvctEvalue\":\"com4\",\"commentaireEvaluateur\":\"com1\",\"commentaireEvalue\":\"com2\",\"dureeEntretien\":{\"heures\":1,\"minutes\":43},\"idEae\":194,\"niveau\":{\"courant\":\"SATISFAISANT\",\"liste\":[{\"code\":\"EXCELLENT\",\"valeur\":\"EXCELLENT\"},{\"code\":\"SATISFAISANT\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"NECESSITANT_DES_PROGRES\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"INSUFFISANT\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnnee\":13.07,\"noteAnneeN1\":1,\"noteAnneeN2\":2,\"noteAnneeN3\":3,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Minimale\"},{\"code\":\"MOY\",\"valeur\":\"Moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Maximale\"}]}}";
 	
 		// When
 		EaeEvaluationDto dto = new EaeEvaluationDto().deserializeFromJSON(json);
@@ -197,8 +200,8 @@ public class EaeEvaluationDtoTest {
 		assertEquals("com3", dto.getCommentaireAvctEvaluateur().getText());
 		assertEquals("com4", dto.getCommentaireAvctEvalue().getText());
 		assertEquals(new Integer(103), dto.getDureeEntretien());
-		assertEquals("2", dto.getNiveau().getCourant());
-		assertEquals(new Integer(13), dto.getNoteAnnee());
+		assertEquals("SATISFAISANT", dto.getNiveau().getCourant());
+		assertEquals(new Float(13.07), dto.getNoteAnnee());
 		assertEquals("MAXI", dto.getPropositionAvancement().getCourant());
 	}
 }

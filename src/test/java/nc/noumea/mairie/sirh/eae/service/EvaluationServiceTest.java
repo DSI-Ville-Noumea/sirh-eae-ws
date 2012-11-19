@@ -11,8 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,12 +25,12 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
-import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
@@ -52,7 +50,6 @@ import nc.noumea.mairie.sirh.service.IAgentService;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -420,11 +417,6 @@ public class EvaluationServiceTest {
 		eval.setEae(eae);
 		eae.setEaeEvaluation(eval);
 		
-		List<EaeNiveau> niveauList = new ArrayList<EaeNiveau>();
-		EaeNiveau.findAllEaeNiveaus();
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(niveauList);
-		AnnotationDrivenStaticEntityMockingControl.playback();
-		
 		EvaluationService service = new EvaluationService();
 
 		// When
@@ -441,23 +433,16 @@ public class EvaluationServiceTest {
 		EaeEvaluationDto dto = new EaeEvaluationDto();
 		dto.setIdEae(13);
 		dto.setDureeEntretien(127);
-		dto.setNoteAnnee(12);
-		dto.setNoteAnneeN1(13);
-		dto.setNoteAnneeN2(14);
-		dto.setNoteAnneeN3(15);
+		dto.setNoteAnnee(12.78f);
+		dto.setNoteAnneeN1(13f);
+		dto.setNoteAnneeN2(14f);
+		dto.setNoteAnneeN3(15f);
 		dto.setAvisRevalorisation(true);
 		dto.setAvisChangementClasse(false);
 		ValueWithListDto subDto = new ValueWithListDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
 		dto.setPropositionAvancement(subDto);
 		
-		EaeNiveau niv = new EaeNiveau();
-		niv.setIdEaeNiveau(2);
-		niv.setLibelleNiveauEae("Satisfaisant");
-		EaeNiveau niv2 = new EaeNiveau();
-		niv2.setIdEaeNiveau(4);
-		niv2.setLibelleNiveauEae("Cool");
-		
-		ValueWithListDto subDto2 = new ValueWithListDto(niv, Arrays.asList(niv, niv2));
+		ValueWithListDto subDto2 = new ValueWithListDto(EaeNiveauEnum.NECESSITANT_DES_PROGRES, EaeNiveauEnum.class);
 		dto.setNiveau(subDto2);
 		EaeCommentaire com1 = new EaeCommentaire();
 		com1.setText("com1");
@@ -478,12 +463,6 @@ public class EvaluationServiceTest {
 		eval.setEae(eae);
 		eae.setEaeEvalue(new EaeEvalue());
 		
-		EaeNiveau niveau = new EaeNiveau();
-		niveau.setIdEaeNiveau(2);
-		EaeNiveau.findEaeNiveau(2);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(niveau);
-		AnnotationDrivenStaticEntityMockingControl.playback();
-		
 		IEaeDataConsistencyService dcService = mock(IEaeDataConsistencyService.class);
 		
 		EvaluationService service = new EvaluationService();
@@ -497,11 +476,11 @@ public class EvaluationServiceTest {
 		assertEquals("com4", eval.getCommentaireEvalue().getText());
 		assertEquals("com1", eval.getCommentaireAvctEvaluateur().getText());
 		assertEquals("com2", eval.getCommentaireAvctEvalue().getText());
-		assertEquals(new Integer(12), eval.getNoteAnnee());
+		assertEquals(new Float(12.78), eval.getNoteAnnee());
 		assertFalse(eval.getAvisChangementClasse());
 		assertTrue(eval.getAvisRevalorisation());
 		assertEquals(new Integer(127), eval.getEae().getDureeEntretienMinutes());
-		assertEquals(niv.getIdEaeNiveau(), eval.getNiveauEae().getIdEaeNiveau());
+		assertEquals(EaeNiveauEnum.NECESSITANT_DES_PROGRES, eval.getNiveauEae());
 		assertEquals(EaeAvancementEnum.MAXI, eval.getPropositionAvancement());
 	}
 	
@@ -512,23 +491,16 @@ public class EvaluationServiceTest {
 		EaeEvaluationDto dto = new EaeEvaluationDto();
 		dto.setIdEae(13);
 		dto.setDureeEntretien(127);
-		dto.setNoteAnnee(12);
-		dto.setNoteAnneeN1(13);
-		dto.setNoteAnneeN2(14);
-		dto.setNoteAnneeN3(15);
+		dto.setNoteAnnee(12.19f);
+		dto.setNoteAnneeN1(13f);
+		dto.setNoteAnneeN2(14f);
+		dto.setNoteAnneeN3(15f);
 		dto.setAvisRevalorisation(true);
 		dto.setAvisChangementClasse(false);
 		ValueWithListDto subDto = new ValueWithListDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
 		dto.setPropositionAvancement(subDto);
 		
-		EaeNiveau niv = new EaeNiveau();
-		niv.setIdEaeNiveau(2);
-		niv.setLibelleNiveauEae("Satisfaisant");
-		EaeNiveau niv2 = new EaeNiveau();
-		niv2.setIdEaeNiveau(4);
-		niv2.setLibelleNiveauEae("Cool");
-		
-		ValueWithListDto subDto2 = new ValueWithListDto(niv, Arrays.asList(niv, niv2));
+		ValueWithListDto subDto2 = new ValueWithListDto(EaeNiveauEnum.SATISFAISANT, EaeNiveauEnum.class);
 		dto.setNiveau(subDto2);
 		EaeCommentaire com1 = new EaeCommentaire();
 		com1.setText("com3");
@@ -565,12 +537,6 @@ public class EvaluationServiceTest {
 		eval.setCommentaireAvctEvalue(comBefore4);
 		eval.getCommentaireAvctEvalue().setText("text before");
 		
-		EaeNiveau niveau = new EaeNiveau();
-		niveau.setIdEaeNiveau(2);
-		EaeNiveau.findEaeNiveau(2);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(niveau);
-		AnnotationDrivenStaticEntityMockingControl.playback();
-		
 		IEaeDataConsistencyService dcService = mock(IEaeDataConsistencyService.class);
 		
 		EvaluationService service = new EvaluationService();
@@ -588,11 +554,11 @@ public class EvaluationServiceTest {
 		assertEquals("com3", eval.getCommentaireAvctEvaluateur().getText());
 		assertEquals(comBefore4.getIdEaeCommentaire(), eval.getCommentaireAvctEvalue().getIdEaeCommentaire());
 		assertEquals("com4", eval.getCommentaireAvctEvalue().getText());
-		assertEquals(new Integer(12), eval.getNoteAnnee());
+		assertEquals(new Float(12.19), eval.getNoteAnnee());
 		assertFalse(eval.getAvisChangementClasse());
 		assertTrue(eval.getAvisRevalorisation());
 		assertEquals(new Integer(127), eval.getEae().getDureeEntretienMinutes());
-		assertEquals(niv.getIdEaeNiveau(), eval.getNiveauEae().getIdEaeNiveau());
+		assertEquals(EaeNiveauEnum.SATISFAISANT, eval.getNiveauEae());
 		assertEquals(EaeAvancementEnum.MAXI, eval.getPropositionAvancement());
 	}
 	
@@ -632,17 +598,13 @@ public class EvaluationServiceTest {
 		dto.setPropositionAvancement(new ValueWithListDto());
 		
 		ValueWithListDto subDto2 = new ValueWithListDto();
-		subDto2.setCourant("89");
+		subDto2.setCourant("blabla");
 		dto.setNiveau(subDto2);
 		
 		Eae eae = new Eae();
 		EaeEvaluation eval = new EaeEvaluation();
 		eae.setEaeEvaluation(eval);
 		eval.setEae(eae);
-		
-		EaeNiveau.findEaeNiveau(89);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(null);
-		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		EvaluationService service = new EvaluationService();
 		
@@ -696,23 +658,15 @@ public class EvaluationServiceTest {
 		ValueWithListDto subDto = new ValueWithListDto();
 		subDto.setCourant("INVALID");
 		dto.setPropositionAvancement(subDto);
-		
-		EaeNiveau niv = new EaeNiveau();
-		niv.setIdEaeNiveau(2);
-		niv.setLibelleNiveauEae("Satisfaisant");
-		
+
 		ValueWithListDto subDto2 = new ValueWithListDto();
-		subDto2.setCourant("2");
+		subDto2.setCourant("SATISFAISANT");
 		dto.setNiveau(subDto2);
 		
 		Eae eae = new Eae();
 		EaeEvaluation eval = new EaeEvaluation();
 		eae.setEaeEvaluation(eval);
 		eval.setEae(eae);
-		
-		EaeNiveau.findEaeNiveau(2);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(niv);
-		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		EvaluationService service = new EvaluationService();
 		

@@ -2,8 +2,8 @@ package nc.noumea.mairie.sirh.eae.dto;
 
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
-import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 import nc.noumea.mairie.sirh.tools.transformer.MinutesToHoursAndMinutesTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
@@ -14,10 +14,10 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	private int idEae;
 	private Integer dureeEntretien;
-	private Integer noteAnnee;
-	private Integer noteAnneeN1;
-	private Integer noteAnneeN2;
-	private Integer noteAnneeN3;
+	private Float noteAnnee;
+	private Float noteAnneeN1;
+	private Float noteAnneeN2;
+	private Float noteAnneeN3;
 	private Boolean avisRevalorisation;
 	private ValueWithListDto propositionAvancement;
 	private Boolean avisChangementClasse;
@@ -38,14 +38,22 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1();
 		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
 		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
-		avisRevalorisation = eaeEvaluation.getAvisRevalorisation();
-		avisChangementClasse = eaeEvaluation.getAvisChangementClasse();
-		propositionAvancement = new ValueWithListDto(eaeEvaluation.getPropositionAvancement(), EaeAvancementEnum.class);
-		niveau = new ValueWithListDto(eaeEvaluation.getNiveauEae(), EaeNiveau.findAllEaeNiveaus());
+		avisRevalorisation = eaeEvaluation.getAvisRevalorisation() == null ? true : eaeEvaluation.getAvisRevalorisation();
+		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation.getAvisChangementClasse();
 		commentaireEvaluateur = eaeEvaluation.getCommentaireEvaluateur();
 		commentaireEvalue = eaeEvaluation.getCommentaireEvalue();
 		commentaireAvctEvaluateur = eaeEvaluation.getCommentaireAvctEvaluateur();
 		commentaireAvctEvalue = eaeEvaluation.getCommentaireAvctEvalue();
+		
+		if (eaeEvaluation.getNiveauEae() == null)
+			niveau = new ValueWithListDto(EaeNiveauEnum.SATISFAISANT, EaeNiveauEnum.class);
+		else
+			niveau = new ValueWithListDto(eaeEvaluation.getNiveauEae(), EaeNiveauEnum.class);
+		
+		if (eaeEvaluation.getPropositionAvancement() == null)
+			propositionAvancement = new ValueWithListDto(EaeAvancementEnum.MOY, EaeAvancementEnum.class);
+		else
+			propositionAvancement = new ValueWithListDto(eaeEvaluation.getPropositionAvancement(), EaeAvancementEnum.class);
 	}
 
 	public static JSONSerializer getSerializerForEaeEvaluationDto() {
@@ -98,36 +106,36 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	public void setDureeEntretien(Integer dureeEntretien) {
 		this.dureeEntretien = dureeEntretien;
 	}
-
-	public Integer getNoteAnnee() {
+	
+	public Float getNoteAnnee() {
 		return noteAnnee;
 	}
 
-	public void setNoteAnnee(Integer noteAnnee) {
+	public void setNoteAnnee(Float noteAnnee) {
 		this.noteAnnee = noteAnnee;
 	}
 
-	public Integer getNoteAnneeN1() {
+	public Float getNoteAnneeN1() {
 		return noteAnneeN1;
 	}
 
-	public void setNoteAnneeN1(Integer noteAnneeN1) {
+	public void setNoteAnneeN1(Float noteAnneeN1) {
 		this.noteAnneeN1 = noteAnneeN1;
 	}
 
-	public Integer getNoteAnneeN2() {
+	public Float getNoteAnneeN2() {
 		return noteAnneeN2;
 	}
 
-	public void setNoteAnneeN2(Integer noteAnneeN2) {
+	public void setNoteAnneeN2(Float noteAnneeN2) {
 		this.noteAnneeN2 = noteAnneeN2;
 	}
 
-	public Integer getNoteAnneeN3() {
+	public Float getNoteAnneeN3() {
 		return noteAnneeN3;
 	}
 
-	public void setNoteAnneeN3(Integer noteAnneeN3) {
+	public void setNoteAnneeN3(Float noteAnneeN3) {
 		this.noteAnneeN3 = noteAnneeN3;
 	}
 

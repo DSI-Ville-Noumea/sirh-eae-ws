@@ -9,6 +9,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 public class EaeDataConsistencyServiceTest {
@@ -29,7 +30,7 @@ public class EaeDataConsistencyServiceTest {
 			service.checkDataConsistencyForEaeEvaluation(eae);
 		}
 		catch (EaeDataConsistencyServiceException ex) {
-			assertEquals("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de MOYEN.", ex.getMessage());
+			assertEquals("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de 'Durée Moyenne'.", ex.getMessage());
 			return;
 		}
 		
@@ -53,7 +54,7 @@ public class EaeDataConsistencyServiceTest {
 			service.checkDataConsistencyForEaeEvaluation(eae);
 		}
 		catch (EaeDataConsistencyServiceException ex) {
-			assertEquals("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de MOYEN.", ex.getMessage());
+			assertEquals("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de 'Durée Moyenne'.", ex.getMessage());
 			return;
 		}
 		
@@ -78,7 +79,7 @@ public class EaeDataConsistencyServiceTest {
 			service.checkDataConsistencyForEaeEvaluation(eae);
 		}
 		catch (EaeDataConsistencyServiceException ex) {
-			assertEquals("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de MOYEN.", ex.getMessage());
+			assertEquals("Le commentaire de l'évaluateur sur la proposition d'avancement est obligatoire dans le cas ou celui-ci est différent de 'Durée Moyenne'.", ex.getMessage());
 			return;
 		}
 		
@@ -218,6 +219,36 @@ public class EaeDataConsistencyServiceTest {
 		} catch (EaeDataConsistencyServiceException e) {
 			// Then
 			assertEquals("La priorisation des développements n'est pas valide.", e.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown exception");
+	}
+	
+	@Test
+	public void testCheckDataConsistencyForEaeIdentification_eaeHasADate_doNothing() throws EaeDataConsistencyServiceException {
+		
+		Eae eae = new Eae();
+		eae.setDateEntretien(new DateTime().toDate());
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+		service.checkDataConsistencyForEaeIdentification(eae);
+		
+	}
+	
+	@Test
+	public void testCheckDataConsistencyForEaeIdentification_eaeHasNoDate_throwException() {
+		
+		Eae eae = new Eae();
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+
+		try {
+			// When
+			service.checkDataConsistencyForEaeIdentification(eae);
+		} catch (EaeDataConsistencyServiceException e) {
+			// Then
+			assertEquals("La date d'entretien est obligatoire.", e.getMessage());
 			return;
 		}
 		
