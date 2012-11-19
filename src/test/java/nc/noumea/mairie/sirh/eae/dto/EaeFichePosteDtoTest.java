@@ -35,8 +35,25 @@ public class EaeFichePosteDtoTest {
 		shd.setNomMarital("nom");
 		shd.setPrenom("prenom");
 		f.setAgentShd(shd);
-		f.getEaeFdpActivites().add(new EaeFdpActivite());
-		f.getEaeFdpCompetences().add(new EaeFdpCompetence());
+		
+		EaeFdpActivite act = new EaeFdpActivite();
+		act.setLibelle("lii");
+		f.getEaeFdpActivites().add(act);
+		
+		EaeFdpCompetence fdp1 = new EaeFdpCompetence();
+		fdp1.setType(EaeTypeCompetenceEnum.SA);
+		fdp1.setLibelle("savoir");
+		f.getEaeFdpCompetences().add(fdp1);
+		
+		EaeFdpCompetence fdp2 = new EaeFdpCompetence();
+		fdp2.setType(EaeTypeCompetenceEnum.SF);
+		fdp2.setLibelle("savoir faire");
+		f.getEaeFdpCompetences().add(fdp2);
+		
+		EaeFdpCompetence fdp3 = new EaeFdpCompetence();
+		fdp3.setType(EaeTypeCompetenceEnum.CP);
+		fdp3.setLibelle("comp pro");
+		f.getEaeFdpCompetences().add(fdp3);
 		
 		// When
 		EaeFichePosteDto result = new EaeFichePosteDto(f);
@@ -52,8 +69,11 @@ public class EaeFichePosteDtoTest {
 		assertEquals(f.getAgentShd().getDisplayNom(), result.getResponsableNom());
 		assertEquals(f.getAgentShd().getDisplayPrenom(), result.getResponsablePrenom());
 		assertEquals(f.getFonctionResponsable(), result.getResponsableFonction());
-		assertEquals(f.getEaeFdpActivites().iterator().next(), result.getActivites().get(0));
-		assertEquals(f.getEaeFdpCompetences().iterator().next(), result.getCompetencesRequises().get(0));
+		assertEquals("lii", result.getActivites().get(0));
+		
+		assertEquals("savoir", result.getCompetencesSavoir().get(0));
+		assertEquals("savoir faire", result.getCompetencesSavoirFaire().get(0));
+		assertEquals("comp pro", result.getCompetencesComportementProfessionnel().get(0));
 	}
 	
 	@Test
@@ -64,7 +84,7 @@ public class EaeFichePosteDtoTest {
 		List<PathExpression> excludes = EaeFichePosteDto.getSerializerForEaeFichePosteDto().getExcludes();
 		
 		// Then
-		assertEquals(12, includes.size());
+		assertEquals(14, includes.size());
 		assertEquals("[idEae]", includes.get(0).toString());
 		assertEquals("[intitule]", includes.get(1).toString());
 		assertEquals("[grade]", includes.get(2).toString());
@@ -75,8 +95,10 @@ public class EaeFichePosteDtoTest {
 		assertEquals("[responsableNom]", includes.get(7).toString());
 		assertEquals("[responsablePrenom]", includes.get(8).toString());
 		assertEquals("[responsableFonction]", includes.get(9).toString());
-		assertEquals("[activites]", includes.get(10).toString());
-		assertEquals("[competencesRequises]", includes.get(11).toString());
+		assertEquals("[activites,*]", includes.get(10).toString());
+		assertEquals("[competencesSavoir,*]", includes.get(11).toString());
+		assertEquals("[competencesSavoirFaire,*]", includes.get(12).toString());
+		assertEquals("[competencesComportementProfessionnel,*]", includes.get(13).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
@@ -88,7 +110,7 @@ public class EaeFichePosteDtoTest {
 		// Given
 		EaeFichePosteDto dto = new EaeFichePosteDto();
 		
-		String expectedResult = "{\"activites\":[],\"competencesRequises\":[],\"directionService\":null,\"emploi\":null,\"grade\":null,\"idEae\":0,\"intitule\":null,\"localisation\":null,\"missions\":null,\"responsableFonction\":null,\"responsableNom\":null,\"responsablePrenom\":null}";
+		String expectedResult = "{\"activites\":[],\"competencesComportementProfessionnel\":[],\"competencesSavoir\":[],\"competencesSavoirFaire\":[],\"directionService\":null,\"emploi\":null,\"grade\":null,\"idEae\":0,\"intitule\":null,\"localisation\":null,\"missions\":null,\"responsableFonction\":null,\"responsableNom\":null,\"responsablePrenom\":null}";
 		
 		// When
 		String result = dto.serializeInJSON();
@@ -112,22 +134,13 @@ public class EaeFichePosteDtoTest {
 		dto.setResponsableNom("responsableNom");
 		dto.setResponsablePrenom("responsablePrenom");
 		dto.setLocalisation("localisation");
-		EaeFdpActivite act1 = new EaeFdpActivite();
-		act1.setLibelle("act1");
-		dto.getActivites().add(act1);
-		EaeFdpActivite act2 = new EaeFdpActivite();
-		act2.setLibelle("act2");
-		dto.getActivites().add(act2);
-		EaeFdpCompetence comp1 = new EaeFdpCompetence();
-		comp1.setLibelle("comp1");
-		comp1.setType(EaeTypeCompetenceEnum.SA);
-		dto.getCompetencesRequises().add(comp1);
-		EaeFdpCompetence comp2 = new EaeFdpCompetence();
-		comp2.setLibelle("comp2");
-		comp2.setType(EaeTypeCompetenceEnum.SF);
-		dto.getCompetencesRequises().add(comp2);
+		dto.getActivites().add("act1");
+		dto.getActivites().add("act2");
+		dto.getCompetencesSavoir().add("comp1");
+		dto.getCompetencesSavoirFaire().add("comp2");
+		dto.getCompetencesComportementProfessionnel().add("comp3");
 		
-		String expectedResult = "{\"activites\":[\"act1\",\"act2\"],\"competencesRequises\":[\"Savoir - comp1\",\"Savoir faire - comp2\"],\"directionService\":\"directionService\",\"emploi\":\"emploi\",\"grade\":\"grade\",\"idEae\":123,\"intitule\":\"intitule\",\"localisation\":\"localisation\",\"missions\":\"missions\",\"responsableFonction\":\"responsableFonction\",\"responsableNom\":\"responsableNom\",\"responsablePrenom\":\"responsablePrenom\"}";
+		String expectedResult = "{\"activites\":[\"act1\",\"act2\"],\"competencesComportementProfessionnel\":[\"comp3\"],\"competencesSavoir\":[\"comp1\"],\"competencesSavoirFaire\":[\"comp2\"],\"directionService\":\"directionService\",\"emploi\":\"emploi\",\"grade\":\"grade\",\"idEae\":123,\"intitule\":\"intitule\",\"localisation\":\"localisation\",\"missions\":\"missions\",\"responsableFonction\":\"responsableFonction\",\"responsableNom\":\"responsableNom\",\"responsablePrenom\":\"responsablePrenom\"}";
 		
 		// When
 		String result = dto.serializeInJSON();

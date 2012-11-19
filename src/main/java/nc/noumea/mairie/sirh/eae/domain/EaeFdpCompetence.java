@@ -27,11 +27,4 @@ public class EaeFdpCompetence {
     @ManyToOne
 	@JoinColumn(name = "ID_EAE_FICHE_POSTE", referencedColumnName = "ID_EAE_FICHE_POSTE")
     private EaeFichePoste eaeFichePoste;
-    
-    /*
-     * Transient properties
-     */
-    public String getFullLabel() {
-    	return String.format("%s - %s", type.toString(), libelle);
-    }
 }

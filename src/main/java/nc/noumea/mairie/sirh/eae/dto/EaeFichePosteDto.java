@@ -6,7 +6,6 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
-import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 import flexjson.JSONSerializer;
 
 public class EaeFichePosteDto implements IJSONSerialize {
@@ -21,12 +20,16 @@ public class EaeFichePosteDto implements IJSONSerialize {
 	private String responsableNom;
 	private String responsablePrenom;
 	private String responsableFonction;
-	private List<EaeFdpActivite> activites;
-	private List<EaeFdpCompetence> competencesRequises;
+	private List<String> activites;
+	private List<String> competencesSavoir;
+	private List<String> competencesSavoirFaire;
+	private List<String> competencesComportementProfessionnel;
 
 	public EaeFichePosteDto() {
-		activites = new ArrayList<EaeFdpActivite>();
-		competencesRequises = new ArrayList<EaeFdpCompetence>();
+		activites = new ArrayList<String>();
+		competencesSavoir = new ArrayList<String>();
+		competencesSavoirFaire = new ArrayList<String>();
+		competencesComportementProfessionnel = new ArrayList<String>();
 	}
 
 	public EaeFichePosteDto(EaeFichePoste fdp) {
@@ -41,8 +44,24 @@ public class EaeFichePosteDto implements IJSONSerialize {
 		responsableNom = fdp.getAgentShd().getDisplayNom();
 		responsablePrenom = fdp.getAgentShd().getDisplayPrenom();
 		responsableFonction = fdp.getFonctionResponsable();
-		activites.addAll(fdp.getEaeFdpActivites());
-		competencesRequises.addAll(fdp.getEaeFdpCompetences());
+		
+		for(EaeFdpCompetence comp : fdp.getEaeFdpCompetences()) {
+			switch(comp.getType()) {
+				case SA:
+					competencesSavoir.add(comp.getLibelle());
+					break;
+				case SF:
+					competencesSavoirFaire.add(comp.getLibelle());
+					break;
+				case CP:
+					competencesComportementProfessionnel.add(comp.getLibelle());
+					break;
+			}
+		}
+		
+		for (EaeFdpActivite act : fdp.getEaeFdpActivites()) {
+			activites.add(act.getLibelle());
+		}
 	}
 
 	public static JSONSerializer getSerializerForEaeFichePosteDto() {
@@ -58,10 +77,10 @@ public class EaeFichePosteDto implements IJSONSerialize {
 			.include("responsableNom")
 			.include("responsablePrenom")
 			.include("responsableFonction")
-			.include("activites")
-			.include("competencesRequises")
-			.transform(new ObjectToPropertyTransformer("libelle", EaeFdpActivite.class), EaeFdpActivite.class)
-			.transform(new ObjectToPropertyTransformer("fullLabel", EaeFdpCompetence.class), EaeFdpCompetence.class)
+			.include("activites.*")
+			.include("competencesSavoir.*")
+			.include("competencesSavoirFaire.*")
+			.include("competencesComportementProfessionnel.*")
 			.exclude("*");
 	}
 	
@@ -150,20 +169,36 @@ public class EaeFichePosteDto implements IJSONSerialize {
 		this.responsableFonction = responsableFonction;
 	}
 
-	public List<EaeFdpActivite> getActivites() {
+	public List<String> getCompetencesSavoir() {
+		return competencesSavoir;
+	}
+
+	public List<String> getActivites() {
 		return activites;
 	}
 
-	public void setActivites(List<EaeFdpActivite> activites) {
+	public void setActivites(List<String> activites) {
 		this.activites = activites;
 	}
 
-	public List<EaeFdpCompetence> getCompetencesRequises() {
-		return competencesRequises;
+	public void setCompetencesSavoir(List<String> competencesSavoir) {
+		this.competencesSavoir = competencesSavoir;
 	}
 
-	public void setCompetencesRequises(
-			List<EaeFdpCompetence> competencesRequises) {
-		this.competencesRequises = competencesRequises;
+	public List<String> getCompetencesSavoirFaire() {
+		return competencesSavoirFaire;
+	}
+
+	public void setCompetencesSavoirFaire(List<String> competencesSavoirFaire) {
+		this.competencesSavoirFaire = competencesSavoirFaire;
+	}
+
+	public List<String> getCompetencesComportementProfessionnel() {
+		return competencesComportementProfessionnel;
+	}
+
+	public void setCompetencesComportementProfessionnel(
+			List<String> competencesComportementProfessionnel) {
+		this.competencesComportementProfessionnel = competencesComportementProfessionnel;
 	}
 }
