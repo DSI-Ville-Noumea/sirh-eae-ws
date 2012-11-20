@@ -3,7 +3,14 @@ package nc.noumea.mairie.sirh.eae.web.controller.xml;
 import javax.jws.WebParam;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDtoList;
+import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
 import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +35,63 @@ public class EvaluationXmlController {
 	public ModelAndView getEaeIdentification(@WebParam(name = "idEae") int idEae) {
 		Eae eae = Eae.findEae(idEae);
 		EaeIdentificationDto dto = evaluationService.getEaeIdentification(eae);
+		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
+	}
+	
+	@RequestMapping(value = "eaeFichePoste", produces = "application/xml", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ModelAndView getEaeFichePoste(@WebParam(name = "idEae") int idEae) {
+		Eae eae = Eae.findEae(idEae);
+		EaeFichePosteDtoList dto = new EaeFichePosteDtoList();
+		dto.setEaeFichePostes(evaluationService.getEaeFichePoste(eae));
+		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
+	}
+	
+	@RequestMapping(value = "eaeResultats", produces = "application/xml", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ModelAndView getEaeResultat(@WebParam(name = "idEae") int idEae) {
+		Eae eae = Eae.findEae(idEae);
+		EaeResultatsDto dto = evaluationService.getEaeResultats(eae);
+		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
+	}
+	
+	@RequestMapping(value = "eaeAppreciations", produces = "application/xml", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ModelAndView getEaeAppreciations(@WebParam(name = "idEae") int idEae) {
+		Eae eae = Eae.findEae(idEae);
+		EaeAppreciationsDto dto = evaluationService.getEaeAppreciations(eae);
+		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
+	}
+	
+	@RequestMapping(value = "eaeEvaluation", produces = "application/xml", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ModelAndView getEaeEvaluation(@WebParam(name = "idEae") int idEae) {
+		Eae eae = Eae.findEae(idEae);
+		EaeEvaluationDto dto = evaluationService.getEaeEvaluation(eae);
+		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
+	}
+	
+	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/xml", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ModelAndView getEaeAutoEvaluation(@WebParam(name = "idEae") int idEae) {
+		Eae eae = Eae.findEae(idEae);
+		EaeAutoEvaluationDto dto = evaluationService.getEaeAutoEvaluation(eae);
+		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
+	}
+	
+	@RequestMapping(value = "eaePlanAction", produces = "application/xml", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ModelAndView getEaePlanAction(@WebParam(name = "idEae") int idEae) {
+		Eae eae = Eae.findEae(idEae);
+		EaePlanActionDto dto = evaluationService.getEaePlanAction(eae);
+		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
+	}
+	
+	@RequestMapping(value = "eaeEvolution", produces = "application/xml", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public ModelAndView getEaeEvolution(@WebParam(name = "idEae") int idEae) {
+		Eae eae = Eae.findEae(idEae);
+		EaeEvolutionDto dto = evaluationService.getEaeEvolution(eae);
 		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
 	}
 }

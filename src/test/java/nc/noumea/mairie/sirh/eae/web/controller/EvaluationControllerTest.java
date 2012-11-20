@@ -22,11 +22,13 @@ import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
+import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
@@ -38,23 +40,25 @@ import org.springframework.test.util.ReflectionTestUtils;
 @MockStaticEntityMethods
 public class EvaluationControllerTest {
 
+	IEaeSecurityProvider eaeSecurityProvider;
+	
+	@Before
+	public void SetUp() {
+		eaeSecurityProvider = Mockito.mock(IEaeSecurityProvider.class);
+	}
+	
 	@Test
-	public void testGetEaeIdentifitcation_nonExistingEae_ReturnCode404() {
+	public void testGetEaeIdentifitcation_agentDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeIdentifitcation(789);
+		ResponseEntity<String> result = controller.getEaeIdentifitcation(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -76,9 +80,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeIdentifitcation(789);
+		ResponseEntity<String> result = controller.getEaeIdentifitcation(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -88,22 +93,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testSetEaeIdentifitcation_nonExistingEae_ReturnCode404() {
+	public void testSetEaeIdentifitcation_evaluateurDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeWriteRight(789, 9000000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 0, null);
+		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 9000000, null);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -125,6 +125,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 0, json);
@@ -157,6 +158,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 0, json);
@@ -170,22 +172,17 @@ public class EvaluationControllerTest {
 	}
 
 	@Test
-	public void testGetEaeFichePoste_nonExistingEae_ReturnCode404() {
+	public void testGetEaeFichePoste_agentDoesNotHaveright_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeFichePoste(789);
+		ResponseEntity<String> result = controller.getEaeFichePoste(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -206,9 +203,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeFichePoste(789);
+		ResponseEntity<String> result = controller.getEaeFichePoste(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -218,22 +216,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testGetEaeResultats_nonExistingEae_ReturnCode404() {
+	public void testGetEaeResultats_agentDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeResultats(789);
+		ResponseEntity<String> result = controller.getEaeResultats(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -254,9 +247,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeResultats(789);
+		ResponseEntity<String> result = controller.getEaeResultats(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -266,22 +260,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testSetEaeResultats_nonExistingEae_ReturnCode404() {
+	public void testSetEaeResultats_evaluateurDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeResultats(789, 0, null);
+		ResponseEntity<String> result = controller.setEaeResultats(789, 900000, null);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -303,6 +292,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeResultats(789, 0, json);
@@ -335,6 +325,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeResultats(789, 0, json);
@@ -348,22 +339,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testGetEaeAppreciations_nonExistingEae_ReturnCode404() {
+	public void testGetEaeAppreciations_agentDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeAppreciations(789);
+		ResponseEntity<String> result = controller.getEaeAppreciations(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -384,9 +370,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeAppreciations(789);
+		ResponseEntity<String> result = controller.getEaeAppreciations(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -396,22 +383,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testSetEaeAppreciations_nonExistingEae_ReturnCode404() {
+	public void testSetEaeAppreciations_evaluateurDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeAppreciations(789, 0, null);
+		ResponseEntity<String> result = controller.setEaeAppreciations(789, 900000, null);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -433,6 +415,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAppreciations(789, 0, json);
@@ -465,6 +448,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAppreciations(789, 0, json);
@@ -478,22 +462,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testGetEaeEvaluation_nonExistingEae_ReturnCode404() {
+	public void testGetEaeEvaluation_agentDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeEvaluation(789);
+		ResponseEntity<String> result = controller.getEaeEvaluation(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -514,9 +493,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeEvaluation(789);
+		ResponseEntity<String> result = controller.getEaeEvaluation(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -526,22 +506,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testSetEaeEvaluation_nonExistingEae_ReturnCode404() throws IllegalStateException, SecurityException, SystemException {
+	public void testSetEaeEvaluation_evaluateurDoesNotHaveRight_ReturnCode403() throws IllegalStateException, SecurityException, SystemException {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeEvaluation(789, 0, null);
+		ResponseEntity<String> result = controller.setEaeEvaluation(789, 900000, null);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -564,6 +539,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvaluation(789, 0, json);
@@ -596,6 +572,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvaluation(789, 0, json);
@@ -629,6 +606,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvaluation(789, 0, json);
@@ -642,22 +620,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testGetEaeAutoEvaluation_nonExistingEae_ReturnCode404() {
+	public void testGetEaeAutoEvaluation_agentDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeAutoEvaluation(789);
+		ResponseEntity<String> result = controller.getEaeAutoEvaluation(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -678,9 +651,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeAutoEvaluation(789);
+		ResponseEntity<String> result = controller.getEaeAutoEvaluation(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -690,22 +664,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testSetEaeAutoEvaluation_nonExistingEae_ReturnCode404() throws IllegalStateException, SecurityException, SystemException {
+	public void testSetEaeAutoEvaluation_evaluateurDoesNotHaveRight_ReturnCode403() throws IllegalStateException, SecurityException, SystemException {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 0, null);
+		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 900000, null);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -728,6 +697,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 0, json);
@@ -760,6 +730,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 0, json);
@@ -773,22 +744,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testGetEaePlanAction_nonExistingEae_ReturnCode404() {
+	public void testGetEaePlanAction_agentDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaePlanAction(789);
+		ResponseEntity<String> result = controller.getEaePlanAction(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -809,9 +775,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaePlanAction(789);
+		ResponseEntity<String> result = controller.getEaePlanAction(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -821,22 +788,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testSetEaePlanAction_nonExistingEae_ReturnCode404() throws IllegalStateException, SecurityException, SystemException {
+	public void testSetEaePlanAction_evaluateurDoesNotHaveRight_ReturnCode403() throws IllegalStateException, SecurityException, SystemException {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.setEaePlanAction(789, 0, null);
+		ResponseEntity<String> result = controller.setEaePlanAction(789, 900000, null);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -859,6 +821,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaePlanAction(789, 0, json);
@@ -891,6 +854,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaePlanAction(789, 0, json);
@@ -904,22 +868,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testGetEaeEvolution_nonExistingEae_ReturnCode404() {
+	public void testGetEaeEvolution_agentDoesNotHaveRight_ReturnCode403() {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeEvolution(789);
+		ResponseEntity<String> result = controller.getEaeEvolution(789, 900000);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -940,9 +899,10 @@ public class EvaluationControllerTest {
 		
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
-		ResponseEntity<String> result = controller.getEaeEvolution(789);
+		ResponseEntity<String> result = controller.getEaeEvolution(789, 900000);
 		
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -952,22 +912,17 @@ public class EvaluationControllerTest {
 	}
 	
 	@Test
-	public void testSetEaeEvolution_nonExistingEae_ReturnCode404() throws IllegalStateException, SecurityException, SystemException {
+	public void testSetEaeEvolution_evaluateurDoesNotHaveRight_ReturnCode403() throws IllegalStateException, SecurityException, SystemException {
 		// Given
 		EvaluationController controller = new EvaluationController();
-		
-		// Mock the Eae find static method to return our null eae
-		Eae eaeToReturn = null;
-
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
-		ResponseEntity<String> result = controller.setEaeEvolution(789, 0, null);
+		ResponseEntity<String> result = controller.setEaeEvolution(789, 900000, null);
 		
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertFalse(result.hasBody());
 	}
 	
@@ -990,6 +945,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvolution(789, 0, json);
@@ -1022,6 +978,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvolution(789, 0, json);
@@ -1055,6 +1012,7 @@ public class EvaluationControllerTest {
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvolution(789, 0, json);

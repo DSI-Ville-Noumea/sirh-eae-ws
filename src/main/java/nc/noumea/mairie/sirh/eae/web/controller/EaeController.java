@@ -5,6 +5,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
+import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
@@ -33,6 +34,9 @@ public class EaeController {
 	
 	@Autowired
 	private IAgentMatriculeConverterService agentMatriculeConverterService;
+	
+	@Autowired
+	private IEaeSecurityProvider eaeSecurityProvider;
 		
 	@ResponseBody
 	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
@@ -74,6 +78,11 @@ public class EaeController {
 		if (agentEaes.size() > 1)
 			previousEae = agentEaes.get(1);
 		
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(lastEae.getIdEae(), idAgent);
+		
+		if (response != null)
+			return response;
+		
 		try {
 			eaeService.initializeEae(lastEae, previousEae);
 		} catch (EaeServiceException e) {
@@ -87,13 +96,13 @@ public class EaeController {
 	@RequestMapping(value = "resetEae", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+			
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
 		
-//		Integer convertedIdAgent = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
-    	
+		if (response != null)
+			return response;
+		
 		Eae eaeToReset = eaeService.getEae(idEae);
-		
-		if (eaeToReset == null)
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		
 		try {
 			eaeService.resetEaeEvaluateur(eaeToReset);
@@ -109,12 +118,14 @@ public class EaeController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam("idDelegataire") int idDelegataire) {
 		
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		
+		if (response != null)
+			return response;
+		
 		Integer convertedIdAgentDelegataire = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idDelegataire);
     	
 		Eae eae = eaeService.getEae(idEae);
-		
-		if (eae == null)
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		
 		try {
 			eaeService.setDelegataire(eae, convertedIdAgentDelegataire);

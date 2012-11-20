@@ -26,7 +26,7 @@ public class EaeReportingController {
 	
 	@ResponseBody
 	@RequestMapping(value = "eae", produces = "application/pdf", method = RequestMethod.GET)
-	public ResponseEntity<byte []> getEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam(required = false, value = "write", defaultValue = "false") boolean writeToFilesystem) {
+	public ResponseEntity<byte []> getEaeIdentifitcation(@RequestParam("idEae") int idEae) {
 
 		Eae eae = Eae.findEae(idEae);
 		
@@ -36,11 +36,7 @@ public class EaeReportingController {
 		byte[] responseData = null;
 		
 		try {
-			if (writeToFilesystem) {
-				eaeReportingService.saveEaeReportToRemoteFileSystem(idEae);
-			}
-			else
-				responseData = eaeReportingService.getEaeReportAsByteArray(idEae, "PDF");
+			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, "PDF");
 		} catch (EaeReportingServiceException e) {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<byte []>(HttpStatus.INTERNAL_SERVER_ERROR);
