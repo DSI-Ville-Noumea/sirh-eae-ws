@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
@@ -10,6 +12,7 @@ import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+@XmlRootElement
 public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEvaluationDto> {
 
 	private int idEae;

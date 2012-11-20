@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
@@ -17,6 +19,7 @@ import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+@XmlRootElement
 public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSONSerialize {
 
 	private int idEae;

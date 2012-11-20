@@ -23,13 +23,9 @@ import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
-
-import org.springframework.roo.addon.json.RooJson;
-
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
-@RooJson
 @XmlRootElement
 public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<EaeIdentificationDto> {
 

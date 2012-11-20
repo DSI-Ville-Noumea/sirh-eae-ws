@@ -3,12 +3,8 @@ package nc.noumea.mairie.sirh.eae.dto;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-
-import org.springframework.roo.addon.json.RooJson;
-
 import flexjson.JSONSerializer;
 
-@RooJson
 public class EaeDashboardItemDto {
 	
 	private String nom;

@@ -5,9 +5,6 @@ import java.util.Date;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
-import org.springframework.roo.addon.json.RooJson;
-
-@RooJson
 public class EaeIdentificationSituationDto {
 
 	private String directionService;

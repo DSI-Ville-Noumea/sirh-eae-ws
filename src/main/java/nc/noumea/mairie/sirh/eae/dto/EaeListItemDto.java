@@ -15,12 +15,8 @@ import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
-
-import org.springframework.roo.addon.json.RooJson;
-
 import flexjson.JSONSerializer;
 
-@RooJson
 public class EaeListItemDto {
 
 	private Integer idEae;

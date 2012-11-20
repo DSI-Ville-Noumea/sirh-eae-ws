@@ -3,6 +3,8 @@ package nc.noumea.mairie.sirh.eae.dto.planAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.dto.IJSONDeserialize;
@@ -10,6 +12,7 @@ import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+@XmlRootElement
 public class EaePlanActionDto implements IJSONDeserialize<EaePlanActionDto>, IJSONSerialize {
 
 	private int idEae;

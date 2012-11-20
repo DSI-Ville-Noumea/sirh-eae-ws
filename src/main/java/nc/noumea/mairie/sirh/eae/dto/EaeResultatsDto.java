@@ -3,6 +3,8 @@ package nc.noumea.mairie.sirh.eae.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
@@ -11,6 +13,7 @@ import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+@XmlRootElement
 public class EaeResultatsDto implements IJSONSerialize, IJSONDeserialize<EaeResultatsDto> {
 
 	private int idEae;
