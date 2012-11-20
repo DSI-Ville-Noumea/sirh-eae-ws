@@ -11,7 +11,7 @@
  
  [[2]] Modify the JNDI resource for jdbc/SIRH into this a HSQL DB datasource (make sure the file path is correct)
  --------------------------------------
- <Resource name="jdbc/SIRH"
+ <Resource name="jdbc/EAE_WS_DS2"
                 auth="Container" 
                 driverClassName="org.hsqldb.jdbcDriver" 
                 maxActive="8" 
@@ -47,10 +47,10 @@
  
  [[6]] Modify the oracle connection context to a new local one (Alphalog's) with a EAE user (password EAE)
  --------------------------------------
- <Resource name="jdbc/SIRH_EAE_WS" auth="Container" type="javax.sql.DataSource" 
+ <Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource" 
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" 
 		maxWait="10000" initialSize="1" username="EAE" password="EAE" driverClassName="oracle.jdbc.driver.OracleDriver" 
-		url="jdbc:oracle:thin:@192.168.2.7:1521:XE" poolPreparedStatements="true" />
+		url="***REMOVED***" poolPreparedStatements="true" />
  --------------------------------------
  
  [[7]] Execute the create database script {{{../doc/environments/dev/create_insert_0.1.5-SNAPSHOT.sql}create_insert_0.1.5-SNAPSHOT.sql}}
