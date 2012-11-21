@@ -16,6 +16,7 @@ import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class EaeController {
 	
 	private Logger logger = LoggerFactory.getLogger(EaeController.class);
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Autowired
 	private IEaeService eaeService;
@@ -92,7 +96,7 @@ public class EaeController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_INITIALISE_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -113,7 +117,7 @@ public class EaeController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_REINITIALISE_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -136,7 +140,7 @@ public class EaeController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_DELEGATAIRE_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -202,7 +206,7 @@ public class EaeController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_FINALISE_OK", null, null), HttpStatus.OK);
 	}
 }
 	

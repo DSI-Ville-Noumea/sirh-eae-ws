@@ -18,6 +18,7 @@ import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/evaluation")
 public class EvaluationController {
 
+	@Autowired
+	private MessageSource messageSource;
+	
 	@Autowired
 	private IEvaluationService evaluationService;
 	
@@ -84,7 +88,7 @@ public class EvaluationController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_IDENTIFICATION_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -149,7 +153,7 @@ public class EvaluationController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_RESULTATS_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -192,7 +196,7 @@ public class EvaluationController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_APPRECIATIONS_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -239,7 +243,7 @@ public class EvaluationController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_EVALUATION_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -283,7 +287,7 @@ public class EvaluationController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_AUTO_EVALUATION_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -327,7 +331,7 @@ public class EvaluationController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_PLAN_ACTION_OK", null, null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
@@ -374,6 +378,6 @@ public class EvaluationController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(messageSource.getMessage("EAE_EVOLUTION_OK", null, null), HttpStatus.OK);
 	}
 }

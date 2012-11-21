@@ -75,6 +75,13 @@
 		<property name="dataSource" ref="sirhDb400DataSource" />
 	</bean>
 	
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename">
+			<value>messages</value>
+		</property>
+	</bean>
+	
 	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_BASE_URL" expected-type="java.lang.String"/>
 	
 	<jee:jndi-lookup id="targetReportPath" jndi-name="EAE_TARGET_REPORT_PATH" expected-type="java.lang.String"/>

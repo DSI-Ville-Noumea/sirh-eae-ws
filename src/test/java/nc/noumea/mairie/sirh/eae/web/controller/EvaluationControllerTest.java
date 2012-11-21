@@ -31,6 +31,7 @@ import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
@@ -41,10 +42,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 public class EvaluationControllerTest {
 
 	IEaeSecurityProvider eaeSecurityProvider;
+	MessageSource messageSourceMock;
 	
 	@Before
 	public void SetUp() {
 		eaeSecurityProvider = Mockito.mock(IEaeSecurityProvider.class);
+		messageSourceMock = Mockito.mock(MessageSource.class);
 	}
 	
 	@Test
@@ -126,6 +129,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 0, json);
@@ -293,6 +297,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeResultats(789, 0, json);
@@ -416,6 +421,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAppreciations(789, 0, json);
@@ -540,6 +546,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvaluation(789, 0, json);
@@ -698,6 +705,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 0, json);
@@ -822,6 +830,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaePlanAction(789, 0, json);
@@ -946,6 +955,7 @@ public class EvaluationControllerTest {
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvolution(789, 0, json);

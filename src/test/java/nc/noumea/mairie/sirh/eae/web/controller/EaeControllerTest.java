@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -40,10 +41,12 @@ public class EaeControllerTest {
 	private static IAgentMatriculeConverterService agentMatriculeMock;
 
 	IEaeSecurityProvider eaeSecurityProvider;
+	MessageSource messageSourceMock;
 	
 	@Before
 	public void SetUp() {
 		eaeSecurityProvider = Mockito.mock(IEaeSecurityProvider.class);
+		messageSourceMock = Mockito.mock(MessageSource.class);
 	}
 	
 	@BeforeClass
@@ -117,6 +120,7 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.initializeEae(agentId, agentEvalueId);
@@ -252,6 +256,7 @@ public class EaeControllerTest {
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.resetEaeEvaluateur(eaeId, agentId);
@@ -327,6 +332,7 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
@@ -485,7 +491,7 @@ public class EaeControllerTest {
 	}
 	
 	@Test
-	public void testFinalizeEae_EaeIsFinalized_Return400() throws EaeServiceException {
+	public void testFinalizeEae_EaeIsFinalized_Return200() throws EaeServiceException {
 		// Given
 		Eae eae = spy(new Eae());
 		Mockito.doNothing().when(eae).flush();
@@ -497,6 +503,7 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 		
 		// When
 		ResponseEntity<String> result = controller.finalizeEae(1, 1, "{}");
