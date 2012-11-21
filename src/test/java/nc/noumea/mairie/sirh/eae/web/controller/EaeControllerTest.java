@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
@@ -439,5 +441,67 @@ public class EaeControllerTest {
 		// Then
 		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
 		assertEquals("message", result.getBody());
+	}
+	
+	@Test
+	public void testFinalizeEae_AgentDoesNotHaveRight_Return403() {
+		// Given
+		when(eaeSecurityProvider.checkEaeWriteRight(1, 900)).thenReturn(new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		
+		// When
+		ResponseEntity<String> result = controller.finalizeEae(1, 900, null);
+		
+		// Then
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		assertEquals("message", result.getBody());
+	}
+	
+	@Test
+	public void testFinalizeEae_EaeCantBeFinalized_Return409() throws EaeServiceException {
+		// Given
+		Eae eae = spy(new Eae());
+		Mockito.doNothing().when(eae).clear();
+		
+		EaeServiceException ex = new EaeServiceException("message");
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.getEae(1)).thenReturn(eae);
+		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock).finalizEae(Mockito.eq(eae), Mockito.eq(1), Mockito.any(EaeFinalizationDto.class));
+
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.finalizeEae(1, 1, "{}");
+		
+		// Then
+		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+		assertEquals("message", result.getBody());
+	}
+	
+	@Test
+	public void testFinalizeEae_EaeIsFinalized_Return400() throws EaeServiceException {
+		// Given
+		Eae eae = spy(new Eae());
+		Mockito.doNothing().when(eae).flush();
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.getEae(1)).thenReturn(eae);
+
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.finalizeEae(1, 1, "{}");
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
 	}
 }

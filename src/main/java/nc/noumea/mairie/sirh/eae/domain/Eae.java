@@ -121,6 +121,9 @@ public class Eae {
     @JoinColumn(name = "ID_CAMPAGNE_EAE")
     private EaeCampagne eaeCampagne;
     
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<EaeFinalisation> eaeFinalisations = new HashSet<EaeFinalisation>();
+    
     /*
      * Transient properties (will be populated by AS400 entity manager)
      */        

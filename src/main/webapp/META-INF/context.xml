@@ -45,10 +45,14 @@
 		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea" />
 
+<!-- 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String" -->
+<!-- 		description="SIRH WS endpoint url for EAEs" -->
+<!-- 		value="http://ws-qual.sirh.site-mairie.noumea.nc/eaes/listEaesByCampagne" override="false" /> -->
+
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs"
-		value="http://ws-qual.sirh.site-mairie.noumea.nc/eaes/listEaesByCampagne" override="false" />
-
+		value="http://localhost:8080/sirhws/eaes/listEaesByCampagne" override="false" />
+		
 	<Environment name="EAE_TARGET_REPORT_PATH" type="java.lang.String"
 		description="commons-vfs compatible url for generated reports target path"
 		value="c:\Alphalog\Mairie\sirh-eae-ws\" override="false" />

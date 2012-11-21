@@ -51,9 +51,11 @@ public interface IEaeService {
 	 * Proceeds to the finalization of the given Eae (setting its Etat to F) as well as
 	 * logging for audit trail purposes
 	 * @param eae to finalize
-	 * @return
+	 * @param idAgent finalizing the Eae
+	 * @param dto
+	 * @throws EaeServiceException
 	 */
-	void finalizEae(Eae eae, EaeFinalizationDto dto) throws EaeServiceException;
+	void finalizEae(Eae eae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException;
 	
 	/**
 	 * Sets the Delegataire of an Eae if existing in SIRH Agents

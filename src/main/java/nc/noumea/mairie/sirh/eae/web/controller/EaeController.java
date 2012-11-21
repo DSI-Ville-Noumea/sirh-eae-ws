@@ -4,6 +4,7 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -177,6 +179,30 @@ public class EaeController {
 		String jsonResult = dto.serializeInJSON();
 		
 		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "finalizeEae", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	@Transactional(value = "eaeTransactionManager")
+	public ResponseEntity<String> finalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeFinalizationDtoJson) {
+		
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		
+		if (response != null)
+			return response;
+		
+		Eae eae = eaeService.getEae(idEae);
+		
+		try {
+			EaeFinalizationDto dto = new EaeFinalizationDto().deserializeFromJSON(eaeFinalizationDtoJson);
+			eaeService.finalizEae(eae, agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent), dto);
+			eae.flush();
+		} catch (EaeServiceException e) {
+			eae.clear();
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }
 	

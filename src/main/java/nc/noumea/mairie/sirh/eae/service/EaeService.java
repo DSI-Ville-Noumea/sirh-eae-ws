@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,11 @@ import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
@@ -41,6 +44,9 @@ public class EaeService implements IEaeService {
 	
 	@Autowired
 	private ISirhWsConsumer sirhWsConsumer;
+	
+	@Autowired
+	private IAgentMatriculeConverterService agentMatriculeConverterService;
 	
 	/*
 	 * Interface implementation
@@ -207,12 +213,28 @@ public class EaeService implements IEaeService {
 	}
 	
 	@Override
-	public void finalizEae(Eae eae, EaeFinalizationDto dto) throws EaeServiceException {
+	public void finalizEae(Eae eae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException {
 		
 		if (eae == null)
 			return;
 
-	
+		if (eae.getEtat() != EaeEtatEnum.EC)
+			throw new EaeServiceException(String.format("Impossible de finaliser l'Eae car son état est '%s'.", eae.getEtat()));
+		
+		Date finalisationDate = helper.getCurrentDate();
+		
+		eae.setEtat(EaeEtatEnum.F);
+		eae.setDateFinalisation(finalisationDate);
+		
+		EaeFinalisation finalisation = new EaeFinalisation();
+		finalisation.setEae(eae);
+		eae.getEaeFinalisations().add(finalisation);
+		finalisation.setIdAgent(agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent));
+		finalisation.setDateFinalisation(finalisationDate);
+		finalisation.setIdGedDocument(dto.getIdDocument());
+		finalisation.setVersionGedDocument(dto.getVersionDocument());
+		finalisation.setCommentaire(new EaeCommentaire());
+		finalisation.getCommentaire().setText(dto.getCommentaire());
 	}
 	
 	/*

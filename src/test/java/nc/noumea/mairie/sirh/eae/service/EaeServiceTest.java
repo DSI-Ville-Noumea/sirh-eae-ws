@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -27,11 +28,13 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
@@ -788,15 +791,65 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testFinalizeEae_EaeIsNull() {
+	public void testFinalizeEae_EaeIsEC_SetEaeAndCreateEaeFinalisation() throws EaeServiceException {
 		
 		// Given
-		Eae eae = null;
+		Eae eae = new Eae();
+		eae.setEtat(EaeEtatEnum.EC);
+		Integer idAgent = 90899;
+		
+		EaeFinalizationDto dto = new EaeFinalizationDto();
+		dto.setCommentaire("le commentaire");
+		dto.setIdDocument("çççdikjnvekusvb");
+		dto.setVersionDocument("10.1");
+
+		IAgentMatriculeConverterService converterMock = Mockito.mock(IAgentMatriculeConverterService.class);
+		when(converterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(900899);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "agentMatriculeConverterService", converterMock);
 		
 		// When
-		
+		service.finalizEae(eae, idAgent, dto);
 		
 		// Then
+		assertEquals(helperMock.getCurrentDate(), eae.getDateFinalisation());
+		assertEquals(EaeEtatEnum.F, eae.getEtat());
 		
+		EaeFinalisation finalisation = eae.getEaeFinalisations().iterator().next();
+		assertEquals(helperMock.getCurrentDate(), finalisation.getDateFinalisation());
+		assertEquals(900899, finalisation.getIdAgent());
+		assertEquals("çççdikjnvekusvb", finalisation.getIdGedDocument());
+		assertEquals("10.1", finalisation.getVersionGedDocument());
+		assertEquals("le commentaire", finalisation.getCommentaire().getText());
+		assertEquals(eae, finalisation.getEae());
+	}
+	
+	@Test
+	public void testFinalizeEae_EaeIsNotEC_ThrowException() {
+		
+		// Given
+		Eae eae = new Eae();
+		eae.setEtat(EaeEtatEnum.C);
+		Integer idAgent = 90899;
+		
+		EaeFinalizationDto dto = new EaeFinalizationDto();
+		dto.setCommentaire("le commentaire");
+		dto.setIdDocument("çççdikjnvekusvb");
+		dto.setVersionDocument("10.1");
+
+		EaeService service = new EaeService();
+		
+		try {
+			// When
+			service.finalizEae(eae, idAgent, dto);
+		} catch(EaeServiceException ex) {
+			// Then
+			assertEquals("Impossible de finaliser l'Eae car son état est 'Créé'.", ex.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown an exception");
 	}
 }
