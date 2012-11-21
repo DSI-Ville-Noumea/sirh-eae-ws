@@ -338,3 +338,4 @@ help
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-20 08:16:23
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-20 16:21:08
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-21 08:17:36
+entity jpa --class ~.sirh.eae.domain.EaeCampagne --table EAE_CAMPAGNE_EAE --persistenceUnit eaePersistenceUnit --identifierColumn ID_CAMPAGNE_EAE --identifierField idCampagneEae --identifierType java.lang.Integer

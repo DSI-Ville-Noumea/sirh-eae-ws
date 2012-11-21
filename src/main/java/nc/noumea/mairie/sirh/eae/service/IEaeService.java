@@ -4,7 +4,9 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
+import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 
 public interface IEaeService {
 
@@ -36,6 +38,22 @@ public interface IEaeService {
 	 * @throws EaeServiceException
 	 */
 	void resetEaeEvaluateur(Eae eaeToReset) throws EaeServiceException;
+	
+	/**
+	 * Retrieves the necessary information for the final EAE document to be uploaded
+	 * in the document repository (today sharepoint)
+	 * @param eae
+	 * @return
+	 */
+	FinalizationInformationDto getFinalizationInformation(Eae eae);
+	
+	/**
+	 * Proceeds to the finalization of the given Eae (setting its Etat to F) as well as
+	 * logging for audit trail purposes
+	 * @param eae to finalize
+	 * @return
+	 */
+	void finalizEae(Eae eae, EaeFinalizationDto dto) throws EaeServiceException;
 	
 	/**
 	 * Sets the Delegataire of an Eae if existing in SIRH Agents

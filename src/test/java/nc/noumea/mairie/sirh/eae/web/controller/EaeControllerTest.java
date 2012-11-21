@@ -15,6 +15,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
+import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
 import nc.noumea.mairie.sirh.eae.service.AgentMatriculeConverterServiceException;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
@@ -400,5 +401,43 @@ public class EaeControllerTest {
 		JSONDeserializer<List<EaeDashboardItemDto>> deserializer = new JSONDeserializer<List<EaeDashboardItemDto>>();
 		List<EaeDashboardItemDto> returnedResult = deserializer.deserialize(result.getBody().toString());
 		assertEquals(1, returnedResult.size());
+	}
+	
+	@Test
+	public void testGetFinalizationInformation_EaeExistsAndServiceReturnsData_Return200() {
+		// Given
+		Eae eae = new Eae();
+		FinalizationInformationDto resultOfService = new FinalizationInformationDto();
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.getEae(1)).thenReturn(eae);
+		when(eaeServiceMock.getFinalizationInformation(eae)).thenReturn(resultOfService);
+
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		
+		// When
+		ResponseEntity<String> result = controller.getFinalizationInformation(1, 0);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertTrue(result.hasBody());
+	}
+	
+	@Test
+	public void testGetFinalizationInformation_AgentDoesNotHaveRight_Return403() {
+		// Given
+		when(eaeSecurityProvider.checkEaeWriteRight(1, 900)).thenReturn(new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		
+		// When
+		ResponseEntity<String> result = controller.getFinalizationInformation(1, 900);
+		
+		// Then
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		assertEquals("message", result.getBody());
 	}
 }

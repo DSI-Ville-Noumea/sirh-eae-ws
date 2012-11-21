@@ -117,6 +117,10 @@ public class Eae {
     @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private EaeEvolution eaeEvolution;
     
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_CAMPAGNE_EAE")
+    private EaeCampagne eaeCampagne;
+    
     /*
      * Transient properties (will be populated by AS400 entity manager)
      */        

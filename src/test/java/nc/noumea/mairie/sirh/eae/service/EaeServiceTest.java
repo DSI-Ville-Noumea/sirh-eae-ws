@@ -22,6 +22,7 @@ import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
@@ -32,11 +33,13 @@ import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
+import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -717,5 +720,83 @@ public class EaeServiceTest {
 		assertEquals("?", result.get(1).getNom());
 		assertEquals("?", result.get(1).getPrenom());
 		assertEquals(2, result.get(1).getNonAffecte());
+	}
+	
+	@Test
+	public void testGetFinalizationInformation_EaeisNull_returnNull() {
+		
+		// Given 
+		Eae eae = null;
+		
+		EaeService service = new EaeService();
+		
+		// When
+		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
+		
+		// Then
+		assertNull(dto);
+	}
+	
+	@Test
+	public void testGetFinalizationInformation_ReturnDto() {
+		
+		// Given 
+		EaeCampagne camp = new EaeCampagne();
+		camp.setAnnee(2014);
+		Eae eae = new Eae();
+		eae.setEaeEvalue(new EaeEvalue());
+		eae.setIdEae(7896);
+		eae.setEaeCampagne(camp);
+		
+		IAgentService agentServiceMock = Mockito.mock(IAgentService.class);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		
+		// When
+		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
+		
+		// Then
+		assertNotNull(dto);
+		assertEquals(7896, dto.getIdEae());
+	}
+	
+	@Test
+	public void testGetFinalizationInformation_ReturnDto_CallAgentService() {
+		
+		// Given 
+		EaeCampagne camp = new EaeCampagne();
+		camp.setAnnee(2014);
+		Eae eae = new Eae();
+		eae.setEaeEvalue(new EaeEvalue());
+		eae.setIdEae(7896);
+		eae.setEaeCampagne(camp);
+		
+		IAgentService agentServiceMock = Mockito.mock(IAgentService.class);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		
+		// When
+		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
+		
+		// Then
+		assertNotNull(dto);
+		assertEquals(7896, dto.getIdEae());
+		
+		verify(agentServiceMock, times(1)).fillEaeWithAgents(eae);
+	}
+	
+	@Test
+	public void testFinalizeEae_EaeIsNull() {
+		
+		// Given
+		Eae eae = null;
+		
+		// When
+		
+		
+		// Then
+		
 	}
 }

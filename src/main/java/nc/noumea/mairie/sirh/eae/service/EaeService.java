@@ -18,7 +18,9 @@ import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
+import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
@@ -193,6 +195,25 @@ public class EaeService implements IEaeService {
 		return result;
 	}
 	
+	@Override
+	public FinalizationInformationDto getFinalizationInformation(Eae eae) {
+
+		if (eae == null)
+			return null;
+		
+		agentService.fillEaeWithAgents(eae);
+		
+		return new FinalizationInformationDto(eae);
+	}
+	
+	@Override
+	public void finalizEae(Eae eae, EaeFinalizationDto dto) throws EaeServiceException {
+		
+		if (eae == null)
+			return;
+
+	
+	}
 	
 	/*
 	 * Finders methods
