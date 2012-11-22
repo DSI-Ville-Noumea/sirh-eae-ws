@@ -3,13 +3,16 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
+import nc.noumea.mairie.sirh.eae.service.EaeReportingServiceException;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
+import nc.noumea.mairie.sirh.eae.service.IEaeReportingService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 
@@ -17,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -44,6 +48,9 @@ public class EaeController {
 	
 	@Autowired
 	private IEaeSecurityProvider eaeSecurityProvider;
+	
+	@Autowired
+	private IEaeReportingService eaeReportingService;
 		
 	@ResponseBody
 	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
@@ -207,6 +214,49 @@ public class EaeController {
 		}
 		
 		return new ResponseEntity<String>(messageSource.getMessage("EAE_FINALISE_OK", null, null), HttpStatus.OK);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@ResponseBody
+	@RequestMapping(value = "downloadEae", method = RequestMethod.GET)
+	public ResponseEntity downloadEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam(value = "format", required = false) String format) {
+
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		
+		if (response != null)
+			return response;
+		
+		byte[] responseData = null;
+		EaeReportFormatEnum formatValue = null;
+		
+		try {
+			formatValue = eaeReportingService.getFileFormatFromString(format);
+			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, formatValue);
+		} catch (EaeReportingServiceException e) {
+			logger.error(e.getMessage(), e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+		}
+		
+		return new ResponseEntity<byte []>(responseData, getHeadersForFileFormat(formatValue), HttpStatus.OK);
+	}
+	
+	private HttpHeaders getHeadersForFileFormat(EaeReportFormatEnum format) {
+		
+		String contentType;
+		
+		switch(format) {
+			default:
+			case PDF:
+				contentType = "application/pdf";
+				break;
+			case DOC:
+				contentType = "application/msword";
+		}
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", contentType);
+		
+		return headers;
 	}
 }
 	

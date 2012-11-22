@@ -4,6 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
@@ -46,7 +48,7 @@ public class EaeReportingService implements IEaeReportingService {
 	@Override
 	public void saveEaeReportToRemoteFileSystem(int idEae) throws EaeReportingServiceException {
 		
-		byte[] fileAsBytes = getEaeReportAsByteArray(idEae, "PDF");
+		byte[] fileAsBytes = getEaeReportAsByteArray(idEae, EaeReportFormatEnum.PDF);
 		
 		saveFileToRemoteFileSystem(fileAsBytes, "filename.pdf");
 	}
@@ -84,21 +86,38 @@ public class EaeReportingService implements IEaeReportingService {
 	}
 	
 	@Override
-	public byte[] getEaeReportAsByteArray(int idEae, String format) throws EaeReportingServiceException {
+	public byte[] getEaeReportAsByteArray(int idEae, EaeReportFormatEnum format) throws EaeReportingServiceException {
 		
 		ClientResponse response = createAndFireRequest(idEae, format);
 		
 		return readResponseAsByteArray(response, idEae, format);
 	}
 
-	public ClientResponse createAndFireRequest(int idEae, String format) {
+	@Override
+	public EaeReportFormatEnum getFileFormatFromString(String format) throws EaeReportingServiceException {
+		
+		EaeReportFormatEnum formatValue;
+		
+		if (format == null || format.equals(""))
+			formatValue = EaeReportFormatEnum.PDF;
+		else {
+			try {
+				formatValue = EaeReportFormatEnum.valueOf(format);
+			} catch(IllegalArgumentException ex) {
+				throw new EaeReportingServiceException(String.format("Report file format not supported '%s'.", format));
+			}
+		}
+		return formatValue;
+	}
+
+	public ClientResponse createAndFireRequest(int idEae, EaeReportFormatEnum format) {
 		
 		Client client = Client.create();
 
 		WebResource webResource = client
 				.resource(reportingBaseUrl + REPORT_PAGE)
 				.queryParam(PARAM_REPORT, REPORT_SERVER_PATH + "eae.rptdesign")
-				.queryParam(PARAM_FORMAT, format)
+				.queryParam(PARAM_FORMAT, format.toString())
 				.queryParam("idEae", String.valueOf(idEae));
 
 		ClientResponse response = webResource.get(ClientResponse.class);
@@ -106,7 +125,7 @@ public class EaeReportingService implements IEaeReportingService {
 		return response;
 	}
 
-	public byte[] readResponseAsByteArray(ClientResponse response, int idEae, String format) throws EaeReportingServiceException {
+	public byte[] readResponseAsByteArray(ClientResponse response, int idEae, EaeReportFormatEnum format) throws EaeReportingServiceException {
 		
 		if (response.getStatus() != HttpStatus.OK.value() || 
 			!response.getHeaders().get("Content-Type").contains("application/pdf")) {

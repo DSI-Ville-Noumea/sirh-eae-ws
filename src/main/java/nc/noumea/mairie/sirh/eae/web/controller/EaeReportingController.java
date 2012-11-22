@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
 import nc.noumea.mairie.sirh.eae.service.EaeReportingServiceException;
 import nc.noumea.mairie.sirh.eae.service.IEaeReportingService;
 
@@ -36,7 +37,7 @@ public class EaeReportingController {
 		byte[] responseData = null;
 		
 		try {
-			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, "PDF");
+			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, EaeReportFormatEnum.PDF);
 		} catch (EaeReportingServiceException e) {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<byte []>(HttpStatus.INTERNAL_SERVER_ERROR);
