@@ -55,9 +55,9 @@ public class EaeIdentificationDtoTest {
 		diplomes.add(new EaeDiplome());
 		eae.setEaeDiplomes(diplomes);
 		
-		Set<EaeParcoursPro> parcours = new HashSet<EaeParcoursPro>();
-		parcours.add(new EaeParcoursPro());
-		eae.setEaeParcoursPros(parcours);
+		EaeParcoursPro pro = new EaeParcoursPro();
+		pro.setDateDebut(c.getTime());
+		eae.getEaeParcoursPros().add(pro);
 		
 		Set<EaeFormation> formations = new HashSet<EaeFormation>();
 		formations.add(new EaeFormation());
@@ -79,11 +79,45 @@ public class EaeIdentificationDtoTest {
 		assertEquals(1, dto.getDiplomes().size());
 		assertEquals(diplomes.iterator().next(), dto.getDiplomes().get(0));
 		assertEquals(1, dto.getParcoursPros().size());
-		assertEquals(parcours.iterator().next(), dto.getParcoursPros().get(0));
 		assertEquals(1, dto.getFormations().size());
 		assertEquals(formations.iterator().next(), dto.getFormations().get(0));
 		assertEquals(EaeAgentPositionAdministrativeEnum.AC, dto.getPosition());
 		assertNotNull(dto.getSituation());
+	}
+	
+	@Test
+	public void testEaeIdentificationDto_CreateParcoursPro_FromEae() {
+		// Given 
+		Eae eae = new Eae();
+		eae.setIdEae(120);
+		EaeFichePoste fp = new EaeFichePoste();
+		fp.setPrimary(true);
+		eae.getEaeFichePostes().add(fp);
+		eae.setEaeEvalue(new EaeEvalue());
+		
+		EaeParcoursPro pro = new EaeParcoursPro();
+		pro.setDateDebut(new DateTime(2005, 04, 19, 0, 0, 0, 0).toDate());
+		pro.setLibelleParcoursPro("poste de 2005");
+		eae.getEaeParcoursPros().add(pro);
+		
+		EaeParcoursPro pro2 = new EaeParcoursPro();
+		pro2.setDateDebut(new DateTime(2004, 10, 30, 0, 0, 0, 0).toDate());
+		pro2.setLibelleParcoursPro("poste de 2004");
+		eae.getEaeParcoursPros().add(pro2);
+		
+		EaeParcoursPro pro3 = new EaeParcoursPro();
+		pro3.setDateDebut(new DateTime(2010, 06, 17, 0, 0, 0, 0).toDate());
+		pro3.setLibelleParcoursPro("poste de 2010");
+		eae.getEaeParcoursPros().add(pro3);
+		
+		// When
+		EaeIdentificationDto dto = new EaeIdentificationDto(eae);
+		
+		// Then
+		assertEquals(3, dto.getParcoursPros().size());
+		assertEquals("17/06/2010 - poste de 2010", dto.getParcoursPros().get(0));
+		assertEquals("19/04/2005 - poste de 2005", dto.getParcoursPros().get(1));
+		assertEquals("30/10/2004 - poste de 2004", dto.getParcoursPros().get(2));
 	}
 	
 	@Test
@@ -104,7 +138,7 @@ public class EaeIdentificationDtoTest {
 		assertEquals("[evaluateurs,dateEntreeFonction]", includes.get(6).toString());
 		assertEquals("[agent]", includes.get(7).toString());
 		assertEquals("[diplomes]", includes.get(8).toString());
-		assertEquals("[parcoursPros]", includes.get(9).toString());
+		assertEquals("[parcoursPros,*]", includes.get(9).toString());
 		assertEquals("[formations]", includes.get(10).toString());
 		assertEquals("[situation,*]", includes.get(11).toString());
 		assertEquals("[statut,*]", includes.get(12).toString());
@@ -169,18 +203,13 @@ public class EaeIdentificationDtoTest {
 		f2.setLibelleFormation("formation 2");
 		dto.getFormations().add(f2);
 
-		EaeParcoursPro p1 = new EaeParcoursPro();
-		p1.setLibelleParcoursPro("parcours 1");
-		dto.getParcoursPros().add(p1);
-		
-		EaeParcoursPro p2 = new EaeParcoursPro();
-		p2.setLibelleParcoursPro("parcours 2");
-		dto.getParcoursPros().add(p2);
+		dto.getParcoursPros().add("01/01/2012 - Parcours 2");
+		dto.getParcoursPros().add("01/01/2007 - Parcours 1");
 		
 		dto.setSituation(new EaeIdentificationSituationDto());
 		dto.setStatut(new EaeIdentificationStatutDto());
 		
-		String expectedResult = "{\"agent\":{\"idAgent\":12,\"nom\":\"michelle\",\"nomJeuneFille\":null,\"prenom\":\"michmich\",\"dateNaissance\":\"/Date(-407415600000+1100)/\"},\"dateEntretien\":\"/Date(1337223959000+1100)/\",\"diplomes\":[\"diplome 1\",\"diplome 2\"],\"evaluateurs\":[{\"idAgent\":177,\"nom\":\"bonno\",\"prenom\":\"patrice\",\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[\"formation 1\",\"formation 2\"],\"idEae\":789,\"parcoursPros\":[\"parcours 1\",\"parcours 2\"],\"position\":null,\"situation\":{\"dateEntreeAdministration\":null,\"dateEntreeFonction\":null,\"dateEntreeFonctionnaire\":null,\"directionService\":null,\"emploi\":null,\"fonction\":null},\"statut\":{\"ancienneteEchelonJours\":null,\"cadre\":null,\"categorie\":null,\"classification\":null,\"dateEffet\":null,\"echelon\":null,\"grade\":null,\"nouvEchelon\":null,\"nouvGrade\":null,\"statut\":null,\"statutPrecision\":null}}";
+		String expectedResult = "{\"agent\":{\"idAgent\":12,\"nom\":\"michelle\",\"nomJeuneFille\":null,\"prenom\":\"michmich\",\"dateNaissance\":\"/Date(-407415600000+1100)/\"},\"dateEntretien\":\"/Date(1337223959000+1100)/\",\"diplomes\":[\"diplome 1\",\"diplome 2\"],\"evaluateurs\":[{\"idAgent\":177,\"nom\":\"bonno\",\"prenom\":\"patrice\",\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[\"formation 1\",\"formation 2\"],\"idEae\":789,\"parcoursPros\":[\"01/01/2012 - Parcours 2\",\"01/01/2007 - Parcours 1\"],\"position\":null,\"situation\":{\"dateEntreeAdministration\":null,\"dateEntreeFonction\":null,\"dateEntreeFonctionnaire\":null,\"directionService\":null,\"emploi\":null,\"fonction\":null},\"statut\":{\"ancienneteEchelonJours\":null,\"cadre\":null,\"categorie\":null,\"classification\":null,\"dateEffet\":null,\"echelon\":null,\"grade\":null,\"nouvEchelon\":null,\"nouvGrade\":null,\"statut\":null,\"statutPrecision\":null}}";
 		
 		// When
 		String result = dto.serializeInJSON();
