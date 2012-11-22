@@ -17,7 +17,7 @@
                 maxActive="8" 
                 maxIdle="4"  
                 type="javax.sql.DataSource" 
-				url="jdbc:hsqldb:file:C:\SIRHDB\sirhdb;shutdown=true"
+				url="jdbc:hsqldb:file:/usr/local/tomcat/webapps/sirhdb;shutdown=true"
                 username="sa"
                 password="" 
                 />
