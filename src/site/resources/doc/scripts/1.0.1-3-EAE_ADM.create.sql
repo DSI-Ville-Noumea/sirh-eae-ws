@@ -35,5 +35,5 @@ create table EAE_FINALISATION
 TABLESPACE TS_SIRHR_DATA;
 
 create public synonym EAE_FINALISATION for EAE_FINALISATION;
-grant select, insert, update, delete on EAE_FINALISATION to R_EAE_USR;
+grant select, insert on EAE_FINALISATION to R_EAE_USR;
 grant select on EAE_FINALISATION to R_EAE_READ;
