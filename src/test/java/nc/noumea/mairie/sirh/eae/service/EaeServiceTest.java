@@ -528,6 +528,35 @@ public class EaeServiceTest {
 	}
 	
 	@Test
+	public void testResetEaeEvaluateur_eaeIsEC_AgentShdIsNull_setEtatToNDAndResetEvaluateursToNull() throws EaeServiceException {
+		
+		// Given
+		Eae eaeToDelete = spy(new Eae());
+		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		eaeToDelete.setIdEae(987);
+		eaeToDelete.setEtat(EaeEtatEnum.EC);
+		
+		EaeEvaluateur eval = new EaeEvaluateur();
+		eval.setIdAgent(9009);
+		eaeToDelete.getEaeEvaluateurs().add(eval);
+		
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setIdAgentShd(null);
+		fdp.setPrimary(true);
+		
+		eaeToDelete.getEaeFichePostes().add(fdp);
+		
+		EaeService service = new EaeService();
+
+		// When
+		service.resetEaeEvaluateur(eaeToDelete);
+		
+		// Then
+		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
+		assertEquals(0, eaeToDelete.getEaeEvaluateurs().size());
+	}
+	
+	@Test
 	public void testSetDelegataire_DelegataireExists_SetAgentId() throws EaeServiceException {
 		// Given
 		Eae eae = new Eae();

@@ -77,6 +77,38 @@ public class EaeFichePosteDtoTest {
 	}
 	
 	@Test
+	public void testConstructorWithEaeFichePoste_WhenAgentShdIsNull() {
+		
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(11);
+		EaeFichePoste f = new EaeFichePoste();
+		f.setEae(eae);
+		f.setFonction("fonction");
+		f.setGradePoste("grade poste");
+		f.setEmploi("emploi");
+		f.setDirectionService("directionService");
+		f.setLocalisation("localisation");
+		f.setMissions("missions");
+		f.setAgentShd(null);
+		
+		// When
+		EaeFichePosteDto result = new EaeFichePosteDto(f);
+		
+		// Then
+		assertEquals(eae.getIdEae(), new Integer(result.getIdEae()));
+		assertEquals(f.getFonction(), result.getIntitule());
+		assertEquals(f.getGradePoste(), result.getGrade());
+		assertEquals(f.getEmploi(), result.getEmploi());
+		assertEquals(f.getDirectionService(), result.getDirectionService());
+		assertEquals(f.getLocalisation(), result.getLocalisation());
+		assertEquals(f.getMissions(), result.getMissions());
+		assertEquals(null, result.getResponsableNom());
+		assertEquals(null, result.getResponsablePrenom());
+		assertEquals(f.getFonctionResponsable(), result.getResponsableFonction());
+	}
+	
+	@Test
 	public void testGetSerializerForEaeFichePosteDto_includes_excludes() {
 		
 		// When

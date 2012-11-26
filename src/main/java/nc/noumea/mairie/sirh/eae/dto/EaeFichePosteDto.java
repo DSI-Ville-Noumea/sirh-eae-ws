@@ -41,9 +41,12 @@ public class EaeFichePosteDto implements IJSONSerialize {
 		directionService = fdp.getDirectionService();
 		localisation = fdp.getLocalisation();
 		missions = fdp.getMissions();
-		responsableNom = fdp.getAgentShd().getDisplayNom();
-		responsablePrenom = fdp.getAgentShd().getDisplayPrenom();
 		responsableFonction = fdp.getFonctionResponsable();
+		
+		if (fdp.getAgentShd() != null) {
+			responsableNom = fdp.getAgentShd().getDisplayNom();
+			responsablePrenom = fdp.getAgentShd().getDisplayPrenom();
+		}
 		
 		for(EaeFdpCompetence comp : fdp.getEaeFdpCompetences()) {
 			switch(comp.getType()) {
