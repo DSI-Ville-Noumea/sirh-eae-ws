@@ -31,7 +31,11 @@ public class DtoSessionRemoverService {
 		if (dto == null)
 			return null;
 		
-		String json = new JSONSerializer().exclude("*.eae").deepSerialize(dto);
+		// The exclude members of the serializations are here to ensure that we do not loop inside the Dtos to 
+		// serialize several times 
+		// 		- Eaes (which is rerefenced in a lot of Dto inner objects)
+		//		- EaeEvolution (wich is referenced inside the EaeEvolutionDto.evolutions and Souhaits objetcs
+		String json = new JSONSerializer().exclude("*.eae").exclude("*.eaeEvolution").deepSerialize(dto);
 		return new JSONDeserializer<T>().deserialize(json);
 	}
 	

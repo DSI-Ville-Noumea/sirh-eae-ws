@@ -133,7 +133,7 @@ public class EvaluationService implements IEvaluationService {
 	private void fillExistingEaeResultat(Eae eae, EaeResultat resultat) {
 		for(EaeResultat existingResultat : eae.getEaeResultats()) {
 			
-			if (existingResultat.getIdEaeResultat().equals(resultat.getIdEaeResultat())) {
+			if (existingResultat.getIdEaeResultat() != null && existingResultat.getIdEaeResultat().equals(resultat.getIdEaeResultat())) {
 			
 				existingResultat.setObjectif(resultat.getObjectif());
 				existingResultat.setResultat(resultat.getResultat());
