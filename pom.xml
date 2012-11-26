@@ -5,7 +5,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-eae-ws</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<name>sirh-eae-ws</name>
 	<properties>
 		<aspectj.version>1.7.0</aspectj.version>
@@ -171,6 +171,31 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.webflow</groupId>
+			<artifactId>spring-js-resources</artifactId>
+			<version>2.2.1.RELEASE</version>
+		</dependency>
+       	<dependency>
+           	<groupId>org.springframework</groupId>
+           	<artifactId>spring-oxm</artifactId>
+           	<version>${spring.version}</version>
+       	</dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>4.1.7.Final</version>
@@ -231,16 +256,6 @@
 			<version>1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>1.5.6</version>
@@ -274,16 +289,6 @@
 			<groupId>net.sf.jt400</groupId>
 			<artifactId>jt400</artifactId>
 			<version>6.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.webflow</groupId>
-			<artifactId>spring-js-resources</artifactId>
-			<version>2.2.1.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-digester</groupId>
@@ -338,11 +343,6 @@
 			<artifactId>tiles-jsp</artifactId>
 			<version>2.2.2</version>
 		</dependency>
-       	<dependency>
-           	<groupId>org.springframework</groupId>
-           	<artifactId>spring-oxm</artifactId>
-           	<version>${spring.version}</version>
-       	</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

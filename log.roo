@@ -342,3 +342,7 @@ entity jpa --class ~.sirh.eae.domain.EaeCampagne --table EAE_CAMPAGNE_EAE --pers
 entity jpa --class ~.sirh.eae.domain.EaeFinalisation --table EAE_FINALISATION --persistenceUnit eaePersistenceUnit --sequenceName EAE_S_FINALISATION --identifierColumn ID_EAE_FINALISATION --identifierField idEaeFinalisation --identifierType java.lang.Integer
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-21 16:21:01
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-22 08:16:12
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-22 16:07:25
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-23 08:33:28
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-11-23 12:06:55
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-11-26 09:51:38
