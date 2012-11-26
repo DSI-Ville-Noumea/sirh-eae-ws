@@ -59,7 +59,7 @@ public class AgentService implements IAgentService {
 	}
 
 	@Override
-	public Agent getAgent(int idAgent) {
+	public Agent getAgent(Integer idAgent) {
 		return Agent.findAgent(idAgent);
 	}
 }

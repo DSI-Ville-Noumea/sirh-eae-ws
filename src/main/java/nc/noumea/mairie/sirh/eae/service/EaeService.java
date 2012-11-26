@@ -133,6 +133,9 @@ public class EaeService implements IEaeService {
 		
 		EaeFichePoste primaryFichePoste = eaeToReset.getPrimaryFichePoste();
 		
+		if (primaryFichePoste.getIdAgentShd() == null)
+			return;
+		
 		EaeEvaluateur evaluateur = new EaeEvaluateur();
 		evaluateur.setEae(eaeToReset);
 		evaluateur.setIdAgent(primaryFichePoste.getIdAgentShd());

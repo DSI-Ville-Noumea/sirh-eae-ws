@@ -11,5 +11,5 @@ public interface IAgentService {
 	EaeEvalue fillEaeEvalueWithAgent(EaeEvalue eaeEvalueToFill);
 	EaeEvaluateur fillEaeEvaluateurWithAgent(EaeEvaluateur eaeEvaluateurToFill);
 	EaeFichePoste fillEaeFichePosteWithAgent(EaeFichePoste eaeFichePosteToFill);
-	Agent getAgent(int idAgent);
+	Agent getAgent(Integer idAgent);
 }
