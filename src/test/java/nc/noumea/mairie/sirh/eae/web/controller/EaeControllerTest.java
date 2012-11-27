@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
@@ -129,7 +130,7 @@ public class EaeControllerTest {
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
 		
-		verify(eaeSecurityProvider, times(1)).checkEaeWriteRight(120, agentId);
+		verify(eaeSecurityProvider, times(1)).checkEaeAndWriteRight(120, agentId);
 		verify(eaeServiceMock, times(1)).findCurrentAndPreviousEaesByAgentId(agentEvalueId);
 		verify(eaeServiceMock, times(1)).initializeEae(lastEae, null);
 	}
@@ -202,7 +203,7 @@ public class EaeControllerTest {
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 		when(eaeServiceMock.findCurrentAndPreviousEaesByAgentId(agentEvalueId)).thenReturn(eaeToCreateList);
 		
-		when(eaeSecurityProvider.checkEaeWriteRight(lastEae.getIdEae(), agentId)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(lastEae.getIdEae(), agentId)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
@@ -275,7 +276,7 @@ public class EaeControllerTest {
 		int agentId = 12;
 		int eaeId = 13;
 		
-		when(eaeSecurityProvider.checkEaeWriteRight(eaeId, agentId)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(eaeId, agentId)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
@@ -352,7 +353,7 @@ public class EaeControllerTest {
 		int eaeId = 13;
 		int agentDelegataireId = 14;
 		
-		when(eaeSecurityProvider.checkEaeWriteRight(eaeId, agentId)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(eaeId, agentId)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 	
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
@@ -436,7 +437,7 @@ public class EaeControllerTest {
 	@Test
 	public void testGetFinalizationInformation_AgentDoesNotHaveRight_Return403() {
 		// Given
-		when(eaeSecurityProvider.checkEaeWriteRight(1, 900)).thenReturn(new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(1, 900)).thenReturn(new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
@@ -452,7 +453,7 @@ public class EaeControllerTest {
 	@Test
 	public void testFinalizeEae_AgentDoesNotHaveRight_Return403() {
 		// Given
-		when(eaeSecurityProvider.checkEaeWriteRight(1, 900)).thenReturn(new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(1, 900)).thenReturn(new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
 		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
@@ -511,4 +512,71 @@ public class EaeControllerTest {
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 	}
+
+	@Test
+	public void testCanFinalizeEae_AgentDoesNotHaveRight_Return403() {
+		// Given
+		when(eaeSecurityProvider.checkEaeAndWriteRight(1, 1)).thenReturn(new ResponseEntity<String>("message", HttpStatus.CONFLICT));
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		
+		// When
+		ResponseEntity<String> result = controller.canFinalizeEae(1, 1);
+		
+		// Then
+		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+		assertEquals("message", result.getBody());
+	}
+	
+	@Test
+	public void testCanFinalizeEae_CannotFinalizeEae_Return409AndMessage() {
+		// Given
+		Eae eae = new Eae();
+		
+		CanFinalizeEaeDto dto = new CanFinalizeEaeDto();
+		dto.setCanFinalize(false);
+		dto.setMessage("message");
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.getEae(1)).thenReturn(eae);
+		when(eaeServiceMock.canFinalizEae(eae)).thenReturn(dto);
+
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.canFinalizeEae(1, 1);
+		
+		// Then
+		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+		assertEquals("message", result.getBody());
+	}
+	
+	@Test
+	public void testCanFinalizeEae_CanFinalizeEae_Return200AndNoMessage() {
+		// Given
+		Eae eae = new Eae();
+		
+		CanFinalizeEaeDto dto = new CanFinalizeEaeDto();
+		dto.setCanFinalize(true);
+		dto.setMessage("message");
+		
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		when(eaeServiceMock.getEae(1)).thenReturn(eae);
+		when(eaeServiceMock.canFinalizEae(eae)).thenReturn(dto);
+
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
+		
+		// When
+		ResponseEntity<String> result = controller.canFinalizeEae(1, 1);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertFalse(result.hasBody());
+	}
+	
 }

@@ -211,7 +211,7 @@ public class EaeSecurityProviderTest {
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		// When
-		ResponseEntity<String> response = provider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
 		
 		// Then
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -233,7 +233,7 @@ public class EaeSecurityProviderTest {
 		when(sirhsConsumerMock.getListOfEaesForAgentId(idAgent)).thenReturn(new ArrayList<Integer>());
 		
 		// When
-		ResponseEntity<String> response = provider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
 		
 		// Then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -256,7 +256,7 @@ public class EaeSecurityProviderTest {
 		when(sirhsConsumerMock.getListOfEaesForAgentId(idAgent)).thenThrow(new SirhWSConsumerException("message"));
 		
 		// When
-		ResponseEntity<String> response = provider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
 		
 		// Then
 		assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
@@ -279,7 +279,7 @@ public class EaeSecurityProviderTest {
 		when(sirhsConsumerMock.getListOfEaesForAgentId(idAgent)).thenReturn(Arrays.asList(idEae));
 		
 		// When
-		ResponseEntity<String> response = provider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
 		
 		// Then
 		assertNull(response);
@@ -297,7 +297,7 @@ public class EaeSecurityProviderTest {
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		// When
-		ResponseEntity<String> response = provider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = provider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		// Then
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -318,7 +318,7 @@ public class EaeSecurityProviderTest {
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(idAgent);
 		
 		// When
-		ResponseEntity<String> response = provider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = provider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		// Then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -341,7 +341,7 @@ public class EaeSecurityProviderTest {
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(idAgent);
 		
 		// When
-		ResponseEntity<String> response = provider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = provider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		// Then
 		assertNull(response);

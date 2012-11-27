@@ -4,6 +4,7 @@ import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
+import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
@@ -92,7 +93,7 @@ public class EaeController {
 		if (agentEaes.size() > 1)
 			previousEae = agentEaes.get(1);
 		
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(lastEae.getIdEae(), idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(lastEae.getIdEae(), idAgent);
 		
 		if (response != null)
 			return response;
@@ -111,7 +112,7 @@ public class EaeController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 			
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -132,7 +133,7 @@ public class EaeController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam("idDelegataire") int idDelegataire) {
 		
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -172,13 +173,33 @@ public class EaeController {
 		
 		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "canFinalizeEae", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(value = "eaeTransactionManager")
+	public ResponseEntity<String> canFinalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+		
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+		
+		if (response != null)
+			return response;
+		
+		Eae eae = eaeService.getEae(idEae);
+	
+		CanFinalizeEaeDto dto = eaeService.canFinalizEae(eae);
+		
+		if (!dto.isCanFinalize())
+			return new ResponseEntity<String>(dto.getMessage(), HttpStatus.CONFLICT);
+		else
+			return new ResponseEntity<String>(HttpStatus.OK);
+	}
 
 	@ResponseBody
 	@RequestMapping(value = "getFinalizationInformation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getFinalizationInformation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 		
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -197,7 +218,7 @@ public class EaeController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> finalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeFinalizationDtoJson) {
 		
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -221,7 +242,7 @@ public class EaeController {
 	@RequestMapping(value = "downloadEae", method = RequestMethod.GET)
 	public ResponseEntity downloadEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam(value = "format", required = false) String format) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;

@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -33,6 +34,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
@@ -43,6 +45,7 @@ import nc.noumea.mairie.sirh.tools.IHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
 import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -868,17 +871,56 @@ public class EaeServiceTest {
 		dto.setIdDocument("çççdikjnvekusvb");
 		dto.setVersionDocument("10.1");
 
+		MessageSource mSource = Mockito.mock(MessageSource.class);
+		when(mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class), Mockito.any(Locale.class))).thenReturn("Impossible de finaliser l'Eae car son état est 'Créé'");
+		
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "messageSource", mSource);
 		
 		try {
 			// When
 			service.finalizEae(eae, idAgent, dto);
 		} catch(EaeServiceException ex) {
 			// Then
-			assertEquals("Impossible de finaliser l'Eae car son état est 'Créé'.", ex.getMessage());
+			assertEquals("Impossible de finaliser l'Eae car son état est 'Créé'", ex.getMessage());
 			return;
 		}
 		
 		fail("Should have thrown an exception");
+	}
+	
+	@Test
+	public void canFinalizEae_EaeIsNotEC_ReturnMessageAndFalse() {
+		// Given
+		Eae eae = new Eae();
+		eae.setEtat(EaeEtatEnum.C);
+		
+		MessageSource mSource = Mockito.mock(MessageSource.class);
+		when(mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class), Mockito.any(Locale.class))).thenReturn("Impossible de finaliser l'Eae car son état est 'Créé'");
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "messageSource", mSource);
+
+		// When
+		CanFinalizeEaeDto result = service.canFinalizEae(eae);
+		
+		// Then
+		assertFalse(result.isCanFinalize());
+		assertEquals("Impossible de finaliser l'Eae car son état est 'Créé'", result.getMessage());
+	}
+	
+	@Test
+	public void canFinalizEae_EaeIsEC_ReturnNoMessageAndTrue() {
+		// Given
+		Eae eae = new Eae();
+		eae.setEtat(EaeEtatEnum.EC);
+		EaeService service = new EaeService();
+		
+		// When
+		CanFinalizeEaeDto result = service.canFinalizEae(eae);
+		
+		// Then
+		assertTrue(result.isCanFinalize());
+		assertNull(result.getMessage());
 	}
 }

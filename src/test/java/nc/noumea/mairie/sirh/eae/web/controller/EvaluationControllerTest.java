@@ -55,7 +55,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaeIdentifitcation(789, 900000);
@@ -100,7 +100,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeWriteRight(789, 9000000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(789, 9000000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeIdentifitcation(789, 9000000, null);
@@ -180,7 +180,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaeFichePoste(789, 900000);
@@ -224,7 +224,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaeResultats(789, 900000);
@@ -268,7 +268,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeResultats(789, 900000, null);
@@ -348,7 +348,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaeAppreciations(789, 900000);
@@ -392,7 +392,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAppreciations(789, 900000, null);
@@ -472,7 +472,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaeEvaluation(789, 900000);
@@ -516,7 +516,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvaluation(789, 900000, null);
@@ -631,7 +631,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaeAutoEvaluation(789, 900000);
@@ -675,7 +675,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeAutoEvaluation(789, 900000, null);
@@ -756,7 +756,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaePlanAction(789, 900000);
@@ -800,7 +800,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.setEaePlanAction(789, 900000, null);
@@ -881,7 +881,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndReadRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.getEaeEvolution(789, 900000);
@@ -925,7 +925,7 @@ public class EvaluationControllerTest {
 		// Given
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		when(eaeSecurityProvider.checkEaeWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		when(eaeSecurityProvider.checkEaeAndWriteRight(789, 900000)).thenReturn(new ResponseEntity<String>(HttpStatus.FORBIDDEN));
 		
 		// When
 		ResponseEntity<String> result = controller.setEaeEvolution(789, 900000, null);

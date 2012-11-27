@@ -68,7 +68,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	}
 	
 	@Override
-	public ResponseEntity<String> checkEaeReadRight(int idEae, int idAgent) {
+	public ResponseEntity<String> checkEaeAndReadRight(int idEae, int idAgent) {
 		
 		Eae eae = Eae.findEae(idEae);
 		
@@ -86,7 +86,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	}
 	
 	@Override
-	public ResponseEntity<String> checkEaeWriteRight(int idEae, int idEvaluateur) {
+	public ResponseEntity<String> checkEaeAndWriteRight(int idEae, int idEvaluateur) {
 		
 		Eae eae = Eae.findEae(idEae);
 		

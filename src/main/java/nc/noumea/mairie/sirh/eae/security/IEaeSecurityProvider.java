@@ -10,6 +10,6 @@ public interface IEaeSecurityProvider {
 	boolean isAgentAuthorizedToViewEae(int idAgent, Eae eae) throws SirhWSConsumerException;
 	boolean isAgentAuthorizedToEditEae(int idAgent, Eae eae);
 		
-	ResponseEntity<String> checkEaeReadRight(int idEae, int idAgent);
-	ResponseEntity<String> checkEaeWriteRight(int idEae, int idEvaluateur);
+	ResponseEntity<String> checkEaeAndReadRight(int idEae, int idAgent);
+	ResponseEntity<String> checkEaeAndWriteRight(int idEae, int idEvaluateur);
 }

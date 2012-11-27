@@ -20,6 +20,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
@@ -28,6 +29,7 @@ import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,6 +49,9 @@ public class EaeService implements IEaeService {
 	
 	@Autowired
 	private IAgentMatriculeConverterService agentMatriculeConverterService;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	/*
 	 * Interface implementation
@@ -205,6 +210,22 @@ public class EaeService implements IEaeService {
 	}
 	
 	@Override
+	public CanFinalizeEaeDto canFinalizEae(Eae eae) {
+
+		if (eae == null)
+			return null;
+		
+		CanFinalizeEaeDto dto = new CanFinalizeEaeDto();
+		
+		if (eae.getEtat() != EaeEtatEnum.EC) 
+			dto.setMessage(messageSource.getMessage("EAE_CANNOT_FINALIZE", new Object[] {eae.getEtat()}, null));
+		else
+			dto.setCanFinalize(true);
+		
+		return dto;
+	}
+	
+	@Override
 	public FinalizationInformationDto getFinalizationInformation(Eae eae) {
 
 		if (eae == null)
@@ -222,7 +243,7 @@ public class EaeService implements IEaeService {
 			return;
 
 		if (eae.getEtat() != EaeEtatEnum.EC)
-			throw new EaeServiceException(String.format("Impossible de finaliser l'Eae car son état est '%s'.", eae.getEtat()));
+			throw new EaeServiceException(messageSource.getMessage("EAE_CANNOT_FINALIZE", new Object[] {eae.getEtat()}, null));
 		
 		Date finalisationDate = helper.getCurrentDate();
 		

@@ -50,7 +50,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -69,7 +69,7 @@ public class EvaluationController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeIdentificationDtoJson) {
 		
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -96,7 +96,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeFichePoste(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -115,7 +115,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -134,7 +134,7 @@ public class EvaluationController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeResultatsDtoJson) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -161,7 +161,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeAppreciations(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -180,7 +180,7 @@ public class EvaluationController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeAppreciations(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeAppreciationsDtoJson) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -204,7 +204,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -223,7 +223,7 @@ public class EvaluationController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeEvaluationDtoJson) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -251,7 +251,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeAutoEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -270,7 +270,7 @@ public class EvaluationController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeAutoEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeAutoEvaluationDtoJson) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -295,7 +295,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaePlanAction(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -314,7 +314,7 @@ public class EvaluationController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaePlanAction(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaePlanActionDtoJson) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -339,7 +339,7 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeReadRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;
@@ -358,7 +358,7 @@ public class EvaluationController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeEvolutionDtoJson) {
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeWriteRight(idEae, idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		if (response != null)
 			return response;

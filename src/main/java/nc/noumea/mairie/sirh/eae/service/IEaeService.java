@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.service;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
@@ -38,6 +39,13 @@ public interface IEaeService {
 	 * @throws EaeServiceException
 	 */
 	void resetEaeEvaluateur(Eae eaeToReset) throws EaeServiceException;
+	
+	/**
+	 * Returns the information saying whether or not the EAE is ready for finalization
+	 * @param eae
+	 * @return
+	 */
+	CanFinalizeEaeDto canFinalizEae(Eae eae);
 	
 	/**
 	 * Retrieves the necessary information for the final EAE document to be uploaded
