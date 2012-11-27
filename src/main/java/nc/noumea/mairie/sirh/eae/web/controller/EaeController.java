@@ -108,27 +108,6 @@ public class EaeController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "resetEae", method = RequestMethod.GET)
-	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> resetEaeEvaluateur(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
-			
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
-		
-		if (response != null)
-			return response;
-		
-		Eae eaeToReset = eaeService.getEae(idEae);
-		
-		try {
-			eaeService.resetEaeEvaluateur(eaeToReset);
-		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
-		}
-		
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_REINITIALISE_OK", null, null), HttpStatus.OK);
-	}
-	
-	@ResponseBody
 	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam("idDelegataire") int idDelegataire) {

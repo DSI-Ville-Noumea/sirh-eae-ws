@@ -33,7 +33,6 @@ public class EaeListItemDto {
 	private Date dateControle;
 	private boolean droitInitialiser;
 	private boolean droitAcceder;
-	private boolean droitReinitialiser;
 	private boolean droitDemarrer;
 	private boolean droitAffecterDelegataire;
 
@@ -76,7 +75,6 @@ public class EaeListItemDto {
 			case EC:
 				setDroitDemarrer(isEvaluateurOrDelegataire);
 				setDroitAcceder(true);
-				setDroitReinitialiser(isEvaluateurOrDelegataire);
 				setDroitAffecterDelegataire(isEvaluateur);
 				break;
 				
@@ -230,14 +228,6 @@ public class EaeListItemDto {
 
 	public void setDroitAcceder(boolean droitAcceder) {
 		this.droitAcceder = droitAcceder;
-	}
-
-	public boolean isDroitReinitialiser() {
-		return droitReinitialiser;
-	}
-
-	public void setDroitReinitialiser(boolean droitReinitialiser) {
-		this.droitReinitialiser = droitReinitialiser;
 	}
 
 	public boolean isDroitDemarrer() {

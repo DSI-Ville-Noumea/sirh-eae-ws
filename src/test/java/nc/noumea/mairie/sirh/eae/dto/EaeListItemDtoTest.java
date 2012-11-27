@@ -107,7 +107,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertFalse(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 		
 	}
 	
@@ -126,7 +125,6 @@ public class EaeListItemDtoTest {
 		assertTrue(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertFalse(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 	}
 	
 	@Test
@@ -146,7 +144,6 @@ public class EaeListItemDtoTest {
 		assertTrue(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertFalse(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 	}
 	
 	@Test
@@ -163,7 +160,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 		
 	}
 	
@@ -182,7 +178,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertTrue(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertTrue(dto.isDroitReinitialiser());
 	}
 	
 	@Test
@@ -202,7 +197,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertTrue(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertTrue(dto.isDroitReinitialiser());
 	}
 	
 	@Test
@@ -219,7 +213,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 		
 	}
 	
@@ -238,7 +231,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertTrue(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertTrue(dto.isDroitReinitialiser());
 	}
 	
 	@Test
@@ -258,7 +250,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertTrue(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertTrue(dto.isDroitReinitialiser());
 	}
 	
 	@Test
@@ -275,7 +266,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 		
 	}
 	
@@ -294,7 +284,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 	}
 	
 	@Test
@@ -314,7 +303,6 @@ public class EaeListItemDtoTest {
 		assertFalse(dto.isDroitInitialiser());
 		assertFalse(dto.isDroitDemarrer());
 		assertTrue(dto.isDroitAcceder());
-		assertFalse(dto.isDroitReinitialiser());
 	}
 	
 	@Test

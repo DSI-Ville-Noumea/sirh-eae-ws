@@ -38,6 +38,7 @@ public interface IEaeService {
 	 * @param eaeToReset
 	 * @throws EaeServiceException
 	 */
+	@Deprecated
 	void resetEaeEvaluateur(Eae eaeToReset) throws EaeServiceException;
 	
 	/**
