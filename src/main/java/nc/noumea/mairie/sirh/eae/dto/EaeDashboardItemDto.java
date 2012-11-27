@@ -53,6 +53,8 @@ public class EaeDashboardItemDto {
 			case CO:
 				fige++;
 				break;
+			case S:
+				break;
 		}
 		
 		if (eae.getEaeEvaluation() == null || eae.getEaeEvaluation().getPropositionAvancement() == null) {
