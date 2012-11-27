@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
@@ -18,6 +19,7 @@ import nc.noumea.mairie.sirh.eae.security.EaeSecurityProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
@@ -30,14 +32,17 @@ public class EaeSecurityProviderTest {
 	IAgentMatriculeConverterService idConverterMock;
 	ISirhWsConsumer sirhsConsumerMock;
 	EaeSecurityProvider provider;
+	MessageSource messageSource;
 	
 	@Before
 	public void SetUp() {
 		idConverterMock = Mockito.mock(IAgentMatriculeConverterService.class);
 		sirhsConsumerMock = Mockito.mock(ISirhWsConsumer.class);
 		provider = new EaeSecurityProvider();
+		messageSource = Mockito.mock(MessageSource.class);
 		ReflectionTestUtils.setField(provider, "agentMatriculeConverterService", idConverterMock);
 		ReflectionTestUtils.setField(provider, "sirhWsConsumer", sirhsConsumerMock);
+		ReflectionTestUtils.setField(provider, "messageSource", messageSource);
 	}
 	
 	@Test
@@ -231,13 +236,14 @@ public class EaeSecurityProviderTest {
 		
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(idAgent);
 		when(sirhsConsumerMock.getListOfEaesForAgentId(idAgent)).thenReturn(new ArrayList<Integer>());
+		when(messageSource.getMessage(Mockito.eq("EAE_CANNOT_READ"), Mockito.any(Object[].class), Mockito.any(Locale.class))).thenReturn("L'agent '1890' n'est pas autorisé à consulter cet Eae");
 		
 		// When
 		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
 		
 		// Then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-		assertEquals("L'agent '1890' n'est pas autorisé à consulter cet Eae.", response.getBody());
+		assertEquals("L'agent '1890' n'est pas autorisé à consulter cet Eae", response.getBody());
 	}
 	
 	@Test
@@ -316,13 +322,14 @@ public class EaeSecurityProviderTest {
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(idAgent);
+		when(messageSource.getMessage(Mockito.eq("EAE_CANNOT_WRITE"), Mockito.any(Object[].class), Mockito.any(Locale.class))).thenReturn("L'agent '1890' n'est pas autorisé à modifier cet Eae");
 		
 		// When
 		ResponseEntity<String> response = provider.checkEaeAndWriteRight(idEae, idAgent);
 		
 		// Then
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-		assertEquals("L'agent '1890' n'est pas autorisé à modifier cet Eae.", response.getBody());
+		assertEquals("L'agent '1890' n'est pas autorisé à modifier cet Eae", response.getBody());
 	}
 	
 	@Test

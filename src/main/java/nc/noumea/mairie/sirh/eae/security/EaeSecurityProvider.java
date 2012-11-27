@@ -11,6 +11,7 @@ import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	
 	@Autowired
 	private ISirhWsConsumer sirhWsConsumer;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Override
 	public boolean isAgentAuthorizedToViewEae(int idAgent, Eae eae) throws SirhWSConsumerException {
@@ -77,7 +81,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 		
 		try {
 			if (!isAgentAuthorizedToViewEae(idAgent, eae))
-				return new ResponseEntity<String>(String.format("L'agent '%s' n'est pas autorisé à consulter cet Eae.", idAgent), HttpStatus.FORBIDDEN);
+				return new ResponseEntity<String>(messageSource.getMessage("EAE_CANNOT_READ", new Object[] { idAgent }, null), HttpStatus.FORBIDDEN);
 		} catch (SirhWSConsumerException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
 		}
@@ -94,7 +98,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		
 		if (!isAgentAuthorizedToEditEae(idEvaluateur, eae))
-			return new ResponseEntity<String>(String.format("L'agent '%s' n'est pas autorisé à modifier cet Eae.", idEvaluateur), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<String>(messageSource.getMessage("EAE_CANNOT_WRITE", new Object[] { idEvaluateur }, null), HttpStatus.FORBIDDEN);
 		
 		return null;
 	}
