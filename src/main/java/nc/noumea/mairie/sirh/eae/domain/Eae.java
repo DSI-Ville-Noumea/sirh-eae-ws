@@ -157,4 +157,17 @@ public class Eae {
 	public boolean isEvaluateurOrDelegataire(int idAgent) {
 		return isEvaluateur(idAgent) || isDelegataire(idAgent);		
 	}
+	
+	public EaeFinalisation getLatestFinalisation() {
+		
+		EaeFinalisation latestFinalisation = null;
+		
+		for(EaeFinalisation finalisation : this.getEaeFinalisations()) {
+    		if (latestFinalisation == null 
+    				|| finalisation.getDateFinalisation().after(latestFinalisation.getDateFinalisation()))
+    			latestFinalisation = finalisation;
+    	}
+    	
+    	return latestFinalisation;
+	}
 }

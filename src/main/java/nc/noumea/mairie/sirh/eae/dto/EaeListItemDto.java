@@ -35,7 +35,9 @@ public class EaeListItemDto {
 	private boolean droitAcceder;
 	private boolean droitDemarrer;
 	private boolean droitAffecterDelegataire;
-
+	private boolean droitImprimer;
+	private String idDocumentGed;
+	
 	public EaeListItemDto() {
 		
 	}
@@ -58,6 +60,11 @@ public class EaeListItemDto {
 		
 		if (eaeItem.getEaeEvaluation() != null)
 			this.setAvisShd(eaeItem.getEaeEvaluation().getAvisShd());
+		
+		if (eaeItem.getEtat() == EaeEtatEnum.F) {
+			this.setDroitImprimer(true);
+			this.setIdDocumentGed(eaeItem.getLatestFinalisation().getIdGedDocument());
+		}
 	}
 	
 	public void setAccessRightsForAgentId(Eae eae, int idAgent) {
@@ -104,9 +111,10 @@ public class EaeListItemDto {
 				.include("eaeFichePoste")
 				.include("droitInitialiser")
 				.include("droitAcceder")
-				.include("droitReinitialiser")
 				.include("droitDemarrer")
 				.include("droitAffecterDelegataire")
+				.include("droitImprimer")
+				.include("idDocumentGed")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new NullableIntegerTransformer(), Integer.class)
 				.transform(new SimpleAgentTransformer(false), Agent.class)
@@ -244,5 +252,21 @@ public class EaeListItemDto {
 
 	public void setDroitAffecterDelegataire(boolean droitAffecterDelegataire) {
 		this.droitAffecterDelegataire = droitAffecterDelegataire;
+	}
+
+	public boolean isDroitImprimer() {
+		return droitImprimer;
+	}
+
+	public void setDroitImprimer(boolean droitImprimer) {
+		this.droitImprimer = droitImprimer;
+	}
+
+	public String getIdDocumentGed() {
+		return idDocumentGed;
+	}
+
+	public void setIdDocumentGed(String idDocumentGed) {
+		this.idDocumentGed = idDocumentGed;
 	}
 }

@@ -2,6 +2,7 @@ package nc.noumea.mairie.sirh.eae.dto;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 
 import org.junit.Test;
@@ -91,6 +93,44 @@ public class EaeListItemDtoTest {
 		assertEquals(dto.getDateFinalisation(), eaeItem.getDateFinalisation());
 		assertEquals(dto.getDateControle(), eaeItem.getDateControle());
 		assertEquals(dto.getAvisShd(), eaeItem.getEaeEvaluation().getAvisShd());
+	}
+	
+	@Test
+	public void testBuildEaeListItemDto_EaeNotF_droitImprimerFalse() {
+		
+		// Given
+		Eae eaeItem = new Eae();
+		eaeItem.setIdEae(6789);
+		eaeItem.setEtat(EaeEtatEnum.C);
+		EaeFinalisation fi = new EaeFinalisation();
+		fi.setIdGedDocument("theId");
+		eaeItem.getEaeFinalisations().add(fi);
+		
+		// When
+		EaeListItemDto dto = new EaeListItemDto(eaeItem);
+		
+		// Then
+		assertFalse(dto.isDroitImprimer());
+		assertNull(dto.getIdDocumentGed());
+	}
+	
+	@Test
+	public void testBuildEaeListItemDto_EaeIsF_droitImprimerTrueAndIdDocumentGedSet() {
+		
+		// Given
+		Eae eaeItem = new Eae();
+		eaeItem.setIdEae(6789);
+		eaeItem.setEtat(EaeEtatEnum.F);
+		EaeFinalisation fi = new EaeFinalisation();
+		fi.setIdGedDocument("theId");
+		eaeItem.getEaeFinalisations().add(fi);
+		
+		// When
+		EaeListItemDto dto = new EaeListItemDto(eaeItem);
+		
+		// Then
+		assertTrue(dto.isDroitImprimer());
+		assertEquals("theId", dto.getIdDocumentGed());
 	}
 	
 	@Test
@@ -257,6 +297,7 @@ public class EaeListItemDtoTest {
 		// Given
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.F);
+		eae.getEaeFinalisations().add(new EaeFinalisation());
 		
 		// When
 		EaeListItemDto dto = new EaeListItemDto(eae);
@@ -275,6 +316,7 @@ public class EaeListItemDtoTest {
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.F);
 		eae.setIdAgentDelegataire(789);
+		eae.getEaeFinalisations().add(new EaeFinalisation());
 		
 		// When
 		EaeListItemDto dto = new EaeListItemDto(eae);
@@ -294,6 +336,7 @@ public class EaeListItemDtoTest {
 		EaeEvaluateur eval = new EaeEvaluateur();
 		eval.setIdAgent(789);
 		eae.getEaeEvaluateurs().add(eval);
+		eae.getEaeFinalisations().add(new EaeFinalisation());
 		
 		// When
 		EaeListItemDto dto = new EaeListItemDto(eae);
@@ -313,7 +356,7 @@ public class EaeListItemDtoTest {
 		List<PathExpression> excludes = EaeListItemDto.getSerializerForEaeListItemDto().getExcludes();
 		
 		// Then
-		assertEquals(17, includes.size());
+		assertEquals(18, includes.size());
 		assertEquals("[agentEvalue]", includes.get(0).toString());
 		assertEquals("[etat]", includes.get(1).toString());
 		assertEquals("[cap]", includes.get(2).toString());
@@ -328,9 +371,10 @@ public class EaeListItemDtoTest {
 		assertEquals("[eaeFichePoste]", includes.get(11).toString());
 		assertEquals("[droitInitialiser]", includes.get(12).toString());
 		assertEquals("[droitAcceder]", includes.get(13).toString());
-		assertEquals("[droitReinitialiser]", includes.get(14).toString());
-		assertEquals("[droitDemarrer]", includes.get(15).toString());
-		assertEquals("[droitAffecterDelegataire]", includes.get(16).toString());
+		assertEquals("[droitDemarrer]", includes.get(14).toString());
+		assertEquals("[droitAffecterDelegataire]", includes.get(15).toString());
+		assertEquals("[droitImprimer]", includes.get(16).toString());
+		assertEquals("[idDocumentGed]", includes.get(17).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
