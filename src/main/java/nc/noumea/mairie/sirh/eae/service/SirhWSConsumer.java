@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
@@ -38,7 +39,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		return readResponse(response, agentId);
 	}
 
-	public ClientResponse createAndFireRequest(int agentId) {
+	public ClientResponse createAndFireRequest(int agentId) throws SirhWSConsumerException {
 		
 		Client client = Client.create();
 
@@ -46,8 +47,15 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 				.resource(getSirhWsEaeUrl())
 				.queryParam("idAgent", String.valueOf(agentId));
 
-		ClientResponse response = webResource.accept(
-				MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
+		ClientResponse response = null;
+		
+		try {
+			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
+		} catch (ClientHandlerException ex) {
+			throw new SirhWSConsumerException(String.format(
+					"An error occured when querying '%s' with agentId '%d'.",
+					getSirhWsEaeUrl(), agentId), ex);
+		}
 		
 		return response;
 	}

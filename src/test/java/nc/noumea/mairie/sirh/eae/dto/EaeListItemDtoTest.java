@@ -110,7 +110,7 @@ public class EaeListItemDtoTest {
 		EaeListItemDto dto = new EaeListItemDto(eaeItem);
 		
 		// Then
-		assertFalse(dto.isDroitImprimer());
+		assertFalse(dto.isDroitImprimerGed());
 		assertNull(dto.getIdDocumentGed());
 	}
 	
@@ -129,7 +129,26 @@ public class EaeListItemDtoTest {
 		EaeListItemDto dto = new EaeListItemDto(eaeItem);
 		
 		// Then
-		assertTrue(dto.isDroitImprimer());
+		assertTrue(dto.isDroitImprimerGed());
+		assertEquals("theId", dto.getIdDocumentGed());
+	}
+	
+	@Test
+	public void testBuildEaeListItemDto_EaeIsCO_droitImprimerTrueAndIdDocumentGedSet() {
+		
+		// Given
+		Eae eaeItem = new Eae();
+		eaeItem.setIdEae(6789);
+		eaeItem.setEtat(EaeEtatEnum.CO);
+		EaeFinalisation fi = new EaeFinalisation();
+		fi.setIdGedDocument("theId");
+		eaeItem.getEaeFinalisations().add(fi);
+		
+		// When
+		EaeListItemDto dto = new EaeListItemDto(eaeItem);
+		
+		// Then
+		assertTrue(dto.isDroitImprimerGed());
 		assertEquals("theId", dto.getIdDocumentGed());
 	}
 	
@@ -373,7 +392,7 @@ public class EaeListItemDtoTest {
 		assertEquals("[droitAcceder]", includes.get(13).toString());
 		assertEquals("[droitDemarrer]", includes.get(14).toString());
 		assertEquals("[droitAffecterDelegataire]", includes.get(15).toString());
-		assertEquals("[droitImprimer]", includes.get(16).toString());
+		assertEquals("[droitImprimerGed]", includes.get(16).toString());
 		assertEquals("[idDocumentGed]", includes.get(17).toString());
 		
 		assertEquals(1, excludes.size());

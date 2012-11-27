@@ -7,7 +7,8 @@ public enum EaeEtatEnum {
 	C("Créé"),
 	EC("En cours"),
 	F("Finalisé"),
-	CO("Contrôlé");
+	CO("Contrôlé"),
+	S("Supprimé");
 	
 	private String statut;
 	
