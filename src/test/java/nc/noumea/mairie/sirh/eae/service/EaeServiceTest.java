@@ -854,7 +854,7 @@ public class EaeServiceTest {
 		assertEquals(900899, finalisation.getIdAgent());
 		assertEquals("çççdikjnvekusvb", finalisation.getIdGedDocument());
 		assertEquals("10.1", finalisation.getVersionGedDocument());
-		assertEquals("le commentaire", finalisation.getCommentaire().getText());
+		assertEquals("le commentaire", finalisation.getCommentaire());
 		assertEquals(eae, finalisation.getEae());
 	}
 	

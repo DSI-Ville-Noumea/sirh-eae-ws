@@ -5,7 +5,6 @@ package nc.noumea.mairie.sirh.eae.domain;
 
 import java.util.Date;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 
 privileged aspect EaeFinalisation_Roo_JavaBean {
@@ -42,11 +41,11 @@ privileged aspect EaeFinalisation_Roo_JavaBean {
         this.versionGedDocument = versionGedDocument;
     }
     
-    public EaeCommentaire EaeFinalisation.getCommentaire() {
+    public String EaeFinalisation.getCommentaire() {
         return this.commentaire;
     }
     
-    public void EaeFinalisation.setCommentaire(EaeCommentaire commentaire) {
+    public void EaeFinalisation.setCommentaire(String commentaire) {
         this.commentaire = commentaire;
     }
     

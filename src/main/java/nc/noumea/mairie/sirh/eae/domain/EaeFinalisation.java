@@ -2,10 +2,10 @@ package nc.noumea.mairie.sirh.eae.domain;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,9 +37,9 @@ public class EaeFinalisation {
 	@Column(name = "VERSION_GED_DOCUMENT")
 	private String versionGedDocument;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COMMENTAIRE")
-    private EaeCommentaire commentaire;
+	@Lob
+	@Column(name = "COMMENTAIRE")
+	private String commentaire;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_EAE")

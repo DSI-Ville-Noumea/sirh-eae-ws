@@ -12,7 +12,6 @@ import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
@@ -257,8 +256,7 @@ public class EaeService implements IEaeService {
 		finalisation.setDateFinalisation(finalisationDate);
 		finalisation.setIdGedDocument(dto.getIdDocument());
 		finalisation.setVersionGedDocument(dto.getVersionDocument());
-		finalisation.setCommentaire(new EaeCommentaire());
-		finalisation.getCommentaire().setText(dto.getCommentaire());
+		finalisation.setCommentaire(dto.getCommentaire());
 	}
 	
 	/*
