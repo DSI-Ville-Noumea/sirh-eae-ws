@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -103,9 +104,11 @@ public class Eae {
 	private Set<EaeFormation> eaeFormations = new HashSet<EaeFormation>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("idEaeResultat ASC")
    	private Set<EaeResultat> eaeResultats = new HashSet<EaeResultat>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("idEaePlanAction ASC")
    	private Set<EaePlanAction> eaePlanActions = new HashSet<EaePlanAction>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
