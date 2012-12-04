@@ -77,12 +77,32 @@ public class EaeIdentificationDtoTest {
 		assertEquals(evals.iterator().next(), dto.getEvaluateurs().get(0));
 		assertEquals(evalue, dto.getAgent());
 		assertEquals(1, dto.getDiplomes().size());
-		assertEquals(diplomes.iterator().next(), dto.getDiplomes().get(0));
 		assertEquals(1, dto.getParcoursPros().size());
 		assertEquals(1, dto.getFormations().size());
-		assertEquals(formations.iterator().next(), dto.getFormations().get(0));
 		assertEquals(EaeAgentPositionAdministrativeEnum.AC, dto.getPosition());
 		assertNotNull(dto.getSituation());
+	}
+	
+	@Test
+	public void testEaeIdentificationDto_CreateDiplome_FromEae() {
+		// Given 
+		Eae eae = new Eae();
+		eae.setIdEae(120);
+		EaeFichePoste fp = new EaeFichePoste();
+		fp.setPrimary(true);
+		eae.getEaeFichePostes().add(fp);
+		eae.setEaeEvalue(new EaeEvalue());
+		
+		EaeDiplome dip = new EaeDiplome();
+		dip.setLibelleDiplome("diplome 1");
+		eae.getEaeDiplomes().add(dip);
+		
+		// When
+		EaeIdentificationDto dto = new EaeIdentificationDto(eae);
+		
+		// Then
+		assertEquals(1, dto.getDiplomes().size());
+		assertEquals("diplome 1", dto.getDiplomes().get(0));
 	}
 	
 	@Test
@@ -121,6 +141,44 @@ public class EaeIdentificationDtoTest {
 	}
 	
 	@Test
+	public void testEaeIdentificationDto_CreateFormation_FromEae() {
+		// Given 
+		Eae eae = new Eae();
+		eae.setIdEae(120);
+		EaeFichePoste fp = new EaeFichePoste();
+		fp.setPrimary(true);
+		eae.getEaeFichePostes().add(fp);
+		eae.setEaeEvalue(new EaeEvalue());
+		
+		EaeFormation fo3 = new EaeFormation();
+		fo3.setLibelleFormation("formation 3");
+		fo3.setAnneeFormation(2012);
+		fo3.setDureeFormation("1 mois");
+		eae.getEaeFormations().add(fo3);
+		
+		EaeFormation fo = new EaeFormation();
+		fo.setLibelleFormation("formation 1");
+		fo.setAnneeFormation(2009);
+		fo.setDureeFormation("2 jours");
+		eae.getEaeFormations().add(fo);
+		
+		EaeFormation fo2 = new EaeFormation();
+		fo2.setLibelleFormation("formation 2");
+		fo2.setAnneeFormation(2011);
+		fo2.setDureeFormation("1 semaine");
+		eae.getEaeFormations().add(fo2);
+
+		// When
+		EaeIdentificationDto dto = new EaeIdentificationDto(eae);
+		
+		// Then
+		assertEquals(3, dto.getFormations().size());
+		assertEquals("2012 : formation 3 (1 mois)", dto.getFormations().get(0));
+		assertEquals("2011 : formation 2 (1 semaine)", dto.getFormations().get(1));
+		assertEquals("2009 : formation 1 (2 jours)", dto.getFormations().get(2));
+	}
+	
+	@Test
 	public void testGetSerializerForEaeIdentificationDto_ListAllIncludesExcludes() {
 		
 		// When
@@ -137,9 +195,9 @@ public class EaeIdentificationDtoTest {
 		assertEquals("[evaluateurs,dateEntreeCollectivite]", includes.get(5).toString());
 		assertEquals("[evaluateurs,dateEntreeFonction]", includes.get(6).toString());
 		assertEquals("[agent]", includes.get(7).toString());
-		assertEquals("[diplomes]", includes.get(8).toString());
+		assertEquals("[diplomes,*]", includes.get(8).toString());
 		assertEquals("[parcoursPros,*]", includes.get(9).toString());
-		assertEquals("[formations]", includes.get(10).toString());
+		assertEquals("[formations,*]", includes.get(10).toString());
 		assertEquals("[situation,*]", includes.get(11).toString());
 		assertEquals("[statut,*]", includes.get(12).toString());
 		assertEquals("[position]", includes.get(13).toString());
@@ -189,19 +247,11 @@ public class EaeIdentificationDtoTest {
 		eval.setAgent(agentEvaluateur);
 		dto.getEvaluateurs().add(eval);
 		
-		EaeDiplome d1 = new EaeDiplome();
-		d1.setLibelleDiplome("diplome 1");
-		dto.getDiplomes().add(d1);
-		EaeDiplome d2 = new EaeDiplome();
-		d2.setLibelleDiplome("diplome 2");
-		dto.getDiplomes().add(d2);
+		dto.getDiplomes().add("diplome 1");
+		dto.getDiplomes().add("diplome 2");
 		
-		EaeFormation f1 = new EaeFormation();
-		f1.setLibelleFormation("formation 1");
-		dto.getFormations().add(f1);
-		EaeFormation f2 = new EaeFormation();
-		f2.setLibelleFormation("formation 2");
-		dto.getFormations().add(f2);
+		dto.getFormations().add("2009 - formation 1");
+		dto.getFormations().add("2012 - formation 2");
 
 		dto.getParcoursPros().add("01/01/2012 - Parcours 2");
 		dto.getParcoursPros().add("01/01/2007 - Parcours 1");
@@ -209,7 +259,7 @@ public class EaeIdentificationDtoTest {
 		dto.setSituation(new EaeIdentificationSituationDto());
 		dto.setStatut(new EaeIdentificationStatutDto());
 		
-		String expectedResult = "{\"agent\":{\"idAgent\":12,\"nom\":\"michelle\",\"nomJeuneFille\":null,\"prenom\":\"michmich\",\"dateNaissance\":\"/Date(-407415600000+1100)/\"},\"dateEntretien\":\"/Date(1337223959000+1100)/\",\"diplomes\":[\"diplome 1\",\"diplome 2\"],\"evaluateurs\":[{\"idAgent\":177,\"nom\":\"bonno\",\"prenom\":\"patrice\",\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[\"formation 1\",\"formation 2\"],\"idEae\":789,\"parcoursPros\":[\"01/01/2012 - Parcours 2\",\"01/01/2007 - Parcours 1\"],\"position\":null,\"situation\":{\"dateEntreeAdministration\":null,\"dateEntreeFonction\":null,\"dateEntreeFonctionnaire\":null,\"directionService\":null,\"emploi\":null,\"fonction\":null},\"statut\":{\"ancienneteEchelonJours\":null,\"cadre\":null,\"categorie\":null,\"classification\":null,\"dateEffet\":null,\"echelon\":null,\"grade\":null,\"nouvEchelon\":null,\"nouvGrade\":null,\"statut\":null,\"statutPrecision\":null}}";
+		String expectedResult = "{\"agent\":{\"idAgent\":12,\"nom\":\"michelle\",\"nomJeuneFille\":null,\"prenom\":\"michmich\",\"dateNaissance\":\"/Date(-407415600000+1100)/\"},\"dateEntretien\":\"/Date(1337223959000+1100)/\",\"diplomes\":[\"diplome 1\",\"diplome 2\"],\"evaluateurs\":[{\"idAgent\":177,\"nom\":\"bonno\",\"prenom\":\"patrice\",\"dateEntreeCollectivite\":null,\"dateEntreeFonction\":null,\"dateEntreeService\":null,\"fonction\":null}],\"formations\":[\"2009 - formation 1\",\"2012 - formation 2\"],\"idEae\":789,\"parcoursPros\":[\"01/01/2012 - Parcours 2\",\"01/01/2007 - Parcours 1\"],\"position\":null,\"situation\":{\"dateEntreeAdministration\":null,\"dateEntreeFonction\":null,\"dateEntreeFonctionnaire\":null,\"directionService\":null,\"emploi\":null,\"fonction\":null},\"statut\":{\"ancienneteEchelonJours\":null,\"cadre\":null,\"categorie\":null,\"classification\":null,\"dateEffet\":null,\"echelon\":null,\"grade\":null,\"nouvEchelon\":null,\"nouvGrade\":null,\"statut\":null,\"statutPrecision\":null}}";
 		
 		// When
 		String result = dto.serializeInJSON();

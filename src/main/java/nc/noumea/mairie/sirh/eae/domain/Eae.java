@@ -95,6 +95,7 @@ public class Eae {
     private Set<EaeFichePoste> eaeFichePostes = new HashSet<EaeFichePoste>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OrderBy
 	private Set<EaeDiplome> eaeDiplomes = new HashSet<EaeDiplome>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
@@ -104,11 +105,11 @@ public class Eae {
 	private Set<EaeFormation> eaeFormations = new HashSet<EaeFormation>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("idEaeResultat ASC")
+    @OrderBy
    	private Set<EaeResultat> eaeResultats = new HashSet<EaeResultat>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("idEaePlanAction ASC")
+    @OrderBy
    	private Set<EaePlanAction> eaePlanActions = new HashSet<EaePlanAction>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

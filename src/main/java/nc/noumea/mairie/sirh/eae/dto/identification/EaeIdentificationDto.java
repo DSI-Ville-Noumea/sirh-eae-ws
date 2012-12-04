@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,6 @@ import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvalueToAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.EnumToListAndValueTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
 import flexjson.JSONDeserializer;
@@ -37,18 +37,18 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 	private Date dateEntretien;
 	private List<EaeEvaluateur> evaluateurs;
 	private EaeEvalue agent;
-	private List<EaeDiplome> diplomes;
+	private List<String> diplomes;
 	private List<String> parcoursPros;
-	private List<EaeFormation> formations;
+	private List<String> formations;
 	private EaeIdentificationSituationDto situation;
 	private EaeIdentificationStatutDto statut;
 	private EaeAgentPositionAdministrativeEnum position;
 	
 	public EaeIdentificationDto() {
 		evaluateurs = new ArrayList<EaeEvaluateur>();
-		diplomes = new ArrayList<EaeDiplome>();
+		diplomes = new ArrayList<String>();
 		parcoursPros = new ArrayList<String>();
-		formations = new ArrayList<EaeFormation>();
+		formations = new ArrayList<String>();
 	}
 
 	public EaeIdentificationDto(Eae eae) {
@@ -57,15 +57,22 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 		this.dateEntretien = eae.getDateEntretien();
 		this.evaluateurs.addAll(eae.getEaeEvaluateurs());
 		this.agent = eae.getEaeEvalue();
-		this.diplomes.addAll(eae.getEaeDiplomes());
-		this.formations.addAll(eae.getEaeFormations());
 		this.situation = new EaeIdentificationSituationDto(eae);
 		this.statut = new EaeIdentificationStatutDto(eae.getEaeEvalue());
 		this.position = eae.getEaeEvalue().getPosition();
 	
+		createDiplomeList(eae);
 		createParcoursProList(eae);
+		createFormationList(eae);
 	}
 
+	protected void createDiplomeList(Eae eae) {
+		
+		for (EaeDiplome d : eae.getEaeDiplomes()) {
+			diplomes.add(d.getLibelleDiplome());
+		}
+	}
+	
 	protected void createParcoursProList(Eae eae) {
 		List<EaeParcoursPro> theList = new ArrayList<EaeParcoursPro>();
 		theList.addAll(eae.getEaeParcoursPros());
@@ -74,6 +81,24 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 		
 		for (EaeParcoursPro p : theList) {
 			parcoursPros.add(String.format("%s - %s", df.format(p.getDateDebut()), p.getLibelleParcoursPro()));
+		}
+	}
+	
+	protected void createFormationList(Eae eae) {
+		
+		List<EaeFormation> theList = new ArrayList<EaeFormation>();
+		theList.addAll(eae.getEaeFormations());
+		Collections.sort(theList, new Comparator<EaeFormation>() {
+
+			@Override
+			public int compare(EaeFormation o1, EaeFormation o2) {
+				return o2.getAnneeFormation() - o1.getAnneeFormation();
+			}
+			
+		});
+		
+		for (EaeFormation f : theList) {
+			formations.add(String.format("%s : %s (%s)", f.getAnneeFormation(), f.getLibelleFormation(), f.getDureeFormation()));
 		}
 	}
 
@@ -89,17 +114,15 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 				.include("evaluateurs.dateEntreeCollectivite")
 				.include("evaluateurs.dateEntreeFonction")
 				.include("agent")
-				.include("diplomes")
+				.include("diplomes.*")
 				.include("parcoursPros.*")
-				.include("formations")
+				.include("formations.*")
 				.include("situation.*")
 				.include("statut.*")
 				.include("position")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new SimpleAgentTransformer(true), Agent.class)
 				.transform(new EaeEvalueToAgentTransformer(false), EaeEvalue.class)
-				.transform(new ObjectToPropertyTransformer("libelleDiplome", EaeDiplome.class), EaeDiplome.class)
-				.transform(new ObjectToPropertyTransformer("libelleFormation", EaeFormation.class), EaeFormation.class)
 				.transform(new EnumToListAndValueTransformer(EaeAgentStatutEnum.class), EaeAgentStatutEnum.class)
 				.transform(new EnumToListAndValueTransformer(EaeAgentPositionAdministrativeEnum.class), EaeAgentPositionAdministrativeEnum.class)
 				.transform(new ValueEnumTransformer(), Enum.class)
@@ -158,11 +181,11 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 		this.agent = agent;
 	}
 
-	public List<EaeDiplome> getDiplomes() {
+	public List<String> getDiplomes() {
 		return diplomes;
 	}
 
-	public void setDiplomes(List<EaeDiplome> diplomes) {
+	public void setDiplomes(List<String> diplomes) {
 		this.diplomes = diplomes;
 	}
 
@@ -174,11 +197,11 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 		this.parcoursPros = parcoursPros;
 	}
 
-	public List<EaeFormation> getFormations() {
+	public List<String> getFormations() {
 		return formations;
 	}
 
-	public void setFormations(List<EaeFormation> formations) {
+	public void setFormations(List<String> formations) {
 		this.formations = formations;
 	}
 

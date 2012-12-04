@@ -16,11 +16,11 @@ privileged aspect EaeFormation_Roo_JavaBean {
         this.anneeFormation = anneeFormation;
     }
     
-    public int EaeFormation.getDureeFormation() {
+    public String EaeFormation.getDureeFormation() {
         return this.dureeFormation;
     }
     
-    public void EaeFormation.setDureeFormation(int dureeFormation) {
+    public void EaeFormation.setDureeFormation(String dureeFormation) {
         this.dureeFormation = dureeFormation;
     }
     

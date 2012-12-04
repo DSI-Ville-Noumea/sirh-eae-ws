@@ -17,7 +17,7 @@ public class EaeFormation {
 	private int anneeFormation;
 	
 	@Column(name = "DUREE_FORMATION")
-	private int dureeFormation;
+	private String dureeFormation;
 	
 	@Column(name = "LIBELLE_FORMATION")
 	private String libelleFormation;
