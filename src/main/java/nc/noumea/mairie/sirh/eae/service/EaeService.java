@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -189,9 +190,9 @@ public class EaeService implements IEaeService {
 			}
 		}
 		
-		for (Integer evaluateurId : groupedResult.keySet()) {
-			EaeDashboardItemDto item = new EaeDashboardItemDto(groupedResult.get(evaluateurId));
-			Agent agent = agentService.getAgent(evaluateurId);
+		for (Entry<Integer, List<Eae>> evaluateurAndEaes : groupedResult.entrySet()) {
+			EaeDashboardItemDto item = new EaeDashboardItemDto(evaluateurAndEaes.getValue());
+			Agent agent = agentService.getAgent(evaluateurAndEaes.getKey());
 			item.setNom(agent.getDisplayNom());
 			item.setPrenom(agent.getDisplayPrenom());
 			
