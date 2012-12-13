@@ -767,12 +767,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIsAVCTAndAvisMINI() {
+	public void testCalculateAvisShd_typeAvctIsPROMOAndAvisMINI() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(EaeTypeAvctEnum.AVCT);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MINI);
@@ -788,12 +788,12 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateAvisShd_typeAvctIsAVCTAndAvisMAXI() {
+	public void testCalculateAvisShd_typeAvctIsPROMOAndAvisMAXI() {
 		
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(EaeTypeAvctEnum.AVCT);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MAXI);

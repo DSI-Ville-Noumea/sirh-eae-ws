@@ -255,7 +255,7 @@ public class EvaluationService implements IEvaluationService {
 				if (eae.getEaeEvaluation().getAvisRevalorisation() != null)
 					eae.getEaeEvaluation().setAvisShd(EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisRevalorisation()).toString());
 				break;
-			case AVCT:
+			case PROMO:
 				if (eae.getEaeEvaluation().getPropositionAvancement() != null)
 					eae.getEaeEvaluation().setAvisShd(eae.getEaeEvaluation().getPropositionAvancement().toString());
 				break;
