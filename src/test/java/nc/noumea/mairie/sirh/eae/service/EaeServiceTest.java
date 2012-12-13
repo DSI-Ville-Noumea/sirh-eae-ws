@@ -848,6 +848,7 @@ public class EaeServiceTest {
 		// Then
 		assertEquals(helperMock.getCurrentDate(), eae.getDateFinalisation());
 		assertEquals(EaeEtatEnum.F, eae.getEtat());
+		assertTrue(eae.isDocAttache());
 		
 		EaeFinalisation finalisation = eae.getEaeFinalisations().iterator().next();
 		assertEquals(helperMock.getCurrentDate(), finalisation.getDateFinalisation());
@@ -883,6 +884,7 @@ public class EaeServiceTest {
 		} catch(EaeServiceException ex) {
 			// Then
 			assertEquals("Impossible de finaliser l'Eae car son état est 'Créé'", ex.getMessage());
+			assertFalse(eae.isDocAttache());
 			return;
 		}
 		

@@ -249,6 +249,7 @@ public class EaeService implements IEaeService {
 		
 		eae.setEtat(EaeEtatEnum.F);
 		eae.setDateFinalisation(finalisationDate);
+		eae.setDocAttache(true);
 		
 		EaeFinalisation finalisation = new EaeFinalisation();
 		finalisation.setEae(eae);
