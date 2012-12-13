@@ -226,6 +226,29 @@ public class EaeDataConsistencyServiceTest {
 	}
 	
 	@Test
+	public void testCheckDataConsistencyForEaeEvaluation_tempsPartielIsTrueAndPourcentageIs0_throwException() {
+		// Given
+		Eae eae = new Eae();
+		EaeEvolution evol = new EaeEvolution();
+		evol.setTempsPartiel(true);
+		evol.setPourcentageTempsPartiel(0);
+		eae.setEaeEvolution(evol);
+		
+		EaeDataConsistencyService service = new EaeDataConsistencyService();
+		
+		try {
+			// When
+			service.checkDataConsistencyForEaeEvolution(eae);
+		} catch (EaeDataConsistencyServiceException e) {
+			// Then
+			assertEquals("Le taux horaire ne peut pas être égal à 0 en cas de temps partiel.", e.getMessage());
+			return;
+		}
+		
+		fail("Should have thrown exception");
+	}
+	
+	@Test
 	public void testCheckDataConsistencyForEaeIdentification_eaeHasADate_doNothing() throws EaeDataConsistencyServiceException {
 		
 		Eae eae = new Eae();

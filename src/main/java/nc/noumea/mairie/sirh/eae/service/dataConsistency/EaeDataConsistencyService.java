@@ -30,6 +30,9 @@ public class EaeDataConsistencyService implements IEaeDataConsistencyService {
 
 		EaeEvolution evolution = eae.getEaeEvolution();
 		
+		if (evolution.isTempsPartiel() && evolution.getPourcentageTempsPartiel() == 0)
+			throw new EaeDataConsistencyServiceException("Le taux horaire ne peut pas être égal à 0 en cas de temps partiel.");
+		
 		int[] verifier = new int[evolution.getEaeDeveloppements().size()];
 		
 		try {
