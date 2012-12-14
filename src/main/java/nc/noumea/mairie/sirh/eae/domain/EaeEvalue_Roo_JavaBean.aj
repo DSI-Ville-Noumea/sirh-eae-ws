@@ -157,6 +157,30 @@ privileged aspect EaeEvalue_Roo_JavaBean {
         this.position = position;
     }
     
+    public Integer EaeEvalue.getAvctDureeMin() {
+        return this.avctDureeMin;
+    }
+    
+    public void EaeEvalue.setAvctDureeMin(Integer avctDureeMin) {
+        this.avctDureeMin = avctDureeMin;
+    }
+    
+    public Integer EaeEvalue.getAvctDureeMoy() {
+        return this.avctDureeMoy;
+    }
+    
+    public void EaeEvalue.setAvctDureeMoy(Integer avctDureeMoy) {
+        this.avctDureeMoy = avctDureeMoy;
+    }
+    
+    public Integer EaeEvalue.getAvctDureeMax() {
+        return this.avctDureeMax;
+    }
+    
+    public void EaeEvalue.setAvctDureeMax(Integer avctDureeMax) {
+        this.avctDureeMax = avctDureeMax;
+    }
+    
     public Eae EaeEvalue.getEae() {
         return this.eae;
     }

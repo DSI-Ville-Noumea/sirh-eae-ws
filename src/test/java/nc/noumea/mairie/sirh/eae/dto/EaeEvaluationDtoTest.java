@@ -10,6 +10,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
@@ -55,7 +56,6 @@ public class EaeEvaluationDtoTest {
 		assertEquals(new Float(15), dto.getNoteAnneeN3());
 		assertTrue(dto.getAvisRevalorisation());
 		assertFalse(dto.getAvisChangementClasse());
-		assertEquals(EaeAvancementEnum.MAXI.name(), dto.getPropositionAvancement().getCourant());
 		assertEquals(EaeNiveauEnum.INSUFFISANT.toString(), dto.getNiveau().getCourant());
 		assertEquals(eval.getCommentaireAvctEvaluateur(), dto.getCommentaireAvctEvaluateur());
 		assertEquals(eval.getCommentaireAvctEvalue(), dto.getCommentaireAvctEvalue());
@@ -71,9 +71,10 @@ public class EaeEvaluationDtoTest {
 		EaeEvaluation eval = new EaeEvaluation();
 		eae.setEaeEvaluation(eval);
 		eval.setEae(eae);
-		
+		eae.setEaeEvalue(new EaeEvalue());
+
 		// When
-		EaeEvaluationDto dto = new EaeEvaluationDto(eval);
+		EaeEvaluationDto dto = new EaeEvaluationDto(eae);
 		
 		// Then
 		assertEquals(123, dto.getIdEae());
@@ -203,5 +204,58 @@ public class EaeEvaluationDtoTest {
 		assertEquals("SATISFAISANT", dto.getNiveau().getCourant());
 		assertEquals(new Float(13.07), dto.getNoteAnnee());
 		assertEquals("MAXI", dto.getPropositionAvancement().getCourant());
+	}
+	
+	@Test
+	public void testGetDureesAvancement_defaultSelectedValue_createSubDtoWithEvalueValues() {
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setAvctDureeMin(12);
+		evalue.setAvctDureeMoy(24);
+		evalue.setAvctDureeMax(36);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		eae.setEaeEvaluation(evaluation);
+		
+		// When
+		ValueWithListDto dto = new EaeEvaluationDto().getDureesAvancement(evaluation, evalue);
+		
+		// Then
+		assertEquals("MINI", dto.getListe().get(0).getCode());
+		assertEquals("Durée minimale (12 mois)", dto.getListe().get(0).getValeur());
+		assertEquals("MOY", dto.getListe().get(1).getCode());
+		assertEquals("Durée moyenne (24 mois)", dto.getListe().get(1).getValeur());
+		assertEquals("MAXI", dto.getListe().get(2).getCode());
+		assertEquals("Durée maximale (36 mois)", dto.getListe().get(2).getValeur());
+
+		assertEquals("MOY", dto.getCourant());
+	}
+	
+	@Test
+	public void testGetDureesAvancement_MAXISelectedValue_createSubDtoWithEvalueValues() {
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setAvctDureeMin(12);
+		evalue.setAvctDureeMoy(24);
+		evalue.setAvctDureeMax(36);
+		eae.setEaeEvalue(evalue);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setPropositionAvancement(EaeAvancementEnum.MAXI);
+		eae.setEaeEvaluation(evaluation);
+		
+		// When
+		ValueWithListDto dto = new EaeEvaluationDto().getDureesAvancement(evaluation, evalue);
+		
+		// Then
+		assertEquals("MINI", dto.getListe().get(0).getCode());
+		assertEquals("Durée minimale (12 mois)", dto.getListe().get(0).getValeur());
+		assertEquals("MOY", dto.getListe().get(1).getCode());
+		assertEquals("Durée moyenne (24 mois)", dto.getListe().get(1).getValeur());
+		assertEquals("MAXI", dto.getListe().get(2).getCode());
+		assertEquals("Durée maximale (36 mois)", dto.getListe().get(2).getValeur());
+
+		assertEquals("MAXI", dto.getCourant());
 	}
 }

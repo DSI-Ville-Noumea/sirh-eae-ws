@@ -183,7 +183,7 @@ public class EvaluationService implements IEvaluationService {
 		if (eae == null)
 			return null;
 		
-		return new EaeEvaluationDto(eae.getEaeEvaluation());
+		return new EaeEvaluationDto(eae);
 	}
 
 	@Override

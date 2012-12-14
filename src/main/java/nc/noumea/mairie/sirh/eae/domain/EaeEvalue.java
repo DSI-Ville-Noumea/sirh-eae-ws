@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentPositionAdministrativeEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -86,6 +87,15 @@ public class EaeEvalue {
     @Enumerated(EnumType.STRING)
     private EaeAgentPositionAdministrativeEnum position;
     
+    @Column(name = "AVCT_DUR_MIN")
+    private Integer avctDureeMin;
+    
+    @Column(name = "AVCT_DUR_MOY")
+    private Integer avctDureeMoy;
+    
+    @Column(name = "AVCT_DUR_MAX")
+    private Integer avctDureeMax;
+    
     @OneToOne
     @JoinColumn(name = "ID_EAE")
     private Eae eae;
@@ -95,4 +105,26 @@ public class EaeEvalue {
      */
     @Transient
     private Agent agent;
+    
+    @Transient
+    public String getAvctDureeMinDisplay() {
+    	return String.format("%s %s", EaeAvancementEnum.MINI.toString(), getAvctDureeDisplay(getAvctDureeMin()));
+    }
+    
+    @Transient
+    public String getAvctDureeMoyDisplay() {
+    	return String.format("%s %s", EaeAvancementEnum.MOY.toString(), getAvctDureeDisplay(getAvctDureeMoy()));
+    }
+    
+    @Transient
+    public String getAvctDureeMaxDisplay() {
+    	return String.format("%s %s", EaeAvancementEnum.MAXI.toString(), getAvctDureeDisplay(getAvctDureeMax()));
+    }
+    
+    protected String getAvctDureeDisplay(Integer duree) {
+    	if (duree != null && duree != 0)
+    		return String.format("(%d mois)", duree);
+    	else
+    		return "(NR)";
+    }
 }

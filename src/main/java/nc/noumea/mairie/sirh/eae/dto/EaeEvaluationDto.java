@@ -2,10 +2,13 @@ package nc.noumea.mairie.sirh.eae.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
+import nc.noumea.mairie.sirh.eae.dto.util.ListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 import nc.noumea.mairie.sirh.tools.transformer.MinutesToHoursAndMinutesTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
@@ -34,7 +37,13 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	}
 
-	public EaeEvaluationDto(EaeEvaluation eaeEvaluation) {
+	public EaeEvaluationDto(Eae eae) {
+		this(eae.getEaeEvaluation());
+		this.propositionAvancement = getDureesAvancement(eae.getEaeEvaluation(), eae.getEaeEvalue());
+	}
+	
+	protected EaeEvaluationDto(EaeEvaluation eaeEvaluation) {
+		
 		idEae = eaeEvaluation.getEae().getIdEae();
 		dureeEntretien = eaeEvaluation.getEae().getDureeEntretienMinutes();
 		noteAnnee = eaeEvaluation.getNoteAnnee();
@@ -52,13 +61,23 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 			niveau = new ValueWithListDto(EaeNiveauEnum.SATISFAISANT, EaeNiveauEnum.class);
 		else
 			niveau = new ValueWithListDto(eaeEvaluation.getNiveauEae(), EaeNiveauEnum.class);
-		
-		if (eaeEvaluation.getPropositionAvancement() == null)
-			propositionAvancement = new ValueWithListDto(EaeAvancementEnum.MOY, EaeAvancementEnum.class);
-		else
-			propositionAvancement = new ValueWithListDto(eaeEvaluation.getPropositionAvancement(), EaeAvancementEnum.class);
 	}
 
+	protected ValueWithListDto getDureesAvancement(EaeEvaluation eaeEvaluation, EaeEvalue eaeEvalue) {
+		
+		ValueWithListDto subDto = new ValueWithListDto();
+		subDto.getListe().add(new ListItemDto(EaeAvancementEnum.MINI.name(), eaeEvalue.getAvctDureeMinDisplay()));
+		subDto.getListe().add(new ListItemDto(EaeAvancementEnum.MOY.name(), eaeEvalue.getAvctDureeMoyDisplay()));
+		subDto.getListe().add(new ListItemDto(EaeAvancementEnum.MAXI.name(), eaeEvalue.getAvctDureeMaxDisplay()));
+		
+		if (eaeEvaluation.getPropositionAvancement() == null)
+			subDto.setCourant(EaeAvancementEnum.MOY.name());
+		else
+			subDto.setCourant(eaeEvaluation.getPropositionAvancement().name());
+		
+		return subDto;
+	}
+	
 	public static JSONSerializer getSerializerForEaeEvaluationDto() {
 		return new JSONSerializer()
 			.exclude("*.class")

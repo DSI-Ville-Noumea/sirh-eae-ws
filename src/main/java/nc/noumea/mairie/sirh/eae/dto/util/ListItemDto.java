@@ -5,6 +5,15 @@ public class ListItemDto {
 	private String code;
 	private String valeur;
 	
+	public ListItemDto() {
+		
+	}
+	
+	public ListItemDto(String code, String valeur) {
+		this.code = code;
+		this.valeur = valeur;
+	}
+	
 	public String getCode() {
 		return code;
 	}

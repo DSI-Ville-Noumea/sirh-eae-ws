@@ -360,3 +360,5 @@ entity jpa --class ~.sirh.eae.domain.EaeFinalisation --table EAE_FINALISATION --
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-12-12 11:55:17
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-12-12 12:04:14
 // Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-12-14 08:18:41
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log closed at 2012-12-14 14:48:59
+// Spring Roo 1.2.2.RELEASE [rev 7d75659] log opened at 2012-12-14 14:50:31

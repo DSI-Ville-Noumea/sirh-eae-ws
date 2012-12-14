@@ -416,6 +416,7 @@ public class EvaluationServiceTest {
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setEae(eae);
 		eae.setEaeEvaluation(eval);
+		eae.setEaeEvalue(new EaeEvalue());
 		
 		EvaluationService service = new EvaluationService();
 
