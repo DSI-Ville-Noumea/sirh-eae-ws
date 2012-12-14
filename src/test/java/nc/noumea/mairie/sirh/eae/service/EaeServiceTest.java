@@ -697,6 +697,122 @@ public class EaeServiceTest {
 	}
 	
 	@Test
+	public void testGetEaesDashboard_1EaeWith2Evaluateurs_ReturnDtoListOf2WithDuplicatedEae() throws SirhWSConsumerException {
+		
+		// Given
+		Agent agent19 = new Agent();
+		agent19.setNomUsage("toto");
+		
+		Agent agent21 = new Agent();
+		agent21.setNomUsage("titi");
+		
+		EaeEvaluateur toto = new EaeEvaluateur();
+		toto.setIdAgent(19);
+		EaeEvaluateur titi = new EaeEvaluateur();
+		titi.setIdAgent(21);
+		
+		Eae eaeToReturn1 = new Eae();
+		eaeToReturn1.setEtat(EaeEtatEnum.EC);
+		eaeToReturn1.getEaeEvaluateurs().add(toto);
+		eaeToReturn1.getEaeEvaluateurs().add(titi);
+		
+		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1));
+		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1);
+
+		// Mock the WS to return 1 ids
+		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
+		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		
+		// Mock the query to return a specific result
+		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
+		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.getResultList()).thenReturn(resultOfQuery);
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(
+				entManagerMock.createQuery(
+						"select e from Eae e where e.idEae in (:eaeIds)",
+						Eae.class)).thenReturn(queryMock);
+
+		// Mock the AgentService
+		IAgentService agentServiceMock = mock(IAgentService.class);
+		when(agentServiceMock.getAgent(19)).thenReturn(agent19);
+		when(agentServiceMock.getAgent(21)).thenReturn(agent21);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		
+		// When
+		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
+		
+		// Then
+		assertEquals(2, result.size());
+		assertEquals("toto", result.get(0).getNom());
+		assertEquals(1, result.get(0).getEnCours());
+		assertEquals("titi", result.get(1).getNom());
+		assertEquals(1, result.get(1).getEnCours());
+	}
+	
+	@Test
+	public void testGetEaesDashboard_1EaeWithAgentAndOtherEvaluateur_ReturnDtoListOf1WithoutDuplicatedEae() throws SirhWSConsumerException {
+		
+		// Given
+		Agent agent98 = new Agent();
+		agent98.setNomUsage("toto");
+		
+		Agent agent2ext = new Agent();
+		agent2ext.setNomUsage("titi");
+		
+		EaeEvaluateur toto = new EaeEvaluateur();
+		toto.setIdAgent(98);
+		
+		EaeEvaluateur titi = new EaeEvaluateur();
+		titi.setIdAgent(2);
+		
+		Eae eaeToReturn1 = new Eae();
+		eaeToReturn1.setEtat(EaeEtatEnum.EC);
+		eaeToReturn1.getEaeEvaluateurs().add(toto);
+		eaeToReturn1.getEaeEvaluateurs().add(titi);
+		
+		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1));
+		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1);
+
+		// Mock the WS to return 1 ids
+		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
+		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		
+		// Mock the query to return a specific result
+		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
+		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.getResultList()).thenReturn(resultOfQuery);
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(
+				entManagerMock.createQuery(
+						"select e from Eae e where e.idEae in (:eaeIds)",
+						Eae.class)).thenReturn(queryMock);
+
+		// Mock the AgentService
+		IAgentService agentServiceMock = mock(IAgentService.class);
+		when(agentServiceMock.getAgent(98)).thenReturn(agent98);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		
+		// When
+		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
+		
+		// Then
+		assertEquals(1, result.size());
+		assertEquals("toto", result.get(0).getNom());
+		assertEquals(1, result.get(0).getEnCours());
+	}
+	
+	@Test
 	public void testGetEaesDashboard_3EaesForAgentId1EvaluateurAnd2WithoutEvaluateur_ReturnDtoListOf2() throws SirhWSConsumerException {
 		
 		// Given

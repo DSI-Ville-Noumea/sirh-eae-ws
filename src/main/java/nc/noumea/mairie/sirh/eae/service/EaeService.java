@@ -181,11 +181,18 @@ public class EaeService implements IEaeService {
 			if (e.getEaeEvaluateurs().isEmpty())
 				eaesWithoutEvaluateurs.add(e);
 			
-			for (EaeEvaluateur eval : e.getEaeEvaluateurs()) {
+			// If the agent requesting is evaluator, do not add other evaluators to the list
+			if (e.isEvaluateurOrDelegataire(idAgent)) {
+				if (!groupedResult.containsKey(idAgent))
+					groupedResult.put(idAgent, new ArrayList<Eae>());
+				groupedResult.get(idAgent).add(e);
+				continue;
+			}
 			
+			// If the agent requesting is not evaluator, add all the evaluators to the list (even if other team...)
+			for (EaeEvaluateur eval : e.getEaeEvaluateurs()) {
 				if (!groupedResult.containsKey(eval.getIdAgent()))
 					groupedResult.put(eval.getIdAgent(), new ArrayList<Eae>());
-				
 				groupedResult.get(eval.getIdAgent()).add(e);
 			}
 		}
