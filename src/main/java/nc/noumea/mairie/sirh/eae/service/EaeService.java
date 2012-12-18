@@ -96,6 +96,7 @@ public class EaeService implements IEaeService {
 			eva.setEae(eaeToInitialize);
 			eaeToInitialize.setEaeEvaluation(eva);
 		}
+		
 		// If no previous EAE, return
 		if (previousEae == null)
 			return;
@@ -105,7 +106,11 @@ public class EaeService implements IEaeService {
 		eaeToInitialize.getEaeEvaluation().setNoteAnneeN2(previousEae.getEaeEvaluation().getNoteAnneeN1());
 		eaeToInitialize.getEaeEvaluation().setNoteAnneeN3(previousEae.getEaeEvaluation().getNoteAnneeN2());
 		
-		// Copy the Plan Actions items of N-1 EAE into EaeResultats of this year's EAE
+		// If this eae already has some eaeResultats, do nothing
+		if (eaeToInitialize.getEaeResultats().size() != 0)
+			return;
+		
+		// otherwise, copy the Plan Actions items of N-1 EAE into EaeResultats of this year's EAE
 		for(EaePlanAction pa : previousEae.getEaePlanActions()) {
 			EaeResultat res = new EaeResultat();
 			res.setObjectif(pa.getObjectif());
