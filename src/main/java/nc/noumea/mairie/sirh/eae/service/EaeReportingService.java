@@ -127,8 +127,7 @@ public class EaeReportingService implements IEaeReportingService {
 
 	public byte[] readResponseAsByteArray(ClientResponse response, int idEae, EaeReportFormatEnum format) throws EaeReportingServiceException {
 		
-		if (response.getStatus() != HttpStatus.OK.value() || 
-			!response.getHeaders().get("Content-Type").contains("application/pdf")) {
+		if (response.getStatus() != HttpStatus.OK.value()) {
 			throw new EaeReportingServiceException(
 					String.format(
 							"An error occured while querying the reporting server '%s' with eaeId '%s' and format '%s'. HTTP Status code is : %s.",
@@ -136,16 +135,16 @@ public class EaeReportingService implements IEaeReportingService {
 		}
 		
 		byte[] reponseData = null;
-		File pdfFile = null;
+		File reportFile = null;
 		
 		try {
-			pdfFile = response.getEntity(File.class);
-			reponseData =  IOUtils.toByteArray(new FileInputStream(pdfFile));
+			reportFile = response.getEntity(File.class);
+			reponseData =  IOUtils.toByteArray(new FileInputStream(reportFile));
 		} catch (Exception e) {
 			throw new EaeReportingServiceException("An error occured while reading the downloaded report.", e);
 		} finally {
-			if (pdfFile != null && pdfFile.exists())
-				pdfFile.delete();
+			if (reportFile != null && reportFile.exists())
+				reportFile.delete();
 		}
 		
 		return reponseData;
