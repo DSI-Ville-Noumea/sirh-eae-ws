@@ -364,6 +364,64 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
+	public void testSetEaeResultats_2ExistingResultats_1MissingInDto_deleteResultatAndComment() throws EvaluationServiceException {
+		
+		// Given
+		EaeResultatsDto dto = new EaeResultatsDto();
+		dto.setIdEae(789);
+		EaeResultat r = new EaeResultat();
+		r.setIdEaeResultat(678);
+		r.setObjectif("new obj");
+		r.setResultat("new res");
+		EaeCommentaire c = new EaeCommentaire();
+		c.setText("new obj comment");
+		r.setCommentaire(c);
+		dto.getObjectifsProfessionnels().add(r);
+		
+		Eae eae = spy(new Eae());
+		org.mockito.Mockito.doNothing().when(eae).flush();
+		EaeResultat existingResultat = new EaeResultat();
+		existingResultat.setEae(eae);
+		existingResultat.setIdEaeResultat(678);
+		existingResultat.setObjectif("old obj");
+		existingResultat.setResultat("old res");
+		EaeCommentaire cExisting = new EaeCommentaire();
+		cExisting.setIdEaeCommentaire(11);
+		cExisting.setText("old obj comment");
+		existingResultat.setCommentaire(cExisting);
+		eae.getEaeResultats().add(existingResultat);
+		
+		EaeResultat existingResultat2 = spy(new EaeResultat());
+		org.mockito.Mockito.doNothing().when(existingResultat2).remove();
+		existingResultat2.setEae(eae);
+		existingResultat2.setIdEaeResultat(679);
+		existingResultat2.setObjectif("old obj2");
+		existingResultat2.setResultat("old res2");
+		EaeCommentaire cExisting2 = new EaeCommentaire();
+		cExisting2.setIdEaeCommentaire(12);
+		cExisting2.setText("old obj comment2");
+		existingResultat2.setCommentaire(cExisting2);
+		eae.getEaeResultats().add(existingResultat2);
+		
+		EvaluationService service = new EvaluationService();
+
+		// When
+		service.setEaeResultats(eae, dto);
+		
+		// Then
+		assertEquals(1, eae.getEaeResultats().size());
+		
+		Iterator<EaeResultat> it = eae.getEaeResultats().iterator();
+		EaeResultat resultat = it.next();
+		assertEquals(eae, resultat.getEae());
+		assertEquals("new obj", resultat.getObjectif());
+		assertEquals("new res", resultat.getResultat());
+		assertEquals("new obj comment", resultat.getCommentaire().getText());
+		
+		org.mockito.Mockito.verify(existingResultat2).remove();
+	}
+	
+	@Test
 	public void testGetEaeAppreciations_WithEae_FillResultatsDtoAndReturn() {
 
 		// Given

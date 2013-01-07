@@ -107,18 +107,30 @@ public class EvaluationService implements IEvaluationService {
 		
 		eae.getCommentaire().setText(dto.getCommentaireGeneral());
 		
+		List<EaeResultat> listOfAllResultats = new ArrayList<EaeResultat>(eae.getEaeResultats());
+		
 		for (EaeResultat resPro : dto.getObjectifsProfessionnels()) {
 			if (resPro.getIdEaeResultat() == null || resPro.getIdEaeResultat() == 0)
 				createAndAddNewEaeResultat(eae, resPro, EaeTypeObjectifEnum.PROFESSIONNEL);
 			else
-				fillExistingEaeResultat(eae, resPro);
+				resPro = fillExistingEaeResultat(eae, resPro);
+			
+			listOfAllResultats.remove(resPro);
 		}
 		
 		for (EaeResultat resInd : dto.getObjectifsIndividuels()) {
 			if (resInd.getIdEaeResultat() == null || resInd.getIdEaeResultat() == 0)
 				createAndAddNewEaeResultat(eae, resInd, EaeTypeObjectifEnum.INDIVIDUEL);
 			else
-				fillExistingEaeResultat(eae, resInd);
+				resInd = fillExistingEaeResultat(eae, resInd);
+			
+			listOfAllResultats.remove(resInd);
+		}
+		
+		// Removes EaeResultats not present in the DTO (consider them as deleted)
+		for(EaeResultat res : listOfAllResultats) {
+			eae.getEaeResultats().remove(res);
+			res.remove();
 		}
 		
 		eae.flush();
@@ -130,7 +142,8 @@ public class EvaluationService implements IEvaluationService {
 		resPro.setEae(eae);
 	}
 
-	private void fillExistingEaeResultat(Eae eae, EaeResultat resultat) {
+	private EaeResultat fillExistingEaeResultat(Eae eae, EaeResultat resultat) {
+		
 		for(EaeResultat existingResultat : eae.getEaeResultats()) {
 			
 			if (existingResultat.getIdEaeResultat() != null && existingResultat.getIdEaeResultat().equals(resultat.getIdEaeResultat())) {
@@ -139,8 +152,11 @@ public class EvaluationService implements IEvaluationService {
 				existingResultat.setResultat(resultat.getResultat());
 				
 				resultat.setCommentaire(updateEaeCommentaire(existingResultat.getCommentaire(), (resultat.getCommentaire())));
+				return existingResultat;
 			}
 		}
+		
+		return null;
 	}
 
 	@Override
