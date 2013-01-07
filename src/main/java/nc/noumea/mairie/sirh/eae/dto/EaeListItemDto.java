@@ -35,6 +35,7 @@ public class EaeListItemDto {
 	private boolean droitAcceder;
 	private boolean droitDemarrer;
 	private boolean droitAffecterDelegataire;
+	private boolean droitImprimerBirt;
 	private boolean droitImprimerGed;
 	private String idDocumentGed;
 	
@@ -65,6 +66,8 @@ public class EaeListItemDto {
 			this.setDroitImprimerGed(true);
 			this.setIdDocumentGed(eaeItem.getLatestFinalisation().getIdGedDocument());
 		}
+		
+		this.setDroitImprimerBirt(eaeItem.getEtat() == EaeEtatEnum.C || eaeItem.getEtat() == EaeEtatEnum.EC);
 	}
 	
 	public void setAccessRightsForAgentId(Eae eae, int idAgent) {
@@ -113,6 +116,7 @@ public class EaeListItemDto {
 				.include("droitAcceder")
 				.include("droitDemarrer")
 				.include("droitAffecterDelegataire")
+				.include("droitImprimerBirt")
 				.include("droitImprimerGed")
 				.include("idDocumentGed")
 				.transform(new MSDateTransformer(), Date.class)
@@ -252,6 +256,14 @@ public class EaeListItemDto {
 
 	public void setDroitAffecterDelegataire(boolean droitAffecterDelegataire) {
 		this.droitAffecterDelegataire = droitAffecterDelegataire;
+	}
+
+	public boolean isDroitImprimerBirt() {
+		return droitImprimerBirt;
+	}
+
+	public void setDroitImprimerBirt(boolean droitImprimerBirt) {
+		this.droitImprimerBirt = droitImprimerBirt;
 	}
 
 	public boolean isDroitImprimerGed() {

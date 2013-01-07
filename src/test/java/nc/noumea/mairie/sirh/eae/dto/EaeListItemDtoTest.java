@@ -96,7 +96,7 @@ public class EaeListItemDtoTest {
 	}
 	
 	@Test
-	public void testBuildEaeListItemDto_EaeNotF_droitImprimerFalse() {
+	public void testBuildEaeListItemDto_EaeIsC_droitImprimerGedFalseAndDroitImprimerBirtTrue() {
 		
 		// Given
 		Eae eaeItem = new Eae();
@@ -112,10 +112,51 @@ public class EaeListItemDtoTest {
 		// Then
 		assertFalse(dto.isDroitImprimerGed());
 		assertNull(dto.getIdDocumentGed());
+		assertTrue(dto.isDroitImprimerBirt());
 	}
 	
 	@Test
-	public void testBuildEaeListItemDto_EaeIsF_droitImprimerTrueAndIdDocumentGedSet() {
+	public void testBuildEaeListItemDto_EaeIsEC_droitImprimerGedFalseAndDroitImprimerBirtTrue() {
+		
+		// Given
+		Eae eaeItem = new Eae();
+		eaeItem.setIdEae(6789);
+		eaeItem.setEtat(EaeEtatEnum.EC);
+		EaeFinalisation fi = new EaeFinalisation();
+		fi.setIdGedDocument("theId");
+		eaeItem.getEaeFinalisations().add(fi);
+		
+		// When
+		EaeListItemDto dto = new EaeListItemDto(eaeItem);
+		
+		// Then
+		assertFalse(dto.isDroitImprimerGed());
+		assertNull(dto.getIdDocumentGed());
+		assertTrue(dto.isDroitImprimerBirt());
+	}
+	
+	@Test
+	public void testBuildEaeListItemDto_EaeIsND_droitImprimerGedFalseAndDroitImprimerBirtFalse() {
+		
+		// Given
+		Eae eaeItem = new Eae();
+		eaeItem.setIdEae(6789);
+		eaeItem.setEtat(EaeEtatEnum.ND);
+		EaeFinalisation fi = new EaeFinalisation();
+		fi.setIdGedDocument("theId");
+		eaeItem.getEaeFinalisations().add(fi);
+		
+		// When
+		EaeListItemDto dto = new EaeListItemDto(eaeItem);
+		
+		// Then
+		assertFalse(dto.isDroitImprimerGed());
+		assertNull(dto.getIdDocumentGed());
+		assertFalse(dto.isDroitImprimerBirt());
+	}
+	
+	@Test
+	public void testBuildEaeListItemDto_EaeIsF_droitImprimerGedTrueAndIdDocumentGedSetAndDroitImprimerBirtFalse() {
 		
 		// Given
 		Eae eaeItem = new Eae();
@@ -131,10 +172,11 @@ public class EaeListItemDtoTest {
 		// Then
 		assertTrue(dto.isDroitImprimerGed());
 		assertEquals("theId", dto.getIdDocumentGed());
+		assertFalse(dto.isDroitImprimerBirt());
 	}
 	
 	@Test
-	public void testBuildEaeListItemDto_EaeIsCO_droitImprimerTrueAndIdDocumentGedSet() {
+	public void testBuildEaeListItemDto_EaeIsCO_droitImprimerGedTrueAndIdDocumentGedSetAndDroitImprimerBirtFalse() {
 		
 		// Given
 		Eae eaeItem = new Eae();
@@ -150,6 +192,7 @@ public class EaeListItemDtoTest {
 		// Then
 		assertTrue(dto.isDroitImprimerGed());
 		assertEquals("theId", dto.getIdDocumentGed());
+		assertFalse(dto.isDroitImprimerBirt());
 	}
 	
 	@Test
@@ -375,7 +418,7 @@ public class EaeListItemDtoTest {
 		List<PathExpression> excludes = EaeListItemDto.getSerializerForEaeListItemDto().getExcludes();
 		
 		// Then
-		assertEquals(18, includes.size());
+		assertEquals(19, includes.size());
 		assertEquals("[agentEvalue]", includes.get(0).toString());
 		assertEquals("[etat]", includes.get(1).toString());
 		assertEquals("[cap]", includes.get(2).toString());
@@ -392,8 +435,9 @@ public class EaeListItemDtoTest {
 		assertEquals("[droitAcceder]", includes.get(13).toString());
 		assertEquals("[droitDemarrer]", includes.get(14).toString());
 		assertEquals("[droitAffecterDelegataire]", includes.get(15).toString());
-		assertEquals("[droitImprimerGed]", includes.get(16).toString());
-		assertEquals("[idDocumentGed]", includes.get(17).toString());
+		assertEquals("[droitImprimerBirt]", includes.get(16).toString());
+		assertEquals("[droitImprimerGed]", includes.get(17).toString());
+		assertEquals("[idDocumentGed]", includes.get(18).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
