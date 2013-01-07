@@ -1,9 +1,7 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
@@ -408,7 +406,7 @@ public class EvaluationService implements IEvaluationService {
 		evolution.setCommentaireEvalue(updateEaeCommentaire(evolution.getCommentaireEvalue(), dto.getCommentaireEvalue()));
 		
 		// List of EvolutionSouhaits
-		List<Integer> eaeEvolSouhaitsProcessedIds = new ArrayList<Integer>();
+		List<EaeEvolutionSouhait> listAllEvolutionSouhaits = new ArrayList<EaeEvolutionSouhait>(evolution.getEaeEvolutionSouhaits());
 		
 		for (EaeEvolutionSouhait evolSouhait : dto.getSouhaitsSuggestions()) {
 			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait().equals(0))
@@ -421,25 +419,31 @@ public class EvaluationService implements IEvaluationService {
 					if (existingEvolSouhait.getIdEaeEvolutionSouhait() == evolSouhait.getIdEaeEvolutionSouhait()) {
 						existingEvolSouhait.setSouhait(evolSouhait.getSouhait());
 						existingEvolSouhait.setSuggestion(evolSouhait.getSuggestion());
-						eaeEvolSouhaitsProcessedIds.add(existingEvolSouhait.getIdEaeEvolutionSouhait());
+						listAllEvolutionSouhaits.remove(existingEvolSouhait);
 					}
 				}
 			}
 		}
 		
-		deleteEaeEvolutionSouhaits(eaeEvolSouhaitsProcessedIds, evolution.getEaeEvolutionSouhaits());
+		for (EaeEvolutionSouhait souhait : listAllEvolutionSouhaits) {
+			evolution.getEaeEvolutionSouhaits().remove(souhait);
+			souhait.remove();
+		}
 		
 		// List of Developpements
-		List<Integer> eaeDeveloppementProcessedIds = new ArrayList<Integer>();
+		List<EaeDeveloppement> listAllDeveloppements = new ArrayList<EaeDeveloppement>(evolution.getEaeDeveloppements());
 		
-		updateEaeDeveloppements(evolution, dto.getDeveloppementConnaissances(), EaeTypeDeveloppementEnum.CONNAISSANCE, eaeDeveloppementProcessedIds);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementCompetences(), EaeTypeDeveloppementEnum.COMPETENCE, eaeDeveloppementProcessedIds);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementExamensConcours(), EaeTypeDeveloppementEnum.CONCOURS, eaeDeveloppementProcessedIds);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementPersonnel(), EaeTypeDeveloppementEnum.PERSONNEL, eaeDeveloppementProcessedIds);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementComportement(), EaeTypeDeveloppementEnum.COMPORTEMENT, eaeDeveloppementProcessedIds);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementFormateur(), EaeTypeDeveloppementEnum.FORMATEUR, eaeDeveloppementProcessedIds);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementConnaissances(), EaeTypeDeveloppementEnum.CONNAISSANCE, listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementCompetences(), EaeTypeDeveloppementEnum.COMPETENCE, listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementExamensConcours(), EaeTypeDeveloppementEnum.CONCOURS, listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementPersonnel(), EaeTypeDeveloppementEnum.PERSONNEL, listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementComportement(), EaeTypeDeveloppementEnum.COMPORTEMENT, listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementFormateur(), EaeTypeDeveloppementEnum.FORMATEUR, listAllDeveloppements);
 		
-		deleteEaeDeveloppements(eaeDeveloppementProcessedIds, evolution.getEaeDeveloppements());
+		for (EaeDeveloppement dev : listAllDeveloppements) {
+			evolution.getEaeDeveloppements().remove(dev);
+			dev.remove();
+		}
 		
 		try {
 			eaeDataConsistencyService.checkDataConsistencyForEaeEvolution(eae);
@@ -447,42 +451,8 @@ public class EvaluationService implements IEvaluationService {
 			throw new EvaluationServiceException(e.getMessage(), e);
 		}
 	}
-
-	protected void deleteEaeDeveloppements(List<Integer> processedIds, Set<EaeDeveloppement> eaeDeveloppements) {
-		
-		for (Iterator<EaeDeveloppement> i = eaeDeveloppements.iterator(); i.hasNext();) {
-			
-			EaeDeveloppement developpement = i.next();
-			
-			// New item in the list, dont delete it
-			if (developpement.getIdEaeDeveloppement() == null || developpement.getIdEaeDeveloppement() == 0)
-				continue;
-			
-			// If the item does not belong to the processed ids, delete it
-			if (!processedIds.contains(developpement.getIdEaeDeveloppement())) {
-				i.remove();
-			}
-		}
-	}
 	
-	protected void deleteEaeEvolutionSouhaits(List<Integer> processedIds, Set<EaeEvolutionSouhait> eaeEvolutionSouhaits) {
-		
-		for (Iterator<EaeEvolutionSouhait> i = eaeEvolutionSouhaits.iterator(); i.hasNext();) {
-			
-			EaeEvolutionSouhait evolSouhait = i.next();
-			
-			// New item in the list, dont delete it
-			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait() == 0)
-				continue;
-			
-			// If the item does not belong to the processed ids, delete it
-			if (!processedIds.contains(evolSouhait.getIdEaeEvolutionSouhait())) {
-				i.remove();
-			}
-		}
-	}
-	
-	protected void updateEaeDeveloppements(EaeEvolution evolution, List<EaeDeveloppement> dtoDeveloppements, EaeTypeDeveloppementEnum typeDeveloppement, List<Integer> processedIds) {
+	protected void updateEaeDeveloppements(EaeEvolution evolution, List<EaeDeveloppement> dtoDeveloppements, EaeTypeDeveloppementEnum typeDeveloppement, List<EaeDeveloppement> listAllDeveloppements) {
 		
 		for (EaeDeveloppement dev : dtoDeveloppements) {
 			if (dev.getIdEaeDeveloppement() == null || dev.getIdEaeDeveloppement().equals(0)) {
@@ -496,7 +466,7 @@ public class EvaluationService implements IEvaluationService {
 						existingDev.setLibelle(dev.getLibelle());
 						existingDev.setEcheance(dev.getEcheance());
 						existingDev.setPriorisation(dev.getPriorisation());
-						processedIds.add(existingDev.getIdEaeDeveloppement());
+						listAllDeveloppements.remove(existingDev);
 					}
 				}
 			}

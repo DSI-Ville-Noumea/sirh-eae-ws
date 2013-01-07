@@ -1234,6 +1234,57 @@ public class EvaluationServiceTest {
 	}
 	
 	@Test
+	public void testSetEaeEvolution_2ExistingEaeEvolutionSetSouhait_ReplaceOneAndDeleteOther() throws EvaluationServiceException {
+
+		// Given
+		Eae eae = spy(new Eae());
+		org.mockito.Mockito.doNothing().when(eae).flush();
+		eae.setIdEae(19);
+		EaeEvolution evol = new EaeEvolution();
+		eae.setEaeEvolution(evol);
+		
+		EaeEvolutionSouhait s1 = new EaeEvolutionSouhait();
+		s1.setIdEaeEvolutionSouhait(89);
+		s1.setSouhait("souhait");
+		s1.setSuggestion("suggestion");
+		evol.getEaeEvolutionSouhaits().add(s1);
+		
+		EaeEvolutionSouhait s2 = spy(new EaeEvolutionSouhait());
+		org.mockito.Mockito.doNothing().when(s2).remove();
+		s2.setIdEaeEvolutionSouhait(90);
+		s2.setSouhait("souhait 2");
+		s2.setSuggestion("suggestion 2");
+		evol.getEaeEvolutionSouhaits().add(s2);
+		
+		EaeEvolutionDto dto = new EaeEvolutionDto();
+		dto.setIdEae(19);
+		
+		// 1 existing souhait in DTO
+		EaeEvolutionSouhait existingSouhait = new EaeEvolutionSouhait();
+		existingSouhait.setIdEaeEvolutionSouhait(89);
+		existingSouhait.setSouhait("le souhait existant");
+		existingSouhait.setSuggestion("la suggestion existante");
+		dto.getSouhaitsSuggestions().add(existingSouhait);
+
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		
+		// When
+		service.setEaeEvolution(eae, dto);
+		
+		// Then
+		EaeEvolution evo = eae.getEaeEvolution();
+		
+		assertEquals(1, evo.getEaeEvolutionSouhaits().size());
+		assertEquals("le souhait existant", evo.getEaeEvolutionSouhaits().iterator().next().getSouhait());
+		assertEquals("la suggestion existante", evo.getEaeEvolutionSouhaits().iterator().next().getSuggestion());
+		
+		verify(s2).remove();
+	}
+	
+	@Test
 	public void testSetEaeEvolution_ExistingEaeEvolutionSetDeveloppement_ReplaceEvolutionfromDto() throws EvaluationServiceException {
 
 		// Given
@@ -1284,7 +1335,8 @@ public class EvaluationServiceTest {
 		EaeEvolution evol = new EaeEvolution();
 		eae.setEaeEvolution(evol);
 		
-		EaeDeveloppement existingDeveloppement = new EaeDeveloppement();
+		EaeDeveloppement existingDeveloppement = spy(new EaeDeveloppement());
+		org.mockito.Mockito.doNothing().when(existingDeveloppement).remove();
 		existingDeveloppement.setIdEaeDeveloppement(89);
 		existingDeveloppement.setLibelle("comportement existant");
 		existingDeveloppement.setEcheance(new DateTime(2009, 12, 12, 13, 57, 0, 0).toDate());
@@ -1307,6 +1359,8 @@ public class EvaluationServiceTest {
 		EaeEvolution evo = eae.getEaeEvolution();
 		
 		assertEquals(0, evo.getEaeDeveloppements().size());
+		
+		org.mockito.Mockito.verify(existingDeveloppement).remove();
 	}
 	
 	@Test
@@ -1318,7 +1372,8 @@ public class EvaluationServiceTest {
 		EaeEvolution evol = new EaeEvolution();
 		eae.setEaeEvolution(evol);
 		
-		EaeEvolutionSouhait existingSouhait = new EaeEvolutionSouhait();
+		EaeEvolutionSouhait existingSouhait = spy(new EaeEvolutionSouhait());
+		org.mockito.Mockito.doNothing().when(existingSouhait).remove();
 		existingSouhait.setIdEaeEvolutionSouhait(89);
 		evol.getEaeEvolutionSouhaits().add(existingSouhait);
 		
