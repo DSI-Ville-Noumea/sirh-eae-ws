@@ -102,7 +102,7 @@ public class EaeReportingService implements IEaeReportingService {
 			formatValue = EaeReportFormatEnum.PDF;
 		else {
 			try {
-				formatValue = EaeReportFormatEnum.valueOf(format);
+				formatValue = EaeReportFormatEnum.valueOf(format.toUpperCase());
 			} catch(IllegalArgumentException ex) {
 				throw new EaeReportingServiceException(String.format("Report file format not supported '%s'.", format));
 			}

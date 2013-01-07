@@ -237,10 +237,10 @@ public class EaeController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 		
-		return new ResponseEntity<byte []>(responseData, getHeadersForFileFormat(formatValue), HttpStatus.OK);
+		return new ResponseEntity<byte []>(responseData, getHeadersForFileFormat(formatValue, idEae), HttpStatus.OK);
 	}
 	
-	private HttpHeaders getHeadersForFileFormat(EaeReportFormatEnum format) {
+	private HttpHeaders getHeadersForFileFormat(EaeReportFormatEnum format, int idEae) {
 		
 		String contentType;
 		
@@ -255,6 +255,7 @@ public class EaeController {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", contentType);
+		headers.add("Content-Disposition", String.format("attachment; filename=\"%s.%s\"", idEae, format.toString().toLowerCase()));
 		
 		return headers;
 	}
