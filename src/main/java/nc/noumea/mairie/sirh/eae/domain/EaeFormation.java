@@ -19,7 +19,7 @@ public class EaeFormation {
 	@Column(name = "DUREE_FORMATION")
 	private String dureeFormation;
 	
-	@Column(name = "LIBELLE_FORMATION")
+	@Column(name = "LIBELLE_FORMATION", length = 255)
 	private String libelleFormation;
 	
 	@ManyToOne

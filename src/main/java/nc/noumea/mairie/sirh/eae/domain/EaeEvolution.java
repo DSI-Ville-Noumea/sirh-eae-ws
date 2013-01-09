@@ -57,7 +57,7 @@ public class EaeEvolution {
     @Type(type="boolean")
     private boolean mobiliteCollectivite;
 	
-	@Column(name = "NOM_COLLECTIVITE")
+	@Column(name = "NOM_COLLECTIVITE", length = 100)
 	private String nomCollectivite;
 	
 	@Column(name = "MOBILITE_AUTRE", nullable = false)
@@ -68,14 +68,14 @@ public class EaeEvolution {
     @Type(type="boolean")
 	private boolean concours;
 	
-	@Column(name = "NOM_CONCOURS")
+	@Column(name = "NOM_CONCOURS", length = 100)
 	private String nomConcours;
 	
 	@Column(name = "VAE", nullable = false)
     @Type(type="boolean")
 	private boolean vae;
 	
-	@Column(name = "NOM_VAE")
+	@Column(name = "NOM_VAE", length = 100)
 	private String nomVae;
 	
 	@Column(name = "TEMPS_PARTIEL", nullable = false)
@@ -97,7 +97,7 @@ public class EaeEvolution {
     @Type(type="boolean")
 	private boolean autrePerspective;
 	
-	@Column(name = "LIB_AUTRE_PERSPECTIVE")
+	@Column(name = "LIB_AUTRE_PERSPECTIVE", length = 255)
 	private String libelleAutrePerspective;
 	
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -14,7 +14,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_DIPLOME", identifierField = "idEaeDiplome", table = "EAE_DIPLOME", sequenceName="EAE_S_DIPLOME")
 public class EaeDiplome {
 
-	@Column(name = "LIBELLE_DIPLOME")
+	@Column(name = "LIBELLE_DIPLOME", length = 255)
 	@NotNull
 	private String libelleDiplome;
 	

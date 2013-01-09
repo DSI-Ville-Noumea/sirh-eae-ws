@@ -25,7 +25,7 @@ public class EaeParcoursPro {
     @Temporal(TemporalType.TIMESTAMP)
 	private Date dateFin;
 	
-	@Column(name = "LIBELLE_PARCOURS_PRO")
+	@Column(name = "LIBELLE_PARCOURS_PRO", length = 255)
 	private String libelleParcoursPro;
 	
 	@ManyToOne

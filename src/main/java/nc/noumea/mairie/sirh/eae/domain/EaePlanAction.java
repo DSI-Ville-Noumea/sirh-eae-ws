@@ -13,10 +13,10 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_PLAN_ACTION", identifierField = "idEaePlanAction", identifierType = Integer.class, table = "EAE_PLAN_ACTION", sequenceName="EAE_S_PLAN_ACTION")
 public class EaePlanAction {
 	
-	@Column(name = "OBJECTIF")
+	@Column(name = "OBJECTIF", length = 1000)
 	private String objectif;
 	
-	@Column(name = "MESURE")
+	@Column(name = "MESURE", length = 1000)
 	private String mesure;
 	
 	@OneToOne

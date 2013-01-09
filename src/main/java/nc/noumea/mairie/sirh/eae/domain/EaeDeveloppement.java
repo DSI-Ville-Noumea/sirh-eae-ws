@@ -22,7 +22,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", table = "EAE_DEVELOPPEMENT", sequenceName = "EAE_S_DEVELOPPEMENT", identifierColumn = "ID_EAE_DEVELOPPEMENT", identifierField = "idEaeDeveloppement", identifierType = Integer.class)
 public class EaeDeveloppement {
 	
-	@Column(name = "LIBELLE")
+	@Column(name = "LIBELLE", length = 300)
 	private String libelle;
 	
 	@Column(name = "ECHEANCE")

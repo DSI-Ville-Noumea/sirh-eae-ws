@@ -15,10 +15,10 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_RESULTAT", identifierField = "idEaeResultat", identifierType = Integer.class, table = "EAE_RESULTAT", sequenceName="EAE_S_RESULTAT")
 public class EaeResultat {
 	
-	@Column(name = "OBJECTIF")
+	@Column(name = "OBJECTIF", length = 1000)
 	private String objectif;
 	
-	@Column(name = "RESULTAT")
+	@Column(name = "RESULTAT", length = 1000)
 	private String resultat;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
