@@ -45,6 +45,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 	private EaeCommentaire commentaireEvolution;
 	private EaeCommentaire commentaireEvaluateur;
 	private EaeCommentaire commentaireEvalue;
+	private int anneeAvancement;
 	
 	private List<EaeEvolutionSouhait> souhaitsSuggestions;
 	private List<EaeDeveloppement> developpementConnaissances;
@@ -102,6 +103,8 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		}
 		
 		fillInDeveloppements(evolution.getEaeDeveloppements());
+		
+		anneeAvancement = eae.getEaeCampagne().getAnnee();
 	}
 	
 	private void fillInDeveloppements(Set<EaeDeveloppement> developpements) {
@@ -183,6 +186,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 			.include("commentaireEvolution")
 			.include("commentaireEvaluateur")
 			.include("commentaireEvalue")
+			.include("anneeAvancement")
 			.exclude("*")
 			.transform(new MSDateTransformer(), Date.class)
 			.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class);
@@ -368,6 +372,14 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 
 	public void setLibelleAutrePerspective(String libelleAutrePerspective) {
 		this.libelleAutrePerspective = libelleAutrePerspective;
+	}
+
+	public int getAnneeAvancement() {
+		return anneeAvancement;
+	}
+
+	public void setAnneeAvancement(int anneeAvancement) {
+		this.anneeAvancement = anneeAvancement;
 	}
 
 	public List<EaeDeveloppement> getDeveloppementConnaissances() {
