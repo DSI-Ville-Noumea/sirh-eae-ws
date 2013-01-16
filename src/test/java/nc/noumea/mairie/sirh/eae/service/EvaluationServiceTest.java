@@ -46,6 +46,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationSituationDto;
 import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
 import nc.noumea.mairie.sirh.eae.dto.planAction.PlanActionItemDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
@@ -1467,4 +1468,36 @@ public class EvaluationServiceTest {
 		
 		fail("Should have thrown exception");
 	}
+	
+	@Test
+	public void testSetEaeIdentification_FillInFromDto() throws EvaluationServiceException {
+	
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		eae.setEaeEvalue(evalue);
+		evalue.setEae(eae);
+		
+		EaeFichePoste fdp = new EaeFichePoste();
+		fdp.setPrimary(true);
+		eae.getEaeFichePostes().add(fdp);
+		eae.getEaeFichePostes().add(new EaeFichePoste());
+		
+		EaeIdentificationDto dto = new EaeIdentificationDto();
+		dto.setDateEntretien(new DateTime(2012, 01, 03, 0, 0, 0, 0).toDate());
+		dto.setSituation(new EaeIdentificationSituationDto());
+		dto.getSituation().setDateEntreeAdministration(new DateTime(1972, 01, 10, 0, 0, 0, 0).toDate());
+		dto.getSituation().setDateEntreeFonction(new DateTime(1984, 06, 15, 0, 0, 0, 0).toDate());
+
+		EvaluationService service = new EvaluationService();
+		
+		// When
+		service.setEaeIdentification(eae, dto);
+		
+		// Then
+		assertEquals(new DateTime(2012, 01, 03, 0, 0, 0, 0).toDate(), eae.getDateEntretien());
+		assertEquals(new DateTime(1972, 01, 10, 0, 0, 0, 0).toDate(), eae.getEaeEvalue().getDateEntreeAdministration());
+		assertEquals(new DateTime(1984, 06, 15, 0, 0, 0, 0).toDate(), eae.getPrimaryFichePoste().getDateEntreeFonction());
+	}
+	
 }

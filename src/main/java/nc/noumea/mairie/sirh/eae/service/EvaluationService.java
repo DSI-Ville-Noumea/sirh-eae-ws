@@ -77,6 +77,8 @@ public class EvaluationService implements IEvaluationService {
 	@Override
 	public void setEaeIdentification(Eae eae, EaeIdentificationDto dto) throws EvaluationServiceException {
 		eae.setDateEntretien(dto.getDateEntretien());
+		eae.getEaeEvalue().setDateEntreeAdministration(dto.getSituation().getDateEntreeAdministration());
+		eae.getPrimaryFichePoste().setDateEntreeFonction(dto.getSituation().getDateEntreeFonction());
 	}
 
 	@Override

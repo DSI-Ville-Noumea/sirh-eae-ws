@@ -24,6 +24,7 @@ import nc.noumea.mairie.sirh.eae.dto.IJSONDeserialize;
 import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvalueToAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.EnumToListAndValueTransformer;
+import nc.noumea.mairie.sirh.tools.transformer.EnumToNullTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
@@ -134,6 +135,7 @@ public class EaeIdentificationDto implements IJSONSerialize, IJSONDeserialize<Ea
 	public static JSONDeserializer<EaeIdentificationDto> getDeserializerForEaeIdentificationDto() {
 
 		JSONDeserializer<EaeIdentificationDto> deserializer = new JSONDeserializer<EaeIdentificationDto>()
+				.use(Enum.class , new EnumToNullTransformer())
 				.use(Date.class, new MSDateTransformer());
 
 		return deserializer;

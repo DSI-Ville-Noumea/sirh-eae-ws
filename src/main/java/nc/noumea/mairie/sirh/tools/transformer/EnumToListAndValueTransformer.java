@@ -57,5 +57,4 @@ public class EnumToListAndValueTransformer extends AbstractTransformer {
 		
 		getContext().writeCloseObject();
 	}
-
 }
