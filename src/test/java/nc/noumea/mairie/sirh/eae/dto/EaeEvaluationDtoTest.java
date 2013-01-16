@@ -12,6 +12,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
@@ -225,6 +226,7 @@ public class EaeEvaluationDtoTest {
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		eae.setEaeEvaluation(evaluation);
+		evalue.setStatut(EaeAgentStatutEnum.F);
 		
 		// When
 		ValueWithListDto dto = new EaeEvaluationDto().getDureesAvancement(evaluation, evalue);
@@ -252,6 +254,7 @@ public class EaeEvaluationDtoTest {
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MAXI);
 		eae.setEaeEvaluation(evaluation);
+		evalue.setStatut(EaeAgentStatutEnum.F);
 		
 		// When
 		ValueWithListDto dto = new EaeEvaluationDto().getDureesAvancement(evaluation, evalue);

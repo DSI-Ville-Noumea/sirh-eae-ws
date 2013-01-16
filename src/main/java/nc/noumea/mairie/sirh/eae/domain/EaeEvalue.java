@@ -122,9 +122,13 @@ public class EaeEvalue {
     }
     
     protected String getAvctDureeDisplay(Integer duree) {
+    	
+    	if (statut != EaeAgentStatutEnum.F)
+    		return "";
+    	
     	if (duree != null && duree != 0)
     		return String.format("(%d mois)", duree);
-    	else
-    		return "(NR)";
+    	
+    	return "(NR)";
     }
 }
