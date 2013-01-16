@@ -226,12 +226,12 @@ public class EaeDataConsistencyServiceTest {
 	}
 	
 	@Test
-	public void testCheckDataConsistencyForEaeEvaluation_tempsPartielIsTrueAndPourcentageIs0_throwException() {
+	public void testCheckDataConsistencyForEaeEvaluation_tempsPartielIsTrueAndPourcentageIsNull_throwException() {
 		// Given
 		Eae eae = new Eae();
 		EaeEvolution evol = new EaeEvolution();
 		evol.setTempsPartiel(true);
-		evol.setPourcentageTempsPartiel(0);
+		evol.setTempsPartielIdSpbhor(null);
 		eae.setEaeEvolution(evol);
 		
 		EaeDataConsistencyService service = new EaeDataConsistencyService();

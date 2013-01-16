@@ -32,6 +32,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	private EaeCommentaire commentaireEvalue;
 	private EaeCommentaire commentaireAvctEvaluateur;
 	private EaeCommentaire commentaireAvctEvalue;
+	private int anneeAvancement;
 
 	public EaeEvaluationDto() {
 
@@ -40,6 +41,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	public EaeEvaluationDto(Eae eae) {
 		this(eae.getEaeEvaluation());
 		this.propositionAvancement = getDureesAvancement(eae.getEaeEvaluation(), eae.getEaeEvalue());
+		anneeAvancement = eae.getEaeCampagne().getAnnee();
 	}
 	
 	protected EaeEvaluationDto(EaeEvaluation eaeEvaluation) {
@@ -95,6 +97,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 			.include("commentaireAvctEvaluateur")
 			.include("commentaireAvctEvalue")
 			.include("dureeEntretien")
+			.include("anneeAvancement")
 			.transform(new MinutesToHoursAndMinutesTransformer(), "dureeEntretien")
 			.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class)
 			.exclude("*");
@@ -224,5 +227,13 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	public void setCommentaireAvctEvalue(EaeCommentaire commentaireAvctEvalue) {
 		this.commentaireAvctEvalue = commentaireAvctEvalue;
+	}
+
+	public int getAnneeAvancement() {
+		return anneeAvancement;
+	}
+
+	public void setAnneeAvancement(int anneeAvancement) {
+		this.anneeAvancement = anneeAvancement;
 	}
 }

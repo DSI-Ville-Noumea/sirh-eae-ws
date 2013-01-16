@@ -11,12 +11,18 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
@@ -50,6 +56,7 @@ import nc.noumea.mairie.sirh.service.IAgentService;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -475,6 +482,9 @@ public class EvaluationServiceTest {
 		eval.setEae(eae);
 		eae.setEaeEvaluation(eval);
 		eae.setEaeEvalue(new EaeEvalue());
+		
+		EaeCampagne camp = new EaeCampagne();
+		eae.setEaeCampagne(camp);
 		
 		EvaluationService service = new EvaluationService();
 
@@ -1020,6 +1030,7 @@ public class EvaluationServiceTest {
 		assertEquals(5, eae.getEaePlanActions().size());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetEaeEvolution_WithEae_FillEvolutionDtoAndReturn() {
 
@@ -1027,8 +1038,15 @@ public class EvaluationServiceTest {
 		Eae eae = new Eae();
 		eae.setIdEae(789);
 		
+		TypedQuery<Spbhor> q = mock(TypedQuery.class);
+		when(q.getResultList()).thenReturn(new ArrayList<Spbhor>());
+		
+		EntityManager sirhEntityManagerMock = mock(EntityManager.class);
+		when(sirhEntityManagerMock.createNamedQuery("Spbhor.whereCdTauxNotZero", Spbhor.class)).thenReturn(q);
+		
 		EvaluationService service = new EvaluationService();
-
+		ReflectionTestUtils.setField(service, "sirhEntityManager", sirhEntityManagerMock);
+		
 		// When
 		EaeEvolutionDto result = service.getEaeEvolution(eae);
 		
@@ -1059,7 +1077,6 @@ public class EvaluationServiceTest {
 		dto.setVae(true);
 		dto.setNomVae("nom diplome");
 		dto.setTempsPartiel(true);
-		dto.setPourcentageTempsPartiel(50);
 		dto.setRetraite(true);
 		dto.setDateRetraite(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate());
 		dto.setAutrePerspective(true);
@@ -1074,10 +1091,20 @@ public class EvaluationServiceTest {
 		dto.setCommentaireEvalue(new EaeCommentaire());
 		dto.getCommentaireEvalue().setText("commentaire evalue");
 		
+		ValueWithListDto tempsPartiel = new ValueWithListDto();
+		tempsPartiel.setCourant("1");
+		dto.setPourcentageTempsPartiel(tempsPartiel);
+		
 		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
 		
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		
+		Spbhor t = new Spbhor();
+		t.setCdThor(1);
+		Spbhor.findSpbhor(1);
+		AnnotationDrivenStaticEntityMockingControl.expectReturn(t);
+		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		// When
 		service.setEaeEvolution(eae, dto);
@@ -1098,7 +1125,7 @@ public class EvaluationServiceTest {
 		assertTrue(evo.isVae());
 		assertEquals("nom diplome", evo.getNomVae());
 		assertTrue(evo.isTempsPartiel());
-		assertEquals(50, evo.getPourcentageTempsPartiel());
+		assertEquals(new Integer(1), evo.getTempsPartielIdSpbhor());
 		assertTrue(evo.isRetraite());
 		assertEquals(new DateTime(2014, 4, 19, 0, 0, 0, 0).toDate(), evo.getDateRetraite());
 		assertTrue(evo.isAutrePerspective());

@@ -134,6 +134,14 @@ privileged aspect EaeEvolution_Roo_JavaBean {
         this.pourcentageTempsPartiel = pourcentageTempsPartiel;
     }
     
+    public Integer EaeEvolution.getTempsPartielIdSpbhor() {
+        return this.tempsPartielIdSpbhor;
+    }
+    
+    public void EaeEvolution.setTempsPartielIdSpbhor(Integer tempsPartielIdSpbhor) {
+        this.tempsPartielIdSpbhor = tempsPartielIdSpbhor;
+    }
+    
     public boolean EaeEvolution.isRetraite() {
         return this.retraite;
     }

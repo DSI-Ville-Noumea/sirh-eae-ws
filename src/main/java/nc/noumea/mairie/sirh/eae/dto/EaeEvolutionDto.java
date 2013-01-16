@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
@@ -37,7 +38,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 	private boolean vae;
 	private String nomVae;
 	private boolean tempsPartiel;
-	private int pourcentageTempsPartiel;
+	private ValueWithListDto pourcentageTempsPartiel;
 	private boolean retraite;
 	private Date dateRetraite;
 	private boolean autrePerspective;
@@ -45,7 +46,6 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 	private EaeCommentaire commentaireEvolution;
 	private EaeCommentaire commentaireEvaluateur;
 	private EaeCommentaire commentaireEvalue;
-	private int anneeAvancement;
 	
 	private List<EaeEvolutionSouhait> souhaitsSuggestions;
 	private List<EaeDeveloppement> developpementConnaissances;
@@ -66,7 +66,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		delaiEnvisage = new ValueWithListDto(null, EaeDelaiEnum.class);
 	}
 
-	public EaeEvolutionDto(Eae eae) {
+	public EaeEvolutionDto(Eae eae, List<Spbhor> tempsPartiels) {
 		this();
 		idEae = eae.getIdEae();
 		
@@ -89,7 +89,6 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		vae = evolution.isVae();
 		nomVae = evolution.getNomVae();
 		tempsPartiel = evolution.isTempsPartiel();
-		pourcentageTempsPartiel = evolution.getPourcentageTempsPartiel();
 		retraite = evolution.isRetraite();
 		dateRetraite = evolution.getDateRetraite();
 		autrePerspective = evolution.isAutrePerspective();
@@ -103,8 +102,8 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		}
 		
 		fillInDeveloppements(evolution.getEaeDeveloppements());
-		
-		anneeAvancement = eae.getEaeCampagne().getAnnee();
+	
+		pourcentageTempsPartiel = new ValueWithListDto(evolution.getTempsPartielIdSpbhor(), tempsPartiels);
 	}
 	
 	private void fillInDeveloppements(Set<EaeDeveloppement> developpements) {
@@ -151,7 +150,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 			.include("vae")
 			.include("nomVae")
 			.include("tempsPartiel")
-			.include("pourcentageTempsPartiel")
+			.include("pourcentageTempsPartiel.*")
 			.include("retraite")
 			.include("dateRetraite")
 			.include("autrePerspective")
@@ -186,7 +185,6 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 			.include("commentaireEvolution")
 			.include("commentaireEvaluateur")
 			.include("commentaireEvalue")
-			.include("anneeAvancement")
 			.exclude("*")
 			.transform(new MSDateTransformer(), Date.class)
 			.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class);
@@ -334,12 +332,13 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		this.tempsPartiel = tempsPartiel;
 	}
 
-	public int getPourcentageTempsPartiel() {
+	public ValueWithListDto getPourcentageTempsPartiel() {
 		return pourcentageTempsPartiel;
 	}
 
-	public void setPourcentageTempsPartiel(int pourcentageTempsPartiel) {
-		this.pourcentageTempsPartiel = pourcentageTempsPartiel;
+	public void setPourcentageTempsPartiel(
+			ValueWithListDto tpsPartiel) {
+		this.pourcentageTempsPartiel = tpsPartiel;
 	}
 
 	public boolean isRetraite() {
@@ -372,14 +371,6 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 
 	public void setLibelleAutrePerspective(String libelleAutrePerspective) {
 		this.libelleAutrePerspective = libelleAutrePerspective;
-	}
-
-	public int getAnneeAvancement() {
-		return anneeAvancement;
-	}
-
-	public void setAnneeAvancement(int anneeAvancement) {
-		this.anneeAvancement = anneeAvancement;
 	}
 
 	public List<EaeDeveloppement> getDeveloppementConnaissances() {

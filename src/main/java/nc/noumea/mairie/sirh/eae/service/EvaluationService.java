@@ -3,6 +3,10 @@ package nc.noumea.mairie.sirh.eae.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
 import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
@@ -49,6 +53,9 @@ public class EvaluationService implements IEvaluationService {
 	
 	@Autowired
 	private IEaeDataConsistencyService eaeDataConsistencyService;
+	
+	@PersistenceContext(unitName = "sirhPersistenceUnit")
+	private EntityManager sirhEntityManager;
 	
 	@Override
 	public EaeIdentificationDto getEaeIdentification(Eae eae) {
@@ -354,7 +361,9 @@ public class EvaluationService implements IEvaluationService {
 		if (eae == null)
 			return null;
 		
-		return new EaeEvolutionDto(eae);
+		List<Spbhor> listOfPartialTimes = sirhEntityManager.createNamedQuery("Spbhor.whereCdTauxNotZero", Spbhor.class).getResultList();
+
+		return new EaeEvolutionDto(eae, listOfPartialTimes);
 	}
 
 	@Override
@@ -369,7 +378,6 @@ public class EvaluationService implements IEvaluationService {
 		}
 		
 		EaeDelaiEnum delai = null;
-		
 		if (dto.getDelaiEnvisage() != null && dto.getDelaiEnvisage().getCourant() != null) {
 			try {
 				delai = EaeDelaiEnum.valueOf(dto.getDelaiEnvisage().getCourant());
@@ -377,8 +385,19 @@ public class EvaluationService implements IEvaluationService {
 				throw new EvaluationServiceException("La propriété 'delaiEnvisage' de l'évolution est incorrecte.");
 			}
 		}
-
 		evolution.setDelaiEnvisage(delai);
+		
+		Integer selectedId = null;
+		if (dto.getPourcentageTempsPartiel() != null && dto.getPourcentageTempsPartiel().getCourant() != null) {
+			try {
+				selectedId = Integer.parseInt(dto.getPourcentageTempsPartiel().getCourant());
+				if (Spbhor.findSpbhor(selectedId) == null)
+					throw new EvaluationServiceException("La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");
+			} catch(NumberFormatException ex) {
+				throw new EvaluationServiceException("La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");
+			}
+		}
+		evolution.setTempsPartielIdSpbhor(selectedId);
 		
 		// Inline properties
 		evolution.setMobiliteGeo(dto.isMobiliteGeo());
@@ -394,7 +413,6 @@ public class EvaluationService implements IEvaluationService {
 		evolution.setVae(dto.isVae());
 		evolution.setNomVae(dto.getNomVae());
 		evolution.setTempsPartiel(dto.isTempsPartiel());
-		evolution.setPourcentageTempsPartiel(dto.getPourcentageTempsPartiel());
 		evolution.setRetraite(dto.isRetraite());
 		evolution.setDateRetraite(dto.getDateRetraite());
 		evolution.setAutrePerspective(dto.isAutrePerspective());
