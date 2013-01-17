@@ -17,6 +17,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 
+import org.hibernate.annotations.Type;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -79,6 +80,10 @@ public class EaeEvalue {
     @Column(name = "NOUV_ECHELON")
     private String nouvEchelon;
 
+    @Column(name = "EST_ENCADRANT", nullable = false)
+    @Type(type="boolean")
+    private boolean estEncadrant;
+    
     @Column(name = "TYPE_AVCT")
     @Enumerated(EnumType.STRING)
     private EaeTypeAvctEnum typeAvancement;

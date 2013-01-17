@@ -2,11 +2,13 @@ package nc.noumea.mairie.sirh.eae.dto;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 
 import org.junit.Test;
@@ -19,6 +21,8 @@ public class EaeAppreciationsDtoTest {
 	public void testConstructorWithEae() {
 		// Given
 		Eae eae = new Eae();
+		eae.setEaeEvalue(new EaeEvalue());
+		eae.getEaeEvalue().setEstEncadrant(true);
 		eae.setIdEae(79);
 		EaeAppreciation ap1 = new EaeAppreciation();
 		ap1.setNumero(0);
@@ -53,6 +57,7 @@ public class EaeAppreciationsDtoTest {
 		
 		// Then
 		assertEquals(79, dto.getIdEae());
+		assertTrue(dto.isEstEncadrant());
 		assertEquals("A", dto.getTechniqueEvalue()[0]);
 		assertEquals("D", dto.getTechniqueEvaluateur()[0]);
 		
@@ -86,7 +91,7 @@ public class EaeAppreciationsDtoTest {
 		
 		// Given
 		EaeAppreciationsDto dto = new EaeAppreciationsDto();
-		String expectedJson = "{\"idEae\":0,\"managerialEvaluateur\":[null,null,null,null],\"managerialEvalue\":[null,null,null,null],\"resultatsEvaluateur\":[null,null,null,null],\"resultatsEvalue\":[null,null,null,null],\"savoirEtreEvaluateur\":[null,null,null,null],\"savoirEtreEvalue\":[null,null,null,null],\"techniqueEvaluateur\":[null,null,null,null],\"techniqueEvalue\":[null,null,null,null]}";
+		String expectedJson = "{\"estEncadrant\":false,\"idEae\":0,\"managerialEvaluateur\":[null,null,null,null],\"managerialEvalue\":[null,null,null,null],\"resultatsEvaluateur\":[null,null,null,null],\"resultatsEvalue\":[null,null,null,null],\"savoirEtreEvaluateur\":[null,null,null,null],\"savoirEtreEvalue\":[null,null,null,null],\"techniqueEvaluateur\":[null,null,null,null],\"techniqueEvalue\":[null,null,null,null]}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -101,6 +106,7 @@ public class EaeAppreciationsDtoTest {
 		// Given
 		EaeAppreciationsDto dto = new EaeAppreciationsDto();
 		dto.setIdEae(123);
+		dto.setEstEncadrant(true);
 		dto.setTechniqueEvalue(new String[]{"A", "B", "C", "D"});
 		dto.setTechniqueEvaluateur(new String[]{"A", "B", "C", "D"});
 		dto.setSavoirEtreEvalue(new String[]{"A", "B", "C", "D"});
@@ -110,7 +116,7 @@ public class EaeAppreciationsDtoTest {
 		dto.setResultatsEvaluateur(new String[]{"A", "B", "C", "D"});
 		dto.setResultatsEvalue(new String[]{"A", "B", "C", "D"});
 		
-		String expectedJson = "{\"idEae\":123,\"managerialEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"managerialEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvalue\":[\"A\",\"B\",\"C\",\"D\"]}";
+		String expectedJson = "{\"estEncadrant\":true,\"idEae\":123,\"managerialEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"managerialEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvalue\":[\"A\",\"B\",\"C\",\"D\"]}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -122,13 +128,14 @@ public class EaeAppreciationsDtoTest {
 	@Test
 	public void deserializeFromJSON_filledInObject() {
 		// Given
-		String json = "{\"idEae\":123,\"managerialEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"managerialEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvalue\":[\"A\",\"B\",\"C\",\"D\"]}";
+		String json = "{\"estEncadrant\":true,\"idEae\":123,\"managerialEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"managerialEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"resultatsEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"savoirEtreEvalue\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvaluateur\":[\"A\",\"B\",\"C\",\"D\"],\"techniqueEvalue\":[\"A\",\"B\",\"C\",\"D\"]}";
 		
 		// When
 		EaeAppreciationsDto dto = new EaeAppreciationsDto().deserializeFromJSON(json);
 		
 		// Then
 		assertEquals(123, dto.getIdEae());
+		assertTrue(dto.isEstEncadrant());
 		assertArrayEquals(new String[]{"A", "B", "C", "D"}, dto.getTechniqueEvalue());
 		assertArrayEquals(new String[]{"A", "B", "C", "D"}, dto.getTechniqueEvaluateur());
 		assertArrayEquals(new String[]{"A", "B", "C", "D"}, dto.getSavoirEtreEvalue());

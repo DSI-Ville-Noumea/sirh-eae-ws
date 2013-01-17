@@ -141,6 +141,14 @@ privileged aspect EaeEvalue_Roo_JavaBean {
         this.nouvEchelon = nouvEchelon;
     }
     
+    public boolean EaeEvalue.isEstEncadrant() {
+        return this.estEncadrant;
+    }
+    
+    public void EaeEvalue.setEstEncadrant(boolean estEncadrant) {
+        this.estEncadrant = estEncadrant;
+    }
+    
     public EaeTypeAvctEnum EaeEvalue.getTypeAvancement() {
         return this.typeAvancement;
     }

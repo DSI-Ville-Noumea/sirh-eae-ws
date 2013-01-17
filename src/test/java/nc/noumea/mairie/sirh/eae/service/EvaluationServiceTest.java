@@ -435,6 +435,7 @@ public class EvaluationServiceTest {
 		// Given
 		Eae eae = new Eae();
 		eae.setIdEae(789);
+		eae.setEaeEvalue(new EaeEvalue());
 		
 		EvaluationService service = new EvaluationService();
 
@@ -450,11 +451,13 @@ public class EvaluationServiceTest {
 
 		// Given
 		Eae eae = spy(new Eae());
+		eae.setEaeEvalue(new EaeEvalue());
 		org.mockito.Mockito.doNothing().when(eae).flush();
 		
 		eae.setIdEae(789);
 		EaeAppreciationsDto dto = new EaeAppreciationsDto();
 		dto.setIdEae(789);
+		dto.setEstEncadrant(true);
 		dto.setTechniqueEvalue(new String[]{"A", "B", "C", "D"});
 		dto.setTechniqueEvaluateur(new String[]{"A", "B", "C", "D"});
 		dto.setSavoirEtreEvalue(new String[]{"A", "B", "C", "D"});
@@ -471,6 +474,7 @@ public class EvaluationServiceTest {
 		
 		// Then
 		assertEquals(16, eae.getEaeAppreciations().size());
+		assertTrue(eae.getEaeEvalue().isEstEncadrant());
 	}
 	
 	@Test

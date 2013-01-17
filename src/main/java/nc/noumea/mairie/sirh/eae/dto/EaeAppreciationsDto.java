@@ -11,6 +11,7 @@ import flexjson.JSONSerializer;
 public class EaeAppreciationsDto implements IJSONSerialize, IJSONDeserialize<EaeAppreciationsDto> {
 
 	private int idEae;
+	private boolean estEncadrant;
 	private String[] techniqueEvalue;
 	private String[] techniqueEvaluateur;
 	private String[] savoirEtreEvalue;
@@ -35,6 +36,7 @@ public class EaeAppreciationsDto implements IJSONSerialize, IJSONDeserialize<Eae
 		
 		this();
 		idEae = eae.getIdEae();
+		estEncadrant = eae.getEaeEvalue().isEstEncadrant();
 		
 		for (EaeAppreciation app : eae.getEaeAppreciations()) {
 			switch (app.getTypeAppreciation()) {
@@ -75,6 +77,14 @@ public class EaeAppreciationsDto implements IJSONSerialize, IJSONDeserialize<Eae
 		return new JSONDeserializer<EaeAppreciationsDto>().deserializeInto(json, this);
 	}
 	
+	public boolean isEstEncadrant() {
+		return estEncadrant;
+	}
+
+	public void setEstEncadrant(boolean estEncadrant) {
+		this.estEncadrant = estEncadrant;
+	}
+
 	public int getIdEae() {
 		return idEae;
 	}

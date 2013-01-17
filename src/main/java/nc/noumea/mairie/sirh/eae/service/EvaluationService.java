@@ -181,6 +181,7 @@ public class EvaluationService implements IEvaluationService {
 		eae.getEaeAppreciations().clear();
 		eae.flush();
 		
+		eae.getEaeEvalue().setEstEncadrant(dto.isEstEncadrant());
 		fillAppreciationsWithArray(eae, dto.getTechniqueEvalue(), dto.getTechniqueEvaluateur(), EaeTypeAppreciationEnum.TE);
 		fillAppreciationsWithArray(eae, dto.getSavoirEtreEvalue(), dto.getSavoirEtreEvaluateur(), EaeTypeAppreciationEnum.SE);
 		fillAppreciationsWithArray(eae, dto.getManagerialEvalue(), dto.getManagerialEvaluateur(), EaeTypeAppreciationEnum.MA);
