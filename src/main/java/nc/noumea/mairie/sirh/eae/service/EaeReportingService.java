@@ -27,12 +27,15 @@ public class EaeReportingService implements IEaeReportingService {
 	@Qualifier("reportingBaseUrl")
 	private String reportingBaseUrl;
 	
-	@Autowired
-	@Qualifier("targetReportPath")
+//	@Autowired
+//	@Qualifier("remoteVirtualFolderPath")
 	private String remoteVirtualFolderPath;
 	
+	@Autowired
+	@Qualifier("reportServerPath")
+	private String reportServerPath;
+	
 	private static final String REPORT_PAGE = "frameset";
-	private static final String REPORT_SERVER_PATH = "sirh-eae-reports/";
 	private static final String PARAM_REPORT = "__report";
 	private static final String PARAM_FORMAT = "__format";
 	
@@ -40,9 +43,10 @@ public class EaeReportingService implements IEaeReportingService {
 		
 	}
 	
-	public EaeReportingService(String _reportingBaseUrl, String _remoteVirtualFolderPath) {
+	public EaeReportingService(String _reportingBaseUrl, String _remoteVirtualFolderPath, String _reportServerPath) {
 		this.reportingBaseUrl = _reportingBaseUrl;
 		this.remoteVirtualFolderPath = _remoteVirtualFolderPath;
+		this.reportServerPath = _reportServerPath;
 	}
 	
 	@Override
@@ -116,7 +120,7 @@ public class EaeReportingService implements IEaeReportingService {
 
 		WebResource webResource = client
 				.resource(reportingBaseUrl + REPORT_PAGE)
-				.queryParam(PARAM_REPORT, REPORT_SERVER_PATH + "eae.rptdesign")
+				.queryParam(PARAM_REPORT, reportServerPath + "eae.rptdesign")
 				.queryParam(PARAM_FORMAT, format.toString())
 				.queryParam("idEae", String.valueOf(idEae));
 

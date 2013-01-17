@@ -51,11 +51,11 @@
 
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs"
-		value="http://localhost:8080/sirhws/eaes/listEaesByCampagne" override="false" />
+		value="http://localhost:8085/sirhws/eaes/listEaesByCampagne" override="false" />
 		
-	<Environment name="EAE_TARGET_REPORT_PATH" type="java.lang.String"
-		description="commons-vfs compatible url for generated reports target path"
-		value="c:\Alphalog\Mairie\sirh-eae-ws\" override="false" />
+	<Environment name="REPORTING_SERVER_REPORT_PATH" type="java.lang.String"
+		description="SIRH-EAE reports path on Birt"
+		value="reports/sirh-eae-reports/" override="false" />
 
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
 		description="BIRT report viewer base URL for EAEs reporting"
