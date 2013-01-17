@@ -22,6 +22,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
@@ -317,5 +318,17 @@ public class EaeService implements IEaeService {
 	@Override
 	public Eae getEae(int idEae) {
 		return Eae.findEae(idEae);
+	}
+
+	@Override
+	public EaeEvalueNameDto getEvalueName(Eae eae) {
+		
+		agentService.fillEaeEvalueWithAgent(eae.getEaeEvalue());
+		
+		EaeEvalueNameDto dto = new EaeEvalueNameDto();
+		dto.setPrenom( eae.getEaeEvalue().getAgent().getDisplayPrenom());
+		dto.setNom( eae.getEaeEvalue().getAgent().getDisplayNom());
+		
+		return dto;
 	}
 }

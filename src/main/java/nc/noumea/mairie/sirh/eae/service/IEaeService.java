@@ -5,6 +5,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
@@ -107,4 +108,11 @@ public interface IEaeService {
 	 * @return the EAE corresponding to the given Id
 	 */
 	Eae getEae(int idEae);
+	
+	/**
+	 * Returns an EAE evalue's first and lastnames
+	 * @param eae
+	 * @return
+	 */
+	EaeEvalueNameDto getEvalueName(Eae eae);
 }

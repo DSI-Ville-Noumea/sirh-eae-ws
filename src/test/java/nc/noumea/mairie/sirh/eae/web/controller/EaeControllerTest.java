@@ -16,6 +16,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
@@ -505,6 +506,62 @@ public class EaeControllerTest {
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
+	}
+	
+	@Test
+	public void getEvalueFullname_EaeDoesNotExists_ReturnHttp404() {
+		// Given
+		when(eaeSecurityProvider.checkEaeAndReadRight(1, 1)).thenReturn(new ResponseEntity<String>(HttpStatus.NOT_FOUND));
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		
+		// When
+		ResponseEntity<String> result = controller.getEvalueFullname(1, 1);
+		
+		// Then
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+	}
+	
+	@Test
+	public void getEvalueFullname_AgentDoesNotHaveRight_Return403() {
+		// Given
+		when(eaeSecurityProvider.checkEaeAndReadRight(1, 1)).thenReturn(new ResponseEntity<String>("message", HttpStatus.CONFLICT));
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		
+		// When
+		ResponseEntity<String> result = controller.getEvalueFullname(1, 1);
+		
+		// Then
+		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
+		assertEquals("message", result.getBody());
+	}
+	
+	@Test
+	public void getEvalueFullname_EaeExists_ReturnJsonResult() {
+		// Given
+		when(eaeSecurityProvider.checkEaeAndReadRight(1, 1)).thenReturn(null);
+		
+		EaeEvalueNameDto dto = new EaeEvalueNameDto();
+		dto.setPrenom("NICOLAS");
+		dto.setNom("RAYNAUD");
+		
+		Eae eae = new Eae();
+		IEaeService service = mock(IEaeService.class);
+		when(service.getEae(1)).thenReturn(eae);
+		when(service.getEvalueName(eae)).thenReturn(dto);
+		
+		EaeController controller = new EaeController();
+		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
+		ReflectionTestUtils.setField(controller, "eaeService", service);
+		
+		// When
+		ResponseEntity<String> result = controller.getEvalueFullname(1, 1);
+		
+		// Then
+		assertEquals(HttpStatus.OK, result.getStatusCode());
 	}
 	
 }

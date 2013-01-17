@@ -36,6 +36,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
@@ -1040,5 +1041,30 @@ public class EaeServiceTest {
 		// Then
 		assertTrue(result.isCanFinalize());
 		assertNull(result.getMessage());
+	}
+	
+	@Test
+	public void getEvalueName_ReturnEvalueFirstAndLastName() {
+		// Given
+		Eae eae = new Eae();
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setAgent(new Agent());
+		evalue.getAgent().setPrenom("NICOLAS");
+		evalue.getAgent().setNomUsage("RAYNAUD");
+		eae.setEaeEvalue(evalue);
+		
+		IAgentService agentServiceMock = mock(IAgentService.class);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		
+		// When
+		EaeEvalueNameDto dto = service.getEvalueName(eae);
+		
+		// Then
+		assertEquals("RAYNAUD", dto.getNom());
+		assertEquals("NICOLAS", dto.getPrenom());
+		
+		verify(agentServiceMock, times(1)).fillEaeEvalueWithAgent(evalue);
 	}
 }
