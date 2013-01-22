@@ -55,7 +55,7 @@
 		
 	<Environment name="REPORTING_SERVER_REPORT_PATH" type="java.lang.String"
 		description="SIRH-EAE reports path on Birt"
-		value="reports/sirh-eae-reports/" override="false" />
+		value="report/sirh-eae-reports/" override="false" />
 
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
 		description="BIRT report viewer base URL for EAEs reporting"

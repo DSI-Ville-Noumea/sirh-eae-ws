@@ -82,9 +82,6 @@ public class EaeEvolution {
     @Type(type="boolean")
 	private boolean tempsPartiel;
 	
-	@Column(name = "POURC_TEMPS_PARTIEL")
-	private int pourcentageTempsPartiel;
-	
 	@Column(name = "TEMPS_PARTIEL_ID_SPBHOR")
 	private Integer tempsPartielIdSpbhor;
 	
