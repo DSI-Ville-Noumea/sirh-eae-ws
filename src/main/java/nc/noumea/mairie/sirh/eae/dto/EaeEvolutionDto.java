@@ -72,9 +72,12 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		
 		EaeEvolution evolution = eae.getEaeEvolution();
 		
-		if (evolution == null)
+		if (evolution == null) {
+			pourcentageTempsPartiel = new ValueWithListDto(null, tempsPartiels);
 			return;
+		}
 		
+		pourcentageTempsPartiel = new ValueWithListDto(evolution.getTempsPartielIdSpbhor(), tempsPartiels);
 		mobiliteGeo = evolution.isMobiliteGeo();
 		mobiliteFonctionnelle = evolution.isMobiliteFonctionnelle();
 		changementMetier = evolution.isChangementMetier();
@@ -102,8 +105,6 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		}
 		
 		fillInDeveloppements(evolution.getEaeDeveloppements());
-	
-		pourcentageTempsPartiel = new ValueWithListDto(evolution.getTempsPartielIdSpbhor(), tempsPartiels);
 	}
 	
 	private void fillInDeveloppements(Set<EaeDeveloppement> developpements) {
