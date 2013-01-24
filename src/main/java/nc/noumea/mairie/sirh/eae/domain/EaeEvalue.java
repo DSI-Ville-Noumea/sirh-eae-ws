@@ -84,6 +84,10 @@ public class EaeEvalue {
     @Type(type="boolean")
     private boolean estEncadrant;
     
+    @Column(name = "AGENT_DETACHE", nullable = false)
+    @Type(type="boolean")
+    private boolean estDetache;
+    
     @Column(name = "TYPE_AVCT")
     @Enumerated(EnumType.STRING)
     private EaeTypeAvctEnum typeAvancement;

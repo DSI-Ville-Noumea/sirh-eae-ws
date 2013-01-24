@@ -7,6 +7,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDtoList;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
@@ -44,6 +45,10 @@ public class EvaluationXmlController {
 		Eae eae = Eae.findEae(idEae);
 		EaeFichePosteDtoList dto = new EaeFichePosteDtoList();
 		dto.setEaeFichePostes(evaluationService.getEaeFichePoste(eae));
+		
+		if (dto.getEaeFichePostes().size() == 0)
+			dto.getEaeFichePostes().add(new EaeFichePosteDto());
+		
 		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
 	}
 	

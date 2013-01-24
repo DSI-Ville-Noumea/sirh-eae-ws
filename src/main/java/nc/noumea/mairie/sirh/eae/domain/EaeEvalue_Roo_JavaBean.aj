@@ -149,6 +149,14 @@ privileged aspect EaeEvalue_Roo_JavaBean {
         this.estEncadrant = estEncadrant;
     }
     
+    public boolean EaeEvalue.isEstDetache() {
+        return this.estDetache;
+    }
+    
+    public void EaeEvalue.setEstDetache(boolean estDetache) {
+        this.estDetache = estDetache;
+    }
+    
     public EaeTypeAvctEnum EaeEvalue.getTypeAvancement() {
         return this.typeAvancement;
     }

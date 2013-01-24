@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.eae.dto.identification;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
@@ -36,6 +37,28 @@ public class EaeIdentificationSituationDtoTest {
 		assertEquals(fp.getFonction(), dto.getFonction());
 		assertEquals(fp.getEmploi(), dto.getEmploi());
 		assertEquals(fp.getDirectionService(), dto.getDirectionService());
+		assertEquals(eaeEvalue.getDateEntreeAdministration(), dto.getDateEntreeAdministration());
+		assertEquals(eaeEvalue.getDateEntreeFonctionnaire(), dto.getDateEntreeFonctionnaire());
+	}
+	
+	@Test
+	public void testEaeIdentificationSituationDto_WithtoutAnyFichePoste() {
+		// Given
+		Eae eae = new Eae();
+		
+		EaeEvalue eaeEvalue = new EaeEvalue();
+		eaeEvalue.setDateEntreeAdministration(new DateTime(2006, 5, 3, 0, 0, 0, 0).toDate());
+		eaeEvalue.setDateEntreeFonctionnaire(new DateTime(2006, 5, 3, 0, 0, 0, 0).toDate());
+		eae.setEaeEvalue(eaeEvalue);
+		
+		// When
+		EaeIdentificationSituationDto dto = new EaeIdentificationSituationDto(eae);
+		
+		// Then
+		assertNull(dto.getDateEntreeFonction());
+		assertNull(dto.getFonction());
+		assertNull(dto.getEmploi());
+		assertNull(dto.getDirectionService());
 		assertEquals(eaeEvalue.getDateEntreeAdministration(), dto.getDateEntreeAdministration());
 		assertEquals(eaeEvalue.getDateEntreeFonctionnaire(), dto.getDateEntreeFonctionnaire());
 	}

@@ -10,7 +10,6 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.tools.transformer.EaeEvaluateurToAgentFlatTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.EaeFichePosteToEaeListTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
@@ -23,7 +22,6 @@ public class EaeListItemDto {
 	private Agent agentEvalue;
 	private List<EaeEvaluateur> eaeEvaluateurs;
 	private Agent agentDelegataire;
-	private EaeFichePoste eaeFichePoste;
 	private EaeEtatEnum etat;
 	private boolean cap;
 	private String avisShd;
@@ -38,6 +36,12 @@ public class EaeListItemDto {
 	private boolean droitImprimerBirt;
 	private boolean droitImprimerGed;
 	private String idDocumentGed;
+	private boolean estDetache;
+	
+	private String directionService;
+	private String sectionService;
+	private String service;
+	private Agent agentShd;
 	
 	public EaeListItemDto() {
 		
@@ -48,7 +52,6 @@ public class EaeListItemDto {
 		this.setIdEae(eaeItem.getIdEae());
 		this.setAgentDelegataire(eaeItem.getAgentDelegataire());
 		this.setEaeEvaluateurs(new ArrayList<EaeEvaluateur>(eaeItem.getEaeEvaluateurs()));
-		this.setEaeFichePoste(eaeItem.getPrimaryFichePoste());
 		this.setEtat(eaeItem.getEtat());
 		this.setCap(eaeItem.isCap());
 		this.setDocAttache(eaeItem.isDocAttache());
@@ -56,8 +59,18 @@ public class EaeListItemDto {
 		this.setDateFinalisation(eaeItem.getDateFinalisation());
 		this.setDateControle(eaeItem.getDateControle());
 		
-		if (eaeItem.getEaeEvalue() != null)
+		EaeFichePoste fp = eaeItem.getPrimaryFichePoste();
+		if (fp != null) {
+			this.directionService = fp.getDirectionService();
+			this.sectionService = fp.getSectionService();
+			this.service = fp.getService();
+			this.agentShd = fp.getAgentShd();
+		}
+		
+		if (eaeItem.getEaeEvalue() != null) {
 			this.setAgentEvalue(eaeItem.getEaeEvalue().getAgent());
+			estDetache = eaeItem.getEaeEvalue().isEstDetache();
+		}
 		
 		if (eaeItem.getEaeEvaluation() != null)
 			this.setAvisShd(eaeItem.getEaeEvaluation().getAvisShd());
@@ -111,7 +124,6 @@ public class EaeListItemDto {
 				.include("avisShd")
 				.include("idEae")
 				.include("eaeEvaluateurs")
-				.include("eaeFichePoste")
 				.include("droitInitialiser")
 				.include("droitAcceder")
 				.include("droitDemarrer")
@@ -119,11 +131,15 @@ public class EaeListItemDto {
 				.include("droitImprimerBirt")
 				.include("droitImprimerGed")
 				.include("idDocumentGed")
+				.include("estDetache")
+				.include("directionService")
+				.include("sectionService")
+				.include("service")
+				.include("agentShd")
 				.transform(new MSDateTransformer(), Date.class)
 				.transform(new NullableIntegerTransformer(), Integer.class)
 				.transform(new SimpleAgentTransformer(false), Agent.class)
 				.transform(new EaeEvaluateurToAgentFlatTransformer(), EaeEvaluateur.class)
-				.transform(new EaeFichePosteToEaeListTransformer(), EaeFichePoste.class)
 				.transform(new ValueEnumTransformer(), Enum.class).exclude("*");
 
 		return serializer;
@@ -217,15 +233,6 @@ public class EaeListItemDto {
 		this.dateControle = dateControle;
 	}
 
-	public EaeFichePoste getEaeFichePoste() {
-		return eaeFichePoste;
-	}
-
-	public void setEaeFichePoste(EaeFichePoste eaeFichePoste) {
-		this.eaeFichePoste = eaeFichePoste;
-	}
-	
-
 	public boolean isDroitInitialiser() {
 		return droitInitialiser;
 	}
@@ -280,5 +287,45 @@ public class EaeListItemDto {
 
 	public void setIdDocumentGed(String idDocumentGed) {
 		this.idDocumentGed = idDocumentGed;
+	}
+
+	public boolean isEstDetache() {
+		return estDetache;
+	}
+
+	public void setEstDetache(boolean estDetache) {
+		this.estDetache = estDetache;
+	}
+
+	public String getDirectionService() {
+		return directionService;
+	}
+
+	public void setDirectionService(String directionService) {
+		this.directionService = directionService;
+	}
+
+	public String getSectionService() {
+		return sectionService;
+	}
+
+	public void setSectionService(String sectionService) {
+		this.sectionService = sectionService;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
+	}
+
+	public Agent getAgentShd() {
+		return agentShd;
+	}
+
+	public void setAgentShd(Agent agentShd) {
+		this.agentShd = agentShd;
 	}
 }

@@ -112,6 +112,51 @@ public class EvaluationServiceTest {
 		verify(agentServiceMock, times(1)).fillEaeEvaluateurWithAgent(eval1);
 		verify(agentServiceMock, times(1)).fillEaeEvalueWithAgent(evalue);
 	}
+	
+	@Test
+	public void testGetEaeIdentification_WithEaeWithNoFichePoste_FillAgentsAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(123);
+		EaeEvaluateur eval1 = new EaeEvaluateur();
+		eae.getEaeEvaluateurs().add(eval1);
+		EaeEvalue evalue = new EaeEvalue();
+		eae.setEaeEvalue(evalue);
+		IAgentService agentServiceMock = mock(IAgentService.class);
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+
+		// When
+		EaeIdentificationDto result = service.getEaeIdentification(eae);
+		
+		// Then
+		assertEquals(123, result.getIdEae());
+		
+		verify(agentServiceMock, times(1)).fillEaeEvaluateurWithAgent(eval1);
+		verify(agentServiceMock, times(1)).fillEaeEvalueWithAgent(evalue);
+	}
+	
+	@Test
+	public void testGetEaeIdentification_WithEaeWithNoEvaluateur_FillAgentsAndReturn() {
+
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(123);
+		EaeEvalue evalue = new EaeEvalue();
+		eae.setEaeEvalue(evalue);
+		IAgentService agentServiceMock = mock(IAgentService.class);
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+
+		// When
+		EaeIdentificationDto result = service.getEaeIdentification(eae);
+		
+		// Then
+		assertEquals(123, result.getIdEae());
+		
+		verify(agentServiceMock, times(1)).fillEaeEvalueWithAgent(evalue);
+	}
 
 	@Test
 	public void testGetEaeFichePoste_WithEae_FillAgentsAndReturn() {
@@ -174,6 +219,24 @@ public class EvaluationServiceTest {
 
 		verify(agentServiceMock, times(1)).fillEaeFichePosteWithAgent(fdp);
 		verify(agentServiceMock, times(1)).fillEaeFichePosteWithAgent(fdp2);
+	}
+	
+	@Test
+	public void testGetEaeFichePoste_WithNoEaeFichePoste_ReturnAnEmptyList() {
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(123);
+
+		IAgentService agentServiceMock = mock(IAgentService.class);
+
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+
+		// When
+		List<EaeFichePosteDto> result = service.getEaeFichePoste(eae);
+		
+		// Then
+		assertEquals(0, result.size());
 	}
 	
 	@Test

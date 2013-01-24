@@ -93,6 +93,76 @@ public class EaeListItemDtoTest {
 		assertEquals(dto.getDateFinalisation(), eaeItem.getDateFinalisation());
 		assertEquals(dto.getDateControle(), eaeItem.getDateControle());
 		assertEquals(dto.getAvisShd(), eaeItem.getEaeEvaluation().getAvisShd());
+		assertEquals(dto.isEstDetache(), eaeItem.getEaeEvalue().isEstDetache());
+		assertEquals(dto.getDirectionService(), fdp.getDirectionService());
+		assertEquals(dto.getSectionService(), fdp.getSectionService());
+		assertEquals(dto.getService(), fdp.getService());
+		assertEquals(dto.getAgentShd(), fdp.getAgentShd());
+	}
+	
+	@Test
+	public void testBuildEaeListItemDto_EaeDoesNotHaveAnyFichePoste_FromEae() {
+		
+		// Given
+		Eae eaeItem = new Eae();
+		eaeItem.setIdEae(6789);
+		
+		Agent agentEvalue = new Agent();
+		agentEvalue.setIdAgent(12);
+		agentEvalue.setNomMarital("toto");
+		agentEvalue.setPrenom("titi");
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setAgent(agentEvalue);
+		evalue.setEstDetache(true);
+		eaeItem.setEaeEvalue(evalue);
+		
+		Agent agentDelegataire = new Agent();
+		agentDelegataire.setIdAgent(45);
+		agentDelegataire.setNomMarital("toto");
+		agentDelegataire.setPrenom("titi");
+		eaeItem.setAgentDelegataire(agentDelegataire);
+		
+		EaeEvaluateur ev1 = new EaeEvaluateur();
+		ev1.setIdAgent(34);
+		eaeItem.getEaeEvaluateurs().add(ev1);
+		
+		eaeItem.setEtat(EaeEtatEnum.ND);
+		eaeItem.setCap(true);
+		eaeItem.setDocAttache(true);
+		
+		Calendar c = new GregorianCalendar();
+		c.set(2009, 04, 12);
+		
+		eaeItem.setDateCreation(c.getTime());
+		eaeItem.setDateFinalisation(c.getTime());
+		eaeItem.setDateControle(c.getTime());
+		
+		EaeEvaluation eval = new EaeEvaluation();
+		eval.setAvisShd("Minimale");
+		
+		eaeItem.setEaeEvaluation(eval);
+		
+		// When
+		EaeListItemDto dto = new EaeListItemDto(eaeItem);
+		
+		// Then
+		assertEquals(dto.getIdEae(), eaeItem.getIdEae());
+		assertEquals(dto.getAgentEvalue(), eaeItem.getEaeEvalue().getAgent());
+		assertEquals(dto.getAgentDelegataire(), eaeItem.getAgentDelegataire());
+		assertEquals(dto.getEaeEvaluateurs().size(), eaeItem.getEaeEvaluateurs().size());
+		assertEquals(dto.getEaeEvaluateurs().get(0), eaeItem.getEaeEvaluateurs().iterator().next());
+		assertEquals(dto.getEtat(), eaeItem.getEtat());
+		assertEquals(dto.isCap(), eaeItem.isCap());
+		assertEquals(dto.isDocAttache(), eaeItem.isDocAttache());
+		assertEquals(dto.getDateCreation(), eaeItem.getDateCreation());
+		assertEquals(dto.getDateFinalisation(), eaeItem.getDateFinalisation());
+		assertEquals(dto.getDateControle(), eaeItem.getDateControle());
+		assertEquals(dto.getAvisShd(), eaeItem.getEaeEvaluation().getAvisShd());
+		assertEquals(dto.isEstDetache(), eaeItem.getEaeEvalue().isEstDetache());
+		assertNull(dto.getDirectionService());
+		assertNull(dto.getSectionService());
+		assertNull(dto.getService());
+		assertNull(dto.getAgentShd());
 	}
 	
 	@Test
@@ -418,7 +488,7 @@ public class EaeListItemDtoTest {
 		List<PathExpression> excludes = EaeListItemDto.getSerializerForEaeListItemDto().getExcludes();
 		
 		// Then
-		assertEquals(19, includes.size());
+		assertEquals(23, includes.size());
 		assertEquals("[agentEvalue]", includes.get(0).toString());
 		assertEquals("[etat]", includes.get(1).toString());
 		assertEquals("[cap]", includes.get(2).toString());
@@ -430,14 +500,18 @@ public class EaeListItemDtoTest {
 		assertEquals("[avisShd]", includes.get(8).toString());
 		assertEquals("[idEae]", includes.get(9).toString());
 		assertEquals("[eaeEvaluateurs]", includes.get(10).toString());
-		assertEquals("[eaeFichePoste]", includes.get(11).toString());
-		assertEquals("[droitInitialiser]", includes.get(12).toString());
-		assertEquals("[droitAcceder]", includes.get(13).toString());
-		assertEquals("[droitDemarrer]", includes.get(14).toString());
-		assertEquals("[droitAffecterDelegataire]", includes.get(15).toString());
-		assertEquals("[droitImprimerBirt]", includes.get(16).toString());
-		assertEquals("[droitImprimerGed]", includes.get(17).toString());
-		assertEquals("[idDocumentGed]", includes.get(18).toString());
+		assertEquals("[droitInitialiser]", includes.get(11).toString());
+		assertEquals("[droitAcceder]", includes.get(12).toString());
+		assertEquals("[droitDemarrer]", includes.get(13).toString());
+		assertEquals("[droitAffecterDelegataire]", includes.get(14).toString());
+		assertEquals("[droitImprimerBirt]", includes.get(15).toString());
+		assertEquals("[droitImprimerGed]", includes.get(16).toString());
+		assertEquals("[idDocumentGed]", includes.get(17).toString());
+		assertEquals("[estDetache]", includes.get(18).toString());
+		assertEquals("[directionService]", includes.get(19).toString());
+		assertEquals("[sectionService]", includes.get(20).toString());
+		assertEquals("[service]", includes.get(21).toString());
+		assertEquals("[agentShd]", includes.get(22).toString());
 		
 		assertEquals(1, excludes.size());
 		assertEquals("[*]", excludes.get(0).toString());
@@ -472,13 +546,11 @@ public class EaeListItemDtoTest {
 		EaeListItemDto eae = new EaeListItemDto();
 		eae.setIdEae(18);
 		
-		EaeFichePoste fdp = new EaeFichePoste();
-		eae.setEaeFichePoste(fdp);
 		Agent agent = new Agent();
 		agent.setIdAgent(999);
 		agent.setNomPatronymique("Duck");
 		agent.setPrenom("Donald");
-		fdp.setAgentShd(agent);
+		eae.setAgentShd(agent);
 		
 		String expectedResult = "\"agentShd\":{\"idAgent\":999,\"nom\":\"Duck\",\"prenom\":\"Donald\"}";
 		

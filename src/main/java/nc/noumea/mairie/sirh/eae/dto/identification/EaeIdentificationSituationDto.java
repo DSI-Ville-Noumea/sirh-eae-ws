@@ -20,11 +20,15 @@ public class EaeIdentificationSituationDto {
 	
 	public EaeIdentificationSituationDto(Eae eae) {
 		EaeFichePoste fdp = eae.getPrimaryFichePoste();
-		this.directionService = fdp.getDirectionService();
-		this.fonction = fdp.getFonction();
-		this.emploi = fdp.getEmploi();
+		
+		if (fdp != null) {
+			this.directionService = fdp.getDirectionService();
+			this.fonction = fdp.getFonction();
+			this.emploi = fdp.getEmploi();
+			this.dateEntreeFonction = fdp.getDateEntreeFonction();
+		}
+		
 		this.dateEntreeAdministration = eae.getEaeEvalue().getDateEntreeAdministration();
-		this.dateEntreeFonction = fdp.getDateEntreeFonction();
 		this.dateEntreeFonctionnaire = eae.getEaeEvalue().getDateEntreeFonctionnaire();
 	}
 	
