@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.web.controller.xml;
 import javax.jws.WebParam;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
@@ -36,6 +37,11 @@ public class EvaluationXmlController {
 	public ModelAndView getEaeIdentification(@WebParam(name = "idEae") int idEae) {
 		Eae eae = Eae.findEae(idEae);
 		EaeIdentificationDto dto = evaluationService.getEaeIdentification(eae);
+		
+		// For Birt reporting purposes (in order to have the fields displayed)
+		if (dto.getEvaluateurs().size() == 0)
+			dto.getEvaluateurs().add(new EaeEvaluateur());
+		
 		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
 	}
 	
@@ -45,7 +51,8 @@ public class EvaluationXmlController {
 		Eae eae = Eae.findEae(idEae);
 		EaeFichePosteDtoList dto = new EaeFichePosteDtoList();
 		dto.setEaeFichePostes(evaluationService.getEaeFichePoste(eae));
-		
+
+		// For Birt reporting purposes (in order to have the fields displayed)
 		if (dto.getEaeFichePostes().size() == 0)
 			dto.getEaeFichePostes().add(new EaeFichePosteDto());
 		
