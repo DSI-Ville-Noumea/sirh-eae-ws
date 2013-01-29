@@ -437,7 +437,7 @@ public class EvaluationService implements IEvaluationService {
 			}
 			else {
 				for (EaeEvolutionSouhait existingEvolSouhait : evolution.getEaeEvolutionSouhaits()) {
-					if (existingEvolSouhait.getIdEaeEvolutionSouhait() == evolSouhait.getIdEaeEvolutionSouhait()) {
+					if (existingEvolSouhait.getIdEaeEvolutionSouhait().equals(evolSouhait.getIdEaeEvolutionSouhait())) {
 						existingEvolSouhait.setSouhait(evolSouhait.getSouhait());
 						existingEvolSouhait.setSuggestion(evolSouhait.getSuggestion());
 						listAllEvolutionSouhaits.remove(existingEvolSouhait);
@@ -483,7 +483,7 @@ public class EvaluationService implements IEvaluationService {
 			}
 			else {
 				for (EaeDeveloppement existingDev : evolution.getEaeDeveloppements()) {
-					if (existingDev.getIdEaeDeveloppement() == dev.getIdEaeDeveloppement()) {
+					if (existingDev.getIdEaeDeveloppement().equals(dev.getIdEaeDeveloppement())) {
 						existingDev.setLibelle(dev.getLibelle());
 						existingDev.setEcheance(dev.getEcheance());
 						existingDev.setPriorisation(dev.getPriorisation());
