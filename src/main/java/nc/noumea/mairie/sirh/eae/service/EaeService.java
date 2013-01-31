@@ -64,13 +64,13 @@ public class EaeService implements IEaeService {
 		List<EaeListItemDto> result = new ArrayList<EaeListItemDto>();
 		
 		// Get the list of EAEs to return
-		List<Integer> eaeIds = sirhWsConsumer.getListOfEaesForAgentId(agentId);
+		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(agentId);
 		
-		if (eaeIds.isEmpty())
+		if (agentIds.isEmpty())
 			return result;
 		
 		// Retrieve the EAEs
-		List<Eae> queryResult = findEaesByIds(eaeIds);
+		List<Eae> queryResult = findEaesForEaeListByAgentIds(agentIds);
 		
 		// For each EAE result, retrieve extra information from SIRH
 		for(Eae eae : queryResult) {
@@ -171,13 +171,13 @@ public class EaeService implements IEaeService {
 		List<EaeDashboardItemDto> result = new ArrayList<EaeDashboardItemDto>();
 		
 		// Get the list of EAEs to return
-		List<Integer> eaeIds = sirhWsConsumer.getListOfEaesForAgentId(idAgent);
+		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(idAgent);
 		
-		if (eaeIds.isEmpty())
+		if (agentIds.isEmpty())
 			return result;
 		
 		// Retrieve the EAEs
-		List<Eae> queryResult = findEaesByIds(eaeIds);
+		List<Eae> queryResult = findEaesForDashboardByAgentIds(agentIds);
 		
 		Map<Integer, List<Eae>> groupedResult = new HashMap<Integer, List<Eae>>();
 		List<Eae> eaesWithoutEvaluateurs = new ArrayList<Eae>();
@@ -308,12 +308,40 @@ public class EaeService implements IEaeService {
 	}
 	
 	@Override
-	public List<Eae> findEaesByIds(List<Integer> eaeIds) {
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.idEae in (:eaeIds)", Eae.class);
-		eaeQuery.setParameter("eaeIds", eaeIds);
+	public List<Eae> findEaesForDashboardByAgentIds(List<Integer> agentIds) {
+		// Query
+		StringBuilder sb = new StringBuilder();
+		sb.append("select e from Eae e ");
+		sb.append("JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluateurs LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation ");
+		sb.append("where e.eaeEvalue.idAgent in (:agentIds) ");
+		sb.append("and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
+		
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Eae.class);
+		eaeQuery.setParameter("agentIds", agentIds);
+		eaeQuery.setParameter("date", helper.getCurrentDate());
+		
 		List<Eae> queryResult = eaeQuery.getResultList();
 		return queryResult;
 	}
+	
+	@Override
+	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds) {
+
+		// Query
+		StringBuilder sb = new StringBuilder();
+		sb.append("select e from Eae e ");
+		sb.append("LEFT JOIN FETCH e.eaeFichePostes JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluateurs LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution ");
+		sb.append("where e.eaeEvalue.idAgent in (:agentIds) ");
+		sb.append("and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
+		
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Eae.class);
+		eaeQuery.setParameter("agentIds", agentIds);
+		eaeQuery.setParameter("date", helper.getCurrentDate());
+		
+		List<Eae> queryResult = eaeQuery.getResultList();
+		return queryResult;
+	}
+
 
 	@Override
 	public Eae getEae(int idEae) {

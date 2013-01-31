@@ -23,29 +23,35 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	@Qualifier("sirhWsBaseUrl")
 	private String sirhWsBaseUrl;
 	
-	public String getSirhWsEaeUrl() {
+	private static final String sirhAgentsUrl = "agents/sousAgents";
+	private static final String sirhEaesUrl = "eaes/listEaesByCampagne";
+	
+	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
 	}
 
-	public void setSirhWsEaeUrl(String sirhWsEaeUrl) {
-		this.sirhWsBaseUrl = sirhWsEaeUrl;
+	public void setSirhWsBaseUrl(String sirhWsBaseUrl) {
+		this.sirhWsBaseUrl = sirhWsBaseUrl;
 	}
 
-	@Override
-	public List<Integer> getListOfEaesForAgentId(int agentId) throws SirhWSConsumerException {
-
-		ClientResponse response = createAndFireRequest(agentId);
-
-		return readResponse(response, agentId);
+	private String getSirhWsEaeUrl() {
+		return sirhWsBaseUrl + sirhEaesUrl;
 	}
-
-	public ClientResponse createAndFireRequest(int agentId) throws SirhWSConsumerException {
+	
+	private String getSirhWsAgensUrl() {
+		return sirhWsBaseUrl + sirhAgentsUrl;
+	}
+	
+	public ClientResponse createAndFireRequest(int agentId, int maxDepth, String url) throws SirhWSConsumerException {
 		
 		Client client = Client.create();
 
 		WebResource webResource = client
-				.resource(getSirhWsEaeUrl())
+				.resource(url)
 				.queryParam("idAgent", String.valueOf(agentId));
+		
+		if (maxDepth != 0)
+			webResource.queryParam("maxDepth", String.valueOf(maxDepth));
 
 		ClientResponse response = null;
 		
@@ -60,7 +66,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		return response;
 	}
 	
-	public List<Integer> readResponse(ClientResponse response, int agentId) throws SirhWSConsumerException {
+	public List<Integer> readResponse(ClientResponse response, int agentId, String url) throws SirhWSConsumerException {
 		
 		List<Integer> result = new ArrayList<Integer>();
 
@@ -72,7 +78,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 			throw new SirhWSConsumerException(
 					String.format(
 							"An error occured when querying '%s' with agentId '%d'. Return code is : %s",
-							getSirhWsEaeUrl(), agentId, response.getStatus()));
+							url, agentId, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
@@ -80,6 +86,14 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		result = new JSONDeserializer<List<Integer>>().deserialize(output);
 		
 		return result;
+	}
+	
+	@Override
+	public List<Integer> getListOfSubAgentsForAgentId(int agentId) throws SirhWSConsumerException {
+		
+		ClientResponse response = createAndFireRequest(agentId, 3, getSirhWsAgensUrl());
+
+		return readResponse(response, agentId, getSirhWsAgensUrl());
 	}
 
 }

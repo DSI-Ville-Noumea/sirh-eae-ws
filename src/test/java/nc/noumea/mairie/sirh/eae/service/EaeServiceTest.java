@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -78,7 +79,7 @@ public class EaeServiceTest {
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>();
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(9)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(9)).thenReturn(eaeIds);
 		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
@@ -90,7 +91,7 @@ public class EaeServiceTest {
 		assertNotNull(result);
 		assertEquals(0, result.size());
 
-		verify(consumerMock, times(1)).getListOfEaesForAgentId(9);
+		verify(consumerMock, times(1)).getListOfSubAgentsForAgentId(9);
 	}
 
 	@Test
@@ -99,7 +100,7 @@ public class EaeServiceTest {
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(98));
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(9)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(9)).thenReturn(eaeIds);
 		
 		Eae eaeToReturn = new Eae();
 		eaeToReturn.setEtat(EaeEtatEnum.EC);
@@ -114,8 +115,8 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.idEae in (:eaeIds)",
-						Eae.class)).thenReturn(queryMock);
+						any(String.class),
+						any(Class.class))).thenReturn(queryMock);
 
 		// Mock the AgentService
 		IAgentService agentServiceMock = mock(IAgentService.class);
@@ -125,6 +126,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
 		
 		// When
 		List<EaeListItemDto> result = service.listEaesByAgentId(9);
@@ -133,7 +135,7 @@ public class EaeServiceTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		
-		verify(consumerMock, times(1)).getListOfEaesForAgentId(9);
+		verify(consumerMock, times(1)).getListOfSubAgentsForAgentId(9);
 		verify(queryMock, times(1)).getResultList();
 		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn);
 	}
@@ -142,9 +144,9 @@ public class EaeServiceTest {
 	public void testlistEaesByAgentId_When2EaesForAgent_returnListOf2EaeWithAgentsFilledIn() throws SirhWSConsumerException {
 
 		// Given
-		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(98, 67));
+		List<Integer> agentIds = Arrays.asList(1, 2);
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(2)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(2)).thenReturn(agentIds);
 		
 		Eae eaeToReturn = new Eae();
 		eaeToReturn.setEtat(EaeEtatEnum.EC);
@@ -156,14 +158,14 @@ public class EaeServiceTest {
 
 		// Mock the query to return a specific result
 		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
-		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("agentIds", agentIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("date", helperMock.getCurrentDate())).thenReturn(queryMock);
 		when(queryMock.getResultList()).thenReturn(resultOfQuery);
 
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
-				entManagerMock.createQuery(
-						"select e from Eae e where e.idEae in (:eaeIds)",
-						Eae.class)).thenReturn(queryMock);
+				entManagerMock.createQuery(any(String.class),
+						any(Class.class))).thenReturn(queryMock);
 
 		// Mock the AgentService
 		IAgentService agentServiceMock = mock(IAgentService.class);
@@ -173,6 +175,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
 		
 		// When
 		List<EaeListItemDto> result = service.listEaesByAgentId(2);
@@ -181,7 +184,7 @@ public class EaeServiceTest {
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		
-		verify(consumerMock, times(1)).getListOfEaesForAgentId(2);
+		verify(consumerMock, times(1)).getListOfSubAgentsForAgentId(2);
 		verify(queryMock, times(1)).getResultList();
 		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn);
 		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn2);
@@ -619,7 +622,7 @@ public class EaeServiceTest {
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>();
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(98)).thenReturn(eaeIds);
 		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
@@ -648,33 +651,40 @@ public class EaeServiceTest {
 		
 		Eae eaeToReturn1 = new Eae();
 		eaeToReturn1.setEtat(EaeEtatEnum.EC);
+		eaeToReturn1.setEaeEvalue(new EaeEvalue());
+		eaeToReturn1.getEaeEvalue().setIdAgent(10);
 		eaeToReturn1.getEaeEvaluateurs().add(toto);
 		
 		Eae eaeToReturn2 = new Eae();
 		eaeToReturn2.setEtat(EaeEtatEnum.EC);
+		eaeToReturn2.setEaeEvalue(new EaeEvalue());
+		eaeToReturn2.getEaeEvalue().setIdAgent(12);
 		eaeToReturn2.getEaeEvaluateurs().add(titi);
 		
 		Eae eaeToReturn3 = new Eae();
 		eaeToReturn3.setEtat(EaeEtatEnum.EC);
+		eaeToReturn3.setEaeEvalue(new EaeEvalue());
+		eaeToReturn3.getEaeEvalue().setIdAgent(13);
 		eaeToReturn3.getEaeEvaluateurs().add(toto);
 		
-		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1, 2, 3));
+		List<Integer> agentIds = Arrays.asList(10, 12, 13);
 		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1, eaeToReturn2, eaeToReturn3);
 
 		// Mock the WS to return 3 ids
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(98)).thenReturn(agentIds);
 		
 		// Mock the query to return a specific result
 		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
-		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("agentIds", agentIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("date", helperMock.getCurrentDate())).thenReturn(queryMock);
 		when(queryMock.getResultList()).thenReturn(resultOfQuery);
 
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.idEae in (:eaeIds)",
-						Eae.class)).thenReturn(queryMock);
+						any(String.class),
+						any(Class.class))).thenReturn(queryMock);
 
 		// Mock the AgentService
 		IAgentService agentServiceMock = mock(IAgentService.class);
@@ -685,6 +695,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
 		
 		// When
 		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
@@ -717,23 +728,24 @@ public class EaeServiceTest {
 		eaeToReturn1.getEaeEvaluateurs().add(toto);
 		eaeToReturn1.getEaeEvaluateurs().add(titi);
 		
-		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1));
+		List<Integer> agentIds = Arrays.asList(1);
 		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1);
 
 		// Mock the WS to return 1 ids
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(98)).thenReturn(agentIds);
 		
 		// Mock the query to return a specific result
 		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
-		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("agentIds", agentIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("date", helperMock.getCurrentDate())).thenReturn(queryMock);
 		when(queryMock.getResultList()).thenReturn(resultOfQuery);
 
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.idEae in (:eaeIds)",
-						Eae.class)).thenReturn(queryMock);
+						any(String.class),
+						any(Class.class))).thenReturn(queryMock);
 
 		// Mock the AgentService
 		IAgentService agentServiceMock = mock(IAgentService.class);
@@ -744,6 +756,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
 		
 		// When
 		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
@@ -777,12 +790,12 @@ public class EaeServiceTest {
 		eaeToReturn1.getEaeEvaluateurs().add(toto);
 		eaeToReturn1.getEaeEvaluateurs().add(titi);
 		
-		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1));
+		List<Integer> eaeIds = Arrays.asList(1);
 		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1);
 
 		// Mock the WS to return 1 ids
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(98)).thenReturn(eaeIds);
 		
 		// Mock the query to return a specific result
 		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
@@ -792,8 +805,8 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.idEae in (:eaeIds)",
-						Eae.class)).thenReturn(queryMock);
+						any(String.class),
+						any(Class.class))).thenReturn(queryMock);
 
 		// Mock the AgentService
 		IAgentService agentServiceMock = mock(IAgentService.class);
@@ -803,6 +816,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
 		
 		// When
 		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
@@ -826,31 +840,38 @@ public class EaeServiceTest {
 		
 		Eae eaeToReturn1 = new Eae();
 		eaeToReturn1.setEtat(EaeEtatEnum.EC);
+		eaeToReturn1.setEaeEvalue(new EaeEvalue());
+		eaeToReturn1.getEaeEvalue().setIdAgent(10);
 		eaeToReturn1.getEaeEvaluateurs().add(toto);
 		
 		Eae eaeToReturn2 = new Eae();
 		eaeToReturn2.setEtat(EaeEtatEnum.NA);
+		eaeToReturn2.setEaeEvalue(new EaeEvalue());
+		eaeToReturn2.getEaeEvalue().setIdAgent(12);
 		
 		Eae eaeToReturn3 = new Eae();
 		eaeToReturn3.setEtat(EaeEtatEnum.NA);
+		eaeToReturn3.setEaeEvalue(new EaeEvalue());
+		eaeToReturn3.getEaeEvalue().setIdAgent(13);
 		
-		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(1, 2, 3));
+		List<Integer> agentIds = Arrays.asList(10, 12, 13);
 		List<Eae> resultOfQuery = Arrays.asList(eaeToReturn1, eaeToReturn2, eaeToReturn3);
 
 		// Mock the WS to return 3 ids
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
-		when(consumerMock.getListOfEaesForAgentId(98)).thenReturn(eaeIds);
+		when(consumerMock.getListOfSubAgentsForAgentId(98)).thenReturn(agentIds);
 		
 		// Mock the query to return a specific result
 		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
-		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("agentIds", agentIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("date", helperMock.getCurrentDate())).thenReturn(queryMock);
 		when(queryMock.getResultList()).thenReturn(resultOfQuery);
 
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.idEae in (:eaeIds)",
-						Eae.class)).thenReturn(queryMock);
+						any(String.class),
+						any(Class.class))).thenReturn(queryMock);
 
 		// Mock the AgentService
 		IAgentService agentServiceMock = mock(IAgentService.class);
@@ -860,6 +881,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
 		
 		// When
 		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);

@@ -101,6 +101,14 @@ privileged aspect EaeFichePoste_Roo_JavaBean {
         this.idAgentShd = idAgentShd;
     }
     
+    public Integer EaeFichePoste.getIdSirhFichePoste() {
+        return this.idSirhFichePoste;
+    }
+    
+    public void EaeFichePoste.setIdSirhFichePoste(Integer idSirhFichePoste) {
+        this.idSirhFichePoste = idSirhFichePoste;
+    }
+    
     public String EaeFichePoste.getMissions() {
         return this.missions;
     }

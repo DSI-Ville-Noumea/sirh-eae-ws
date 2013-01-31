@@ -22,7 +22,7 @@ public class SirhWSConsumerTest {
 		when(cr.getStatus()).thenReturn(204);
 		
 		// When
-		List<Integer> result = ws.readResponse(cr, 0);
+		List<Integer> result = ws.readResponse(cr, 0, "");
 
 		// Then
 		assertTrue(result.isEmpty());
@@ -33,13 +33,12 @@ public class SirhWSConsumerTest {
 
 		// Given
 		SirhWSConsumer ws = new SirhWSConsumer();
-		ws.setSirhWsEaeUrl("http://www.test.com/");
 		ClientResponse cr = mock(ClientResponse.class);
 		when(cr.getStatus()).thenReturn(500);
 
 		try {
 			// When
-			ws.readResponse(cr, 1789);
+			ws.readResponse(cr, 1789, "http://www.test.com/");
 		} catch (SirhWSConsumerException ex) {
 			// Then
 			assertEquals("An error occured when querying 'http://www.test.com/' with agentId '1789'. Return code is : 500", ex.getMessage());
@@ -56,7 +55,7 @@ public class SirhWSConsumerTest {
 		when(cr.getEntity(String.class)).thenReturn("[1,2]");
 		
 		// When
-		List<Integer> result = ws.readResponse(cr, 1789);
+		List<Integer> result = ws.readResponse(cr, 1789, null);
 		
 		// Then
 		assertEquals(2, result.size());

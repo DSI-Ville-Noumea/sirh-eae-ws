@@ -100,7 +100,14 @@ public interface IEaeService {
 	 * @param eaeIds : the list of Ids
 	 * @return the list of EAEs corresponding to the Ids
 	 */
-	List<Eae> findEaesByIds(List<Integer> eaeIds);
+	List<Eae> findEaesForDashboardByAgentIds(List<Integer> eaeIds);
+	
+	/**
+	 * Find a list of Eaes by their evaluated agent ids
+	 * @param agentIds : the list of Ids
+	 * @return the list of EAEs corresponding to the Ids
+	 */
+	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds);
 	
 	/**
 	 * Returns an EAE by its technical Id

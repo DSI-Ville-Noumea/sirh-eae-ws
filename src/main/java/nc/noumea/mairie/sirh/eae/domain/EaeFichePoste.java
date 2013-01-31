@@ -61,6 +61,9 @@ public class EaeFichePoste {
     @Column(name = "ID_SHD")
     private Integer idAgentShd;
     
+    @Column(name = "ID_SIRH_FICHE_POSTE")
+    private Integer idSirhFichePoste;
+    
     @Column(name = "MISSIONS")
     @Lob
     private String missions;

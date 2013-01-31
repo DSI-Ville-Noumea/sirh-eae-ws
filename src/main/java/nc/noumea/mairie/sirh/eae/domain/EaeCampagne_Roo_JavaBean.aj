@@ -3,6 +3,7 @@
 
 package nc.noumea.mairie.sirh.eae.domain;
 
+import java.util.Date;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 
 privileged aspect EaeCampagne_Roo_JavaBean {
@@ -13,6 +14,38 @@ privileged aspect EaeCampagne_Roo_JavaBean {
     
     public void EaeCampagne.setAnnee(int annee) {
         this.annee = annee;
+    }
+    
+    public Date EaeCampagne.getDateDebut() {
+        return this.dateDebut;
+    }
+    
+    public void EaeCampagne.setDateDebut(Date dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+    
+    public Date EaeCampagne.getDateFin() {
+        return this.dateFin;
+    }
+    
+    public void EaeCampagne.setDateFin(Date dateFin) {
+        this.dateFin = dateFin;
+    }
+    
+    public Date EaeCampagne.getDateOuvertureKiosque() {
+        return this.dateOuvertureKiosque;
+    }
+    
+    public void EaeCampagne.setDateOuvertureKiosque(Date dateOuvertureKiosque) {
+        this.dateOuvertureKiosque = dateOuvertureKiosque;
+    }
+    
+    public Date EaeCampagne.getDateFermetureKiosque() {
+        return this.dateFermetureKiosque;
+    }
+    
+    public void EaeCampagne.setDateFermetureKiosque(Date dateFermetureKiosque) {
+        this.dateFermetureKiosque = dateFermetureKiosque;
     }
     
 }

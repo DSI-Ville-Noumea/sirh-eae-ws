@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.security.EaeSecurityProvider;
 
@@ -51,12 +52,13 @@ public class EaeSecurityProviderTest {
 		// Given
 		Integer eaeId = 4;
 		Eae eae = new Eae();
+		eae.setEaeEvalue(new EaeEvalue());
 		eae.setIdEae(eaeId);
 		Integer agentId = 9001223;
 		List<Integer> sirhConsumerResult = Arrays.asList(1, 2, 3);
 		
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(agentId)).thenReturn(agentId);
-		when(sirhsConsumerMock.getListOfEaesForAgentId(agentId)).thenReturn(sirhConsumerResult);
+		when(sirhsConsumerMock.getListOfSubAgentsForAgentId(agentId)).thenReturn(sirhConsumerResult);
 		
 		// Then
 		assertFalse(provider.isAgentAuthorizedToViewEae(agentId, eae));
@@ -66,15 +68,15 @@ public class EaeSecurityProviderTest {
 	public void testIsAgentAuthorizedToViewEae_AgentRelated_ReturnTrue() throws SirhWSConsumerException{
 		
 		// Given
-		Integer eaeId = 2;
 		Eae eae = new Eae();
-		eae.setIdEae(eaeId);
+		eae.setEaeEvalue(new EaeEvalue());
+		eae.getEaeEvalue().setIdAgent(2);
 		Integer agentId = 901223;
 		Integer convertedAgentId = 9001223;
 		List<Integer> sirhConsumerResult = Arrays.asList(1, 2, 3);
 		
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(agentId)).thenReturn(convertedAgentId);
-		when(sirhsConsumerMock.getListOfEaesForAgentId(convertedAgentId)).thenReturn(sirhConsumerResult);
+		when(sirhsConsumerMock.getListOfSubAgentsForAgentId(convertedAgentId)).thenReturn(sirhConsumerResult);
 		
 		// Then
 		assertTrue(provider.isAgentAuthorizedToViewEae(agentId, eae));
@@ -228,6 +230,7 @@ public class EaeSecurityProviderTest {
 		int idEae = 1234;
 		Eae eae = new Eae();
 		eae.setIdEae(1234);
+		eae.setEaeEvalue(new EaeEvalue());
 		int idAgent = 1890;
 		
 		Eae.findEae(1234);
@@ -235,7 +238,7 @@ public class EaeSecurityProviderTest {
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(idAgent);
-		when(sirhsConsumerMock.getListOfEaesForAgentId(idAgent)).thenReturn(new ArrayList<Integer>());
+		when(sirhsConsumerMock.getListOfSubAgentsForAgentId(idAgent)).thenReturn(new ArrayList<Integer>());
 		when(messageSource.getMessage(Mockito.eq("EAE_CANNOT_READ"), Mockito.any(Object[].class), Mockito.any(Locale.class))).thenReturn("L'agent '1890' n'est pas autorisé à consulter cet Eae");
 		
 		// When
@@ -259,7 +262,7 @@ public class EaeSecurityProviderTest {
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(idAgent);
-		when(sirhsConsumerMock.getListOfEaesForAgentId(idAgent)).thenThrow(new SirhWSConsumerException("message"));
+		when(sirhsConsumerMock.getListOfSubAgentsForAgentId(idAgent)).thenThrow(new SirhWSConsumerException("message"));
 		
 		// When
 		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
@@ -274,7 +277,8 @@ public class EaeSecurityProviderTest {
 		// Given
 		int idEae = 1234;
 		Eae eae = new Eae();
-		eae.setIdEae(1234);
+		eae.setEaeEvalue(new EaeEvalue());
+		eae.getEaeEvalue().setIdAgent(11);
 		int idAgent = 1890;
 		
 		Eae.findEae(1234);
@@ -282,7 +286,7 @@ public class EaeSecurityProviderTest {
 		AnnotationDrivenStaticEntityMockingControl.playback();
 		
 		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(idAgent);
-		when(sirhsConsumerMock.getListOfEaesForAgentId(idAgent)).thenReturn(Arrays.asList(idEae));
+		when(sirhsConsumerMock.getListOfSubAgentsForAgentId(idAgent)).thenReturn(Arrays.asList(11));
 		
 		// When
 		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
