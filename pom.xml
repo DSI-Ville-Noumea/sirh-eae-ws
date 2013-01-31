@@ -115,6 +115,8 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Modified default dependency (2.1) of flexjson in order to fix a bug when deserializing dates close to the timestamp 0 (around 1/1/1970). 
+		This mairie-specific version is available through: scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/flexjson-mairie/trunk -->
 		<dependency>
 			<groupId>net.sf.flexjson</groupId>
 			<artifactId>flexjson</artifactId>
