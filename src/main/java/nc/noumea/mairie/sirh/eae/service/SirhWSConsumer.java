@@ -22,10 +22,9 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	@Autowired
 	@Qualifier("sirhWsBaseUrl")
 	private String sirhWsBaseUrl;
-	
+
 	private static final String sirhAgentsUrl = "agents/sousAgents";
-	private static final String sirhEaesUrl = "eaes/listEaesByCampagne";
-	
+
 	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
 	}
@@ -34,40 +33,32 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		this.sirhWsBaseUrl = sirhWsBaseUrl;
 	}
 
-	private String getSirhWsEaeUrl() {
-		return sirhWsBaseUrl + sirhEaesUrl;
-	}
-	
 	private String getSirhWsAgensUrl() {
 		return sirhWsBaseUrl + sirhAgentsUrl;
 	}
-	
+
 	public ClientResponse createAndFireRequest(int agentId, int maxDepth, String url) throws SirhWSConsumerException {
-		
+
 		Client client = Client.create();
 
-		WebResource webResource = client
-				.resource(url)
-				.queryParam("idAgent", String.valueOf(agentId));
-		
+		WebResource webResource = client.resource(url).queryParam("idAgent", String.valueOf(agentId));
+
 		if (maxDepth != 0)
 			webResource.queryParam("maxDepth", String.valueOf(maxDepth));
 
 		ClientResponse response = null;
-		
+
 		try {
 			response = webResource.accept(MediaType.APPLICATION_JSON_VALUE).get(ClientResponse.class);
 		} catch (ClientHandlerException ex) {
-			throw new SirhWSConsumerException(String.format(
-					"An error occured when querying '%s' with agentId '%d'.",
-					getSirhWsEaeUrl(), agentId), ex);
+			throw new SirhWSConsumerException(String.format("An error occured when querying '%s' with agentId '%d'.", url, agentId), ex);
 		}
-		
+
 		return response;
 	}
-	
+
 	public List<Integer> readResponse(ClientResponse response, int agentId, String url) throws SirhWSConsumerException {
-		
+
 		List<Integer> result = new ArrayList<Integer>();
 
 		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
@@ -75,22 +66,20 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		}
 
 		if (response.getStatus() != HttpStatus.OK.value()) {
-			throw new SirhWSConsumerException(
-					String.format(
-							"An error occured when querying '%s' with agentId '%d'. Return code is : %s",
-							url, agentId, response.getStatus()));
+			throw new SirhWSConsumerException(String.format("An error occured when querying '%s' with agentId '%d'. Return code is : %s", url,
+					agentId, response.getStatus()));
 		}
 
 		String output = response.getEntity(String.class);
-		
+
 		result = new JSONDeserializer<List<Integer>>().deserialize(output);
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public List<Integer> getListOfSubAgentsForAgentId(int agentId) throws SirhWSConsumerException {
-		
+
 		ClientResponse response = createAndFireRequest(agentId, 3, getSirhWsAgensUrl());
 
 		return readResponse(response, agentId, getSirhWsAgensUrl());

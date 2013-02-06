@@ -97,17 +97,17 @@ public interface IEaeService {
 	
 	/**
 	 * Find a list of EAEs by their Ids
-	 * @param eaeIds : the list of Ids
+	 * @param agentIds : the list of Ids
 	 * @return the list of EAEs corresponding to the Ids
 	 */
-	List<Eae> findEaesForDashboardByAgentIds(List<Integer> eaeIds);
+	List<Eae> findEaesForDashboardByAgentIds(List<Integer> agentIds, Integer agentId);
 	
 	/**
 	 * Find a list of Eaes by their evaluated agent ids
 	 * @param agentIds : the list of Ids
 	 * @return the list of EAEs corresponding to the Ids
 	 */
-	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds);
+	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId);
 	
 	/**
 	 * Returns an EAE by its technical Id

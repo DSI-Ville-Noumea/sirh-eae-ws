@@ -74,16 +74,29 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testlistEaesByAgentId_WhenNoEaeForAgent_returnNull() throws SirhWSConsumerException {
+	public void testlistEaesByAgentId_WhenNoEaeForAgent_returnEmptyList() throws SirhWSConsumerException {
 
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>();
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
 		when(consumerMock.getListOfSubAgentsForAgentId(9)).thenReturn(eaeIds);
+
+		// Mock the query to return a specific result
+		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
+		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.getResultList()).thenReturn(new ArrayList<Eae>());
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(
+				entManagerMock.createQuery(
+						any(String.class),
+						any(Class.class))).thenReturn(queryMock);
 		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
-
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		
 		// When
 		List<EaeListItemDto> result = service.listEaesByAgentId(9);
 
@@ -624,8 +637,21 @@ public class EaeServiceTest {
 		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
 		when(consumerMock.getListOfSubAgentsForAgentId(98)).thenReturn(eaeIds);
 		
+		// Mock the query to return a specific result
+		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
+		when(queryMock.setParameter("eaeIds", eaeIds)).thenReturn(queryMock);
+		when(queryMock.getResultList()).thenReturn(new ArrayList<Eae>());
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(
+				entManagerMock.createQuery(
+						any(String.class),
+						any(Class.class))).thenReturn(queryMock);
+		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
 		
 		// When
 		List<EaeDashboardItemDto> result = service.getEaesDashboard(98);
