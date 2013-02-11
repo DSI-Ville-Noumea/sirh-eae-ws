@@ -17,7 +17,7 @@ public interface IEvaluationService {
 	/**
 	 * Returns the information for displaying the EAE identification data
 	 * @param eae
-	 * @return
+	 * @return EaeIdentificationDto
 	 */
 	public EaeIdentificationDto getEaeIdentification(Eae eae);
 	
@@ -32,14 +32,14 @@ public interface IEvaluationService {
 	/**
 	 * Returns the data related to the FichePoste objects linked to the EAE
 	 * @param eae
-	 * @return
+	 * @return List<EaeFichePosteDto>
 	 */
 	public List<EaeFichePosteDto> getEaeFichePoste(Eae eae);
 	
 	/**
 	 * Returns the data for viewing/filling in the results of last year's EAE objectives
 	 * @param eae
-	 * @return
+	 * @return EaeResultatsDto
 	 */
 	public EaeResultatsDto getEaeResultats(Eae eae);
 	
@@ -54,7 +54,7 @@ public interface IEvaluationService {
 	/**
 	 * Returns the data for viewing/filling in appreciations in someone's EAE
 	 * @param eae
-	 * @return
+	 * @return EaeAppreciationsDto
 	 */
 	public EaeAppreciationsDto getEaeAppreciations(Eae eae);
 	
@@ -68,7 +68,7 @@ public interface IEvaluationService {
 	/**
 	 * Returns the data for viewing/filling in the evaluation part of an EAE
 	 * @param eae
-	 * @return
+	 * @return EaeEvaluationDto
 	 */
 	public EaeEvaluationDto getEaeEvaluation(Eae eae);
 	
@@ -83,7 +83,7 @@ public interface IEvaluationService {
 	/**
 	 * Returns the data for viewing/filling in the auto evaluation part of an EAE
 	 * @param eae
-	 * @return
+	 * @return EaeAutoEvaluationDto
 	 */
 	public EaeAutoEvaluationDto getEaeAutoEvaluation(Eae eae);
 	
@@ -98,7 +98,7 @@ public interface IEvaluationService {
 	/**
 	 * Returns the data for viewing/filling in the auto evaluation part of an EAE
 	 * @param eae
-	 * @return
+	 * @return EaePlanActionDto
 	 */
 	public EaePlanActionDto getEaePlanAction(Eae eae);
 	
@@ -114,7 +114,7 @@ public interface IEvaluationService {
 	/**
 	 * Returns the data for viewing/filling in the evolution part of an EAE
 	 * @param eae
-	 * @return
+	 * @return EaeEvolutionDto
 	 */
 	public EaeEvolutionDto getEaeEvolution(Eae eae);
 	

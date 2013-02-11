@@ -14,7 +14,7 @@ public interface IEaeService {
 
 	/**
 	 * List the ongoing EAEs a user can see
-	 * @param the agentId of the user
+	 * @param agentId the agentId of the user
 	 * @return the list of EAEs
 	 */
 	List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException;
@@ -45,7 +45,7 @@ public interface IEaeService {
 	/**
 	 * Returns the information saying whether or not the EAE is ready for finalization
 	 * @param eae
-	 * @return
+	 * @return CanFinalizeEaeDto
 	 */
 	CanFinalizeEaeDto canFinalizEae(Eae eae);
 	
@@ -53,7 +53,7 @@ public interface IEaeService {
 	 * Retrieves the necessary information for the final EAE document to be uploaded
 	 * in the document repository (today sharepoint)
 	 * @param eae
-	 * @return
+	 * @return FinalizationInformationDto
 	 */
 	FinalizationInformationDto getFinalizationInformation(Eae eae);
 	
@@ -84,14 +84,14 @@ public interface IEaeService {
 	/**
 	 * Find the last EAE of a given Agent
 	 * @param agentId
-	 * @return
+	 * @return Eae
 	 */
 	Eae findLastEaeByAgentId(int agentId);
 	
 	/**
 	 * Find the two last EAEs of a given Agent
 	 * @param agentId
-	 * @return
+	 * @return List<Eae>
 	 */
 	List<Eae> findCurrentAndPreviousEaesByAgentId(int agentId);
 	
@@ -119,7 +119,7 @@ public interface IEaeService {
 	/**
 	 * Returns an EAE evalue's first and lastnames
 	 * @param eae
-	 * @return
+	 * @return EaeEvalueNameDto
 	 */
 	EaeEvalueNameDto getEvalueName(Eae eae);
 }
