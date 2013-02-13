@@ -37,7 +37,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 		
 		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(convertedIdAgent);
 		
-		Boolean isAuthorized = agentIds.contains(eae.getEaeEvalue().getIdAgent());
+		Boolean isAuthorized = agentIds.contains(eae.getEaeEvalue().getIdAgent()) || isEvaluateurOrDelegataire(convertedIdAgent, eae);
 		
 		if (!isAuthorized)
 			logger.warn("Agent '{}' tried to view EAE '{}': he was blocked because he doesn't have sufficient rights.", idAgent, eae.getIdEae());
