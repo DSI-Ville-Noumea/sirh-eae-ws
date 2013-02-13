@@ -204,6 +204,52 @@ public class EaeServiceTest {
 	}
 	
 	@Test
+	public void testlistEaesByAgentId_When2DuplicatedEaesForAgent_returnListOf1EaeWithAgentsFilledIn() throws SirhWSConsumerException {
+
+		// Given
+		List<Integer> agentIds = Arrays.asList(1, 2);
+		ISirhWsConsumer consumerMock = mock(ISirhWsConsumer.class);
+		when(consumerMock.getListOfSubAgentsForAgentId(2)).thenReturn(agentIds);
+		
+		Eae eaeToReturn = new Eae();
+		eaeToReturn.setEtat(EaeEtatEnum.EC);
+		eaeToReturn.setEaeEvalue(new EaeEvalue());
+		List<Eae> resultOfQuery = new ArrayList<Eae>(Arrays.asList(eaeToReturn, eaeToReturn));
+
+		// Mock the query to return a specific result
+		TypedQuery<Eae> queryMock = mock(TypedQuery.class);
+		when(queryMock.setParameter("agentIds", agentIds)).thenReturn(queryMock);
+		when(queryMock.setParameter("date", helperMock.getCurrentDate())).thenReturn(queryMock);
+		when(queryMock.getResultList()).thenReturn(resultOfQuery);
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(
+				entManagerMock.createQuery(any(String.class),
+						any(Class.class))).thenReturn(queryMock);
+
+		// Mock the AgentService
+		IAgentService agentServiceMock = mock(IAgentService.class);
+				
+		// Set the mock as the entityManager of the service class
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", consumerMock);
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		
+		// When
+		List<EaeListItemDto> result = service.listEaesByAgentId(2);
+
+		// Then
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		
+		verify(consumerMock, times(1)).getListOfSubAgentsForAgentId(2);
+		verify(queryMock, times(1)).getResultList();
+		verify(agentServiceMock, times(1)).fillEaeWithAgents(eaeToReturn);
+	}
+	
+	@Test
 	public void testInitilizeEae_setCreationDateAndStatus() throws EaeServiceException {
 		// Given
 		EaeService service = new EaeService();

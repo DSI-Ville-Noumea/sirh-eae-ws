@@ -83,6 +83,46 @@ public class EaeSecurityProviderTest {
 	}
 	
 	@Test
+	public void testIsAgentAuthorizedToViewEae_AgentIsDelegataire_ReturnTrue() throws SirhWSConsumerException{
+		
+		// Given
+		Integer agentId = 901223;
+		Integer convertedAgentId = 9001223;
+		Eae eae = new Eae();
+		eae.setIdAgentDelegataire(convertedAgentId);
+		eae.setEaeEvalue(new EaeEvalue());
+		eae.getEaeEvalue().setIdAgent(2);
+		List<Integer> sirhConsumerResult = new ArrayList<Integer>();
+		
+		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(agentId)).thenReturn(convertedAgentId);
+		when(sirhsConsumerMock.getListOfSubAgentsForAgentId(convertedAgentId)).thenReturn(sirhConsumerResult);
+		
+		// Then
+		assertTrue(provider.isAgentAuthorizedToViewEae(agentId, eae));
+	}
+	
+	@Test
+	public void testIsAgentAuthorizedToViewEae_AgentIsEvaluateur_ReturnTrue() throws SirhWSConsumerException{
+		
+		// Given
+		Integer agentId = 901223;
+		Integer convertedAgentId = 9001223;
+		Eae eae = new Eae();
+		EaeEvaluateur eval = new EaeEvaluateur();
+		eval.setIdAgent(convertedAgentId);
+		eae.getEaeEvaluateurs().add(eval);
+		eae.setEaeEvalue(new EaeEvalue());
+		eae.getEaeEvalue().setIdAgent(2);
+		List<Integer> sirhConsumerResult = new ArrayList<Integer>();
+		
+		when(idConverterMock.tryConvertFromADIdAgentToEAEIdAgent(agentId)).thenReturn(convertedAgentId);
+		when(sirhsConsumerMock.getListOfSubAgentsForAgentId(convertedAgentId)).thenReturn(sirhConsumerResult);
+		
+		// Then
+		assertTrue(provider.isAgentAuthorizedToViewEae(agentId, eae));
+	}
+	
+	@Test
 	public void testIsAgentAuthorizedToEditEae_AgentNotRelated_ReturnFalse(){
 		
 		// Given
