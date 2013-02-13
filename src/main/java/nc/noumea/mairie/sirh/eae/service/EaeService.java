@@ -327,7 +327,7 @@ public class EaeService implements IEaeService {
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
-		sb.append("LEFT JOIN FETCH e.eaeFichePostes JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluateurs LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution ");
+		sb.append("LEFT JOIN FETCH e.eaeFichePostes LEFT JOIN FETCH e.eaeEvaluateurs JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution ");
 		sb.append("where (e.eaeEvalue.idAgent in :agentIds ");
 		sb.append("OR e.idAgentDelegataire = :agentId ");
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");
@@ -339,7 +339,17 @@ public class EaeService implements IEaeService {
 		eaeQuery.setParameter("date", helper.getCurrentDate());
 		
 		List<Eae> queryResult = eaeQuery.getResultList();
-		return queryResult;
+		
+		// Because there might be several times the same EAE from the previous query
+		// (several Evaluateurs or several FichePostes) but the query is more performant with doubles
+		// followed with this loop than having to fetch the records after (select N+1 issue)
+		// we remove the extra ones with this loop
+		List<Eae> disctinctEaes = new ArrayList<Eae>();
+		for (Eae eae : queryResult)
+			if (!disctinctEaes.contains(eae))
+				disctinctEaes.add(eae);
+				
+		return disctinctEaes;
 	}
 
 
