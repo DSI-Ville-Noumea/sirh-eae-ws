@@ -15,6 +15,7 @@ public class EaeFichePosteDto implements IJSONSerialize {
 	private String grade;
 	private String emploi;
 	private String directionService;
+	private String service;
 	private String localisation;
 	private String missions;
 	private String responsableNom;
@@ -38,6 +39,7 @@ public class EaeFichePosteDto implements IJSONSerialize {
 		intitule = fdp.getFonction();
 		grade = fdp.getGradePoste();
 		emploi = fdp.getEmploi();
+		service = fdp.getService();
 		directionService = fdp.getDirectionService();
 		localisation = fdp.getLocalisation();
 		missions = fdp.getMissions();
@@ -74,6 +76,7 @@ public class EaeFichePosteDto implements IJSONSerialize {
 			.include("intitule")
 			.include("grade")
 			.include("emploi")
+			.include("service")
 			.include("directionService")
 			.include("localisation")
 			.include("missions")
@@ -122,6 +125,14 @@ public class EaeFichePosteDto implements IJSONSerialize {
 
 	public void setEmploi(String emploi) {
 		this.emploi = emploi;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
 	}
 
 	public String getDirectionService() {

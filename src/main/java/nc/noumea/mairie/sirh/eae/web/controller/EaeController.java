@@ -220,6 +220,7 @@ public class EaeController {
 	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping(value = "downloadEae", method = RequestMethod.GET)
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public ResponseEntity downloadEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam(value = "format", required = false) String format) {
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
@@ -263,6 +264,7 @@ public class EaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "getEaeEvalueFullname", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public ResponseEntity<String> getEvalueFullname(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
