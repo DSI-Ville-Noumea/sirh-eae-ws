@@ -185,9 +185,17 @@ public class EaeController {
 			return response;
 		
 		Eae eae = eaeService.getEae(idEae);
+		FinalizationInformationDto dto = null;
 		
-		FinalizationInformationDto dto = eaeService.getFinalizationInformation(eae);		
-		
+		try {
+			dto = eaeService.getFinalizationInformation(eae);		
+		} 
+		catch(SirhWSConsumerException e)
+		{
+			logger.error(e.getMessage(), e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 		String jsonResult = dto.serializeInJSON();
 		
 		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);

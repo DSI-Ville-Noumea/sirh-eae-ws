@@ -24,6 +24,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private String sirhWsBaseUrl;
 
 	private static final String sirhAgentsUrl = "agents/sousAgents";
+	private static final String sirhShdAgentsUrl = "agents/agentsShd";
 
 	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
@@ -35,6 +36,10 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 	private String getSirhWsAgensUrl() {
 		return sirhWsBaseUrl + sirhAgentsUrl;
+	}
+	
+	private String getSirhWsShdAgensUrl() {
+		return sirhWsBaseUrl + sirhShdAgentsUrl;
 	}
 
 	public ClientResponse createAndFireRequest(int agentId, int maxDepth, String url) throws SirhWSConsumerException {
@@ -83,6 +88,15 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		ClientResponse response = createAndFireRequest(agentId, 3, getSirhWsAgensUrl());
 
 		return readResponse(response, agentId, getSirhWsAgensUrl());
+	}
+
+	@Override
+	public List<Integer> getListOfShdAgentsForAgentId(int agentId)
+			throws SirhWSConsumerException {
+		
+		ClientResponse response = createAndFireRequest(agentId, 3, getSirhWsShdAgensUrl());
+
+		return readResponse(response, agentId, getSirhWsShdAgensUrl());
 	}
 
 }

@@ -233,14 +233,21 @@ public class EaeService implements IEaeService {
 	}
 	
 	@Override
-	public FinalizationInformationDto getFinalizationInformation(Eae eae) {
+	public FinalizationInformationDto getFinalizationInformation(Eae eae) throws SirhWSConsumerException {
 
 		if (eae == null)
 			return null;
 		
 		agentService.fillEaeWithAgents(eae);
+		FinalizationInformationDto result = new FinalizationInformationDto(eae);
 		
-		return new FinalizationInformationDto(eae);
+		List<Integer> agentsShdIds = sirhWsConsumer.getListOfShdAgentsForAgentId(eae.getEaeEvalue().getIdAgent());
+		
+		for (Integer shdId : agentsShdIds) {
+			result.getAgentsShd().add(agentService.getAgent(shdId));
+		}
+		
+		return result;
 	}
 	
 	@Override

@@ -969,7 +969,7 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testGetFinalizationInformation_EaeisNull_returnNull() {
+	public void testGetFinalizationInformation_EaeisNull_returnNull() throws SirhWSConsumerException {
 		
 		// Given 
 		Eae eae = null;
@@ -984,7 +984,7 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testGetFinalizationInformation_ReturnDto() {
+	public void testGetFinalizationInformation_ReturnDto() throws SirhWSConsumerException {
 		
 		// Given 
 		EaeCampagne camp = new EaeCampagne();
@@ -995,9 +995,12 @@ public class EaeServiceTest {
 		eae.setEaeCampagne(camp);
 		
 		IAgentService agentServiceMock = Mockito.mock(IAgentService.class);
+		ISirhWsConsumer sirhMock = Mockito.mock(ISirhWsConsumer.class);
+		when(sirhMock.getListOfShdAgentsForAgentId(9005138)).thenReturn(new ArrayList<Integer>());
 		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhMock);
 		
 		// When
 		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
@@ -1008,26 +1011,40 @@ public class EaeServiceTest {
 	}
 	
 	@Test
-	public void testGetFinalizationInformation_ReturnDto_CallAgentService() {
+	public void testGetFinalizationInformation_ReturnDto_CallAgentService() throws SirhWSConsumerException {
 		
 		// Given 
 		EaeCampagne camp = new EaeCampagne();
 		camp.setAnnee(2014);
 		Eae eae = new Eae();
 		eae.setEaeEvalue(new EaeEvalue());
+		eae.getEaeEvalue().setIdAgent(9005138);
 		eae.setIdEae(7896);
 		eae.setEaeCampagne(camp);
+
+		Agent shd1 = new Agent();
+		shd1.setIdAgent(9008765);
+		Agent shd2 = new Agent();
+		shd1.setIdAgent(9008654);
 		
 		IAgentService agentServiceMock = Mockito.mock(IAgentService.class);
+		when(agentServiceMock.getAgent(shd1.getIdAgent())).thenReturn(shd1);
+		when(agentServiceMock.getAgent(shd2.getIdAgent())).thenReturn(shd2);
+		
+		ISirhWsConsumer sirhMock = Mockito.mock(ISirhWsConsumer.class);
+		when(sirhMock.getListOfShdAgentsForAgentId(9005138)).thenReturn(Arrays.asList(shd1.getIdAgent(), shd2.getIdAgent()));
 		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhMock);
 		
 		// When
 		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
 		
 		// Then
 		assertNotNull(dto);
+		assertEquals(shd1, dto.getAgentsShd().get(0));
+		assertEquals(shd2, dto.getAgentsShd().get(1));
 		assertEquals(7896, dto.getIdEae());
 		
 		verify(agentServiceMock, times(1)).fillEaeWithAgents(eae);

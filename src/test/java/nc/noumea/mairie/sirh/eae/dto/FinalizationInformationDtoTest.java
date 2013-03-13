@@ -89,7 +89,7 @@ public class FinalizationInformationDtoTest {
 	public void testSerializeInJSON_emptyObject() {
 		// Given
 		FinalizationInformationDto dto = new FinalizationInformationDto();
-		String expectedJson = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentsEvaluateurs\":[],\"annee\":0,\"idEae\":0}";
+		String expectedJson = "{\"agentDelegataire\":null,\"agentEvalue\":null,\"agentsEvaluateurs\":[],\"agentsShd\":[],\"annee\":0,\"idEae\":0}";
 		
 		// When
 		String result = dto.serializeInJSON();
@@ -128,10 +128,22 @@ public class FinalizationInformationDtoTest {
 		eval2.setAgent(agentEvaluateur2);
 		dto.getAgentsEvaluateurs().add(agentEvaluateur2);
 		
+		Agent agentShd1 = new Agent();
+		agentShd1.setIdAgent(9007002);
+		agentShd1.setNomUsage("SHD1");
+		agentShd1.setPrenom("Agent");
+		dto.getAgentsShd().add(agentShd1);
+		
+		Agent agentShd2 = new Agent();
+		agentShd2.setIdAgent(9007002);
+		agentShd2.setNomUsage("SHD2");
+		agentShd2.setPrenom("Agent");
+		dto.getAgentsShd().add(agentShd2);
+		
 		dto.setAnnee(2014);
 		dto.setIdEae(120);
 		
-		String expectedJson = "{\"agentDelegataire\":{\"idAgent\":9007001,\"nom\":\"Delegataire\",\"prenom\":\"Agent\"},\"agentEvalue\":{\"idAgent\":9007000,\"nom\":\"Evalue\",\"prenom\":\"Agent\"},\"agentsEvaluateurs\":[{\"idAgent\":9007002,\"nom\":\"Evaluateur1\",\"prenom\":\"Agent\"},{\"idAgent\":9007003,\"nom\":\"Evaluateur2\",\"prenom\":\"Agent\"}],\"annee\":2014,\"idEae\":120}";
+		String expectedJson = "{\"agentDelegataire\":{\"idAgent\":9007001,\"nom\":\"Delegataire\",\"prenom\":\"Agent\"},\"agentEvalue\":{\"idAgent\":9007000,\"nom\":\"Evalue\",\"prenom\":\"Agent\"},\"agentsEvaluateurs\":[{\"idAgent\":9007002,\"nom\":\"Evaluateur1\",\"prenom\":\"Agent\"},{\"idAgent\":9007003,\"nom\":\"Evaluateur2\",\"prenom\":\"Agent\"}],\"agentsShd\":[{\"idAgent\":9007002,\"nom\":\"SHD1\",\"prenom\":\"Agent\"},{\"idAgent\":9007002,\"nom\":\"SHD2\",\"prenom\":\"Agent\"}],\"annee\":2014,\"idEae\":120}";
 		
 		// When
 		String result = dto.serializeInJSON();

@@ -342,7 +342,7 @@ public class EaeControllerTest {
 	}
 	
 	@Test
-	public void testGetFinalizationInformation_EaeExistsAndServiceReturnsData_Return200() {
+	public void testGetFinalizationInformation_EaeExistsAndServiceReturnsData_Return200() throws SirhWSConsumerException {
 		// Given
 		Eae eae = new Eae();
 		FinalizationInformationDto resultOfService = new FinalizationInformationDto();

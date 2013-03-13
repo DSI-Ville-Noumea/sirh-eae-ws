@@ -20,4 +20,11 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 		return null;
 	}
 
+	@Override
+	public List<Integer> getListOfShdAgentsForAgentId(int agentId)
+			throws SirhWSConsumerException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

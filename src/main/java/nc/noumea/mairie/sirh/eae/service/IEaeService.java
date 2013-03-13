@@ -55,7 +55,7 @@ public interface IEaeService {
 	 * @param eae
 	 * @return FinalizationInformationDto
 	 */
-	FinalizationInformationDto getFinalizationInformation(Eae eae);
+	FinalizationInformationDto getFinalizationInformation(Eae eae) throws SirhWSConsumerException;
 	
 	/**
 	 * Proceeds to the finalization of the given Eae (setting its Etat to F) as well as
