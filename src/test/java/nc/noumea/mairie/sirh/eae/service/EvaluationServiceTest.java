@@ -867,7 +867,7 @@ public class EvaluationServiceTest {
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(EaeTypeAvctEnum.AD);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setAvisChangementClasse(false);
@@ -888,7 +888,7 @@ public class EvaluationServiceTest {
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(EaeTypeAvctEnum.AD);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setAvisChangementClasse(true);
@@ -909,7 +909,7 @@ public class EvaluationServiceTest {
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.AD);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MINI);
@@ -930,7 +930,7 @@ public class EvaluationServiceTest {
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
+		evalue.setTypeAvancement(EaeTypeAvctEnum.AD);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MAXI);
