@@ -271,7 +271,7 @@ public class EvaluationService implements IEvaluationService {
 			return;
 		
 		switch (eae.getEaeEvalue().getTypeAvancement()) {
-			case AD:
+			case PROMO:
 				if (eae.getEaeEvaluation().getAvisChangementClasse() != null)
 					eae.getEaeEvaluation().setAvisShd(EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisChangementClasse()).toString());
 				break;
@@ -279,7 +279,7 @@ public class EvaluationService implements IEvaluationService {
 				if (eae.getEaeEvaluation().getAvisRevalorisation() != null)
 					eae.getEaeEvaluation().setAvisShd(EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisRevalorisation()).toString());
 				break;
-			case PROMO:
+			case AD:
 				if (eae.getEaeEvaluation().getPropositionAvancement() != null)
 					eae.getEaeEvaluation().setAvisShd(eae.getEaeEvaluation().getPropositionAvancement().toString());
 				break;

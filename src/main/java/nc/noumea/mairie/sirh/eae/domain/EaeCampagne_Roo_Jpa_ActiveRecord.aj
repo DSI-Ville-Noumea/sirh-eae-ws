@@ -20,8 +20,17 @@ privileged aspect EaeCampagne_Roo_Jpa_ActiveRecord {
         return em;
     }
     
-    public static long EaeCampagne.EaeCampagnes() {
+    public static long EaeCampagne.countEaeCampagnes() {
         return entityManager().createQuery("SELECT COUNT(o) FROM EaeCampagne o", Long.class).getSingleResult();
+    }
+    
+    public static List<EaeCampagne> EaeCampagne.findAllEaeCampagnes() {
+        return entityManager().createQuery("SELECT o FROM EaeCampagne o", EaeCampagne.class).getResultList();
+    }
+    
+    public static EaeCampagne EaeCampagne.findEaeCampagne(Integer idCampagneEae) {
+        if (idCampagneEae == null) return null;
+        return entityManager().find(EaeCampagne.class, idCampagneEae);
     }
     
     public static List<EaeCampagne> EaeCampagne.findEaeCampagneEntries(int firstResult, int maxResults) {
@@ -32,6 +41,29 @@ privileged aspect EaeCampagne_Roo_Jpa_ActiveRecord {
     public void EaeCampagne.persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
+    }
+    
+    @Transactional
+    public void EaeCampagne.remove() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager.contains(this)) {
+            this.entityManager.remove(this);
+        } else {
+            EaeCampagne attached = EaeCampagne.findEaeCampagne(this.idCampagneEae);
+            this.entityManager.remove(attached);
+        }
+    }
+    
+    @Transactional
+    public void EaeCampagne.flush() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.flush();
+    }
+    
+    @Transactional
+    public void EaeCampagne.clear() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.clear();
     }
     
     @Transactional
