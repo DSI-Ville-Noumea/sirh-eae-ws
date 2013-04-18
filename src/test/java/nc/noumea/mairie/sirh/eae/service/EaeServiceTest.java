@@ -1086,6 +1086,44 @@ public class EaeServiceTest {
 		assertEquals("le commentaire", finalisation.getCommentaire());
 		assertEquals(eae, finalisation.getEae());
 	}
+
+	
+	@Test
+	public void testFinalizeEae_EaeIsCO_SetEaeAndCreateEaeFinalisation() throws EaeServiceException {
+		
+		// Given
+		Eae eae = new Eae();
+		eae.setEtat(EaeEtatEnum.CO);
+		Integer idAgent = 90899;
+		
+		EaeFinalizationDto dto = new EaeFinalizationDto();
+		dto.setCommentaire("le commentaire");
+		dto.setIdDocument("çççdikjnvekusvb");
+		dto.setVersionDocument("10.1");
+
+		IAgentMatriculeConverterService converterMock = Mockito.mock(IAgentMatriculeConverterService.class);
+		when(converterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(900899);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "agentMatriculeConverterService", converterMock);
+		
+		// When
+		service.finalizEae(eae, idAgent, dto);
+		
+		// Then
+		assertEquals(helperMock.getCurrentDate(), eae.getDateFinalisation());
+		assertEquals(EaeEtatEnum.CO, eae.getEtat());
+		assertTrue(eae.isDocAttache());
+		
+		EaeFinalisation finalisation = eae.getEaeFinalisations().iterator().next();
+		assertEquals(helperMock.getCurrentDate(), finalisation.getDateFinalisation());
+		assertEquals(900899, finalisation.getIdAgent());
+		assertEquals("çççdikjnvekusvb", finalisation.getIdGedDocument());
+		assertEquals("10.1", finalisation.getVersionGedDocument());
+		assertEquals("le commentaire", finalisation.getCommentaire());
+		assertEquals(eae, finalisation.getEae());
+	}
 	
 	@Test
 	public void testFinalizeEae_EaeIsNotEC_ThrowException() {
