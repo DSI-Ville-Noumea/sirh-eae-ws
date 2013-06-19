@@ -11,7 +11,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(persistenceUnit = "sirhPersistenceUnit", schema = "MAIRIE", table = "SPBHOR", versionField = "")
+@RooJpaActiveRecord(persistenceUnit = "sirhPersistenceUnit", table = "SPBHOR", versionField = "")
 @NamedQuery(name = "Spbhor.whereCdTauxNotZero", query = "SELECT sp from Spbhor sp WHERE (sp.taux <> 0 and sp.taux <> 1) order by sp.taux DESC")
 public class Spbhor {
 
