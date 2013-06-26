@@ -47,7 +47,7 @@
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
 
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
-		description="SIRH WS endpoint url for EAEs" value="http://172.16.24.131:8085/sirhws/"
+		description="SIRH WS endpoint url for EAEs" value="http://172.16.24.19:8085/sirhws/"
 		override="false" />
 
 	<Environment name="REPORTING_SERVER_REPORT_PATH" type="java.lang.String"
@@ -55,7 +55,7 @@
 		override="false" />
 
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
-		description="BIRT report viewer base URL for EAEs reporting" value="http://172.16.24.131:8085/birt/"
+		description="BIRT report viewer base URL for EAEs reporting" value="http://172.16.24.19:8085/birt/"
 		override="false" />
 
 </Context>
