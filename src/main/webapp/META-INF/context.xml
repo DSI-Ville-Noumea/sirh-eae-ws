@@ -44,7 +44,7 @@
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://oldmea;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
 
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://172.16.24.19:8085/sirhws/"
