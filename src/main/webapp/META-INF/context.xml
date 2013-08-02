@@ -43,7 +43,7 @@
 		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30"
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-		jmxEnabled="true" username="***REMOVED***" password="***REMOVED***"
+		jmxEnabled="true" username="opensirh" password="XHUZJ9BBQY"
 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
 
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
