@@ -171,7 +171,12 @@ public class EvaluationController {
 			// on trouve l'id de l'agent de l'EAE
 			Eae eaeAgent = eaeService.getEae(idEae);
 			eae = eaeService.findEaeByAgentAndYear(eaeAgent.getEaeEvalue().getIdAgent(), annee);
-			dto = new EaeAppreciationsDto();
+			if (eae == null) {
+
+				dto = new EaeAppreciationsDto();
+			} else {
+				dto = evaluationService.getEaeAppreciations(eae);
+			}
 		} else {
 			ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 			if (response != null)
