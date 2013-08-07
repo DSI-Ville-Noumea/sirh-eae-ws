@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.domain.Agent;
@@ -388,5 +389,29 @@ public class EaeService implements IEaeService {
 		dto.setNom(eae.getEaeEvalue().getAgent().getDisplayNom());
 
 		return dto;
+	}
+
+	@Override
+	public Eae findEaeByAgentAndYear(int idAgent, String annee) {
+
+		// Query
+		StringBuilder sb = new StringBuilder();
+		sb.append("select e.* from eae e ");
+		sb.append("inner join eae_campagne_eae c on e.id_campagne_eae=c.id_campagne_eae ");
+		sb.append("inner join eae_evalue ev on e.id_eae=ev.id_eae ");
+		sb.append("where c.annee=:annee and ev.id_agent=:idAgent");
+
+		Query q = eaeEntityManager.createNativeQuery(sb.toString(), Eae.class);
+		q.setParameter("idAgent", idAgent);
+		q.setParameter("annee", annee);
+
+		@SuppressWarnings("unchecked")
+		List<Eae> result = q.getResultList();
+
+		if (result.isEmpty())
+			return null;
+		else
+			return result.get(0);
+
 	}
 }

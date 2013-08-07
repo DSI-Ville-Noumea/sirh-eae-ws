@@ -122,4 +122,6 @@ public interface IEaeService {
 	 * @return EaeEvalueNameDto
 	 */
 	EaeEvalueNameDto getEvalueName(Eae eae);
+
+	Eae findEaeByAgentAndYear(int idAgent, String annee);
 }

@@ -1,8 +1,10 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
+import java.text.ParseException;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
@@ -36,138 +38,139 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/eaes")
 public class EaeController {
-	
+
 	private Logger logger = LoggerFactory.getLogger(EaeController.class);
-	
+
 	@Autowired
 	private MessageSource messageSource;
-	
+
 	@Autowired
 	private IEaeService eaeService;
-	
+
 	@Autowired
 	private IAgentMatriculeConverterService agentMatriculeConverterService;
-	
+
 	@Autowired
 	private IEaeSecurityProvider eaeSecurityProvider;
-	
+
 	@Autowired
 	private IEaeReportingService eaeReportingService;
-		
+
 	@ResponseBody
 	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> listEaesByAgent(@RequestParam("idAgent") int idAgent) {
-		
+
 		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
-    	
-    	List<EaeListItemDto> result;
+
+		List<EaeListItemDto> result;
 		try {
 			result = eaeService.listEaesByAgentId(convertedId);
 		} catch (SirhWSConsumerException e) {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		if (result.isEmpty())
-			return new ResponseEntity<String>(HttpStatus.NO_CONTENT); 
-		
+			return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+
 		String jsonResult = EaeListItemDto.getSerializerForEaeListItemDto().serialize(result);
-		
+
 		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "initialiserEae", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> initializeEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
-		
+
 		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
-    	
+
 		List<Eae> agentEaes = eaeService.findCurrentAndPreviousEaesByAgentId(convertedIdAgentEvalue);
-		
+
 		if (agentEaes.isEmpty())
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-		
+
 		Eae lastEae = agentEaes.get(0);
 		Eae previousEae = null;
 		if (agentEaes.size() > 1)
 			previousEae = agentEaes.get(1);
-		
+
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(lastEae.getIdEae(), idAgent);
-		
+
 		if (response != null)
 			return response;
-		
+
 		try {
 			eaeService.initializeEae(lastEae, previousEae);
 		} catch (EaeServiceException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
-		
+
 		return new ResponseEntity<String>(messageSource.getMessage("EAE_INITIALISE_OK", null, null), HttpStatus.OK);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam("idDelegataire") int idDelegataire) {
-		
+	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestParam("idDelegataire") int idDelegataire) {
+
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
-		
+
 		if (response != null)
 			return response;
-		
+
 		Integer convertedIdAgentDelegataire = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idDelegataire);
-    	
+
 		Eae eae = eaeService.getEae(idEae);
-		
+
 		try {
 			eaeService.setDelegataire(eae, convertedIdAgentDelegataire);
 		} catch (EaeServiceException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
-		
+
 		return new ResponseEntity<String>(messageSource.getMessage("EAE_DELEGATAIRE_OK", null, null), HttpStatus.OK);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "tableauDeBord", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaesDashboard(@RequestParam("idAgent") int idAgent) {
-		
+
 		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
-    	
-    	List<EaeDashboardItemDto> result;
+
+		List<EaeDashboardItemDto> result;
 		try {
 			result = eaeService.getEaesDashboard(convertedId);
 		} catch (SirhWSConsumerException e) {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		if (result.isEmpty())
-			return new ResponseEntity<String>(HttpStatus.NO_CONTENT); 
-		
+			return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+
 		String jsonResult = EaeDashboardItemDto.getSerializerForEaeDashboardItemDto().serialize(result);
-		
+
 		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "canFinalizeEae", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> canFinalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
-		
+
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
-		
+
 		if (response != null)
 			return response;
-		
+
 		Eae eae = eaeService.getEae(idEae);
-	
+
 		CanFinalizeEaeDto dto = eaeService.canFinalizEae(eae);
-		
+
 		if (!dto.isCanFinalize())
 			return new ResponseEntity<String>(dto.getMessage(), HttpStatus.CONFLICT);
 		else
@@ -178,41 +181,40 @@ public class EaeController {
 	@RequestMapping(value = "getFinalizationInformation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getFinalizationInformation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
-		
+
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
-		
+
 		if (response != null)
 			return response;
-		
+
 		Eae eae = eaeService.getEae(idEae);
 		FinalizationInformationDto dto = null;
-		
+
 		try {
-			dto = eaeService.getFinalizationInformation(eae);		
-		} 
-		catch(SirhWSConsumerException e)
-		{
+			dto = eaeService.getFinalizationInformation(eae);
+		} catch (SirhWSConsumerException e) {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		String jsonResult = dto.serializeInJSON();
-		
+
 		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "finalizeEae", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> finalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeFinalizationDtoJson) {
-		
+	public ResponseEntity<String> finalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody String eaeFinalizationDtoJson) {
+
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
-		
+
 		if (response != null)
 			return response;
-		
+
 		Eae eae = eaeService.getEae(idEae);
-		
+
 		try {
 			EaeFinalizationDto dto = new EaeFinalizationDto().deserializeFromJSON(eaeFinalizationDtoJson);
 			eaeService.finalizEae(eae, agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent), dto);
@@ -221,7 +223,7 @@ public class EaeController {
 			eae.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
-		
+
 		return new ResponseEntity<String>(messageSource.getMessage("EAE_FINALISE_OK", null, null), HttpStatus.OK);
 	}
 
@@ -229,16 +231,17 @@ public class EaeController {
 	@ResponseBody
 	@RequestMapping(value = "downloadEae", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager", readOnly = true)
-	public ResponseEntity downloadEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam(value = "format", required = false) String format) {
+	public ResponseEntity downloadEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestParam(value = "format", required = false) String format) {
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
-		
+
 		if (response != null)
 			return response;
-		
+
 		byte[] responseData = null;
 		EaeReportFormatEnum formatValue = null;
-		
+
 		try {
 			formatValue = eaeReportingService.getFileFormatFromString(format);
 			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, formatValue);
@@ -246,45 +249,43 @@ public class EaeController {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
-		
-		return new ResponseEntity<byte []>(responseData, getHeadersForFileFormat(formatValue, idEae), HttpStatus.OK);
+
+		return new ResponseEntity<byte[]>(responseData, getHeadersForFileFormat(formatValue, idEae), HttpStatus.OK);
 	}
-	
+
 	private HttpHeaders getHeadersForFileFormat(EaeReportFormatEnum format, int idEae) {
-		
+
 		String contentType;
-		
-		switch(format) {
-			default:
-			case PDF:
-				contentType = "application/pdf";
-				break;
-			case DOC:
-				contentType = "application/msword";
+
+		switch (format) {
+		default:
+		case PDF:
+			contentType = "application/pdf";
+			break;
+		case DOC:
+			contentType = "application/msword";
 		}
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", contentType);
 		headers.add("Content-Disposition", String.format("attachment; filename=\"%s.%s\"", idEae, format.toString().toLowerCase()));
-		
+
 		return headers;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "getEaeEvalueFullname", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public ResponseEntity<String> getEvalueFullname(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
-		
+
 		if (response != null)
 			return response;
-		
+
 		Eae eae = eaeService.getEae(idEae);
 		EaeEvalueNameDto fullName = eaeService.getEvalueName(eae);
-		
+
 		return new ResponseEntity<String>(fullName.serializeInJSON(), HttpStatus.OK);
 	}
 }
-	
-	
