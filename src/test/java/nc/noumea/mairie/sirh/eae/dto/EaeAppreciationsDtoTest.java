@@ -27,7 +27,7 @@ public class EaeAppreciationsDtoTest {
 		EaeAppreciation ap1 = new EaeAppreciation();
 		ap1.setNumero(0);
 		ap1.setTypeAppreciation(EaeTypeAppreciationEnum.TE);
-		ap1.setNoteEvalue("A");
+		ap1.setNoteEvalue("NA");
 		ap1.setNoteEvaluateur("D");
 		eae.getEaeAppreciations().add(ap1);
 		
@@ -58,7 +58,7 @@ public class EaeAppreciationsDtoTest {
 		// Then
 		assertEquals(79, dto.getIdEae());
 		assertTrue(dto.isEstEncadrant());
-		assertEquals("A", dto.getTechniqueEvalue()[0]);
+		assertEquals("NA", dto.getTechniqueEvalue()[0]);
 		assertEquals("D", dto.getTechniqueEvaluateur()[0]);
 		
 		assertEquals("B", dto.getSavoirEtreEvalue()[1]);

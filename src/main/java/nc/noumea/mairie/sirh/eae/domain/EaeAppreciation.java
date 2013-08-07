@@ -27,10 +27,10 @@ public class EaeAppreciation {
 	@NotNull
 	private int numero;
 
-	@Column(name = "NOTE_EVALUE", length = 1)
+	@Column(name = "NOTE_EVALUE")
 	private String noteEvalue;
 
-	@Column(name = "NOTE_EVALUATEUR", length = 1)
+	@Column(name = "NOTE_EVALUATEUR")
 	private String noteEvaluateur;
 
 	@ManyToOne
