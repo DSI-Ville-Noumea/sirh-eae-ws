@@ -52,7 +52,8 @@ public class EaeEvaluationDtoTest {
 		// Then
 		assertEquals(123, dto.getIdEae());
 		assertEquals(new Integer(127), dto.getDureeEntretien());
-		assertEquals(new Float(12), dto.getNoteAnnee());
+		//TODO
+		//assertEquals(new Float(12), dto.getNoteAnnee());
 		assertEquals(new Float(13), dto.getNoteAnneeN1());
 		assertEquals(new Float(14), dto.getNoteAnneeN2());
 		assertEquals(new Float(15), dto.getNoteAnneeN3());
@@ -124,7 +125,7 @@ public class EaeEvaluationDtoTest {
 	public void testSerializeInJSON_emptyObject() {
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
-		String expectedJson = "{\"anneeAvancement\":0,\"avisChangementClasse\":null,\"avisRevalorisation\":null,\"commentaireAvctEvaluateur\":null,\"commentaireAvctEvalue\":null,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"dureeEntretien\":null,\"idEae\":0,\"niveau\":null,\"noteAnnee\":null,\"noteAnneeN1\":null,\"noteAnneeN2\":null,\"noteAnneeN3\":null,\"propositionAvancement\":null}";
+		String expectedJson = "{\"anneeAvancement\":0,\"avisChangementClasse\":null,\"avisRevalorisation\":null,\"commentaireAvctEvaluateur\":null,\"commentaireAvctEvalue\":null,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"dureeEntretien\":null,\"idEae\":0,\"niveau\":null,\"noteAnneeN1\":null,\"noteAnneeN2\":null,\"noteAnneeN3\":null,\"propositionAvancement\":null}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -139,7 +140,8 @@ public class EaeEvaluationDtoTest {
 		EaeEvaluationDto dto = new EaeEvaluationDto();
 		dto.setIdEae(13);
 		dto.setDureeEntretien(127);
-		dto.setNoteAnnee(12.02f);
+		//TODO
+		//dto.setNoteAnnee(12.02f);
 		dto.setNoteAnneeN1(13.03f);
 		dto.setNoteAnneeN2(14.04f);
 		dto.setNoteAnneeN3(15.05f);
@@ -164,7 +166,7 @@ public class EaeEvaluationDtoTest {
 		com4.setText("com4");
 		dto.setCommentaireEvalue(com4);
 		
-		String expectedJson = "{\"anneeAvancement\":2014,\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"EXCELLENT\",\"liste\":[{\"code\":\"EXCELLENT\",\"valeur\":\"EXCELLENT\"},{\"code\":\"SATISFAISANT\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"NECESSITANT_DES_PROGRES\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"INSUFFISANT\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnnee\":12.02,\"noteAnneeN1\":13.03,\"noteAnneeN2\":14.04,\"noteAnneeN3\":15.05,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]}}";
+		String expectedJson = "{\"anneeAvancement\":2014,\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"EXCELLENT\",\"liste\":[{\"code\":\"EXCELLENT\",\"valeur\":\"EXCELLENT\"},{\"code\":\"SATISFAISANT\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"NECESSITANT_DES_PROGRES\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"INSUFFISANT\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnneeN1\":13.03,\"noteAnneeN2\":14.04,\"noteAnneeN3\":15.05,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]}}";
 		
 		// When
 		String json = dto.serializeInJSON();
@@ -190,7 +192,8 @@ public class EaeEvaluationDtoTest {
 		assertNull(dto.getCommentaireAvctEvalue());
 		assertNull(dto.getDureeEntretien());
 		assertNull(dto.getNiveau().getCourant());
-		assertNull(dto.getNoteAnnee());
+		//TODO		
+		//assertNull(dto.getNoteAnnee());
 		assertNull(dto.getPropositionAvancement().getCourant());
 	}
 	
@@ -211,7 +214,8 @@ public class EaeEvaluationDtoTest {
 		assertEquals("com4", dto.getCommentaireAvctEvalue().getText());
 		assertEquals(new Integer(103), dto.getDureeEntretien());
 		assertEquals("SATISFAISANT", dto.getNiveau().getCourant());
-		assertEquals(new Float(13.07), dto.getNoteAnnee());
+		//TODO
+		//assertEquals(new Float(13.07), dto.getNoteAnnee());
 		assertEquals("MAXI", dto.getPropositionAvancement().getCourant());
 	}
 	

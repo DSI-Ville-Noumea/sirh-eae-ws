@@ -20,7 +20,8 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	private int idEae;
 	private Integer dureeEntretien;
-	private Float noteAnnee;
+	//TODO
+	// private Float noteAnnee;
 	private Float noteAnneeN1;
 	private Float noteAnneeN2;
 	private Float noteAnneeN3;
@@ -43,12 +44,13 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		this.propositionAvancement = getDureesAvancement(eae.getEaeEvaluation(), eae.getEaeEvalue());
 		anneeAvancement = eae.getEaeCampagne().getAnnee();
 	}
-	
+
 	protected EaeEvaluationDto(EaeEvaluation eaeEvaluation) {
-		
+
 		idEae = eaeEvaluation.getEae().getIdEae();
 		dureeEntretien = eaeEvaluation.getEae().getDureeEntretienMinutes();
-		noteAnnee = eaeEvaluation.getNoteAnnee();
+		//TODO
+		// noteAnnee = eaeEvaluation.getNoteAnnee();
 		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1();
 		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
 		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
@@ -58,7 +60,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		commentaireEvalue = eaeEvaluation.getCommentaireEvalue();
 		commentaireAvctEvaluateur = eaeEvaluation.getCommentaireAvctEvaluateur();
 		commentaireAvctEvalue = eaeEvaluation.getCommentaireAvctEvalue();
-		
+
 		if (eaeEvaluation.getNiveauEae() == null)
 			niveau = new ValueWithListDto(EaeNiveauEnum.SATISFAISANT, EaeNiveauEnum.class);
 		else
@@ -66,41 +68,27 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	}
 
 	protected ValueWithListDto getDureesAvancement(EaeEvaluation eaeEvaluation, EaeEvalue eaeEvalue) {
-		
+
 		ValueWithListDto subDto = new ValueWithListDto();
 		subDto.getListe().add(new ListItemDto(EaeAvancementEnum.MINI.name(), eaeEvalue.getAvctDureeMinDisplay()));
 		subDto.getListe().add(new ListItemDto(EaeAvancementEnum.MOY.name(), eaeEvalue.getAvctDureeMoyDisplay()));
 		subDto.getListe().add(new ListItemDto(EaeAvancementEnum.MAXI.name(), eaeEvalue.getAvctDureeMaxDisplay()));
-		
+
 		if (eaeEvaluation.getPropositionAvancement() == null)
 			subDto.setCourant(EaeAvancementEnum.MOY.name());
 		else
 			subDto.setCourant(eaeEvaluation.getPropositionAvancement().name());
-		
+
 		return subDto;
 	}
-	
+
 	public static JSONSerializer getSerializerForEaeEvaluationDto() {
-		return new JSONSerializer()
-			.exclude("*.class")
-			.include("idEae")
-			.include("noteAnnee")
-			.include("noteAnneeN1")
-			.include("noteAnneeN2")
-			.include("noteAnneeN3")
-			.include("avisRevalorisation")
-			.include("propositionAvancement.*")
-			.include("avisChangementClasse")
-			.include("niveau.*")
-			.include("commentaireEvaluateur")
-			.include("commentaireEvalue")
-			.include("commentaireAvctEvaluateur")
-			.include("commentaireAvctEvalue")
-			.include("dureeEntretien")
-			.include("anneeAvancement")
-			.transform(new MinutesToHoursAndMinutesTransformer(), "dureeEntretien")
-			.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class)
-			.exclude("*");
+		return new JSONSerializer().exclude("*.class").include("idEae").include("noteAnnee").include("noteAnneeN1").include("noteAnneeN2")
+				.include("noteAnneeN3").include("avisRevalorisation").include("propositionAvancement.*").include("avisChangementClasse")
+				.include("niveau.*").include("commentaireEvaluateur").include("commentaireEvalue").include("commentaireAvctEvaluateur")
+				.include("commentaireAvctEvalue").include("dureeEntretien").include("anneeAvancement")
+				.transform(new MinutesToHoursAndMinutesTransformer(), "dureeEntretien")
+				.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class).exclude("*");
 	}
 
 	@Override
@@ -110,10 +98,8 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	@Override
 	public EaeEvaluationDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<EaeEvaluationDto>()
-				.use(EaeCommentaire.class, new ObjectToPropertyTransformer("text", EaeCommentaire.class))
-				.use("dureeEntretien", new MinutesToHoursAndMinutesTransformer())
-				.deserializeInto(json, this);
+		return new JSONDeserializer<EaeEvaluationDto>().use(EaeCommentaire.class, new ObjectToPropertyTransformer("text", EaeCommentaire.class))
+				.use("dureeEntretien", new MinutesToHoursAndMinutesTransformer()).deserializeInto(json, this);
 	}
 
 	public int getIdEae() {
@@ -131,14 +117,13 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	public void setDureeEntretien(Integer dureeEntretien) {
 		this.dureeEntretien = dureeEntretien;
 	}
-	
-	public Float getNoteAnnee() {
-		return noteAnnee;
-	}
 
-	public void setNoteAnnee(Float noteAnnee) {
-		this.noteAnnee = noteAnnee;
-	}
+	//TODO
+	/*
+	 * public Float getNoteAnnee() { return noteAnnee; }
+	 * 
+	 * public void setNoteAnnee(Float noteAnnee) { this.noteAnnee = noteAnnee; }
+	 */
 
 	public Float getNoteAnneeN1() {
 		return noteAnneeN1;
@@ -216,8 +201,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		return commentaireAvctEvaluateur;
 	}
 
-	public void setCommentaireAvctEvaluateur(
-			EaeCommentaire commentaireAvctEvaluateur) {
+	public void setCommentaireAvctEvaluateur(EaeCommentaire commentaireAvctEvaluateur) {
 		this.commentaireAvctEvaluateur = commentaireAvctEvaluateur;
 	}
 
