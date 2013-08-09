@@ -284,6 +284,10 @@ public class EaeService implements IEaeService {
 		finalisation.setIdGedDocument(dto.getIdDocument());
 		finalisation.setVersionGedDocument(dto.getVersionDocument());
 		finalisation.setCommentaire(dto.getCommentaire());
+
+		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
+		eaeEvaluation.setNoteAnnee(dto.getNoteAnnee());
+
 	}
 
 	/*

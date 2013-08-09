@@ -6,6 +6,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
 import flexjson.JSONSerializer;
 
@@ -17,6 +18,7 @@ public class FinalizationInformationDto implements IJSONSerialize {
 	private Agent agentDelegataire;
 	private List<Agent> agentsEvaluateurs;
 	private List<Agent> agentsShd;
+	private Float noteAnnee;
 
 	public FinalizationInformationDto() {
 		agentsEvaluateurs = new ArrayList<Agent>();
@@ -33,11 +35,12 @@ public class FinalizationInformationDto implements IJSONSerialize {
 		for (EaeEvaluateur eval : eae.getEaeEvaluateurs()) {
 			agentsEvaluateurs.add(eval.getAgent());
 		}
+		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
+		noteAnnee = eaeEvaluation.getNoteAnnee();
 	}
 
 	public static JSONSerializer getSerializerForFinalizationInformationDto() {
-		return new JSONSerializer().exclude("*.class").include("*")
-				.transform(new SimpleAgentTransformer(), Agent.class);
+		return new JSONSerializer().exclude("*.class").include("*").transform(new SimpleAgentTransformer(), Agent.class);
 	}
 
 	@Override
@@ -91,6 +94,14 @@ public class FinalizationInformationDto implements IJSONSerialize {
 
 	public void setAgentsShd(List<Agent> agentsShd) {
 		this.agentsShd = agentsShd;
+	}
+
+	public Float getNoteAnnee() {
+		return noteAnnee;
+	}
+
+	public void setNoteAnnee(Float noteAnnee) {
+		this.noteAnnee = noteAnnee;
 	}
 
 }

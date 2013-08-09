@@ -215,8 +215,6 @@ public class EvaluationService implements IEvaluationService {
 		
 		eae.setDureeEntretienMinutes(dto.getDureeEntretien());
 		EaeEvaluation evaluation = eae.getEaeEvaluation();
-		//TODO
-		//evaluation.setNoteAnnee(dto.getNoteAnnee());
 		evaluation.setAvisChangementClasse(dto.getAvisChangementClasse());
 		evaluation.setAvisRevalorisation(dto.getAvisRevalorisation());
 		

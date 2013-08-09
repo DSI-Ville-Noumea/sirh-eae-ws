@@ -1,10 +1,8 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
-import java.text.ParseException;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;

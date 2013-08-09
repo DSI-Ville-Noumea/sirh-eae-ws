@@ -7,6 +7,7 @@ public class EaeFinalizationDto implements IJSONDeserialize<EaeFinalizationDto> 
 	private String idDocument;
 	private String versionDocument;
 	private String commentaire;
+	private Float noteAnnee;
 	
 	public EaeFinalizationDto() {
 		
@@ -39,5 +40,13 @@ public class EaeFinalizationDto implements IJSONDeserialize<EaeFinalizationDto> 
 
 	public void setCommentaire(String commentaire) {
 		this.commentaire = commentaire;
+	}
+
+	public Float getNoteAnnee() {
+		return noteAnnee;
+	}
+
+	public void setNoteAnnee(Float noteAnnee) {
+		this.noteAnnee = noteAnnee;
 	}
 }

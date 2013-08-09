@@ -961,6 +961,9 @@ public class EaeServiceTest {
 		eae.setEaeEvalue(new EaeEvalue());
 		eae.setIdEae(7896);
 		eae.setEaeCampagne(camp);
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setNoteAnnee(13.03f);
+		eae.setEaeEvaluation(evaluation);
 
 		IAgentService agentServiceMock = Mockito.mock(IAgentService.class);
 		ISirhWsConsumer sirhMock = Mockito.mock(ISirhWsConsumer.class);
@@ -989,6 +992,9 @@ public class EaeServiceTest {
 		eae.getEaeEvalue().setIdAgent(9005138);
 		eae.setIdEae(7896);
 		eae.setEaeCampagne(camp);
+		EaeEvaluation eval = new EaeEvaluation();
+		eval.setNoteAnnee(13.03f);
+		eae.setEaeEvaluation(eval);
 
 		Agent shd1 = new Agent();
 		shd1.setIdAgent(9008765);
@@ -1014,6 +1020,7 @@ public class EaeServiceTest {
 		assertEquals(shd1, dto.getAgentsShd().get(0));
 		assertEquals(shd2, dto.getAgentsShd().get(1));
 		assertEquals(7896, dto.getIdEae());
+		assertEquals(eval.getNoteAnnee(), dto.getNoteAnnee());
 
 		verify(agentServiceMock, times(1)).fillEaeWithAgents(eae);
 	}
@@ -1025,11 +1032,15 @@ public class EaeServiceTest {
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.EC);
 		Integer idAgent = 90899;
+		EaeEvaluation eval = new EaeEvaluation();
+		eval.setNoteAnnee(13.03f);
+		eae.setEaeEvaluation(eval);
 
 		EaeFinalizationDto dto = new EaeFinalizationDto();
 		dto.setCommentaire("le commentaire");
 		dto.setIdDocument("çççdikjnvekusvb");
 		dto.setVersionDocument("10.1");
+		dto.setNoteAnnee(13.03f);
 
 		IAgentMatriculeConverterService converterMock = Mockito.mock(IAgentMatriculeConverterService.class);
 		when(converterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(900899);
@@ -1047,11 +1058,13 @@ public class EaeServiceTest {
 		assertTrue(eae.isDocAttache());
 
 		EaeFinalisation finalisation = eae.getEaeFinalisations().iterator().next();
+		EaeEvaluation evaluation = eae.getEaeEvaluation();
 		assertEquals(helperMock.getCurrentDate(), finalisation.getDateFinalisation());
 		assertEquals(900899, finalisation.getIdAgent());
 		assertEquals("çççdikjnvekusvb", finalisation.getIdGedDocument());
 		assertEquals("10.1", finalisation.getVersionGedDocument());
 		assertEquals("le commentaire", finalisation.getCommentaire());
+		assertEquals(dto.getNoteAnnee(), evaluation.getNoteAnnee());
 		assertEquals(eae, finalisation.getEae());
 	}
 
@@ -1063,10 +1076,15 @@ public class EaeServiceTest {
 		eae.setEtat(EaeEtatEnum.CO);
 		Integer idAgent = 90899;
 
+		EaeEvaluation evaluation = new EaeEvaluation();
+		evaluation.setNoteAnnee(13.03f);
+		eae.setEaeEvaluation(evaluation);
+
 		EaeFinalizationDto dto = new EaeFinalizationDto();
 		dto.setCommentaire("le commentaire");
 		dto.setIdDocument("çççdikjnvekusvb");
 		dto.setVersionDocument("10.1");
+		dto.setNoteAnnee(13.03f);
 
 		IAgentMatriculeConverterService converterMock = Mockito.mock(IAgentMatriculeConverterService.class);
 		when(converterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(900899);
@@ -1084,11 +1102,13 @@ public class EaeServiceTest {
 		assertTrue(eae.isDocAttache());
 
 		EaeFinalisation finalisation = eae.getEaeFinalisations().iterator().next();
+		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		assertEquals(helperMock.getCurrentDate(), finalisation.getDateFinalisation());
 		assertEquals(900899, finalisation.getIdAgent());
 		assertEquals("çççdikjnvekusvb", finalisation.getIdGedDocument());
 		assertEquals("10.1", finalisation.getVersionGedDocument());
 		assertEquals("le commentaire", finalisation.getCommentaire());
+		assertEquals(dto.getNoteAnnee(), eaeEvaluation.getNoteAnnee());
 		assertEquals(eae, finalisation.getEae());
 	}
 
