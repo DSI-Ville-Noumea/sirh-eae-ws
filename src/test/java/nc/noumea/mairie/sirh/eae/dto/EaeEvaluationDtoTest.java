@@ -72,7 +72,9 @@ public class EaeEvaluationDtoTest {
 		EaeEvaluation eval = new EaeEvaluation();
 		eae.setEaeEvaluation(eval);
 		eval.setEae(eae);
-		eae.setEaeEvalue(new EaeEvalue());
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setStatut(EaeAgentStatutEnum.F);
+		eae.setEaeEvalue(evalue);
 
 		EaeCampagne camp = new EaeCampagne();
 		camp.setAnnee(2014);
@@ -97,7 +99,7 @@ public class EaeEvaluationDtoTest {
 		List<PathExpression> excludes = EaeEvaluationDto.getSerializerForEaeEvaluationDto().getExcludes();
 
 		// Then
-		assertEquals(14, includes.size());
+		assertEquals(16, includes.size());
 		assertEquals("[idEae]", includes.get(0).toString());
 		assertEquals("[noteAnneeN1]", includes.get(1).toString());
 		assertEquals("[noteAnneeN2]", includes.get(2).toString());
@@ -112,6 +114,8 @@ public class EaeEvaluationDtoTest {
 		assertEquals("[commentaireAvctEvalue]", includes.get(11).toString());
 		assertEquals("[dureeEntretien]", includes.get(12).toString());
 		assertEquals("[anneeAvancement]", includes.get(13).toString());
+		assertEquals("[statut]", includes.get(14).toString());
+		assertEquals("[typeAvct]", includes.get(15).toString());
 
 		assertEquals(2, excludes.size());
 		assertEquals("[*,class]", excludes.get(0).toString());
@@ -122,7 +126,7 @@ public class EaeEvaluationDtoTest {
 	public void testSerializeInJSON_emptyObject() {
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
-		String expectedJson = "{\"anneeAvancement\":0,\"avisChangementClasse\":null,\"avisRevalorisation\":null,\"commentaireAvctEvaluateur\":null,\"commentaireAvctEvalue\":null,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"dureeEntretien\":null,\"idEae\":0,\"niveau\":null,\"noteAnneeN1\":null,\"noteAnneeN2\":null,\"noteAnneeN3\":null,\"propositionAvancement\":null}";
+		String expectedJson = "{\"anneeAvancement\":0,\"avisChangementClasse\":null,\"avisRevalorisation\":null,\"commentaireAvctEvaluateur\":null,\"commentaireAvctEvalue\":null,\"commentaireEvaluateur\":null,\"commentaireEvalue\":null,\"dureeEntretien\":null,\"idEae\":0,\"niveau\":null,\"noteAnneeN1\":null,\"noteAnneeN2\":null,\"noteAnneeN3\":null,\"propositionAvancement\":null,\"statut\":null,\"typeAvct\":null}";
 
 		// When
 		String json = dto.serializeInJSON();
@@ -145,6 +149,8 @@ public class EaeEvaluationDtoTest {
 		ValueWithListDto subDto = new ValueWithListDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
 		dto.setPropositionAvancement(subDto);
 		dto.setAnneeAvancement(2014);
+		dto.setStatut("F");
+		dto.setTypeAvct("AD");
 
 		ValueWithListDto subDto2 = new ValueWithListDto(EaeNiveauEnum.EXCELLENT, EaeNiveauEnum.class);
 		dto.setNiveau(subDto2);
@@ -161,7 +167,7 @@ public class EaeEvaluationDtoTest {
 		com4.setText("com4");
 		dto.setCommentaireEvalue(com4);
 
-		String expectedJson = "{\"anneeAvancement\":2014,\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"EXCELLENT\",\"liste\":[{\"code\":\"EXCELLENT\",\"valeur\":\"EXCELLENT\"},{\"code\":\"SATISFAISANT\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"NECESSITANT_DES_PROGRES\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"INSUFFISANT\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnneeN1\":13.03,\"noteAnneeN2\":14.04,\"noteAnneeN3\":15.05,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]}}";
+		String expectedJson = "{\"anneeAvancement\":2014,\"avisChangementClasse\":false,\"avisRevalorisation\":true,\"commentaireAvctEvaluateur\":\"com1\",\"commentaireAvctEvalue\":\"com2\",\"commentaireEvaluateur\":\"com3\",\"commentaireEvalue\":\"com4\",\"dureeEntretien\":{\"heures\":2,\"minutes\":7},\"idEae\":13,\"niveau\":{\"courant\":\"EXCELLENT\",\"liste\":[{\"code\":\"EXCELLENT\",\"valeur\":\"EXCELLENT\"},{\"code\":\"SATISFAISANT\",\"valeur\":\"SATISFAISANT\"},{\"code\":\"NECESSITANT_DES_PROGRES\",\"valeur\":\"NECESSITANT DES PROGRES\"},{\"code\":\"INSUFFISANT\",\"valeur\":\"INSUFFISANT\"}]},\"noteAnneeN1\":13.03,\"noteAnneeN2\":14.04,\"noteAnneeN3\":15.05,\"propositionAvancement\":{\"courant\":\"MAXI\",\"liste\":[{\"code\":\"MINI\",\"valeur\":\"Durée minimale\"},{\"code\":\"MOY\",\"valeur\":\"Durée moyenne\"},{\"code\":\"MAXI\",\"valeur\":\"Durée maximale\"}]},\"statut\":\"F\",\"typeAvct\":\"AD\"}";
 
 		// When
 		String json = dto.serializeInJSON();

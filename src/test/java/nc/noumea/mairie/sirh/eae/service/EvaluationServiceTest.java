@@ -34,6 +34,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
@@ -549,7 +550,9 @@ public class EvaluationServiceTest {
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setEae(eae);
 		eae.setEaeEvaluation(eval);
-		eae.setEaeEvalue(new EaeEvalue());
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setStatut(EaeAgentStatutEnum.F);
+		eae.setEaeEvalue(evalue);
 
 		EaeCampagne camp = new EaeCampagne();
 		eae.setEaeCampagne(camp);

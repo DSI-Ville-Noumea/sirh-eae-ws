@@ -32,6 +32,8 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	private EaeCommentaire commentaireAvctEvaluateur;
 	private EaeCommentaire commentaireAvctEvalue;
 	private int anneeAvancement;
+	private String statut;
+	private String typeAvct;
 
 	public EaeEvaluationDto() {
 
@@ -41,6 +43,8 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		this(eae.getEaeEvaluation());
 		this.propositionAvancement = getDureesAvancement(eae.getEaeEvaluation(), eae.getEaeEvalue());
 		anneeAvancement = eae.getEaeCampagne().getAnnee();
+		statut = eae.getEaeEvalue().getStatut().name();
+		typeAvct = eae.getEaeEvalue().getTypeAvancement() == null ? null : eae.getEaeEvalue().getTypeAvancement().name();
 	}
 
 	protected EaeEvaluationDto(EaeEvaluation eaeEvaluation) {
@@ -82,7 +86,8 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		return new JSONSerializer().exclude("*.class").include("idEae").include("noteAnneeN1").include("noteAnneeN2").include("noteAnneeN3")
 				.include("avisRevalorisation").include("propositionAvancement.*").include("avisChangementClasse").include("niveau.*")
 				.include("commentaireEvaluateur").include("commentaireEvalue").include("commentaireAvctEvaluateur").include("commentaireAvctEvalue")
-				.include("dureeEntretien").include("anneeAvancement").transform(new MinutesToHoursAndMinutesTransformer(), "dureeEntretien")
+				.include("dureeEntretien").include("anneeAvancement").include("statut").include("typeAvct")
+				.transform(new MinutesToHoursAndMinutesTransformer(), "dureeEntretien")
 				.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class).exclude("*");
 	}
 
@@ -207,5 +212,21 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	public void setAnneeAvancement(int anneeAvancement) {
 		this.anneeAvancement = anneeAvancement;
+	}
+
+	public String getStatut() {
+		return statut;
+	}
+
+	public void setStatut(String statut) {
+		this.statut = statut;
+	}
+
+	public String getTypeAvct() {
+		return typeAvct;
+	}
+
+	public void setTypeAvct(String typeAvct) {
+		this.typeAvct = typeAvct;
 	}
 }
