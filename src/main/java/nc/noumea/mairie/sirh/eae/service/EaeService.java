@@ -60,12 +60,14 @@ public class EaeService implements IEaeService {
 	 */
 
 	@Override
-	public List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException {
+	public List<EaeListItemDto> listEaesByAgentId(int agentId)
+			throws SirhWSConsumerException {
 
 		List<EaeListItemDto> result = new ArrayList<EaeListItemDto>();
 
 		// Get the list of agents whose responsible is the given agent
-		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(agentId);
+		List<Integer> agentIds = sirhWsConsumer
+				.getListOfSubAgentsForAgentId(agentId);
 
 		// Retrieve the EAEs
 		List<Eae> queryResult = findEaesForEaeListByAgentIds(agentIds, agentId);
@@ -82,11 +84,15 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
+	public void initializeEae(Eae eaeToInitialize, Eae previousEae)
+			throws EaeServiceException {
 
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
-			throw new EaeServiceException(String.format("Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
-					eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
+			throw new EaeServiceException(
+					String.format(
+							"Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
+							eaeToInitialize.getIdEae(), eaeToInitialize
+									.getEtat().toString()));
 
 		eaeToInitialize.setDateCreation(helper.getCurrentDate());
 		eaeToInitialize.setEtat(EaeEtatEnum.C);
@@ -98,13 +104,16 @@ public class EaeService implements IEaeService {
 		}
 
 		// If no previous EAE, return
-		if (previousEae == null)
+		if (previousEae == null || previousEae.getEaeEvaluation() == null)
 			return;
 
 		// Copy the previous notes to current EAE
-		eaeToInitialize.getEaeEvaluation().setNoteAnneeN1(previousEae.getEaeEvaluation().getNoteAnnee());
-		eaeToInitialize.getEaeEvaluation().setNoteAnneeN2(previousEae.getEaeEvaluation().getNoteAnneeN1());
-		eaeToInitialize.getEaeEvaluation().setNoteAnneeN3(previousEae.getEaeEvaluation().getNoteAnneeN2());
+		eaeToInitialize.getEaeEvaluation().setNoteAnneeN1(
+				previousEae.getEaeEvaluation().getNoteAnnee());
+		eaeToInitialize.getEaeEvaluation().setNoteAnneeN2(
+				previousEae.getEaeEvaluation().getNoteAnneeN1());
+		eaeToInitialize.getEaeEvaluation().setNoteAnneeN3(
+				previousEae.getEaeEvaluation().getNoteAnneeN2());
 
 		// If this eae already has some eaeResultats, do nothing
 		if (eaeToInitialize.getEaeResultats().size() != 0)
@@ -123,9 +132,13 @@ public class EaeService implements IEaeService {
 	@Override
 	public void startEae(Eae eaeToStart) throws EaeServiceException {
 
-		if (eaeToStart.getEtat() != EaeEtatEnum.C && eaeToStart.getEtat() != EaeEtatEnum.EC)
-			throw new EaeServiceException(String.format("Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.",
-					eaeToStart.getIdEae(), eaeToStart.getEtat().toString()));
+		if (eaeToStart.getEtat() != EaeEtatEnum.C
+				&& eaeToStart.getEtat() != EaeEtatEnum.EC)
+			throw new EaeServiceException(
+					String.format(
+							"Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.",
+							eaeToStart.getIdEae(), eaeToStart.getEtat()
+									.toString()));
 
 		if (eaeToStart.getEtat() != EaeEtatEnum.EC)
 			eaeToStart.setEtat(EaeEtatEnum.EC);
@@ -134,9 +147,14 @@ public class EaeService implements IEaeService {
 	@Override
 	public void resetEaeEvaluateur(Eae eaeToReset) throws EaeServiceException {
 
-		if (eaeToReset.getEtat() != EaeEtatEnum.C && eaeToReset.getEtat() != EaeEtatEnum.EC && eaeToReset.getEtat() != EaeEtatEnum.ND)
-			throw new EaeServiceException(String.format("Impossible de réinitialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
-					eaeToReset.getIdEae(), eaeToReset.getEtat().toString()));
+		if (eaeToReset.getEtat() != EaeEtatEnum.C
+				&& eaeToReset.getEtat() != EaeEtatEnum.EC
+				&& eaeToReset.getEtat() != EaeEtatEnum.ND)
+			throw new EaeServiceException(
+					String.format(
+							"Impossible de réinitialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
+							eaeToReset.getIdEae(), eaeToReset.getEtat()
+									.toString()));
 
 		if (eaeToReset.getEtat() != EaeEtatEnum.ND)
 			eaeToReset.setEtat(EaeEtatEnum.ND);
@@ -157,27 +175,33 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void setDelegataire(Eae eae, int idAgentDelegataire) throws EaeServiceException {
+	public void setDelegataire(Eae eae, int idAgentDelegataire)
+			throws EaeServiceException {
 
 		Agent agentDelegataire = Agent.findAgent(idAgentDelegataire);
 
 		if (agentDelegataire == null)
-			throw new EaeServiceException(String.format("Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.",
-					idAgentDelegataire));
+			throw new EaeServiceException(
+					String.format(
+							"Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.",
+							idAgentDelegataire));
 
 		eae.setIdAgentDelegataire(idAgentDelegataire);
 	}
 
 	@Override
-	public List<EaeDashboardItemDto> getEaesDashboard(int idAgent) throws SirhWSConsumerException {
+	public List<EaeDashboardItemDto> getEaesDashboard(int idAgent)
+			throws SirhWSConsumerException {
 
 		List<EaeDashboardItemDto> result = new ArrayList<EaeDashboardItemDto>();
 
 		// Get the list of EAEs to return
-		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(idAgent);
+		List<Integer> agentIds = sirhWsConsumer
+				.getListOfSubAgentsForAgentId(idAgent);
 
 		// Retrieve the EAEs
-		List<Eae> queryResult = findEaesForDashboardByAgentIds(agentIds, idAgent);
+		List<Eae> queryResult = findEaesForDashboardByAgentIds(agentIds,
+				idAgent);
 
 		Map<Integer, List<Eae>> groupedResult = new HashMap<Integer, List<Eae>>();
 		List<Eae> eaesWithoutEvaluateurs = new ArrayList<Eae>();
@@ -205,8 +229,10 @@ public class EaeService implements IEaeService {
 			}
 		}
 
-		for (Entry<Integer, List<Eae>> evaluateurAndEaes : groupedResult.entrySet()) {
-			EaeDashboardItemDto item = new EaeDashboardItemDto(evaluateurAndEaes.getValue());
+		for (Entry<Integer, List<Eae>> evaluateurAndEaes : groupedResult
+				.entrySet()) {
+			EaeDashboardItemDto item = new EaeDashboardItemDto(
+					evaluateurAndEaes.getValue());
 			Agent agent = agentService.getAgent(evaluateurAndEaes.getKey());
 			item.setNom(agent.getDisplayNom());
 			item.setPrenom(agent.getDisplayPrenom());
@@ -215,7 +241,8 @@ public class EaeService implements IEaeService {
 		}
 
 		if (!eaesWithoutEvaluateurs.isEmpty()) {
-			EaeDashboardItemDto itemWithoutEvaluateur = new EaeDashboardItemDto(eaesWithoutEvaluateurs);
+			EaeDashboardItemDto itemWithoutEvaluateur = new EaeDashboardItemDto(
+					eaesWithoutEvaluateurs);
 			itemWithoutEvaluateur.setNom("?");
 			itemWithoutEvaluateur.setPrenom("?");
 			result.add(itemWithoutEvaluateur);
@@ -233,7 +260,8 @@ public class EaeService implements IEaeService {
 		CanFinalizeEaeDto dto = new CanFinalizeEaeDto();
 
 		if (eae.getEtat() != EaeEtatEnum.EC)
-			dto.setMessage(messageSource.getMessage("EAE_CANNOT_FINALIZE", new Object[] { eae.getEtat() }, null));
+			dto.setMessage(messageSource.getMessage("EAE_CANNOT_FINALIZE",
+					new Object[] { eae.getEtat() }, null));
 		else
 			dto.setCanFinalize(true);
 
@@ -241,7 +269,8 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public FinalizationInformationDto getFinalizationInformation(Eae eae) throws SirhWSConsumerException {
+	public FinalizationInformationDto getFinalizationInformation(Eae eae)
+			throws SirhWSConsumerException {
 
 		if (eae == null)
 			return null;
@@ -249,7 +278,8 @@ public class EaeService implements IEaeService {
 		agentService.fillEaeWithAgents(eae);
 		FinalizationInformationDto result = new FinalizationInformationDto(eae);
 
-		List<Integer> agentsShdIds = sirhWsConsumer.getListOfShdAgentsForAgentId(eae.getEaeEvalue().getIdAgent());
+		List<Integer> agentsShdIds = sirhWsConsumer
+				.getListOfShdAgentsForAgentId(eae.getEaeEvalue().getIdAgent());
 
 		for (Integer shdId : agentsShdIds) {
 			result.getAgentsShd().add(agentService.getAgent(shdId));
@@ -259,14 +289,17 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void finalizEae(Eae eae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException {
+	public void finalizEae(Eae eae, int idAgent, EaeFinalizationDto dto)
+			throws EaeServiceException {
 
 		if (eae == null)
 			return;
 
 		if (eae.getEtat() != EaeEtatEnum.EC)
 			if (eae.getEtat() != EaeEtatEnum.CO)
-				throw new EaeServiceException(messageSource.getMessage("EAE_CANNOT_FINALIZE", new Object[] { eae.getEtat() }, null));
+				throw new EaeServiceException(messageSource.getMessage(
+						"EAE_CANNOT_FINALIZE", new Object[] { eae.getEtat() },
+						null));
 
 		Date finalisationDate = helper.getCurrentDate();
 
@@ -279,7 +312,8 @@ public class EaeService implements IEaeService {
 		EaeFinalisation finalisation = new EaeFinalisation();
 		finalisation.setEae(eae);
 		eae.getEaeFinalisations().add(finalisation);
-		finalisation.setIdAgent(agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent));
+		finalisation.setIdAgent(agentMatriculeConverterService
+				.tryConvertFromADIdAgentToEAEIdAgent(idAgent));
 		finalisation.setDateFinalisation(finalisationDate);
 		finalisation.setIdGedDocument(dto.getIdDocument());
 		finalisation.setVersionGedDocument(dto.getVersionDocument());
@@ -296,8 +330,10 @@ public class EaeService implements IEaeService {
 
 	private List<Eae> findLatestEaesByAgentId(int agentId, int maxResults) {
 
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(
-				"select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.dateCreation desc", Eae.class);
+		TypedQuery<Eae> eaeQuery = eaeEntityManager
+				.createQuery(
+						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.dateCreation desc",
+						Eae.class);
 		eaeQuery.setParameter("idAgent", agentId);
 		eaeQuery.setMaxResults(maxResults);
 		List<Eae> result = eaeQuery.getResultList();
@@ -325,7 +361,8 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public List<Eae> findEaesForDashboardByAgentIds(List<Integer> agentIds, Integer agentId) {
+	public List<Eae> findEaesForDashboardByAgentIds(List<Integer> agentIds,
+			Integer agentId) {
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
@@ -335,8 +372,10 @@ public class EaeService implements IEaeService {
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");
 		sb.append("and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
 
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Eae.class);
-		eaeQuery.setParameter("agentIds", agentIds.size() == 0 ? null : agentIds);
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(),
+				Eae.class);
+		eaeQuery.setParameter("agentIds", agentIds.size() == 0 ? null
+				: agentIds);
 		eaeQuery.setParameter("agentId", agentId);
 		eaeQuery.setParameter("date", helper.getCurrentDate());
 
@@ -345,7 +384,8 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId) {
+	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds,
+			Integer agentId) {
 
 		// Query
 		StringBuilder sb = new StringBuilder();
@@ -356,8 +396,10 @@ public class EaeService implements IEaeService {
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");
 		sb.append("and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
 
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Eae.class);
-		eaeQuery.setParameter("agentIds", agentIds.size() == 0 ? null : agentIds);
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(),
+				Eae.class);
+		eaeQuery.setParameter("agentIds", agentIds.size() == 0 ? null
+				: agentIds);
 		eaeQuery.setParameter("agentId", agentId);
 		eaeQuery.setParameter("date", helper.getCurrentDate());
 

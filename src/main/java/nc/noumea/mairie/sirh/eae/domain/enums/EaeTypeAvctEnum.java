@@ -2,21 +2,28 @@ package nc.noumea.mairie.sirh.eae.domain.enums;
 
 public enum EaeTypeAvctEnum {
 
-	REVA("REVALORISATION"),
-	TITU("TITULARISATION"),
-	AVCT("AVANCEMENT"),
-	AD("AVANCEMENT DIFFERENCIE"),
-	AUTO("AUTOMATIQUE"),
-	PROMO("PROMOTION");
-	
-	private String typeAvct;
-	
-	private EaeTypeAvctEnum(String _typeAvct) {
-		this.typeAvct = _typeAvct;
+	REVA("REVALORISATION", "REVA"), TITU("TITULARISATION", "TITU"), AVCT(
+			"AVANCEMENT", "AVCT"), AD("AVANCEMENT DIFFERENCIE", "AD"), AUTO(
+			"AUTOMATIQUE", "AUTO"), PROMO("PROMOTION", "PROMO");
+
+	private String typeAvctLong;
+	private String typeAvctCode;
+
+	private EaeTypeAvctEnum(String _typeAvctLong, String _typeAvctCode) {
+		this.typeAvctLong = _typeAvctLong;
+		this.typeAvctCode = _typeAvctCode;
 	}
-	
+
 	@Override
 	public String toString() {
-		return typeAvct;
+		return typeAvctLong + " " + typeAvctCode;
+	}
+
+	public String getTypeAvctCode() {
+		return typeAvctCode;
+	}
+
+	public void setTypeAvctCode(String typeAvctCode) {
+		this.typeAvctCode = typeAvctCode;
 	}
 }
