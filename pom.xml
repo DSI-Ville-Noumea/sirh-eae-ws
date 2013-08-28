@@ -5,7 +5,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-eae-ws</artifactId>
 	<packaging>war</packaging>
-	<version>2.1</version>
+	<version>2.2-SNAPSHOT</version>
 	<name>sirh-eae-ws</name>
 	<properties>
 		<aspectj.version>1.7.3</aspectj.version>
@@ -556,6 +556,15 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -613,6 +622,26 @@
 						<contextPath>/${project.name}</contextPath>
 					</webAppConfig>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<copy todir="src/site/resources/war"
+									file="target/sirh-eae-ws##${maven.build.timestamp}-${project.version}.war">
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
