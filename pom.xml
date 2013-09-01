@@ -16,13 +16,13 @@
 		<spring.version>3.2.4.RELEASE</spring.version>
 	</properties>
 	<issueManagement>
-		<system>JIRA</system>
-		<url>http://dvlp:8181/browse/EAEWS</url>
+		<system>REDMINE</system>
+		<url>https://redmine.ville-noumea.nc/projects/sirh-eae-ws</url>
 	</issueManagement>
 	<scm>
-		<connection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</connection>
-		<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</developerConnection>
-		<url>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</url>
+		<connection>scm:svn:https://svn.ville-noumea.nc/sed/sirh-eae-ws/trunk</connection>
+		<developerConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh-eae-ws/trunk</developerConnection>
+		<url>https://svn.ville-noumea.nc/sed/sirh-eae-ws/trunk</url>
 	</scm>
 	<distributionManagement>
 		<site>
@@ -116,7 +116,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- Modified default dependency (2.1) of flexjson in order to fix a bug when deserializing dates close to the timestamp 0 (around 1/1/1970). 
-		This mairie-specific version is available through: scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/flexjson-mairie/trunk -->
+		This mairie-specific version is available through: scm:svn:https://svn.ville-noumea.nc/sed/flexjson-mairie/trunk -->
 		<dependency>
 			<groupId>net.sf.flexjson</groupId>
 			<artifactId>flexjson</artifactId>
@@ -623,9 +623,9 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.7</version>
 				<configuration>
-					<webAccessUrl>https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</webAccessUrl>
-					<anonymousConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</anonymousConnection>
-					<developerConnection>scm:svn:https://dvlp.site-mairie.noumea.nc:8080/svn/sirh-eae-ws/trunk</developerConnection>
+					<webAccessUrl>https://svn.ville-noumea.nc/sed/sirh-eae-ws/trunk</webAccessUrl>
+					<anonymousConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh-eae-ws/trunk</anonymousConnection>
+					<developerConnection>scm:svn:https://svn.ville-noumea.nc/sed/sirh-eae-ws/trunk</developerConnection>
 				</configuration>
 				<reportSets>
 					<reportSet>
