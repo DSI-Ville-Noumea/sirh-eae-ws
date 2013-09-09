@@ -20,6 +20,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	private int idEae;
 	private Integer dureeEntretien;
+	private Float noteAnnee;
 	private Float noteAnneeN1;
 	private Float noteAnneeN2;
 	private Float noteAnneeN3;
@@ -51,6 +52,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 		idEae = eaeEvaluation.getEae().getIdEae();
 		dureeEntretien = eaeEvaluation.getEae().getDureeEntretienMinutes();
+		noteAnnee = eaeEvaluation.getNoteAnnee();
 		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1();
 		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
 		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
@@ -83,7 +85,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	}
 
 	public static JSONSerializer getSerializerForEaeEvaluationDto() {
-		return new JSONSerializer().exclude("*.class").include("idEae").include("noteAnneeN1").include("noteAnneeN2").include("noteAnneeN3")
+		return new JSONSerializer().exclude("*.class").include("idEae").include("noteAnnee").include("noteAnneeN1").include("noteAnneeN2").include("noteAnneeN3")
 				.include("avisRevalorisation").include("propositionAvancement.*").include("avisChangementClasse").include("niveau.*")
 				.include("commentaireEvaluateur").include("commentaireEvalue").include("commentaireAvctEvaluateur").include("commentaireAvctEvalue")
 				.include("dureeEntretien").include("anneeAvancement").include("statut").include("typeAvct")
@@ -228,5 +230,13 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	public void setTypeAvct(String typeAvct) {
 		this.typeAvct = typeAvct;
+	}
+
+	public Float getNoteAnnee() {
+		return noteAnnee;
+	}
+
+	public void setNoteAnnee(Float noteAnnee) {
+		this.noteAnnee = noteAnnee;
 	}
 }
