@@ -82,23 +82,17 @@ public class EvaluationService implements IEvaluationService {
 	}
 
 	@Override
-	public void setEaeIdentification(Eae eae, EaeIdentificationDto dto)
-			throws EvaluationServiceException {
+	public void setEaeIdentification(Eae eae, EaeIdentificationDto dto) throws EvaluationServiceException {
 		eae.setDateEntretien(dto.getDateEntretien());
-		eae.getEaeEvalue().setDateEntreeAdministration(
-				dto.getSituation().getDateEntreeAdministration());
-		eae.getEaeEvalue().setDateEntreeFonctionnaire(
-				dto.getSituation().getDateEntreeFonctionnaire());
-		eae.getPrimaryFichePoste().setDateEntreeFonction(
-				dto.getSituation().getDateEntreeFonction());
+		eae.getEaeEvalue().setDateEntreeAdministration(dto.getSituation().getDateEntreeAdministration());
+		eae.getEaeEvalue().setDateEntreeFonctionnaire(dto.getSituation().getDateEntreeFonctionnaire());
+		eae.getPrimaryFichePoste().setDateEntreeFonction(dto.getSituation().getDateEntreeFonction());
 
 		for (EaeEvaluateur evaluateur : eae.getEaeEvaluateurs()) {
 			for (EaeEvaluateur evalDto : dto.getEvaluateurs()) {
 				if (evaluateur.getIdAgent() == evalDto.getIdAgent()) {
-					evaluateur.setDateEntreeFonction(evalDto
-							.getDateEntreeFonction());
-					evaluateur.setDateEntreeService(evalDto
-							.getDateEntreeService());
+					evaluateur.setDateEntreeFonction(evalDto.getDateEntreeFonction());
+					evaluateur.setDateEntreeService(evalDto.getDateEntreeService());
 				}
 			}
 		}
@@ -130,22 +124,18 @@ public class EvaluationService implements IEvaluationService {
 	}
 
 	@Override
-	public void setEaeResultats(Eae eae, EaeResultatsDto dto)
-			throws EvaluationServiceException {
+	public void setEaeResultats(Eae eae, EaeResultatsDto dto) throws EvaluationServiceException {
 
 		if (eae.getCommentaire() == null)
 			eae.setCommentaire(new EaeCommentaire());
 
 		eae.getCommentaire().setText(dto.getCommentaireGeneral());
 
-		List<EaeResultat> listOfAllResultats = new ArrayList<EaeResultat>(
-				eae.getEaeResultats());
+		List<EaeResultat> listOfAllResultats = new ArrayList<EaeResultat>(eae.getEaeResultats());
 
 		for (EaeResultat resPro : dto.getObjectifsProfessionnels()) {
-			if (resPro.getIdEaeResultat() == null
-					|| resPro.getIdEaeResultat() == 0)
-				createAndAddNewEaeResultat(eae, resPro,
-						EaeTypeObjectifEnum.PROFESSIONNEL);
+			if (resPro.getIdEaeResultat() == null || resPro.getIdEaeResultat() == 0)
+				createAndAddNewEaeResultat(eae, resPro, EaeTypeObjectifEnum.PROFESSIONNEL);
 			else
 				resPro = fillExistingEaeResultat(eae, resPro);
 
@@ -153,10 +143,8 @@ public class EvaluationService implements IEvaluationService {
 		}
 
 		for (EaeResultat resInd : dto.getObjectifsIndividuels()) {
-			if (resInd.getIdEaeResultat() == null
-					|| resInd.getIdEaeResultat() == 0)
-				createAndAddNewEaeResultat(eae, resInd,
-						EaeTypeObjectifEnum.INDIVIDUEL);
+			if (resInd.getIdEaeResultat() == null || resInd.getIdEaeResultat() == 0)
+				createAndAddNewEaeResultat(eae, resInd, EaeTypeObjectifEnum.INDIVIDUEL);
 			else
 				resInd = fillExistingEaeResultat(eae, resInd);
 
@@ -173,10 +161,8 @@ public class EvaluationService implements IEvaluationService {
 		eae.flush();
 	}
 
-	private void createAndAddNewEaeResultat(Eae eae, EaeResultat resPro,
-			EaeTypeObjectifEnum type) {
-		resPro.setTypeObjectif(typeObjectifService
-				.getTypeObjectifForLibelle(type.name()));
+	private void createAndAddNewEaeResultat(Eae eae, EaeResultat resPro, EaeTypeObjectifEnum type) {
+		resPro.setTypeObjectif(typeObjectifService.getTypeObjectifForLibelle(type.name()));
 		eae.getEaeResultats().add(resPro);
 		resPro.setEae(eae);
 	}
@@ -186,14 +172,12 @@ public class EvaluationService implements IEvaluationService {
 		for (EaeResultat existingResultat : eae.getEaeResultats()) {
 
 			if (existingResultat.getIdEaeResultat() != null
-					&& existingResultat.getIdEaeResultat().equals(
-							resultat.getIdEaeResultat())) {
+					&& existingResultat.getIdEaeResultat().equals(resultat.getIdEaeResultat())) {
 
 				existingResultat.setObjectif(resultat.getObjectif());
 				existingResultat.setResultat(resultat.getResultat());
 
-				resultat.setCommentaire(updateEaeCommentaire(
-						existingResultat.getCommentaire(),
+				resultat.setCommentaire(updateEaeCommentaire(existingResultat.getCommentaire(),
 						(resultat.getCommentaire())));
 				return existingResultat;
 			}
@@ -218,21 +202,19 @@ public class EvaluationService implements IEvaluationService {
 		eae.flush();
 
 		eae.getEaeEvalue().setEstEncadrant(dto.isEstEncadrant());
-		fillAppreciationsWithArray(eae, dto.getTechniqueEvalue(),
-				dto.getTechniqueEvaluateur(), EaeTypeAppreciationEnum.TE);
-		fillAppreciationsWithArray(eae, dto.getSavoirEtreEvalue(),
-				dto.getSavoirEtreEvaluateur(), EaeTypeAppreciationEnum.SE);
-		fillAppreciationsWithArray(eae, dto.getManagerialEvalue(),
-				dto.getManagerialEvaluateur(), EaeTypeAppreciationEnum.MA);
-		fillAppreciationsWithArray(eae, dto.getResultatsEvalue(),
-				dto.getResultatsEvaluateur(), EaeTypeAppreciationEnum.RE);
+		fillAppreciationsWithArray(eae, dto.getTechniqueEvalue(), dto.getTechniqueEvaluateur(),
+				EaeTypeAppreciationEnum.TE);
+		fillAppreciationsWithArray(eae, dto.getSavoirEtreEvalue(), dto.getSavoirEtreEvaluateur(),
+				EaeTypeAppreciationEnum.SE);
+		fillAppreciationsWithArray(eae, dto.getManagerialEvalue(), dto.getManagerialEvaluateur(),
+				EaeTypeAppreciationEnum.MA);
+		fillAppreciationsWithArray(eae, dto.getResultatsEvalue(), dto.getResultatsEvaluateur(),
+				EaeTypeAppreciationEnum.RE);
 
 	}
 
-	private void fillAppreciationsWithArray(Eae eae,
-			String[] arrayOfAppreciationsEvalue,
-			String[] arrayOfAppreciationsEvaluateur,
-			EaeTypeAppreciationEnum appreciationType) {
+	private void fillAppreciationsWithArray(Eae eae, String[] arrayOfAppreciationsEvalue,
+			String[] arrayOfAppreciationsEvaluateur, EaeTypeAppreciationEnum appreciationType) {
 		for (int i = 0; i < arrayOfAppreciationsEvalue.length; i++) {
 			EaeAppreciation app = new EaeAppreciation();
 			app.setEae(eae);
@@ -254,8 +236,7 @@ public class EvaluationService implements IEvaluationService {
 	}
 
 	@Override
-	public void setEaeEvaluation(Eae eae, EaeEvaluationDto dto)
-			throws EvaluationServiceException {
+	public void setEaeEvaluation(Eae eae, EaeEvaluationDto dto) throws EvaluationServiceException {
 
 		eae.setDureeEntretienMinutes(dto.getDureeEntretien());
 		EaeEvaluation evaluation = eae.getEaeEvaluation();
@@ -264,18 +245,15 @@ public class EvaluationService implements IEvaluationService {
 
 		// Check the Niveau if it's valid and/or not set
 		if (dto.getNiveau() == null || dto.getNiveau().getCourant() == null)
-			throw new EvaluationServiceException(
-					"La propriété 'niveau' de l'évaluation est manquante.");
+			throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est manquante.");
 
 		EaeNiveauEnum selectedNiveau = null;
 
 		if (dto.getNiveau() != null && dto.getNiveau().getCourant() != null) {
 			try {
-				selectedNiveau = EaeNiveauEnum.valueOf(dto.getNiveau()
-						.getCourant());
+				selectedNiveau = EaeNiveauEnum.valueOf(dto.getNiveau().getCourant());
 			} catch (IllegalArgumentException ex) {
-				throw new EvaluationServiceException(
-						"La propriété 'niveau' de l'évaluation est incorrecte.");
+				throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est incorrecte.");
 			}
 		}
 
@@ -284,11 +262,9 @@ public class EvaluationService implements IEvaluationService {
 		// Check the propositionAvancement validity
 		EaeAvancementEnum selectedAvancement = null;
 
-		if (dto.getPropositionAvancement() != null
-				&& dto.getPropositionAvancement().getCourant() != null) {
+		if (dto.getPropositionAvancement() != null && dto.getPropositionAvancement().getCourant() != null) {
 			try {
-				selectedAvancement = EaeAvancementEnum.valueOf(dto
-						.getPropositionAvancement().getCourant());
+				selectedAvancement = EaeAvancementEnum.valueOf(dto.getPropositionAvancement().getCourant());
 			} catch (IllegalArgumentException ex) {
 				throw new EvaluationServiceException(
 						"La propriété 'propositionAvancement' de l'évaluation est incorrecte.");
@@ -296,23 +272,20 @@ public class EvaluationService implements IEvaluationService {
 		}
 
 		// si l'eae precedent était dejà à MINI alors on ne peut pas
-		if (selectedAvancement != null
-				&& selectedAvancement.name().equals(
-						EaeAvancementEnum.MINI.name())) {
+		if (selectedAvancement != null && selectedAvancement.name().equals(EaeAvancementEnum.MINI.name())) {
 			// on cherche l'EAE précédent
 			// Retrieve campagne en cours
 			try {
-				CampagneEaeDto campagneEnCours = sirhWSConsumer
-						.getCampagneEnCours();
+				CampagneEaeDto campagneEnCours = sirhWSConsumer.getCampagneEnCours();
 
-				Eae eaePrecedent = eaeService.findEaeByAgentAndYear(eae
-						.getEaeEvalue().getIdAgent(), String
-						.valueOf((campagneEnCours.getAnnee() - 1)));
-				EaeEvaluation evaluationPrec = eaePrecedent.getEaeEvaluation();
-				if (evaluationPrec.getPropositionAvancement().name().equals(
-						EaeAvancementEnum.MINI.name())) {
-					throw new EvaluationServiceException(
-							"La propriété 'propositionAvancement' de l'évaluation ne peut être 'durée minimale' sur deux années consécutives.");
+				Eae eaePrecedent = eaeService.findEaeByAgentAndYear(eae.getEaeEvalue().getIdAgent(),
+						String.valueOf((campagneEnCours.getAnnee() - 1)));
+				if (eaePrecedent != null && eaePrecedent.getEaeEvaluation() != null) {
+					EaeEvaluation evaluationPrec = eaePrecedent.getEaeEvaluation();
+					if (evaluationPrec.getPropositionAvancement().name().equals(EaeAvancementEnum.MINI.name())) {
+						throw new EvaluationServiceException(
+								"La propriété 'propositionAvancement' de l'évaluation ne peut être 'durée minimale' sur deux années consécutives.");
+					}
 				}
 			} catch (SirhWSConsumerException e) {
 
@@ -327,16 +300,13 @@ public class EvaluationService implements IEvaluationService {
 
 		// For all the comments, check if a comment already exists and update
 		// it, or assign the new one
-		evaluation.setCommentaireEvaluateur(updateEaeCommentaire(
-				evaluation.getCommentaireEvaluateur(),
+		evaluation.setCommentaireEvaluateur(updateEaeCommentaire(evaluation.getCommentaireEvaluateur(),
 				dto.getCommentaireEvaluateur()));
-		evaluation.setCommentaireEvalue(updateEaeCommentaire(
-				evaluation.getCommentaireEvalue(), dto.getCommentaireEvalue()));
-		evaluation.setCommentaireAvctEvaluateur(updateEaeCommentaire(
-				evaluation.getCommentaireAvctEvaluateur(),
+		evaluation.setCommentaireEvalue(updateEaeCommentaire(evaluation.getCommentaireEvalue(),
+				dto.getCommentaireEvalue()));
+		evaluation.setCommentaireAvctEvaluateur(updateEaeCommentaire(evaluation.getCommentaireAvctEvaluateur(),
 				dto.getCommentaireAvctEvaluateur()));
-		evaluation.setCommentaireAvctEvalue(updateEaeCommentaire(
-				evaluation.getCommentaireAvctEvalue(),
+		evaluation.setCommentaireAvctEvalue(updateEaeCommentaire(evaluation.getCommentaireAvctEvalue(),
 				dto.getCommentaireAvctEvalue()));
 
 		try {
@@ -352,28 +322,24 @@ public class EvaluationService implements IEvaluationService {
 			return;
 
 		switch (eae.getEaeEvalue().getTypeAvancement().getTypeAvctCode()) {
-		case "PROMO":
-			if (eae.getEaeEvaluation().getAvisChangementClasse() != null)
-				eae.getEaeEvaluation().setAvisShd(
-						EaeAvisEnum.fromBooleanToAvisEnum(
-								eae.getEaeEvaluation()
-										.getAvisChangementClasse()).toString());
-			break;
-		case "REVA":
-			if (eae.getEaeEvaluation().getAvisRevalorisation() != null)
-				eae.getEaeEvaluation().setAvisShd(
-						EaeAvisEnum.fromBooleanToAvisEnum(
-								eae.getEaeEvaluation().getAvisRevalorisation())
-								.toString());
-			break;
-		case "AD":
-			if (eae.getEaeEvaluation().getPropositionAvancement() != null)
-				eae.getEaeEvaluation().setAvisShd(
-						eae.getEaeEvaluation().getPropositionAvancement()
-								.toString());
-			break;
-		default:
-			break;
+			case "PROMO":
+				if (eae.getEaeEvaluation().getAvisChangementClasse() != null)
+					eae.getEaeEvaluation().setAvisShd(
+							EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisChangementClasse())
+									.toString());
+				break;
+			case "REVA":
+				if (eae.getEaeEvaluation().getAvisRevalorisation() != null)
+					eae.getEaeEvaluation().setAvisShd(
+							EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisRevalorisation())
+									.toString());
+				break;
+			case "AD":
+				if (eae.getEaeEvaluation().getPropositionAvancement() != null)
+					eae.getEaeEvaluation().setAvisShd(eae.getEaeEvaluation().getPropositionAvancement().toString());
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -418,8 +384,7 @@ public class EvaluationService implements IEvaluationService {
 		eae.getEaePlanActions().clear();
 
 		for (PlanActionItemDto item : dto.getObjectifsProfessionnels()) {
-			CreateAndAddPlanAction(eae, item.getObjectif(),
-					item.getIndicateur(), EaeTypeObjectifEnum.PROFESSIONNEL);
+			CreateAndAddPlanAction(eae, item.getObjectif(), item.getIndicateur(), EaeTypeObjectifEnum.PROFESSIONNEL);
 		}
 
 		for (String s : dto.getObjectifsIndividuels()) {
@@ -439,13 +404,11 @@ public class EvaluationService implements IEvaluationService {
 		}
 	}
 
-	protected void CreateAndAddPlanAction(Eae eae, String objectif,
-			String mesure, EaeTypeObjectifEnum typeObjectif) {
+	protected void CreateAndAddPlanAction(Eae eae, String objectif, String mesure, EaeTypeObjectifEnum typeObjectif) {
 		EaePlanAction pa = new EaePlanAction();
 		pa.setObjectif(objectif);
 		pa.setMesure(mesure);
-		pa.setTypeObjectif(typeObjectifService
-				.getTypeObjectifForLibelle(typeObjectif.name()));
+		pa.setTypeObjectif(typeObjectifService.getTypeObjectifForLibelle(typeObjectif.name()));
 		pa.setEae(eae);
 		eae.getEaePlanActions().add(pa);
 	}
@@ -456,15 +419,14 @@ public class EvaluationService implements IEvaluationService {
 		if (eae == null)
 			return null;
 
-		List<Spbhor> listOfPartialTimes = sirhEntityManager.createNamedQuery(
-				"Spbhor.whereCdTauxNotZero", Spbhor.class).getResultList();
+		List<Spbhor> listOfPartialTimes = sirhEntityManager.createNamedQuery("Spbhor.whereCdTauxNotZero", Spbhor.class)
+				.getResultList();
 
 		return new EaeEvolutionDto(eae, listOfPartialTimes);
 	}
 
 	@Override
-	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto)
-			throws EvaluationServiceException {
+	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto) throws EvaluationServiceException {
 
 		EaeEvolution evolution = eae.getEaeEvolution();
 
@@ -475,24 +437,19 @@ public class EvaluationService implements IEvaluationService {
 		}
 
 		EaeDelaiEnum delai = null;
-		if (dto.getDelaiEnvisage() != null
-				&& dto.getDelaiEnvisage().getCourant() != null) {
+		if (dto.getDelaiEnvisage() != null && dto.getDelaiEnvisage().getCourant() != null) {
 			try {
-				delai = EaeDelaiEnum.valueOf(dto.getDelaiEnvisage()
-						.getCourant());
+				delai = EaeDelaiEnum.valueOf(dto.getDelaiEnvisage().getCourant());
 			} catch (IllegalArgumentException ex) {
-				throw new EvaluationServiceException(
-						"La propriété 'delaiEnvisage' de l'évolution est incorrecte.");
+				throw new EvaluationServiceException("La propriété 'delaiEnvisage' de l'évolution est incorrecte.");
 			}
 		}
 		evolution.setDelaiEnvisage(delai);
 
 		Integer selectedId = null;
-		if (dto.getPourcentageTempsPartiel() != null
-				&& dto.getPourcentageTempsPartiel().getCourant() != null) {
+		if (dto.getPourcentageTempsPartiel() != null && dto.getPourcentageTempsPartiel().getCourant() != null) {
 			try {
-				selectedId = Integer.parseInt(dto.getPourcentageTempsPartiel()
-						.getCourant());
+				selectedId = Integer.parseInt(dto.getPourcentageTempsPartiel().getCourant());
 				if (Spbhor.findSpbhor(selectedId) == null)
 					throw new EvaluationServiceException(
 							"La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");
@@ -523,33 +480,26 @@ public class EvaluationService implements IEvaluationService {
 		evolution.setLibelleAutrePerspective(dto.getLibelleAutrePerspective());
 
 		// Commentaires
-		evolution.setCommentaireEvolution(updateEaeCommentaire(
-				evolution.getCommentaireEvolution(),
+		evolution.setCommentaireEvolution(updateEaeCommentaire(evolution.getCommentaireEvolution(),
 				dto.getCommentaireEvolution()));
-		evolution.setCommentaireEvaluateur(updateEaeCommentaire(
-				evolution.getCommentaireEvaluateur(),
+		evolution.setCommentaireEvaluateur(updateEaeCommentaire(evolution.getCommentaireEvaluateur(),
 				dto.getCommentaireEvaluateur()));
-		evolution.setCommentaireEvalue(updateEaeCommentaire(
-				evolution.getCommentaireEvalue(), dto.getCommentaireEvalue()));
+		evolution.setCommentaireEvalue(updateEaeCommentaire(evolution.getCommentaireEvalue(),
+				dto.getCommentaireEvalue()));
 
 		// List of EvolutionSouhaits
 		List<EaeEvolutionSouhait> listAllEvolutionSouhaits = new ArrayList<EaeEvolutionSouhait>(
 				evolution.getEaeEvolutionSouhaits());
 
 		for (EaeEvolutionSouhait evolSouhait : dto.getSouhaitsSuggestions()) {
-			if (evolSouhait.getIdEaeEvolutionSouhait() == null
-					|| evolSouhait.getIdEaeEvolutionSouhait().equals(0)) {
+			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait().equals(0)) {
 				evolution.getEaeEvolutionSouhaits().add(evolSouhait);
 				evolSouhait.setEaeEvolution(evolution);
 			} else {
-				for (EaeEvolutionSouhait existingEvolSouhait : evolution
-						.getEaeEvolutionSouhaits()) {
-					if (existingEvolSouhait.getIdEaeEvolutionSouhait().equals(
-							evolSouhait.getIdEaeEvolutionSouhait())) {
-						existingEvolSouhait
-								.setSouhait(evolSouhait.getSouhait());
-						existingEvolSouhait.setSuggestion(evolSouhait
-								.getSuggestion());
+				for (EaeEvolutionSouhait existingEvolSouhait : evolution.getEaeEvolutionSouhaits()) {
+					if (existingEvolSouhait.getIdEaeEvolutionSouhait().equals(evolSouhait.getIdEaeEvolutionSouhait())) {
+						existingEvolSouhait.setSouhait(evolSouhait.getSouhait());
+						existingEvolSouhait.setSuggestion(evolSouhait.getSuggestion());
 						listAllEvolutionSouhaits.remove(existingEvolSouhait);
 					}
 				}
@@ -562,22 +512,20 @@ public class EvaluationService implements IEvaluationService {
 		}
 
 		// List of Developpements
-		List<EaeDeveloppement> listAllDeveloppements = new ArrayList<EaeDeveloppement>(
-				evolution.getEaeDeveloppements());
+		List<EaeDeveloppement> listAllDeveloppements = new ArrayList<EaeDeveloppement>(evolution.getEaeDeveloppements());
 
-		updateEaeDeveloppements(evolution, dto.getDeveloppementConnaissances(),
-				EaeTypeDeveloppementEnum.CONNAISSANCE, listAllDeveloppements);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementCompetences(),
-				EaeTypeDeveloppementEnum.COMPETENCE, listAllDeveloppements);
-		updateEaeDeveloppements(evolution,
-				dto.getDeveloppementExamensConcours(),
-				EaeTypeDeveloppementEnum.CONCOURS, listAllDeveloppements);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementPersonnel(),
-				EaeTypeDeveloppementEnum.PERSONNEL, listAllDeveloppements);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementComportement(),
-				EaeTypeDeveloppementEnum.COMPORTEMENT, listAllDeveloppements);
-		updateEaeDeveloppements(evolution, dto.getDeveloppementFormateur(),
-				EaeTypeDeveloppementEnum.FORMATEUR, listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementConnaissances(), EaeTypeDeveloppementEnum.CONNAISSANCE,
+				listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementCompetences(), EaeTypeDeveloppementEnum.COMPETENCE,
+				listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementExamensConcours(), EaeTypeDeveloppementEnum.CONCOURS,
+				listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementPersonnel(), EaeTypeDeveloppementEnum.PERSONNEL,
+				listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementComportement(), EaeTypeDeveloppementEnum.COMPORTEMENT,
+				listAllDeveloppements);
+		updateEaeDeveloppements(evolution, dto.getDeveloppementFormateur(), EaeTypeDeveloppementEnum.FORMATEUR,
+				listAllDeveloppements);
 
 		for (EaeDeveloppement dev : listAllDeveloppements) {
 			evolution.getEaeDeveloppements().remove(dev);
@@ -591,22 +539,17 @@ public class EvaluationService implements IEvaluationService {
 		}
 	}
 
-	protected void updateEaeDeveloppements(EaeEvolution evolution,
-			List<EaeDeveloppement> dtoDeveloppements,
-			EaeTypeDeveloppementEnum typeDeveloppement,
-			List<EaeDeveloppement> listAllDeveloppements) {
+	protected void updateEaeDeveloppements(EaeEvolution evolution, List<EaeDeveloppement> dtoDeveloppements,
+			EaeTypeDeveloppementEnum typeDeveloppement, List<EaeDeveloppement> listAllDeveloppements) {
 
 		for (EaeDeveloppement dev : dtoDeveloppements) {
-			if (dev.getIdEaeDeveloppement() == null
-					|| dev.getIdEaeDeveloppement().equals(0)) {
+			if (dev.getIdEaeDeveloppement() == null || dev.getIdEaeDeveloppement().equals(0)) {
 				dev.setEaeEvolution(evolution);
 				dev.setTypeDeveloppement(typeDeveloppement);
 				evolution.getEaeDeveloppements().add(dev);
 			} else {
-				for (EaeDeveloppement existingDev : evolution
-						.getEaeDeveloppements()) {
-					if (existingDev.getIdEaeDeveloppement().equals(
-							dev.getIdEaeDeveloppement())) {
+				for (EaeDeveloppement existingDev : evolution.getEaeDeveloppements()) {
+					if (existingDev.getIdEaeDeveloppement().equals(dev.getIdEaeDeveloppement())) {
 						existingDev.setLibelle(dev.getLibelle());
 						existingDev.setEcheance(dev.getEcheance());
 						existingDev.setPriorisation(dev.getPriorisation());
@@ -617,8 +560,7 @@ public class EvaluationService implements IEvaluationService {
 		}
 	}
 
-	protected EaeCommentaire updateEaeCommentaire(
-			EaeCommentaire oldCommentaire, EaeCommentaire newCommentaire) {
+	protected EaeCommentaire updateEaeCommentaire(EaeCommentaire oldCommentaire, EaeCommentaire newCommentaire) {
 
 		if (newCommentaire == null)
 			return null;
