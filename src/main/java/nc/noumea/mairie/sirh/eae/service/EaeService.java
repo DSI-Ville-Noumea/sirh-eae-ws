@@ -123,6 +123,7 @@ public class EaeService implements IEaeService {
 		// of this year's EAE
 		for (EaePlanAction pa : previousEae.getEaePlanActions()) {
 			EaeResultat res = new EaeResultat();
+			res.setEae(eaeToInitialize);
 			res.setObjectif(pa.getObjectif());
 			res.setTypeObjectif(pa.getTypeObjectif());
 			eaeToInitialize.getEaeResultats().add(res);
