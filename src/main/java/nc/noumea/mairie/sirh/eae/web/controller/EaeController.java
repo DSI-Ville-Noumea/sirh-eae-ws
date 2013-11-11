@@ -84,6 +84,8 @@ public class EaeController {
 
 		Integer convertedIdAgentEvalue = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idEvalue);
 
+		Integer convertedIdAgentEvaluateur = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
+
 		List<Eae> agentEaes = eaeService.findCurrentAndPreviousEaesByAgentId(convertedIdAgentEvalue);
 
 		if (agentEaes.isEmpty())
@@ -94,7 +96,7 @@ public class EaeController {
 		if (agentEaes.size() > 1)
 			previousEae = agentEaes.get(1);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(lastEae.getIdEae(), idAgent);
+		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(lastEae.getIdEae(), convertedIdAgentEvaluateur);
 
 		if (response != null)
 			return response;
