@@ -26,7 +26,6 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
-import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
@@ -269,28 +268,6 @@ public class EvaluationService implements IEvaluationService {
 				throw new EvaluationServiceException(
 						"La propriété 'propositionAvancement' de l'évaluation est incorrecte.");
 			}
-		}
-
-		// si l'eae precedent était dejà à MINI alors on ne peut pas
-		if (selectedAvancement != null && selectedAvancement.name().equals(EaeAvancementEnum.MINI.name())) {
-			// on cherche l'EAE précédent
-			// Retrieve campagne en cours
-			try {
-				CampagneEaeDto campagneEnCours = sirhWSConsumer.getCampagneEnCours();
-
-				Eae eaePrecedent = eaeService.findEaeByAgentAndYear(eae.getEaeEvalue().getIdAgent(),
-						String.valueOf((campagneEnCours.getAnnee() - 1)));
-				if (eaePrecedent != null && eaePrecedent.getEaeEvaluation() != null) {
-					EaeEvaluation evaluationPrec = eaePrecedent.getEaeEvaluation();
-					if (evaluationPrec.getPropositionAvancement().name().equals(EaeAvancementEnum.MINI.name())) {
-						throw new EvaluationServiceException(
-								"La propriété 'propositionAvancement' de l'évaluation ne peut être 'durée minimale' sur deux années consécutives.");
-					}
-				}
-			} catch (SirhWSConsumerException e) {
-
-			}
-			// TODO
 		}
 
 		evaluation.setPropositionAvancement(selectedAvancement);
