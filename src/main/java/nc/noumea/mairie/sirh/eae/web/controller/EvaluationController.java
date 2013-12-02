@@ -17,6 +17,8 @@ import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/evaluation")
 public class EvaluationController {
 
+	private Logger logger = LoggerFactory.getLogger(EvaluationController.class);
+
 	@Autowired
 	private MessageSource messageSource;
 
@@ -48,7 +52,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> getEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+	public ResponseEntity<String> getEaeIdentifitcation(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent) {
+
+		logger.debug(
+				"entered GET [evaluation/eaeIdentification] => getEaeIdentifitcation with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
@@ -67,8 +76,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestBody String eaeIdentificationDtoJson) {
+	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String eaeIdentificationDtoJson) {
+
+		logger.debug(
+				"entered POST [evaluation/eaeIdentification] => setEaeIdentifitcation with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -95,7 +108,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeFichePoste", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> getEaeFichePoste(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+	public ResponseEntity<String> getEaeFichePoste(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent) {
+
+		logger.debug(
+				"entered GET [evaluation/eaeFichePoste] => getEaeFichePoste with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
@@ -116,6 +134,10 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
+		logger.debug(
+				"entered GET [evaluation/eaeResultats] => getEaeResultats with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
+
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
 		if (response != null)
@@ -133,8 +155,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeResultats", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestBody String eaeResultatsDtoJson) {
+	public ResponseEntity<String> setEaeResultats(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String eaeResultatsDtoJson) {
+
+		logger.debug(
+				"entered POST [evaluation/eaeResultats] => setEaeResultats with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -161,8 +187,13 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeAppreciations", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> getEaeAppreciations(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestParam(value = "annee", required = false) String annee) {
+	public ResponseEntity<String> getEaeAppreciations(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestParam(value = "annee", required = false) String annee) {
+
+		logger.debug(
+				"entered GET [evaluation/eaeAppreciations] => getEaeAppreciations with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
+
 		// si l'année est renseignée, alors il faut trouver l'EAE de l'annee
 		// precedente de la personne
 		Eae eae = null;
@@ -199,8 +230,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeAppreciations", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeAppreciations(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestBody String eaeAppreciationsDtoJson) {
+	public ResponseEntity<String> setEaeAppreciations(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAppreciationsDtoJson) {
+
+		logger.debug(
+				"entered POST [evaluation/eaeAppreciations] => setEaeAppreciations with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -224,7 +259,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> getEaeEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+	public ResponseEntity<String> getEaeEvaluation(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent) {
+
+		logger.debug(
+				"entered GET [evaluation/eaeEvaluation] => getEaeEvaluation with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
@@ -243,8 +283,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestBody String eaeEvaluationDtoJson) {
+	public ResponseEntity<String> setEaeEvaluation(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvaluationDtoJson) {
+
+		logger.debug(
+				"entered POST [evaluation/eaeEvaluation] => setEaeEvaluation with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -272,7 +316,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> getEaeAutoEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+	public ResponseEntity<String> getEaeAutoEvaluation(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent) {
+
+		logger.debug(
+				"entered GET [evaluation/eaeAutoEvaluation] => getEaeAutoEvaluation with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
@@ -291,8 +340,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeAutoEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestBody String eaeAutoEvaluationDtoJson) {
+	public ResponseEntity<String> setEaeAutoEvaluation(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAutoEvaluationDtoJson) {
+
+		logger.debug(
+				"entered POST [evaluation/eaeAutoEvaluation] => setEaeAutoEvaluation with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -317,7 +370,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> getEaePlanAction(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+	public ResponseEntity<String> getEaePlanAction(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent) {
+
+		logger.debug(
+				"entered GET [evaluation/eaePlanAction] => getEaePlanAction with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
@@ -336,8 +394,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaePlanAction(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestBody String eaePlanActionDtoJson) {
+	public ResponseEntity<String> setEaePlanAction(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String eaePlanActionDtoJson) {
+
+		logger.debug(
+				"entered POST [evaluation/eaePlanAction] => setEaePlanAction with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -364,6 +426,10 @@ public class EvaluationController {
 	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
+		logger.debug(
+				"entered GET [evaluation/eaeEvolution] => getEaeEvolution with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
+
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
 		if (response != null)
@@ -381,8 +447,12 @@ public class EvaluationController {
 	@ResponseBody
 	@RequestMapping(value = "eaeEvolution", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> setEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
-			@RequestBody String eaeEvolutionDtoJson) {
+	public ResponseEntity<String> setEaeEvolution(@RequestParam("idEae") int idEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvolutionDtoJson) {
+
+		logger.debug(
+				"entered POST [evaluation/eaeEvolution] => setEaeEvolution with parameter idAgent = {} , idEae = {}",
+				idAgent, idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 

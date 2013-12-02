@@ -21,28 +21,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class EaeReportingController {
 
 	private Logger logger = LoggerFactory.getLogger(EaeReportingController.class);
-	
+
 	@Autowired
 	private IEaeReportingService eaeReportingService;
-	
+
 	@ResponseBody
 	@RequestMapping(value = "eae", produces = "application/pdf", method = RequestMethod.GET)
-	public ResponseEntity<byte []> getEaeIdentifitcation(@RequestParam("idEae") int idEae) {
+	public ResponseEntity<byte[]> getEaeIdentifitcation(@RequestParam("idEae") int idEae) {
+
+		logger.debug("entered GET [reporting/eae] => getEaeIdentifitcation with parameter  idEae = {}", idEae);
 
 		Eae eae = Eae.findEae(idEae);
-		
+
 		if (eae == null)
-			return new ResponseEntity<byte []>(HttpStatus.NOT_FOUND);
-		
+			return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+
 		byte[] responseData = null;
-		
+
 		try {
 			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, EaeReportFormatEnum.PDF);
 		} catch (EaeReportingServiceException e) {
 			logger.error(e.getMessage(), e);
-			return new ResponseEntity<byte []>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		return new ResponseEntity<byte []>(responseData, HttpStatus.OK);
+
+		return new ResponseEntity<byte[]>(responseData, HttpStatus.OK);
 	}
 }

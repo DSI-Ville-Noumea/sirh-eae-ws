@@ -23,30 +23,30 @@ public class MockController {
 	@RequestMapping("listAgents")
 	@Transactional
 	public ResponseEntity<String> listAgents(@RequestParam("param") String param) {
-		
+
 		if (!param.equalsIgnoreCase("please"))
 			return new ResponseEntity<String>(HttpStatus.METHOD_NOT_ALLOWED);
-		
+
 		List<Agent> agents = Agent.findAgentEntries(0, 50);
-		
+
 		return new ResponseEntity<String>(Agent.toJsonArray(agents), HttpStatus.OK);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping(value = "uploadAgents", method = RequestMethod.POST, headers = "Accept=application/json")
 	@Transactional(value = "sirhTransactionManager")
 	public ResponseEntity<String> uploadAgents(@RequestParam("param") String param, @RequestBody String listOfAgentsJson) {
-		
+
 		if (!param.equalsIgnoreCase("please"))
 			return new ResponseEntity<String>(HttpStatus.METHOD_NOT_ALLOWED);
-		
+
 		Collection<Agent> list = Agent.fromJsonArrayToAgents(listOfAgentsJson);
-		
-		for(Agent a : list) {
+
+		for (Agent a : list) {
 			a.persist();
 			a.flush();
 		}
-		
+
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }
