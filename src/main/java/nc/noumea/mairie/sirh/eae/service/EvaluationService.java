@@ -176,7 +176,7 @@ public class EvaluationService implements IEvaluationService {
 				existingResultat.setObjectif(resultat.getObjectif());
 				existingResultat.setResultat(resultat.getResultat());
 
-				resultat.setCommentaire(updateEaeCommentaire(existingResultat.getCommentaire(),
+				existingResultat.setCommentaire(updateEaeCommentaire(existingResultat.getCommentaire(),
 						(resultat.getCommentaire())));
 				return existingResultat;
 			}
