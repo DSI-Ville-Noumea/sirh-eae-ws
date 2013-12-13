@@ -28,7 +28,7 @@
 		<site>
 			<id>sirheaews.website.prod</id>
 			<name>SIRH EAE Website Prod</name>
-			<url>file:\\cristal\dsi$\DSI\PROJETS\1 - EN COURS\2 - Métiers\SIRH\3-Techniques\Documentation_Agile\SIRH-EAE-WS\</url>
+			<url>file:\\cristal\dsi$\DSI\PROJETS\doxia\SIRH-EAE-WS\</url>
 		</site>
 	</distributionManagement>
 	<repositories>
