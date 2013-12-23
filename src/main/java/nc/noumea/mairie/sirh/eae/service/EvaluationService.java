@@ -85,7 +85,8 @@ public class EvaluationService implements IEvaluationService {
 		eae.setDateEntretien(dto.getDateEntretien());
 		eae.getEaeEvalue().setDateEntreeAdministration(dto.getSituation().getDateEntreeAdministration());
 		eae.getEaeEvalue().setDateEntreeFonctionnaire(dto.getSituation().getDateEntreeFonctionnaire());
-		eae.getPrimaryFichePoste().setDateEntreeFonction(dto.getSituation().getDateEntreeFonction());
+		if (eae.getPrimaryFichePoste() != null)
+			eae.getPrimaryFichePoste().setDateEntreeFonction(dto.getSituation().getDateEntreeFonction());
 
 		for (EaeEvaluateur evaluateur : eae.getEaeEvaluateurs()) {
 			for (EaeEvaluateur evalDto : dto.getEvaluateurs()) {
