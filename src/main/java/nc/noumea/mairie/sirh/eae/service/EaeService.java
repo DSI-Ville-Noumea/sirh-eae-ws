@@ -179,7 +179,7 @@ public class EaeService implements IEaeService {
 	public void setDelegataire(Eae eae, int idAgentDelegataire)
 			throws EaeServiceException {
 
-		Agent agentDelegataire = Agent.findAgent(idAgentDelegataire);
+		Agent agentDelegataire = eaeEntityManager.find(Agent.class, idAgentDelegataire);		
 
 		if (agentDelegataire == null)
 			throw new EaeServiceException(

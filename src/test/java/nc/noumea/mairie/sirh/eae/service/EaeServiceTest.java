@@ -49,7 +49,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
-import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -106,7 +105,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentsFilledIn() throws SirhWSConsumerException {
+	public void testlistEaesByAgentId_When1EaeForAgent_returnListOf1EaeWithAgentsFilledIn()
+			throws SirhWSConsumerException {
 
 		// Given
 		List<Integer> eaeIds = new ArrayList<Integer>(Arrays.asList(98));
@@ -149,7 +149,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testlistEaesByAgentId_When2EaesForAgent_returnListOf2EaeWithAgentsFilledIn() throws SirhWSConsumerException {
+	public void testlistEaesByAgentId_When2EaesForAgent_returnListOf2EaeWithAgentsFilledIn()
+			throws SirhWSConsumerException {
 
 		// Given
 		List<Integer> agentIds = Arrays.asList(1, 2);
@@ -197,7 +198,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testlistEaesByAgentId_When2DuplicatedEaesForAgent_returnListOf1EaeWithAgentsFilledIn() throws SirhWSConsumerException {
+	public void testlistEaesByAgentId_When2DuplicatedEaesForAgent_returnListOf1EaeWithAgentsFilledIn()
+			throws SirhWSConsumerException {
 
 		// Given
 		List<Integer> agentIds = Arrays.asList(1, 2);
@@ -277,7 +279,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testInitilizeEae_1PreviousEae_createEaeResultatFromPreviousPlanActionAndCopyNotes() throws EaeServiceException {
+	public void testInitilizeEae_1PreviousEae_createEaeResultatFromPreviousPlanActionAndCopyNotes()
+			throws EaeServiceException {
 		// Given
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
@@ -320,11 +323,15 @@ public class EaeServiceTest {
 		List<EaeResultat> resultats = new ArrayList<EaeResultat>();
 		resultats.addAll(eaeToInit.getEaeResultats());
 
-		assertTrue(resultats.get(0).getObjectif() == p1.getObjectif() || resultats.get(0).getObjectif() == p2.getObjectif());
-		assertTrue(resultats.get(0).getTypeObjectif() == p1.getTypeObjectif() || resultats.get(0).getTypeObjectif() == p2.getTypeObjectif());
+		assertTrue(resultats.get(0).getObjectif() == p1.getObjectif()
+				|| resultats.get(0).getObjectif() == p2.getObjectif());
+		assertTrue(resultats.get(0).getTypeObjectif() == p1.getTypeObjectif()
+				|| resultats.get(0).getTypeObjectif() == p2.getTypeObjectif());
 
-		assertTrue(resultats.get(1).getObjectif() == p1.getObjectif() || resultats.get(1).getObjectif() == p2.getObjectif());
-		assertTrue(resultats.get(1).getTypeObjectif() == p1.getTypeObjectif() || resultats.get(1).getTypeObjectif() == p2.getTypeObjectif());
+		assertTrue(resultats.get(1).getObjectif() == p1.getObjectif()
+				|| resultats.get(1).getObjectif() == p2.getObjectif());
+		assertTrue(resultats.get(1).getTypeObjectif() == p1.getTypeObjectif()
+				|| resultats.get(1).getTypeObjectif() == p2.getTypeObjectif());
 	}
 
 	@Test
@@ -363,8 +370,10 @@ public class EaeServiceTest {
 		when(queryMock.getResultList()).thenReturn(eaeFound);
 
 		EntityManager entManagerMock = mock(EntityManager.class);
-		when(entManagerMock.createQuery("select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.dateCreation desc", Eae.class))
-				.thenReturn(queryMock);
+		when(
+				entManagerMock.createQuery(
+						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.dateCreation desc",
+						Eae.class)).thenReturn(queryMock);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
@@ -393,8 +402,10 @@ public class EaeServiceTest {
 		when(queryMock.getResultList()).thenReturn(eaeFound);
 
 		EntityManager entManagerMock = mock(EntityManager.class);
-		when(entManagerMock.createQuery("select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.dateCreation desc", Eae.class))
-				.thenReturn(queryMock);
+		when(
+				entManagerMock.createQuery(
+						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.dateCreation desc",
+						Eae.class)).thenReturn(queryMock);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
@@ -421,7 +432,8 @@ public class EaeServiceTest {
 			service.startEae(eaeToStart);
 		} catch (EaeServiceException ex) {
 			// Then
-			assertEquals("Impossible de démarrer l'EAE id '987': le statut de cet Eae est 'Non débuté'.", ex.getMessage());
+			assertEquals("Impossible de démarrer l'EAE id '987': le statut de cet Eae est 'Non débuté'.",
+					ex.getMessage());
 		}
 	}
 
@@ -477,7 +489,8 @@ public class EaeServiceTest {
 			service.resetEaeEvaluateur(eaeToDelete);
 		} catch (EaeServiceException ex) {
 			// Then
-			assertEquals("Impossible de réinitialiser l'EAE id '987': le statut de cet Eae est 'Finalisé'.", ex.getMessage());
+			assertEquals("Impossible de réinitialiser l'EAE id '987': le statut de cet Eae est 'Finalisé'.",
+					ex.getMessage());
 		}
 
 		assertEquals(eval, eaeToDelete.getEaeEvaluateurs().iterator().next());
@@ -578,7 +591,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testResetEaeEvaluateur_eaeIsEC_AgentShdIsNull_setEtatToNDAndResetEvaluateursToNull() throws EaeServiceException {
+	public void testResetEaeEvaluateur_eaeIsEC_AgentShdIsNull_setEtatToNDAndResetEvaluateursToNull()
+			throws EaeServiceException {
 
 		// Given
 		Eae eaeToDelete = spy(new Eae());
@@ -618,11 +632,11 @@ public class EaeServiceTest {
 		agentToReturn.setIdAgent(idAgentDelegataire);
 		agentToReturn.setNomPatronymique("Bilbo");
 
-		Agent.findAgent(idAgentDelegataire);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		EntityManager emMock = Mockito.mock(EntityManager.class);
+		Mockito.when(emMock.find(Agent.class, idAgentDelegataire)).thenReturn(agentToReturn);
 
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
 
 		// When
 		service.setDelegataire(eae, idAgentDelegataire);
@@ -641,18 +655,19 @@ public class EaeServiceTest {
 		// Mock the agent find static method to return our null agent
 		Agent agentToReturn = null;
 
-		Agent.findAgent(idAgentDelegataire);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+		EntityManager emMock = Mockito.mock(EntityManager.class);
+		Mockito.when(emMock.find(Agent.class, idAgentDelegataire)).thenReturn(agentToReturn);
 
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
 
 		try {
 			// When
 			service.setDelegataire(eae, idAgentDelegataire);
 		} catch (EaeServiceException ex) {
 			// Then
-			assertEquals("Impossible d'affecter l'agent '1789' en tant que délégataire: cet Agent n'existe pas.", ex.getMessage());
+			assertEquals("Impossible d'affecter l'agent '1789' en tant que délégataire: cet Agent n'existe pas.",
+					ex.getMessage());
 			assertEquals(new Integer(123), eae.getIdAgentDelegataire());
 		}
 
@@ -758,7 +773,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testGetEaesDashboard_1EaeWith2Evaluateurs_ReturnDtoListOf2WithDuplicatedEae() throws SirhWSConsumerException {
+	public void testGetEaesDashboard_1EaeWith2Evaluateurs_ReturnDtoListOf2WithDuplicatedEae()
+			throws SirhWSConsumerException {
 
 		// Given
 		Agent agent19 = new Agent();
@@ -816,7 +832,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testGetEaesDashboard_1EaeWithAgentAndOtherEvaluateur_ReturnDtoListOf1WithoutDuplicatedEae() throws SirhWSConsumerException {
+	public void testGetEaesDashboard_1EaeWithAgentAndOtherEvaluateur_ReturnDtoListOf1WithoutDuplicatedEae()
+			throws SirhWSConsumerException {
 
 		// Given
 		Agent agent98 = new Agent();
@@ -871,7 +888,8 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testGetEaesDashboard_3EaesForAgentId1EvaluateurAnd2WithoutEvaluateur_ReturnDtoListOf2() throws SirhWSConsumerException {
+	public void testGetEaesDashboard_3EaesForAgentId1EvaluateurAnd2WithoutEvaluateur_ReturnDtoListOf2()
+			throws SirhWSConsumerException {
 
 		// Given
 		Agent agent19 = new Agent();
@@ -1006,7 +1024,8 @@ public class EaeServiceTest {
 		when(agentServiceMock.getAgent(shd2.getIdAgent())).thenReturn(shd2);
 
 		ISirhWsConsumer sirhMock = Mockito.mock(ISirhWsConsumer.class);
-		when(sirhMock.getListOfShdAgentsForAgentId(9005138)).thenReturn(Arrays.asList(shd1.getIdAgent(), shd2.getIdAgent()));
+		when(sirhMock.getListOfShdAgentsForAgentId(9005138)).thenReturn(
+				Arrays.asList(shd1.getIdAgent(), shd2.getIdAgent()));
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
@@ -1126,8 +1145,9 @@ public class EaeServiceTest {
 		dto.setVersionDocument("10.1");
 
 		MessageSource mSource = Mockito.mock(MessageSource.class);
-		when(mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class), Mockito.any(Locale.class))).thenReturn(
-				"Impossible de finaliser l'Eae car son état est 'Créé'");
+		when(
+				mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class),
+						Mockito.any(Locale.class))).thenReturn("Impossible de finaliser l'Eae car son état est 'Créé'");
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "messageSource", mSource);
@@ -1152,8 +1172,9 @@ public class EaeServiceTest {
 		eae.setEtat(EaeEtatEnum.C);
 
 		MessageSource mSource = Mockito.mock(MessageSource.class);
-		when(mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class), Mockito.any(Locale.class))).thenReturn(
-				"Impossible de finaliser l'Eae car son état est 'Créé'");
+		when(
+				mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class),
+						Mockito.any(Locale.class))).thenReturn("Impossible de finaliser l'Eae car son état est 'Créé'");
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "messageSource", mSource);
