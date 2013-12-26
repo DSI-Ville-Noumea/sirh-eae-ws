@@ -124,4 +124,6 @@ public interface IEaeService {
 	EaeEvalueNameDto getEvalueName(Eae eae);
 
 	Eae findEaeByAgentAndYear(int idAgent, String annee);
+
+	Eae findEae(int idEae);
 }
