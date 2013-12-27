@@ -128,15 +128,13 @@ public class AgentServiceTest {
 		agentDelegataireToReturn.setIdAgent(idAgentDelegataire);
 		agentDelegataireToReturn.setNomPatronymique("yet another person");
 
-		Agent.findAgent(eaeToReturn.getIdAgentDelegataire());
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(agentDelegataireToReturn);
-
-		AnnotationDrivenStaticEntityMockingControl.playback();
 
 		// Set the mock as the entityManager of the service class
 		EntityManager emMock = Mockito.mock(EntityManager.class);
 		Mockito.when(emMock.find(Agent.class, fdp.getIdAgentShd())).thenReturn(agentShdToReturn);
 		Mockito.when(emMock.find(Agent.class, idAgent)).thenReturn(agentToReturn);
+		Mockito.when(emMock.find(Agent.class, eaeToReturn.getIdAgentDelegataire()))
+				.thenReturn(agentDelegataireToReturn);
 
 		AgentService service = new AgentService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
