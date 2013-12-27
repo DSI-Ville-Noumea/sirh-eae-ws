@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -1161,18 +1162,19 @@ public class EvaluationServiceTest {
 
 		ValueWithListDto tempsPartiel = new ValueWithListDto();
 		tempsPartiel.setCourant("1");
-		dto.setPourcentageTempsPartiel(tempsPartiel);
-
-		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
-
-		EvaluationService service = new EvaluationService();
-		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		dto.setPourcentageTempsPartiel(tempsPartiel);		
 
 		Spbhor t = new Spbhor();
 		t.setCdThor(1);
-		Spbhor.findSpbhor(1);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(t);
-		AnnotationDrivenStaticEntityMockingControl.playback();
+
+		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+
+		EntityManager sirhManagerMock = mock(EntityManager.class);
+		when(sirhManagerMock.find(Spbhor.class, 1)).thenReturn(t);
+
+		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		ReflectionTestUtils.setField(service, "sirhEntityManager", sirhManagerMock);
 
 		// When
 		service.setEaeEvolution(eae, dto);

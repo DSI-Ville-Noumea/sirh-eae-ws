@@ -428,7 +428,8 @@ public class EvaluationService implements IEvaluationService {
 		if (dto.getPourcentageTempsPartiel() != null && dto.getPourcentageTempsPartiel().getCourant() != null) {
 			try {
 				selectedId = Integer.parseInt(dto.getPourcentageTempsPartiel().getCourant());
-				if (Spbhor.findSpbhor(selectedId) == null)
+
+				if (sirhEntityManager.find(Spbhor.class, selectedId) == null)
 					throw new EvaluationServiceException(
 							"La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");
 			} catch (NumberFormatException ex) {
