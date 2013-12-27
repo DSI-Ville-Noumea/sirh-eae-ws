@@ -119,14 +119,11 @@ public class EvaluationControllerTest {
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = new Eae();
 
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
-
 		String json = "{}";
 
 		IEvaluationService evaluationServiceMock = Mockito.mock(IEvaluationService.class);
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		Mockito.when(eaeServiceMock.findEae(789)).thenReturn(eaeToReturn);
 
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
@@ -291,14 +288,11 @@ public class EvaluationControllerTest {
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = new Eae();
 
-		Eae.findEae(789);
-		AnnotationDrivenStaticEntityMockingControl.expectReturn(eaeToReturn);
-		AnnotationDrivenStaticEntityMockingControl.playback();
-
 		String json = "{}";
 
 		IEvaluationService evaluationServiceMock = Mockito.mock(IEvaluationService.class);
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+		Mockito.when(eaeServiceMock.findEae(789)).thenReturn(eaeToReturn);
 
 		EvaluationController controller = new EvaluationController();
 		ReflectionTestUtils.setField(controller, "evaluationService", evaluationServiceMock);
