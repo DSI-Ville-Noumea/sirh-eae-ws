@@ -15,7 +15,6 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 

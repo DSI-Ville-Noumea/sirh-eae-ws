@@ -5,6 +5,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
+import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.eae.service.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 
@@ -29,6 +30,9 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	private IEaeService eaeService;
 	
 	@Override
 	public boolean isAgentAuthorizedToViewEae(int idAgent, Eae eae) throws SirhWSConsumerException {
@@ -74,7 +78,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	@Override
 	public ResponseEntity<String> checkEaeAndReadRight(int idEae, int idAgent) {
 		
-		Eae eae = Eae.findEae(idEae);
+		Eae eae = eaeService.findEae(idEae);
 		
 		if (eae == null)
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
@@ -92,7 +96,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	@Override
 	public ResponseEntity<String> checkEaeAndWriteRight(int idEae, int idEvaluateur) {
 		
-		Eae eae = Eae.findEae(idEae);
+		Eae eae = eaeService.findEae(idEae);
 		
 		if (eae == null)
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
