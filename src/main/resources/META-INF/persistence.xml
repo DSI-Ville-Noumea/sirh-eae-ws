@@ -2,7 +2,7 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	
 	<persistence-unit name="eaePersistenceUnit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>nc.noumea.mairie.sirh.eae.domain.Eae</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluation</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur</class>
@@ -41,7 +41,7 @@
     </persistence-unit>
     
     <persistence-unit name="sirhPersistenceUnit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>nc.noumea.mairie.sirh.domain.Agent</class>
         <class>nc.noumea.mairie.mairie.domain.Spbhor</class>
       	<exclude-unlisted-classes>true</exclude-unlisted-classes>
