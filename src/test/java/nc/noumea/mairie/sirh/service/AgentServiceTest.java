@@ -37,7 +37,7 @@ public class AgentServiceTest {
 		Mockito.when(emMock.find(Agent.class, 998)).thenReturn(agentToReturn);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
 
 		// When
 		service.fillEaeEvaluateurWithAgent(eval);
@@ -62,7 +62,7 @@ public class AgentServiceTest {
 		Mockito.when(emMock.find(Agent.class, 998)).thenReturn(agentToReturn);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
 
 		// When
 		service.fillEaeFichePosteWithAgent(fdp);
@@ -87,7 +87,7 @@ public class AgentServiceTest {
 		Mockito.when(emMock.find(Agent.class, 995)).thenReturn(agentToReturn);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
 
 		// When
 		service.fillEaeEvalueWithAgent(evalue);
@@ -136,7 +136,7 @@ public class AgentServiceTest {
 				.thenReturn(agentDelegataireToReturn);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
 
 		// When
 		Eae result = service.fillEaeWithAgents(eaeToReturn);
@@ -177,7 +177,7 @@ public class AgentServiceTest {
 		Mockito.when(emMock.find(Agent.class, eval1.getIdAgent())).thenReturn(agentToReturn2);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
 
 		// When
 		Eae result = service.fillEaeWithAgents(eaeToReturn);
@@ -200,7 +200,7 @@ public class AgentServiceTest {
 		Mockito.when(emMock.find(Agent.class, 789)).thenReturn(agentToReturn);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
 
 		// When
 		Agent result = service.getAgent(789);

@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AgentService implements IAgentService {
 
-	@PersistenceContext(unitName = "eaePersistenceUnit")
-	private EntityManager eaeEntityManager;
+	@PersistenceContext(unitName = "sirhPersistenceUnit")
+	private EntityManager sirhEntityManager;
 
 	@Override
 	public Eae fillEaeWithAgents(Eae eaeToFill) {
@@ -66,6 +66,6 @@ public class AgentService implements IAgentService {
 
 	@Override
 	public Agent getAgent(Integer idAgent) {
-		return eaeEntityManager.find(Agent.class, idAgent);
+		return sirhEntityManager.find(Agent.class, idAgent);
 	}
 }
