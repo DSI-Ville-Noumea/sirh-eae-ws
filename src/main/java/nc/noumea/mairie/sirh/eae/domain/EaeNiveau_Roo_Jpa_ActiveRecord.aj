@@ -14,6 +14,8 @@ privileged aspect EaeNiveau_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeNiveau.entityManager;
     
+    public static final List<String> EaeNiveau.fieldNames4OrderClauseFilter = java.util.Arrays.asList("libelleNiveauEae");
+    
     public static final EntityManager EaeNiveau.entityManager() {
         EntityManager em = new EaeNiveau().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeNiveau_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeNiveau o", EaeNiveau.class).getResultList();
     }
     
+    public static List<EaeNiveau> EaeNiveau.findAllEaeNiveaus(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeNiveau o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeNiveau.class).getResultList();
+    }
+    
     public static EaeNiveau EaeNiveau.findEaeNiveau(Integer idEaeNiveau) {
         if (idEaeNiveau == null) return null;
         return entityManager().find(EaeNiveau.class, idEaeNiveau);
@@ -35,6 +48,17 @@ privileged aspect EaeNiveau_Roo_Jpa_ActiveRecord {
     
     public static List<EaeNiveau> EaeNiveau.findEaeNiveauEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeNiveau o", EaeNiveau.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeNiveau> EaeNiveau.findEaeNiveauEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeNiveau o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeNiveau.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

@@ -14,6 +14,8 @@ privileged aspect EaeEvaluateur_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeEvaluateur.entityManager;
     
+    public static final List<String> EaeEvaluateur.fieldNames4OrderClauseFilter = java.util.Arrays.asList("idAgent", "fonction", "dateEntreeService", "dateEntreeCollectivite", "dateEntreeFonction", "eae", "agent");
+    
     public static final EntityManager EaeEvaluateur.entityManager() {
         EntityManager em = new EaeEvaluateur().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeEvaluateur_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeEvaluateur o", EaeEvaluateur.class).getResultList();
     }
     
+    public static List<EaeEvaluateur> EaeEvaluateur.findAllEaeEvaluateurs(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeEvaluateur o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeEvaluateur.class).getResultList();
+    }
+    
     public static EaeEvaluateur EaeEvaluateur.findEaeEvaluateur(Integer idEaeEvaluateur) {
         if (idEaeEvaluateur == null) return null;
         return entityManager().find(EaeEvaluateur.class, idEaeEvaluateur);
@@ -35,6 +48,17 @@ privileged aspect EaeEvaluateur_Roo_Jpa_ActiveRecord {
     
     public static List<EaeEvaluateur> EaeEvaluateur.findEaeEvaluateurEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeEvaluateur o", EaeEvaluateur.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeEvaluateur> EaeEvaluateur.findEaeEvaluateurEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeEvaluateur o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeEvaluateur.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

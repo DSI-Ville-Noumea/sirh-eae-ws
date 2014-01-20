@@ -14,6 +14,8 @@ privileged aspect EaeTypeDeveloppement_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeTypeDeveloppement.entityManager;
     
+    public static final List<String> EaeTypeDeveloppement.fieldNames4OrderClauseFilter = java.util.Arrays.asList("libelle");
+    
     public static final EntityManager EaeTypeDeveloppement.entityManager() {
         EntityManager em = new EaeTypeDeveloppement().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeTypeDeveloppement_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeTypeDeveloppement o", EaeTypeDeveloppement.class).getResultList();
     }
     
+    public static List<EaeTypeDeveloppement> EaeTypeDeveloppement.findAllEaeTypeDeveloppements(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeTypeDeveloppement o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeTypeDeveloppement.class).getResultList();
+    }
+    
     public static EaeTypeDeveloppement EaeTypeDeveloppement.findEaeTypeDeveloppement(Integer idEaeTypeDeveloppement) {
         if (idEaeTypeDeveloppement == null) return null;
         return entityManager().find(EaeTypeDeveloppement.class, idEaeTypeDeveloppement);
@@ -35,6 +48,17 @@ privileged aspect EaeTypeDeveloppement_Roo_Jpa_ActiveRecord {
     
     public static List<EaeTypeDeveloppement> EaeTypeDeveloppement.findEaeTypeDeveloppementEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeTypeDeveloppement o", EaeTypeDeveloppement.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeTypeDeveloppement> EaeTypeDeveloppement.findEaeTypeDeveloppementEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeTypeDeveloppement o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeTypeDeveloppement.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

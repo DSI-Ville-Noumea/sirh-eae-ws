@@ -14,6 +14,8 @@ privileged aspect EaeFormation_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeFormation.entityManager;
     
+    public static final List<String> EaeFormation.fieldNames4OrderClauseFilter = java.util.Arrays.asList("anneeFormation", "dureeFormation", "libelleFormation", "eae");
+    
     public static final EntityManager EaeFormation.entityManager() {
         EntityManager em = new EaeFormation().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeFormation_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeFormation o", EaeFormation.class).getResultList();
     }
     
+    public static List<EaeFormation> EaeFormation.findAllEaeFormations(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeFormation o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeFormation.class).getResultList();
+    }
+    
     public static EaeFormation EaeFormation.findEaeFormation(Integer idEaeFormation) {
         if (idEaeFormation == null) return null;
         return entityManager().find(EaeFormation.class, idEaeFormation);
@@ -35,6 +48,17 @@ privileged aspect EaeFormation_Roo_Jpa_ActiveRecord {
     
     public static List<EaeFormation> EaeFormation.findEaeFormationEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeFormation o", EaeFormation.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeFormation> EaeFormation.findEaeFormationEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeFormation o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeFormation.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

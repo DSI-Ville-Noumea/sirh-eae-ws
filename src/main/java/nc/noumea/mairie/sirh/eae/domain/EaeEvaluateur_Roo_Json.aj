@@ -13,27 +13,33 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 privileged aspect EaeEvaluateur_Roo_Json {
     
     public String EaeEvaluateur.toJson() {
-        return new JSONSerializer().exclude("*.class").serialize(this);
+        return new JSONSerializer()
+        .exclude("*.class").serialize(this);
     }
     
     public String EaeEvaluateur.toJson(String[] fields) {
-        return new JSONSerializer().include(fields).exclude("*.class").serialize(this);
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(this);
     }
     
     public static EaeEvaluateur EaeEvaluateur.fromJsonToEaeEvaluateur(String json) {
-        return new JSONDeserializer<EaeEvaluateur>().use(null, EaeEvaluateur.class).deserialize(json);
+        return new JSONDeserializer<EaeEvaluateur>()
+        .use(null, EaeEvaluateur.class).deserialize(json);
     }
     
     public static String EaeEvaluateur.toJsonArray(Collection<EaeEvaluateur> collection) {
-        return new JSONSerializer().exclude("*.class").serialize(collection);
+        return new JSONSerializer()
+        .exclude("*.class").serialize(collection);
     }
     
     public static String EaeEvaluateur.toJsonArray(Collection<EaeEvaluateur> collection, String[] fields) {
-        return new JSONSerializer().include(fields).exclude("*.class").serialize(collection);
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(collection);
     }
     
     public static Collection<EaeEvaluateur> EaeEvaluateur.fromJsonArrayToEaeEvaluateurs(String json) {
-        return new JSONDeserializer<List<EaeEvaluateur>>().use(null, ArrayList.class).use("values", EaeEvaluateur.class).deserialize(json);
+        return new JSONDeserializer<List<EaeEvaluateur>>()
+        .use("values", EaeEvaluateur.class).deserialize(json);
     }
     
 }

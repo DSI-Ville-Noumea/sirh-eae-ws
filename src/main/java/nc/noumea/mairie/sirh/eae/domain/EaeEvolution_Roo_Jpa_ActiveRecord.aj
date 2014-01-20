@@ -14,6 +14,8 @@ privileged aspect EaeEvolution_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeEvolution.entityManager;
     
+    public static final List<String> EaeEvolution.fieldNames4OrderClauseFilter = java.util.Arrays.asList("mobiliteGeo", "mobiliteFonctionnelle", "changementMetier", "delaiEnvisage", "mobiliteService", "mobiliteDirection", "mobiliteCollectivite", "nomCollectivite", "mobiliteAutre", "concours", "nomConcours", "vae", "nomVae", "tempsPartiel", "tempsPartielIdSpbhor", "retraite", "dateRetraite", "autrePerspective", "libelleAutrePerspective", "commentaireEvolution", "commentaireEvaluateur", "commentaireEvalue", "eaeEvolutionSouhaits", "eaeDeveloppements", "eae");
+    
     public static final EntityManager EaeEvolution.entityManager() {
         EntityManager em = new EaeEvolution().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeEvolution_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeEvolution o", EaeEvolution.class).getResultList();
     }
     
+    public static List<EaeEvolution> EaeEvolution.findAllEaeEvolutions(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeEvolution o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeEvolution.class).getResultList();
+    }
+    
     public static EaeEvolution EaeEvolution.findEaeEvolution(Integer idEaeEvolution) {
         if (idEaeEvolution == null) return null;
         return entityManager().find(EaeEvolution.class, idEaeEvolution);
@@ -35,6 +48,17 @@ privileged aspect EaeEvolution_Roo_Jpa_ActiveRecord {
     
     public static List<EaeEvolution> EaeEvolution.findEaeEvolutionEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeEvolution o", EaeEvolution.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeEvolution> EaeEvolution.findEaeEvolutionEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeEvolution o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeEvolution.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

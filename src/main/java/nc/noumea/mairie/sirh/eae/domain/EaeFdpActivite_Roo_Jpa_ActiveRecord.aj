@@ -14,6 +14,8 @@ privileged aspect EaeFdpActivite_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeFdpActivite.entityManager;
     
+    public static final List<String> EaeFdpActivite.fieldNames4OrderClauseFilter = java.util.Arrays.asList("libelle", "eaeFichePoste");
+    
     public static final EntityManager EaeFdpActivite.entityManager() {
         EntityManager em = new EaeFdpActivite().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeFdpActivite_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeFdpActivite o", EaeFdpActivite.class).getResultList();
     }
     
+    public static List<EaeFdpActivite> EaeFdpActivite.findAllEaeFdpActivites(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeFdpActivite o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeFdpActivite.class).getResultList();
+    }
+    
     public static EaeFdpActivite EaeFdpActivite.findEaeFdpActivite(Integer idEaeFdpActivite) {
         if (idEaeFdpActivite == null) return null;
         return entityManager().find(EaeFdpActivite.class, idEaeFdpActivite);
@@ -35,6 +48,17 @@ privileged aspect EaeFdpActivite_Roo_Jpa_ActiveRecord {
     
     public static List<EaeFdpActivite> EaeFdpActivite.findEaeFdpActiviteEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeFdpActivite o", EaeFdpActivite.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeFdpActivite> EaeFdpActivite.findEaeFdpActiviteEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeFdpActivite o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeFdpActivite.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

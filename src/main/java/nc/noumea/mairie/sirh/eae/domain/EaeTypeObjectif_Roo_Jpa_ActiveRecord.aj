@@ -14,6 +14,8 @@ privileged aspect EaeTypeObjectif_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeTypeObjectif.entityManager;
     
+    public static final List<String> EaeTypeObjectif.fieldNames4OrderClauseFilter = java.util.Arrays.asList("libelle");
+    
     public static final EntityManager EaeTypeObjectif.entityManager() {
         EntityManager em = new EaeTypeObjectif().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeTypeObjectif_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeTypeObjectif o", EaeTypeObjectif.class).getResultList();
     }
     
+    public static List<EaeTypeObjectif> EaeTypeObjectif.findAllEaeTypeObjectifs(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeTypeObjectif o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeTypeObjectif.class).getResultList();
+    }
+    
     public static EaeTypeObjectif EaeTypeObjectif.findEaeTypeObjectif(Integer idEaeTypeObjectif) {
         if (idEaeTypeObjectif == null) return null;
         return entityManager().find(EaeTypeObjectif.class, idEaeTypeObjectif);
@@ -35,6 +48,17 @@ privileged aspect EaeTypeObjectif_Roo_Jpa_ActiveRecord {
     
     public static List<EaeTypeObjectif> EaeTypeObjectif.findEaeTypeObjectifEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeTypeObjectif o", EaeTypeObjectif.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeTypeObjectif> EaeTypeObjectif.findEaeTypeObjectifEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeTypeObjectif o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeTypeObjectif.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

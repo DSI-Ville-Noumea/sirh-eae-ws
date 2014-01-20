@@ -14,6 +14,8 @@ privileged aspect Agent_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "sirhPersistenceUnit")
     transient EntityManager Agent.entityManager;
     
+    public static final List<String> Agent.fieldNames4OrderClauseFilter = java.util.Arrays.asList("nomatr", "nomMarital", "nomPatronymique", "nomUsage", "prenom", "prenomUsage", "dateNaissance");
+    
     public static final EntityManager Agent.entityManager() {
         EntityManager em = new Agent().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect Agent_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM Agent o", Agent.class).getResultList();
     }
     
+    public static List<Agent> Agent.findAllAgents(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Agent o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, Agent.class).getResultList();
+    }
+    
     public static Agent Agent.findAgent(Integer idAgent) {
         if (idAgent == null) return null;
         return entityManager().find(Agent.class, idAgent);
@@ -35,6 +48,17 @@ privileged aspect Agent_Roo_Jpa_ActiveRecord {
     
     public static List<Agent> Agent.findAgentEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM Agent o", Agent.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<Agent> Agent.findAgentEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Agent o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, Agent.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

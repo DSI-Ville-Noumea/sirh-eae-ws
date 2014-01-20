@@ -14,6 +14,8 @@ privileged aspect EaeFichePoste_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeFichePoste.entityManager;
     
+    public static final List<String> EaeFichePoste.fieldNames4OrderClauseFilter = java.util.Arrays.asList("primary", "directionService", "service", "sectionService", "emploi", "fonction", "dateEntreeFonction", "gradePoste", "localisation", "fonctionResponsable", "idAgentShd", "idSirhFichePoste", "missions", "eae", "eaeFdpActivites", "eaeFdpCompetences", "agentShd");
+    
     public static final EntityManager EaeFichePoste.entityManager() {
         EntityManager em = new EaeFichePoste().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeFichePoste_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeFichePoste o", EaeFichePoste.class).getResultList();
     }
     
+    public static List<EaeFichePoste> EaeFichePoste.findAllEaeFichePostes(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeFichePoste o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeFichePoste.class).getResultList();
+    }
+    
     public static EaeFichePoste EaeFichePoste.findEaeFichePoste(Integer idEaeFichePoste) {
         if (idEaeFichePoste == null) return null;
         return entityManager().find(EaeFichePoste.class, idEaeFichePoste);
@@ -35,6 +48,17 @@ privileged aspect EaeFichePoste_Roo_Jpa_ActiveRecord {
     
     public static List<EaeFichePoste> EaeFichePoste.findEaeFichePosteEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeFichePoste o", EaeFichePoste.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeFichePoste> EaeFichePoste.findEaeFichePosteEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeFichePoste o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeFichePoste.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

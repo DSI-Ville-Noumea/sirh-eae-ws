@@ -14,6 +14,8 @@ privileged aspect EaeCommentaire_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeCommentaire.entityManager;
     
+    public static final List<String> EaeCommentaire.fieldNames4OrderClauseFilter = java.util.Arrays.asList("text");
+    
     public static final EntityManager EaeCommentaire.entityManager() {
         EntityManager em = new EaeCommentaire().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeCommentaire_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeCommentaire o", EaeCommentaire.class).getResultList();
     }
     
+    public static List<EaeCommentaire> EaeCommentaire.findAllEaeCommentaires(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeCommentaire o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeCommentaire.class).getResultList();
+    }
+    
     public static EaeCommentaire EaeCommentaire.findEaeCommentaire(Integer idEaeCommentaire) {
         if (idEaeCommentaire == null) return null;
         return entityManager().find(EaeCommentaire.class, idEaeCommentaire);
@@ -35,6 +48,17 @@ privileged aspect EaeCommentaire_Roo_Jpa_ActiveRecord {
     
     public static List<EaeCommentaire> EaeCommentaire.findEaeCommentaireEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeCommentaire o", EaeCommentaire.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeCommentaire> EaeCommentaire.findEaeCommentaireEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeCommentaire o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeCommentaire.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

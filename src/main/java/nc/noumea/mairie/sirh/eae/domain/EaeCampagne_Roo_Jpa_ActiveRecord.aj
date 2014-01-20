@@ -14,6 +14,8 @@ privileged aspect EaeCampagne_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeCampagne.entityManager;
     
+    public static final List<String> EaeCampagne.fieldNames4OrderClauseFilter = java.util.Arrays.asList("annee", "dateDebut", "dateFin", "dateOuvertureKiosque", "dateFermetureKiosque");
+    
     public static final EntityManager EaeCampagne.entityManager() {
         EntityManager em = new EaeCampagne().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -24,8 +26,30 @@ privileged aspect EaeCampagne_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT COUNT(o) FROM EaeCampagne o", Long.class).getSingleResult();
     }
     
+    public static List<EaeCampagne> EaeCampagne.findAllEaeCampagnes(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeCampagne o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeCampagne.class).getResultList();
+    }
+    
     public static List<EaeCampagne> EaeCampagne.findEaeCampagneEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeCampagne o", EaeCampagne.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeCampagne> EaeCampagne.findEaeCampagneEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeCampagne o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeCampagne.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

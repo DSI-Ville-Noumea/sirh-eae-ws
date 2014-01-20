@@ -14,6 +14,8 @@ privileged aspect EaeDiplome_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeDiplome.entityManager;
     
+    public static final List<String> EaeDiplome.fieldNames4OrderClauseFilter = java.util.Arrays.asList("libelleDiplome", "eae");
+    
     public static final EntityManager EaeDiplome.entityManager() {
         EntityManager em = new EaeDiplome().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EaeDiplome_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EaeDiplome o", EaeDiplome.class).getResultList();
     }
     
+    public static List<EaeDiplome> EaeDiplome.findAllEaeDiplomes(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeDiplome o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeDiplome.class).getResultList();
+    }
+    
     public static EaeDiplome EaeDiplome.findEaeDiplome(Long idEaeDiplome) {
         if (idEaeDiplome == null) return null;
         return entityManager().find(EaeDiplome.class, idEaeDiplome);
@@ -35,6 +48,17 @@ privileged aspect EaeDiplome_Roo_Jpa_ActiveRecord {
     
     public static List<EaeDiplome> EaeDiplome.findEaeDiplomeEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EaeDiplome o", EaeDiplome.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EaeDiplome> EaeDiplome.findEaeDiplomeEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EaeDiplome o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EaeDiplome.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional
