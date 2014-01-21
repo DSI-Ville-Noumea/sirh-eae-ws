@@ -34,7 +34,6 @@ import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 

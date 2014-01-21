@@ -18,7 +18,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_EVALUATEUR", identifierField = "idEaeEvaluateur", identifierType = Integer.class, table = "EAE_EVALUATEUR", sequenceName="EAE_S_EVALUATEUR")
+@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_EVALUATEUR", identifierField = "idEaeEvaluateur", identifierType = Integer.class, table = "EAE_EVALUATEUR", sequenceName = "EAE_S_EVALUATEUR")
 @RooJson
 public class EaeEvaluateur {
 
@@ -29,24 +29,24 @@ public class EaeEvaluateur {
 	private String fonction;
 
 	@Column(name = "DATE_ENTREE_SERVICE")
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateEntreeService;
-	
+
 	@Column(name = "DATE_ENTREE_COLLECTIVITE")
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateEntreeCollectivite;
-	
+
 	@Column(name = "DATE_ENTREE_FONCTION")
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateEntreeFonction;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
 	private Eae eae;
-	
+
 	/*
-     * Transient properties (will be populated by AS400 entity manager)
-     */
-    @Transient
-    private Agent agent;
+	 * Transient properties (will be populated by AS400 entity manager)
+	 */
+	@Transient
+	private Agent agent;
 }
