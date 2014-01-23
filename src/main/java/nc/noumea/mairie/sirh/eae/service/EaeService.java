@@ -27,15 +27,20 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.web.controller.EaeController;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EaeService implements IEaeService {
+
+	private Logger logger = LoggerFactory.getLogger(EaeService.class);
 
 	@PersistenceContext(unitName = "eaePersistenceUnit")
 	private EntityManager eaeEntityManager;
@@ -72,6 +77,7 @@ public class EaeService implements IEaeService {
 
 		// For each EAE result, retrieve extra information from SIRH
 		for (Eae eae : queryResult) {
+			logger.debug("Filling info for EAE id [{}]", eae.getIdEae());
 			agentService.fillEaeWithAgents(eae);
 			EaeListItemDto dtoItem = new EaeListItemDto(eae);
 			dtoItem.setAccessRightsForAgentId(eae, agentId);

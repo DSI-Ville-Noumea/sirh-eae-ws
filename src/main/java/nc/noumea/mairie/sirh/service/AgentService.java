@@ -66,6 +66,7 @@ public class AgentService implements IAgentService {
 
 	@Override
 	public Agent getAgent(Integer idAgent) {
+		if (idAgent == null) return null;
 		return sirhEntityManager.find(Agent.class, idAgent);
 	}
 }
