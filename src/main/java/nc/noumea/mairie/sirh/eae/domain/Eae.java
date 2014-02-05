@@ -105,11 +105,11 @@ public class Eae {
 	private Set<EaeFormation> eaeFormations = new HashSet<EaeFormation>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy
+    @OrderBy("idEaeResultat asc")
    	private Set<EaeResultat> eaeResultats = new HashSet<EaeResultat>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy
+    @OrderBy("idEaePlanAction asc")
    	private Set<EaePlanAction> eaePlanActions = new HashSet<EaePlanAction>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
