@@ -35,6 +35,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	private int anneeAvancement;
 	private String statut;
 	private String typeAvct;
+	private boolean cap;
 
 	public EaeEvaluationDto() {
 
@@ -43,9 +44,11 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	public EaeEvaluationDto(Eae eae) {
 		this(eae.getEaeEvaluation());
 		this.propositionAvancement = getDureesAvancement(eae.getEaeEvaluation(), eae.getEaeEvalue());
-		anneeAvancement = eae.getEaeCampagne().getAnnee();
-		statut = eae.getEaeEvalue().getStatut().name();
-		typeAvct = eae.getEaeEvalue().getTypeAvancement() == null ? null : eae.getEaeEvalue().getTypeAvancement().name();
+		this.anneeAvancement = eae.getEaeCampagne().getAnnee();
+		this.statut = eae.getEaeEvalue().getStatut().name();
+		this.typeAvct = eae.getEaeEvalue().getTypeAvancement() == null ? null : eae.getEaeEvalue().getTypeAvancement()
+				.name();
+		this.cap = eae.isCap();
 	}
 
 	protected EaeEvaluationDto(EaeEvaluation eaeEvaluation) {
@@ -56,8 +59,10 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1();
 		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
 		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
-		avisRevalorisation = eaeEvaluation.getAvisRevalorisation() == null ? true : eaeEvaluation.getAvisRevalorisation();
-		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation.getAvisChangementClasse();
+		avisRevalorisation = eaeEvaluation.getAvisRevalorisation() == null ? true : eaeEvaluation
+				.getAvisRevalorisation();
+		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation
+				.getAvisChangementClasse();
 		commentaireEvaluateur = eaeEvaluation.getCommentaireEvaluateur();
 		commentaireEvalue = eaeEvaluation.getCommentaireEvalue();
 		commentaireAvctEvaluateur = eaeEvaluation.getCommentaireAvctEvaluateur();
@@ -85,12 +90,15 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 	}
 
 	public static JSONSerializer getSerializerForEaeEvaluationDto() {
-		return new JSONSerializer().exclude("*.class").include("idEae").include("noteAnnee").include("noteAnneeN1").include("noteAnneeN2").include("noteAnneeN3")
-				.include("avisRevalorisation").include("propositionAvancement.*").include("avisChangementClasse").include("niveau.*")
-				.include("commentaireEvaluateur").include("commentaireEvalue").include("commentaireAvctEvaluateur").include("commentaireAvctEvalue")
-				.include("dureeEntretien").include("anneeAvancement").include("statut").include("typeAvct")
+		return new JSONSerializer().exclude("*.class").include("idEae").include("noteAnnee").include("noteAnneeN1")
+				.include("noteAnneeN2").include("noteAnneeN3").include("avisRevalorisation")
+				.include("propositionAvancement.*").include("avisChangementClasse").include("niveau.*")
+				.include("commentaireEvaluateur").include("commentaireEvalue").include("commentaireAvctEvaluateur")
+				.include("commentaireAvctEvalue").include("dureeEntretien").include("anneeAvancement")
+				.include("statut").include("typeAvct").include("cap")
 				.transform(new MinutesToHoursAndMinutesTransformer(), "dureeEntretien")
-				.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class).exclude("*");
+				.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class)
+				.exclude("*");
 	}
 
 	@Override
@@ -100,7 +108,8 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	@Override
 	public EaeEvaluationDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<EaeEvaluationDto>().use(EaeCommentaire.class, new ObjectToPropertyTransformer("text", EaeCommentaire.class))
+		return new JSONDeserializer<EaeEvaluationDto>()
+				.use(EaeCommentaire.class, new ObjectToPropertyTransformer("text", EaeCommentaire.class))
 				.use("dureeEntretien", new MinutesToHoursAndMinutesTransformer()).deserializeInto(json, this);
 	}
 
@@ -238,5 +247,13 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 
 	public void setNoteAnnee(Float noteAnnee) {
 		this.noteAnnee = noteAnnee;
+	}
+
+	public boolean isCap() {
+		return cap;
+	}
+
+	public void setCap(boolean cap) {
+		this.cap = cap;
 	}
 }
