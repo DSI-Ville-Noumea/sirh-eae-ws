@@ -95,7 +95,7 @@ public class Eae {
     private Set<EaeFichePoste> eaeFichePostes = new HashSet<EaeFichePoste>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
-    @OrderBy
+    @OrderBy("idEaeDiplome asc")
 	private Set<EaeDiplome> eaeDiplomes = new HashSet<EaeDiplome>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
