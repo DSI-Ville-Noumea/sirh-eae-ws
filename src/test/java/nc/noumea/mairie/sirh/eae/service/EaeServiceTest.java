@@ -372,7 +372,7 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.eaeCampagne.annee desc",
+						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
 						Eae.class)).thenReturn(queryMock);
 
 		EaeService service = new EaeService();
@@ -404,7 +404,7 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
 				entManagerMock.createQuery(
-						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.eaeCampagne.annee desc",
+						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
 						Eae.class)).thenReturn(queryMock);
 
 		EaeService service = new EaeService();
