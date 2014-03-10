@@ -310,7 +310,7 @@ public class EaeService implements IEaeService {
 	private List<Eae> findLatestEaesByAgentId(int agentId, int maxResults) {
 
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(
-				"select e from Eae e where e.eaeEvalue.idAgent = :idAgent order by e.eaeCampagne.annee desc", Eae.class);
+				"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc", Eae.class);
 		eaeQuery.setParameter("idAgent", agentId);
 		eaeQuery.setMaxResults(maxResults);
 		List<Eae> result = eaeQuery.getResultList();
