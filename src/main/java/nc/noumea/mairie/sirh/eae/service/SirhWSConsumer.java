@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.noumea.mairie.sirh.eae.dto.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
+import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 
@@ -32,6 +35,13 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private static final String sirhAgentsUrl = "agents/sousAgents";
 	private static final String sirhShdAgentsUrl = "agents/agentsShd";
 	private static final String sirhCampagneEnCours = "eaes/getCampagneEnCours";
+	private static final String sirhAvancementUrl = "calculEae/avancement";
+	private static final String sirhAvancementDetacheUrl = "calculEae/avancementDetache";
+	private static final String sirhAffectationActiveByAgentUrl = "calculEae/affectationActiveByAgent";
+	private static final String sirhListeAffectationsAgentAvecServiceUrl = "calculEae/listeAffectationsAgentAvecService";
+	private static final String sirhListeAffectationsAgentAvecFPUrl = "calculEae/listeAffectationsAgentAvecFP";
+	private static final String sirhAutreAdministrationAgentAncienneUrl = "calculEae/autreAdministrationAgentAncienne";
+	private static final String sirhListeAutreAdministrationAgentUrl = "calculEae/listeAutreAdministrationAgent";
 
 	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
@@ -52,7 +62,35 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private String getSirhWsCampagneEnCoursUrl() {
 		return sirhWsBaseUrl + sirhCampagneEnCours;
 	}
-
+	
+	private String getSirhAvancementUrl() {
+		return sirhWsBaseUrl + sirhAvancementUrl;
+	}
+	
+	private String getSirhAvancementDetacheUrl() {
+		return sirhWsBaseUrl + sirhAvancementDetacheUrl;
+	}
+	
+	private String getSirhAffectationActiveByAgentUrl() {
+		return sirhWsBaseUrl + sirhAffectationActiveByAgentUrl;
+	}
+	
+	private String getSirhListeAffectationsAgentAvecServiceUrl() {
+		return sirhWsBaseUrl + sirhListeAffectationsAgentAvecServiceUrl;
+	}
+	
+	private String getSirhListeAffectationsAgentAvecFPUrl() {
+		return sirhWsBaseUrl + sirhListeAffectationsAgentAvecFPUrl;
+	}
+	
+	private String getSirhAutreAdministrationAgentAncienneUrl() {
+		return sirhWsBaseUrl + sirhAutreAdministrationAgentAncienneUrl;
+	}
+	
+	private String getSirhListeAutreAdministrationAgentUrl() {
+		return sirhWsBaseUrl + sirhListeAutreAdministrationAgentUrl;
+	}
+	
 	public ClientResponse createAndFireRequest(int agentId, int maxDepth,
 			String url) throws SirhWSConsumerException {
 
@@ -162,6 +200,28 @@ public class SirhWSConsumer implements ISirhWsConsumer {
         result = new JSONDeserializer<T>().use(Date.class, new MSDateTransformer()).deserializeInto(output, result);
         return result;
 	}
+	
+	public <T> List<T> readResponseAsList(Class<T> targetClass, ClientResponse response, String url) throws SirhWSConsumerException {
+		List<T> result = null;
+		result = new ArrayList<T>();
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return result;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s, content is %s", url,
+					response.getStatus(), response.getEntity(String.class)));
+		}
+
+		String output = response.getEntity(String.class);
+		
+		result = new JSONDeserializer<List<T>>().use(null, ArrayList.class)
+				.use("values", targetClass).deserialize(output);
+		
+		return result;
+	}
 
 	private ClientResponse createAndFireRequestWithParameter(
 			Map<String, String> parameters, String url)
@@ -186,5 +246,88 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 		return response;
 	}
+	
+	@Override
+	public AvancementEaeDto getAvancement(Integer idAgent, Integer anneeAvancement, boolean isFonctionnaire) throws SirhWSConsumerException {
 
+		Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgent", String.valueOf(idAgent));
+			parameters.put("anneeAvancement", String.valueOf(anneeAvancement));
+			parameters.put("isFonctionnaire", String.valueOf(isFonctionnaire));
+
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAvancementUrl());
+
+		return readResponseDto(AvancementEaeDto.class, res, getSirhAvancementUrl());
+	}
+	
+	@Override
+	public AvancementEaeDto getAvancementDetache(Integer idAgent, Integer anneeAvancement) throws SirhWSConsumerException {
+
+		Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgent", String.valueOf(idAgent));
+			parameters.put("anneeAvancement", String.valueOf(anneeAvancement));
+		
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAvancementDetacheUrl());
+
+		return readResponseDto(AvancementEaeDto.class, res, getSirhAvancementDetacheUrl());
+	}
+	
+	@Override
+	public CalculEaeInfosDto getDetailAffectationActiveByAgent(Integer idAgent, Integer anneeFormation) throws SirhWSConsumerException {
+
+		Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgent", String.valueOf(idAgent));
+			parameters.put("anneeFormation", String.valueOf(anneeFormation));
+
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAffectationActiveByAgentUrl());
+
+		return readResponseDto(CalculEaeInfosDto.class, res, getSirhAffectationActiveByAgentUrl());
+	}
+	
+	@Override
+	public List<CalculEaeInfosDto> getListeAffectationsAgentAvecService(Integer idAgent, String idService) throws SirhWSConsumerException {
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgent", String.valueOf(idAgent));
+			parameters.put("idService", idService);
+	
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhListeAffectationsAgentAvecServiceUrl());
+	
+		return readResponseAsList(CalculEaeInfosDto.class, res, getSirhListeAffectationsAgentAvecServiceUrl());
+	}
+	
+	@Override
+	public List<CalculEaeInfosDto> getListeAffectationsAgentAvecFP(Integer idAgent, Integer idFichePoste) throws SirhWSConsumerException {
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgent", String.valueOf(idAgent));
+			parameters.put("idService", String.valueOf(idFichePoste));
+	
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhListeAffectationsAgentAvecFPUrl());
+	
+		return readResponseAsList(CalculEaeInfosDto.class, res, getSirhListeAffectationsAgentAvecFPUrl());
+	}
+	
+	@Override
+	public AutreAdministrationAgentDto chercherAutreAdministrationAgentAncienne(Integer idAgent, boolean isFonctionnaire) throws SirhWSConsumerException {
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgent", String.valueOf(idAgent));
+			parameters.put("isFonctionnaire", String.valueOf(isFonctionnaire));
+	
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAutreAdministrationAgentAncienneUrl());
+	
+		return readResponseDto(AutreAdministrationAgentDto.class, res, getSirhAutreAdministrationAgentAncienneUrl());
+	}
+	
+	@Override
+	public List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent) throws SirhWSConsumerException {
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("idAgent", String.valueOf(idAgent));
+	
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhListeAutreAdministrationAgentUrl());
+	
+		return readResponseAsList(AutreAdministrationAgentDto.class, res, getSirhListeAutreAdministrationAgentUrl());
+	}
 }

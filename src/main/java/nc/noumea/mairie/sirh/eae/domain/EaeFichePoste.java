@@ -48,6 +48,18 @@ public class EaeFichePoste {
     @Column(name = "DATE_ENTREE_FONCTION")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateEntreeFonction;
+    
+    @Column(name = "DATE_ENTREE_COLLECT_RESP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateEntreeCollectiviteResponsable;
+    
+    @Column(name = "DATE_ENTREE_FONCTION_RESP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateEntreeFonctionResponsable;
+    
+    @Column(name = "DATE_ENTREE_SERVICE_RESP")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateEntreeServiceResponsable;
 
     @Column(name = "GRADE_POSTE")
     private String gradePoste;

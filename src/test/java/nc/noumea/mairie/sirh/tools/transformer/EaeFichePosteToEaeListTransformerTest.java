@@ -33,6 +33,6 @@ public class EaeFichePosteToEaeListTransformerTest {
 		String json = serializer.transform(tr, EaeFichePoste.class).serialize(eae);
 
 		// Then
-		assertTrue(json.contains(",\"directionService\":\"direction\",\"sectionService\":\"section\",\"service\":\"svc\",\"agentShd\":{\"class\":\"nc.noumea.mairie.sirh.domain.Agent\",\"dateNaissance\":null,\"displayNom\":\"totot\",\"displayPrenom\":\"titit\",\"idAgent\":987665,\"nomMarital\":null,\"nomPatronymique\":null,\"nomUsage\":\"totot\",\"nomatr\":null,\"prenom\":\"titit\",\"prenomUsage\":null},"));
+		assertTrue(json.contains(",\"directionService\":\"direction\",\"sectionService\":\"section\",\"service\":\"svc\",\"agentShd\":{\"class\":\"nc.noumea.mairie.sirh.domain.Agent\",\"dateDerniereEmbauche\":null,\"dateNaissance\":null,\"displayNom\":\"totot\",\"displayPrenom\":\"titit\",\"idAgent\":987665,\"nomMarital\":null,\"nomPatronymique\":null,\"nomUsage\":\"totot\",\"nomatr\":null,\"prenom\":\"titit\",\"prenomUsage\":null},"));
 	}
 }

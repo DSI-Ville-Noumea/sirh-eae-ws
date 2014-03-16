@@ -44,6 +44,12 @@ public class Agent {
 	@Column(name = "DATE_NAISSANCE")
 	@Temporal(TemporalType.DATE)
 	private Date dateNaissance;
+	
+	@NotNull
+	@Column(name = "DATE_DERNIERE_EMBAUCHE")
+	@Temporal(TemporalType.DATE)
+	private Date dateDerniereEmbauche;
+	
 
 	public String getDisplayPrenom() {
 		if (getPrenomUsage() != null && !getPrenomUsage().isEmpty())

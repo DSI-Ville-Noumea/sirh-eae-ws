@@ -14,7 +14,7 @@ privileged aspect Agent_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "sirhPersistenceUnit")
     transient EntityManager Agent.entityManager;
     
-    public static final List<String> Agent.fieldNames4OrderClauseFilter = java.util.Arrays.asList("nomatr", "nomMarital", "nomPatronymique", "nomUsage", "prenom", "prenomUsage", "dateNaissance");
+    public static final List<String> Agent.fieldNames4OrderClauseFilter = java.util.Arrays.asList("nomatr", "nomMarital", "nomPatronymique", "nomUsage", "prenom", "prenomUsage", "dateNaissance", "dateDerniereEmbauche");
     
     public static final EntityManager Agent.entityManager() {
         EntityManager em = new Agent().entityManager;

@@ -69,6 +69,30 @@ privileged aspect EaeFichePoste_Roo_JavaBean {
         this.dateEntreeFonction = dateEntreeFonction;
     }
     
+    public Date EaeFichePoste.getDateEntreeCollectiviteResponsable() {
+        return this.dateEntreeCollectiviteResponsable;
+    }
+    
+    public void EaeFichePoste.setDateEntreeCollectiviteResponsable(Date dateEntreeCollectiviteResponsable) {
+        this.dateEntreeCollectiviteResponsable = dateEntreeCollectiviteResponsable;
+    }
+    
+    public Date EaeFichePoste.getDateEntreeFonctionResponsable() {
+        return this.dateEntreeFonctionResponsable;
+    }
+    
+    public void EaeFichePoste.setDateEntreeFonctionResponsable(Date dateEntreeFonctionResponsable) {
+        this.dateEntreeFonctionResponsable = dateEntreeFonctionResponsable;
+    }
+    
+    public Date EaeFichePoste.getDateEntreeServiceResponsable() {
+        return this.dateEntreeServiceResponsable;
+    }
+    
+    public void EaeFichePoste.setDateEntreeServiceResponsable(Date dateEntreeServiceResponsable) {
+        this.dateEntreeServiceResponsable = dateEntreeServiceResponsable;
+    }
+    
     public String EaeFichePoste.getGradePoste() {
         return this.gradePoste;
     }

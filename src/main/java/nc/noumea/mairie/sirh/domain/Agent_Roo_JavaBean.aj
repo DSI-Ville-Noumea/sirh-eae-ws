@@ -64,4 +64,12 @@ privileged aspect Agent_Roo_JavaBean {
         this.dateNaissance = dateNaissance;
     }
     
+    public Date Agent.getDateDerniereEmbauche() {
+        return this.dateDerniereEmbauche;
+    }
+    
+    public void Agent.setDateDerniereEmbauche(Date dateDerniereEmbauche) {
+        this.dateDerniereEmbauche = dateDerniereEmbauche;
+    }
+    
 }

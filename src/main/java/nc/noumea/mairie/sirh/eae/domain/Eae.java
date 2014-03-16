@@ -144,6 +144,16 @@ public class Eae {
     	return null;
     }
     
+    public EaeFichePoste getSecondaryFichePoste() {
+    	
+    	for(EaeFichePoste fdp : this.getEaeFichePostes()) {
+    		if (!fdp.isPrimary())
+    			return fdp;
+    	}
+    	
+    	return null;
+    }
+    
     public boolean isEvaluateur(int idAgent) {
 
     	for (EaeEvaluateur e : this.getEaeEvaluateurs()) {
@@ -173,5 +183,11 @@ public class Eae {
     	}
     	
     	return latestFinalisation;
+	}
+	
+	public void addEaeFichePoste(EaeFichePoste eaeFP) {
+		if(!this.getEaeFichePostes().contains(eaeFP)) {
+			this.getEaeFichePostes().add(eaeFP);
+		}
 	}
 }
