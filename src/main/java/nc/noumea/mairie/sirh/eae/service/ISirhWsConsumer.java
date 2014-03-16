@@ -2,10 +2,10 @@ package nc.noumea.mairie.sirh.eae.service;
 
 import java.util.List;
 
-import nc.noumea.mairie.sirh.eae.dto.AutreAdministrationAgentDto;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
 
 public interface ISirhWsConsumer {
 

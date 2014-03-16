@@ -2,6 +2,8 @@ package nc.noumea.mairie.sirh.eae.dto;
 
 import java.util.Date;
 
+import nc.noumea.mairie.sirh.eae.dto.agent.GradeDto;
+
 
 public class AvancementEaeDto {
 

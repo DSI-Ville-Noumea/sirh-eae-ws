@@ -1,4 +1,4 @@
-package nc.noumea.mairie.sirh.eae.dto;
+package nc.noumea.mairie.sirh.eae.dto.poste;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
 import flexjson.JSONSerializer;
 
 public class EaeFichePosteDto implements IJSONSerialize {

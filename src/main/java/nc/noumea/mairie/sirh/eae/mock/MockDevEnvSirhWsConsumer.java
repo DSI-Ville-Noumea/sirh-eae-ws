@@ -5,10 +5,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import nc.noumea.mairie.sirh.eae.dto.AutreAdministrationAgentDto;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
 import nc.noumea.mairie.sirh.eae.service.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 

@@ -3,6 +3,13 @@ package nc.noumea.mairie.sirh.eae.dto;
 import java.util.Date;
 import java.util.List;
 
+import nc.noumea.mairie.sirh.eae.dto.agent.CarriereDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.DiplomeDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.FormationDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.ParcoursProDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.PositionAdmAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.FichePosteDto;
+
 public class CalculEaeInfosDto {
 
 	private Date dateDebut;

@@ -22,7 +22,7 @@
 		<property name="classesToBeBound">
 			<list>
 				<value>nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto</value>
-				<value>nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDtoList</value>
+				<value>nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDtoList</value>
 				<value>nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto</value>
 				<value>nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto</value>
 				<value>nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto</value>

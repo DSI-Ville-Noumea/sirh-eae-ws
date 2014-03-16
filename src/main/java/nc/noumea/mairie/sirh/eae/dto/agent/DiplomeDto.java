@@ -1,4 +1,4 @@
-package nc.noumea.mairie.sirh.eae.dto;
+package nc.noumea.mairie.sirh.eae.dto.agent;
 
 import java.util.Date;
 
@@ -6,8 +6,8 @@ public class DiplomeDto {
 	
 	private Integer idDiplome;
 	private Date dateObtention;
-	private String LibTitreDiplome;
-	private String LibSpeDiplome;
+	private String libTitreDiplome;
+	private String libSpeDiplome;
 	
 	public Integer getIdDiplome() {
 		return idDiplome;
@@ -22,16 +22,16 @@ public class DiplomeDto {
 		this.dateObtention = dateObtention;
 	}
 	public String getLibTitreDiplome() {
-		return LibTitreDiplome;
+		return libTitreDiplome;
 	}
 	public void setLibTitreDiplome(String libTitreDiplome) {
-		LibTitreDiplome = libTitreDiplome;
+		this.libTitreDiplome = libTitreDiplome;
 	}
 	public String getLibSpeDiplome() {
-		return LibSpeDiplome;
+		return libSpeDiplome;
 	}
 	public void setLibSpeDiplome(String libSpeDiplome) {
-		LibSpeDiplome = libSpeDiplome;
+		this.libSpeDiplome = libSpeDiplome;
 	}
 	
 	

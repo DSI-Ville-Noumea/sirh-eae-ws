@@ -10,6 +10,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeCompetenceEnum;
+import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
 
 import org.junit.Test;
 

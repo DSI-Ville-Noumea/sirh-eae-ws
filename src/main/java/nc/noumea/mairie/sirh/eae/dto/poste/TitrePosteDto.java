@@ -1,4 +1,4 @@
-package nc.noumea.mairie.sirh.eae.dto;
+package nc.noumea.mairie.sirh.eae.dto.poste;
 
 public class TitrePosteDto {
 

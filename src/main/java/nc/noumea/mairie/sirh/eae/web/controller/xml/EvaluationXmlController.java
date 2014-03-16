@@ -8,11 +8,11 @@ import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeFichePosteDtoList;
 import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDtoList;
 import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
