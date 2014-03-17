@@ -40,10 +40,11 @@ public class AgentServiceTest {
 		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
 
 		// When
-		service.fillEaeEvaluateurWithAgent(eval);
+		EaeEvaluateur eva = service.fillEaeEvaluateurWithAgent(eval);
 
 		// Then
 		assertEquals(agentToReturn, eval.getAgent());
+		assertEquals(eval.getAgent(), eva.getAgent());
 	}
 
 	@Test
@@ -126,7 +127,6 @@ public class AgentServiceTest {
 		Agent agentDelegataireToReturn = new Agent();
 		agentDelegataireToReturn.setIdAgent(idAgentDelegataire);
 		agentDelegataireToReturn.setNomPatronymique("yet another person");
-
 
 		// Set the mock as the entityManager of the service class
 		EntityManager emMock = Mockito.mock(EntityManager.class);

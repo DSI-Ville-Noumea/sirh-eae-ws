@@ -28,7 +28,7 @@ public class CalculEaeController {
 	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> creerEAESansAffecte(@RequestParam("idCampagneEAE") int idCampagneEAE, @RequestParam("idAgent") int idAgent) {
 		
-		logger.debug("entered POST [calculEae/creerEAESansAffecte] => finalizeEae with parameter idCampagneEAE = {} , idAgent = {}",
+		logger.debug("entered POST [calculEae/creerEAESansAffecte] => creerEAESansAffecte with parameter idCampagneEAE = {} , idAgent = {}",
 				idCampagneEAE, idAgent);
 		
 		
