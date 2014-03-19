@@ -165,6 +165,14 @@ privileged aspect EaeFichePoste_Roo_JavaBean {
         this.eaeFdpCompetences = eaeFdpCompetences;
     }
     
+    public String EaeFichePoste.getCodeService() {
+        return this.codeService;
+    }
+    
+    public void EaeFichePoste.setCodeService(String codeService) {
+        this.codeService = codeService;
+    }
+    
     public Agent EaeFichePoste.getAgentShd() {
         return this.agentShd;
     }

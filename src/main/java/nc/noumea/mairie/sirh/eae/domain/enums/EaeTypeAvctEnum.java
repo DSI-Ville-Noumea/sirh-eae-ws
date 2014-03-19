@@ -26,4 +26,14 @@ public enum EaeTypeAvctEnum {
 	public void setTypeAvctCode(String typeAvctCode) {
 		this.typeAvctCode = typeAvctCode;
 	}
+
+	public String getTypeAvctLong() {
+		return typeAvctLong;
+	}
+
+	public void setTypeAvctLong(String typeAvctLong) {
+		this.typeAvctLong = typeAvctLong;
+	}
+	
+	
 }

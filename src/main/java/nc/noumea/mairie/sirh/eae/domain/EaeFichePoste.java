@@ -90,6 +90,9 @@ public class EaeFichePoste {
     @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY)
     private Set<EaeFdpCompetence> eaeFdpCompetences = new HashSet<EaeFdpCompetence>();
 
+    @Column(name = "CODE_SERVICE")
+    private String codeService; 
+    
     @Transient
     private Agent agentShd;
 }

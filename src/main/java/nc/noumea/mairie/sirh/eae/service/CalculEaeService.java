@@ -55,9 +55,6 @@ public class CalculEaeService implements ICalculEaeService {
 	@Autowired
 	IAgentService agentService;
 	
-	@Autowired
-	CalculEaeHelper calculEaeHelper;
-	
 
 	public static final String CHAINE_VIDE = "";
 	public static final String ZERO = "0";
@@ -66,7 +63,7 @@ public class CalculEaeService implements ICalculEaeService {
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	
 	@Override
-	public  void creerEaeAffecte(Integer idCampagneEae, Integer idAgent,Integer anneeCampagne) throws Exception {
+	public  void creerEaeAffecte(Integer idCampagneEae, Integer idAgent) throws Exception {
 		
 		logger.info("Création de l'EAE pour l'agent : " + idAgent);
 		
@@ -167,7 +164,7 @@ public class CalculEaeService implements ICalculEaeService {
 
 		// on met à jour l'etat de l'EAE
 		EaeFichePoste eaeFDP = eae.getPrimaryFichePoste();
-		if (eaeFDP.getIdAgentShd() == null || eaeFDP.getIdAgentShd() == 0) {
+		if (null != eaeFDP && (eaeFDP.getIdAgentShd() == null || eaeFDP.getIdAgentShd() == 0)) {
 			eae.setEtat(EaeEtatEnum.NA);
 		}
 
@@ -177,11 +174,11 @@ public class CalculEaeService implements ICalculEaeService {
 	}
 	
 	
-	private void creerEvalue(Agent agent, Eae eae, CalculEaeInfosDto eaeInfosDto, boolean miseAjourDateAdministration, boolean agentAffecte) 
+	public void creerEvalue(Agent agent, Eae eae, CalculEaeInfosDto eaeInfosDto, boolean miseAjourDateAdministration, boolean agentAffecte) 
 			throws SirhWSConsumerException, ParseException {
 		
 		// cas de la modif
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		EaeEvalue evalAModif = new EaeEvalue();
 
 		evalAModif.setEae(eae);
@@ -205,7 +202,7 @@ public class CalculEaeService implements ICalculEaeService {
 			dateAutreAdmin = autreAdmin.getDateEntree();
 		}
 
-		evalAModif.setDateEntreeAdministration(calculEaeHelper.getDateAnterieure(dateAutreAdmin, dateCarriere));
+		evalAModif.setDateEntreeFonctionnaire(CalculEaeHelper.getDateAnterieure(dateAutreAdmin, dateCarriere));
 		
 		// on regarde si la date de l'EAE precedent est différente alors on
 		// prend la date de l'EAE de l'année passée
@@ -242,7 +239,7 @@ public class CalculEaeService implements ICalculEaeService {
 				dateAutreAdminAncienne = autreAdminAncienne.getDateEntree();
 			}
 
-			evalAModif.setDateEntreeAdministration(calculEaeHelper.getDateAnterieure(dateAutreAdminAncienne, dateSpadmnAncienne));
+			evalAModif.setDateEntreeAdministration(CalculEaeHelper.getDateAnterieure(dateAutreAdminAncienne, dateSpadmnAncienne));
 		}
 
 		// on regarde si la date de l'EAE precedent est différente alors on
@@ -261,50 +258,7 @@ public class CalculEaeService implements ICalculEaeService {
 			}
 		}
 
-		if (null != eaeInfosDto.getCarriereActive()) {
-			evalAModif.setStatut(EaeAgentStatutEnum.valueOf(CalculEaeHelper.getStatutCarriereEAE(eaeInfosDto.getCarriereActive().getCodeCategorie())));
-			if (EaeAgentStatutEnum.A.equals(evalAModif.getStatut())) {
-				evalAModif.setStatutPrecision(eaeInfosDto.getCarriereActive().getLibelleCategorie());
-			}
-			if (EaeAgentStatutEnum.F.equals(evalAModif.getStatut())) {
-				// pour le cadre
-				evalAModif.setCadre(eaeInfosDto.getCarriereActive().getLibelleCategorie());
-				
-				// pour la categorie
-				GradeDto grade = eaeInfosDto.getCarriereActive().getGrade();
-				if (null != grade){
-					// pour le grade on cherche la classe si elle existe
-					String classeString = CHAINE_VIDE;
-					if (null != grade.getLibelleClasse()) {
-						classeString = grade.getLibelleClasse();
-					}
-					evalAModif.setAvctDureeMin(grade.getDureeMinimum().equals(ZERO) ? null : grade.getDureeMinimum());
-					evalAModif.setAvctDureeMoy(grade.getDureeMoyenne().equals(ZERO) ? null : grade.getDureeMoyenne());
-					evalAModif.setAvctDureeMax(grade.getDureeMaximum().equals(ZERO) ? null : grade.getDureeMaximum());
-
-					evalAModif.setGrade(grade.getGradeInitial() + " " + classeString);
-					evalAModif.setCategorie(grade.getCodeGradeGenerique());
-					
-					// pour l'echelon
-					evalAModif.setEchelon(grade.getLibelleEchelon());
-				}
-			} 
-			if (EaeAgentStatutEnum.CC.equals(evalAModif.getStatut())) {
-				// pour la classification
-				if(null != eaeInfosDto.getCarriereActive().getGrade()) {
-					evalAModif.setClassification(eaeInfosDto.getCarriereActive().getGrade().getLibelleGrade());
-				}
-			}
-		}
-
-		// pour l'anciennete on met le resultat en nb de jours
-		if (eaeInfosDto.getCarriereActive() != null && eaeInfosDto.getCarriereActive().getDateDebut() != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(eae.getEaeCampagne().getAnnee()-1, 12, 31);
-			
-			int nbJours = CalculEaeHelper.compteJoursEntreDates(eaeInfosDto.getCarriereActive().getDateDebut(), cal.getTime());
-			evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
-		}
+		setCarriereActive(eaeInfosDto, evalAModif, eaeAnneePrec);
 
 		// on regarde dans l'avancement pour le nouveau grade, le nouvel echelon et la date d'avancement
 		AvancementEaeDto avctFonct = sirhWsConsumer.getAvancement(agent.getIdAgent(), eae.getEaeCampagne().getAnnee(), false);
@@ -320,15 +274,68 @@ public class CalculEaeService implements ICalculEaeService {
 
 		// pour la PA
 		if (null != eaeInfosDto.getPositionAdmAgentEnCours()) {
-			evalAModif.setPosition(EaeAgentPositionAdministrativeEnum.valueOf(calculEaeHelper.getPositionAdmEAE(eaeInfosDto.getPositionAdmAgentEnCours().getCdpadm())));
+			evalAModif.setPosition(EaeAgentPositionAdministrativeEnum.valueOf(CalculEaeHelper.getPositionAdmEAE(eaeInfosDto.getPositionAdmAgentEnCours().getCdpadm())));
 		}
 
 		evalAModif.setEstDetache(agentAffecte);
+		
 		eae.setEaeEvalue(evalAModif);
+		eaeRepository.persistEntity(evalAModif);
 	}
 	
-	private void setAvancementEvalue(EaeEvalue evalAModif, AvancementEaeDto avct) {
-		if (!EtatAvancementEnum.TRAVAIL.equals(avct.getEtat())) {
+	public void setCarriereActive(CalculEaeInfosDto eaeInfosDto, EaeEvalue evalAModif, Eae eae) {
+		
+		if (null != eaeInfosDto.getCarriereActive()) {
+			evalAModif.setStatut(EaeAgentStatutEnum.valueOf(CalculEaeHelper.getStatutCarriereEAE(eaeInfosDto.getCarriereActive().getCodeCategorie())));
+			if (EaeAgentStatutEnum.A.equals(evalAModif.getStatut())) {
+				evalAModif.setStatutPrecision(eaeInfosDto.getCarriereActive().getLibelleCategorie());
+			}
+			if (EaeAgentStatutEnum.F.equals(evalAModif.getStatut())) {
+				// pour le cadre
+				evalAModif.setCadre(eaeInfosDto.getCarriereActive().getLibelleCategorie());
+				
+				// pour la categorie
+				GradeDto grade = eaeInfosDto.getCarriereActive().getGrade();
+				if (null != grade){
+					
+					evalAModif.setAvctDureeMin(grade.getDureeMinimum().equals(ZERO) ? null : grade.getDureeMinimum());
+					evalAModif.setAvctDureeMoy(grade.getDureeMoyenne().equals(ZERO) ? null : grade.getDureeMoyenne());
+					evalAModif.setAvctDureeMax(grade.getDureeMaximum().equals(ZERO) ? null : grade.getDureeMaximum());
+
+					// pour le grade on cherche la classe si elle existe
+					String classeString = CHAINE_VIDE;
+					if (null != grade.getLibelleClasse()) {
+						classeString = grade.getLibelleClasse();
+					}
+					
+					evalAModif.setGrade(grade.getGradeInitial() + " " + classeString);
+					evalAModif.setCategorie(grade.getCodeGradeGenerique());
+					
+					// pour l'echelon
+					evalAModif.setEchelon(grade.getLibelleEchelon());
+				}
+			} 
+			if (EaeAgentStatutEnum.CC.equals(evalAModif.getStatut())) {
+				// pour la classification
+				if(null != eaeInfosDto.getCarriereActive().getGrade()) {
+					evalAModif.setClassification(eaeInfosDto.getCarriereActive().getGrade().getLibelleGrade());
+				}
+			}
+			
+			// pour l'anciennete on met le resultat en nb de jours
+			if (null != eaeInfosDto.getCarriereActive().getDateDebut()) {
+				Calendar cal = Calendar.getInstance();
+					cal.set(eae.getEaeCampagne().getAnnee()-1, 11, 31);
+				
+				int nbJours = CalculEaeHelper.compteJoursEntreDates(eaeInfosDto.getCarriereActive().getDateDebut(), cal.getTime());
+				evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
+			}
+		}
+	}
+	
+	public void setAvancementEvalue(EaeEvalue evalAModif, AvancementEaeDto avct) {
+		
+		if (!EtatAvancementEnum.TRAVAIL.getValue().equals(avct.getEtat())) {
 			// attention dans le cas des categorie 4 on a pas de date moyenne avct
 			evalAModif.setDateEffetAvancement(avct.getDateAvctMoy());
 		}
@@ -349,25 +356,30 @@ public class CalculEaeService implements ICalculEaeService {
 		}
 	}
 	
-	private Date getDateEntreeService(Integer idAgent, String codeService) throws SirhWSConsumerException {
+	public Date getDateEntreeService(Integer idAgent, String codeService) throws SirhWSConsumerException {
 		// on cherche toutes les affectations sur le meme service et on prend la date la plus ancienne
 		// NB : pour les affectations successives
 		List<CalculEaeInfosDto> listeAffectationService = sirhWsConsumer.getListeAffectationsAgentAvecService(idAgent, codeService);
 		
 		Date dateDebutService = null;
-		for (int i = 0; i < listeAffectationService.size(); i++) {
-			CalculEaeInfosDto affCours = listeAffectationService.get(i);
-			dateDebutService = affCours.getDateDebut();
-			if (listeAffectationService.size() > i + 1
-				&& listeAffectationService.get(i + 1) != null) {
-				CalculEaeInfosDto affPrecedente = listeAffectationService.get(i + 1);
+		if(null != listeAffectationService) {
+			for (int i = 0; i < listeAffectationService.size(); i++) {
+				CalculEaeInfosDto affCours = listeAffectationService.get(i);
 				
-				Calendar cal = Calendar.getInstance();
-					cal.setTime(affPrecedente.getDateFin());
-					cal.add(Calendar.DAY_OF_YEAR, 1);
-				
-				if (affCours.getDateDebut().equals(cal.getTime())) {
-					dateDebutService = affPrecedente.getDateDebut();
+				if (listeAffectationService.size() > i + 1
+					&& listeAffectationService.get(i + 1) != null) {
+					CalculEaeInfosDto affPrecedente = listeAffectationService.get(i + 1);
+					
+					Calendar cal = Calendar.getInstance();
+						cal.setTime(affPrecedente.getDateFin());
+						cal.add(Calendar.DAY_OF_YEAR, 1);
+					
+					if (affCours.getDateDebut().equals(cal.getTime())) {
+						dateDebutService = affPrecedente.getDateDebut();
+					} else {
+						dateDebutService = affCours.getDateDebut();
+						break;
+					}
 				}
 			}
 		}
@@ -375,9 +387,11 @@ public class CalculEaeService implements ICalculEaeService {
 		return dateDebutService;
 	}
 	
-	private void creerEvaluateur(EaeFichePoste eaeFDP, Eae eae, TitrePosteDto tpResp, FichePosteDto fpResponsable) throws SirhWSConsumerException {
+	public void creerEvaluateur(EaeFichePoste eaeFDP, Eae eae, TitrePosteDto tpResp, FichePosteDto fpResponsable) throws SirhWSConsumerException {
+		
+		eae.getEaeEvaluateurs().clear();
 		// on créer les evaluateurs
-		if (eaeFDP.getIdAgentShd() != null && eaeFDP.getIdAgentShd() != 0 && tpResp != null) {
+		if(null != eaeFDP && eaeFDP.getIdAgentShd() != null && eaeFDP.getIdAgentShd() != 0 && tpResp != null) {
 			// logger.info("Req AS400 : chercherAgent (evaluateur)");
 			Agent agentResp = agentService.getAgent(eaeFDP.getIdAgentShd());
 			EaeEvaluateur eval = new EaeEvaluateur();
@@ -391,20 +405,22 @@ public class CalculEaeService implements ICalculEaeService {
 				eval.setDateEntreeFonction(getDateEntreeAffectation(fpResponsable.getIdFichePoste(), agentResp.getIdAgent()));
 				eval.setDateEntreeService(getDateEntreeService(agentResp.getIdAgent(), fpResponsable.getCodeService()));
 			}
+			eae.getEaeEvaluateurs().add(eval);
+			eaeRepository.persistEntity(eval);
 		}
 	}
 	
-	private Date getDateEntreeAffectation(Integer idFichePoste, Integer idAgent) throws SirhWSConsumerException {
+	public Date getDateEntreeAffectation(Integer idFichePoste, Integer idAgent) throws SirhWSConsumerException {
 		
 		List<CalculEaeInfosDto> listeAffectationSurMemeFDP = sirhWsConsumer.getListeAffectationsAgentAvecFP(idFichePoste, idAgent);
 		
-		if(!listeAffectationSurMemeFDP.isEmpty()) {
+		if(null != listeAffectationSurMemeFDP && !listeAffectationSurMemeFDP.isEmpty()) {
 			return listeAffectationSurMemeFDP.get(0).getDateDebut();
 		}
 		return null;
 	}
 	
-	private void creerFichePoste(FichePosteDto fichePoste, Eae eae, FichePosteDto fpResp, TitrePosteDto tpResp, boolean modifDateFonction, boolean isFPPrimaire) throws SirhWSConsumerException {
+	public void creerFichePoste(FichePosteDto fichePoste, Eae eae, FichePosteDto fpResp, TitrePosteDto tpResp, boolean modifDateFonction, boolean isFPPrimaire) throws SirhWSConsumerException {
 
 		// on traite la fiche de poste
 		if (fichePoste != null) {
@@ -420,12 +436,10 @@ public class CalculEaeService implements ICalculEaeService {
 				eaeFichePoste = new EaeFichePoste();
 			}
 			
-			EaeEvalue evalue = eae.getEaeEvalue();
-			
 			eaeFichePoste.setEae(eae);
 			eaeFichePoste.setIdSirhFichePoste(fichePoste.getIdFichePoste());
 			eaeFichePoste.setPrimary(isFPPrimaire);
-			eaeFichePoste.setService(fichePoste.getCodeService());
+			eaeFichePoste.setCodeService(fichePoste.getCodeService());
 			eaeFichePoste.setDirectionService(fichePoste.getDirection());
 			eaeFichePoste.setService(fichePoste.getService());
 			eaeFichePoste.setSectionService(fichePoste.getSection());
@@ -440,8 +454,8 @@ public class CalculEaeService implements ICalculEaeService {
 			if(null != fichePoste.getTitrePoste()) {
 				eaeFichePoste.setFonction(fichePoste.getTitrePoste().getLibTitrePoste());
 			}
-			if (modifDateFonction && evalue != null) {
-				eaeFichePoste.setDateEntreeFonction(getDateEntreeAffectation(fichePoste.getIdFichePoste(), evalue.getIdAgent()));
+			if (modifDateFonction && null != eae.getEaeEvalue()) {
+				eaeFichePoste.setDateEntreeFonction(getDateEntreeAffectation(fichePoste.getIdFichePoste(), eae.getEaeEvalue().getIdAgent()));
 			}
 			// grade du poste
 			eaeFichePoste.setGradePoste(fichePoste.getGradePoste());
@@ -473,20 +487,22 @@ public class CalculEaeService implements ICalculEaeService {
 		}
 	}
 	
-	private void creerActivitesFichePoste(FichePosteDto fichePoste, EaeFichePoste eaeFichePoste) {
+	public void creerActivitesFichePoste(FichePosteDto fichePoste, EaeFichePoste eaeFichePoste) {
 		
 		eaeFichePoste.getEaeFdpActivites().clear();
 		// gere les activites
-		for (String activite : fichePoste.getActivites()) {
-			EaeFdpActivite acti = new EaeFdpActivite();
-				acti.setEaeFichePoste(eaeFichePoste);
-				acti.setLibelle(activite);
-			eaeRepository.persistEntity(acti);
-			eaeFichePoste.getEaeFdpActivites().add(acti);
+		if(null != fichePoste.getActivites()){
+			for (String activite : fichePoste.getActivites()) {
+				EaeFdpActivite acti = new EaeFdpActivite();
+					acti.setEaeFichePoste(eaeFichePoste);
+					acti.setLibelle(activite);
+				eaeRepository.persistEntity(acti);
+				eaeFichePoste.getEaeFdpActivites().add(acti);
+			}
 		}
 	}
 	
-	private void creerCompetencesFichePoste(FichePosteDto fichePoste, EaeFichePoste eaeFichePoste) {
+	public void creerCompetencesFichePoste(FichePosteDto fichePoste, EaeFichePoste eaeFichePoste) {
 		
 		eaeFichePoste.getEaeFdpCompetences().clear();
 		
@@ -495,90 +511,148 @@ public class CalculEaeService implements ICalculEaeService {
 		creerCompetencesSpecifiquesFichePoste(fichePoste.getSavoirsFaire(), eaeFichePoste, EaeTypeCompetenceEnum.SF);
 	}
 	
-	private void creerCompetencesSpecifiquesFichePoste(List<String> listCompetence, EaeFichePoste eaeFichePoste, EaeTypeCompetenceEnum type) {
+	public void creerCompetencesSpecifiquesFichePoste(List<String> listCompetence, EaeFichePoste eaeFichePoste, EaeTypeCompetenceEnum type) {
 		
-		for (String libelleCompetence : listCompetence) {
-			EaeFdpCompetence compEAE = new EaeFdpCompetence();
-				compEAE.setEaeFichePoste(eaeFichePoste);
-				compEAE.setType(type);
-				compEAE.setLibelle(libelleCompetence);
-			eaeRepository.persistEntity(compEAE);
-			eaeFichePoste.getEaeFdpCompetences().add(compEAE);
+		if(null != listCompetence) {
+			for (String libelleCompetence : listCompetence) {
+				EaeFdpCompetence compEAE = new EaeFdpCompetence();
+					compEAE.setEaeFichePoste(eaeFichePoste);
+					compEAE.setType(type);
+					compEAE.setLibelle(libelleCompetence);
+				eaeRepository.persistEntity(compEAE);
+				eaeFichePoste.getEaeFdpCompetences().add(compEAE);
+			}
 		}
 	}
 	
-	private void creerDiplome(Eae eae, List<DiplomeDto> listDiplomesAgent) {
+	public void creerDiplome(Eae eae, List<DiplomeDto> listDiplomesAgent) {
 		
 		eae.getEaeDiplomes().clear();
-		for (DiplomeDto diplomeDto : listDiplomesAgent) {
-			EaeDiplome eaeDiplome = new EaeDiplome();
-				eaeDiplome.setEae(eae);
-			String anneeObtention = CHAINE_VIDE;
-			if (null != diplomeDto.getDateObtention()) {
-				anneeObtention = sdfYear.format(diplomeDto.getDateObtention()).toString();
+		if(null != listDiplomesAgent) {
+			for (DiplomeDto diplomeDto : listDiplomesAgent) {
+				EaeDiplome eaeDiplome = new EaeDiplome();
+					eaeDiplome.setEae(eae);
+				String anneeObtention = CHAINE_VIDE;
+				if (null != diplomeDto.getDateObtention()) {
+					anneeObtention = sdfYear.format(diplomeDto.getDateObtention()).toString();
+				}
+				eaeDiplome.setLibelleDiplome((anneeObtention.equals(CHAINE_VIDE) ? CHAINE_VIDE : anneeObtention
+						+ " : ")
+						+ diplomeDto.getLibTitreDiplome() + " " + diplomeDto.getLibSpeDiplome());
+				
+				eaeRepository.persistEntity(eaeDiplome);
+				eae.getEaeDiplomes().add(eaeDiplome);
 			}
-			eaeDiplome.setLibelleDiplome((anneeObtention.equals(CHAINE_VIDE) ? CHAINE_VIDE : anneeObtention
-					+ " : ")
-					+ diplomeDto.getLibTitreDiplome() + " " + diplomeDto.getLibSpeDiplome());
-			
-			eaeRepository.persistEntity(eaeDiplome);
-			eae.getEaeDiplomes().add(eaeDiplome);
 		}
 	}
 	
-	private void creerParcoursPro(Agent agent, Eae eae, List<ParcoursProDto> listParcoursPro) throws SirhWSConsumerException {
+	public void creerParcoursPro(Agent agent, Eae eae, List<ParcoursProDto> listParcoursPro) throws SirhWSConsumerException {
+		
+		// on nettoie la liste des parcours pro
+		eae.getEaeParcoursPros().clear();
 		
 		if(null != listParcoursPro) {
-			for (ParcoursProDto ppDto : listParcoursPro) {
+			for (int i=0; i < listParcoursPro.size(); i++) {
 	
+				ParcoursProDto ppDto = listParcoursPro.get(i);
 				EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setEae(eae);
 					parcours.setDateDebut(ppDto.getDateDebut());
-					parcours.setLibelleParcoursPro(ppDto.getDirection() + " " + ppDto.getService());
-					
-				if (null == ppDto.getDateFin()) {
-					// on crée une ligne pour affectation
-					parcours.setDateFin(ppDto.getDateFin());
+					parcours.setLibelleParcoursPro(ppDto.getDirection() + " - " + ppDto.getService());
+				
+				if (null != ppDto.getDateFin()) {
+					for(int j=i; j < listParcoursPro.size(); j++) {
+					// la liste de parcours pro est trie par date de debut croissante du cote de SIRH-WS 
+						if(j+1 < listParcoursPro.size()
+							&& null != listParcoursPro.get(j+1).getDateDebut()
+							&& null != listParcoursPro.get(j).getDateFin()
+							&& ppDto.getService().equals(listParcoursPro.get(j+1).getService())) {
+
+							Calendar cal = Calendar.getInstance();
+								cal.setTime(listParcoursPro.get(j).getDateFin());
+								cal.add(Calendar.DAY_OF_YEAR, 1);
+							
+							if(listParcoursPro.get(j+1).getDateDebut().equals(cal.getTime())) {
+								parcours.setDateFin(listParcoursPro.get(j+1).getDateFin());
+								i=j+1;
+							} else {
+								break;
+							}
+						} else {
+							break;
+						}
+					}
 				} else {
-					//TODO
+					parcours.setDateFin(ppDto.getDateFin());
 				}
 				
 				eaeRepository.persistEntity(parcours);
+				eae.getEaeParcoursPros().add(parcours);
 			}
 		}
 		
+		creerParcoursProAvecAutreAdministration(agent, eae);
+	}
+	
+	public void creerParcoursProAvecAutreAdministration(Agent agent, Eae eae) throws SirhWSConsumerException {
 		// sur autre administration
 		List<AutreAdministrationAgentDto> listAutreAdmin = sirhWsConsumer.getListeAutreAdministrationAgent(agent.getIdAgent());
-		for (int i = 0; i < listAutreAdmin.size(); i++) {
-			AutreAdministrationAgentDto admAgent = listAutreAdmin.get(i);
-
-			EaeParcoursPro parcours = new EaeParcoursPro();
-				parcours.setEae(eae);
-				parcours.setDateDebut(admAgent.getDateEntree());
-				parcours.setLibelleParcoursPro(admAgent.getLibelleAdministration());
-			
-			if (admAgent.getDateSortie() == null || admAgent.getDateSortie().equals(CHAINE_VIDE)
-					|| admAgent.getDateSortie().equals(DATE_NULL)) {
-				parcours.setDateFin(admAgent.getDateSortie() == null
-						|| admAgent.getDateSortie().equals(CHAINE_VIDE)
-						|| admAgent.getDateSortie().equals(DATE_NULL) ? null : admAgent.getDateSortie());
-			} else {
-				//TODO
+		
+		if(null != listAutreAdmin) {
+			for (int i = 0; i < listAutreAdmin.size(); i++) {
+				AutreAdministrationAgentDto admAgent = listAutreAdmin.get(i);
+	
+				EaeParcoursPro parcours = new EaeParcoursPro();
+					parcours.setEae(eae);
+					parcours.setDateDebut(admAgent.getDateEntree());
+					parcours.setLibelleParcoursPro(admAgent.getLibelleAdministration());
+				
+				if (null != admAgent.getDateSortie()) {
+					for(int j=i; j < listAutreAdmin.size(); j++) {
+					// la liste de parcours pro est trie par date de debut croissante du cote de SIRH-WS 
+						if(j+1 < listAutreAdmin.size()
+							&& null != listAutreAdmin.get(j+1).getDateEntree()
+							&& null != listAutreAdmin.get(j).getDateSortie()
+							&& admAgent.getLibelleAdministration().equals(listAutreAdmin.get(j+1).getLibelleAdministration())) {
+	
+							Calendar cal = Calendar.getInstance();
+								cal.setTime(listAutreAdmin.get(j).getDateSortie());
+								cal.add(Calendar.DAY_OF_YEAR, 1);
+							
+							if(listAutreAdmin.get(j+1).getDateEntree().equals(cal.getTime())) {
+								parcours.setDateFin(listAutreAdmin.get(j+1).getDateSortie());
+								i=j+1;
+							} else {
+								break;
+							}
+						} else {
+							break;
+						}
+					}
+				} else {
+					parcours.setDateFin(admAgent.getDateSortie());
+				}
+				
+				eaeRepository.persistEntity(parcours);
+				eae.getEaeParcoursPros().add(parcours);
 			}
-			eaeRepository.persistEntity(parcours);
 		}
 	}
 	
-	private void creerFormation(Eae eae, List<FormationDto> listFormation) {
+	public void creerFormation(Eae eae, List<FormationDto> listFormation) {
 		
-		for (int i = 0; i < listFormation.size(); i++) {
-			FormationDto formation = listFormation.get(i);
-			EaeFormation form = new EaeFormation();
-				form.setEae(eae);
-				form.setAnneeFormation(formation.getAnneeFormation());
-				form.setDureeFormation(formation.getDureeFormation().toString() + " " + formation.getUniteDuree());
-				form.setLibelleFormation(formation.getTitreFormation() + " - " + formation.getCentreFormation());
-			eaeRepository.persistEntity(form);
+		eae.getEaeFormations().clear();
+		if(null != listFormation) {
+			for (int i = 0; i < listFormation.size(); i++) {
+				FormationDto formation = listFormation.get(i);
+				EaeFormation form = new EaeFormation();
+					form.setEae(eae);
+					form.setAnneeFormation(formation.getAnneeFormation());
+					form.setDureeFormation(formation.getDureeFormation().toString() + " " + formation.getUniteDuree());
+					form.setLibelleFormation(formation.getTitreFormation() + " - " + formation.getCentreFormation());
+				eaeRepository.persistEntity(form);
+				eae.getEaeFormations().add(form);
+			}
 		}
 	}
 }

@@ -14,7 +14,7 @@ privileged aspect EaeFichePoste_Roo_Jpa_ActiveRecord {
     @PersistenceContext(unitName = "eaePersistenceUnit")
     transient EntityManager EaeFichePoste.entityManager;
     
-    public static final List<String> EaeFichePoste.fieldNames4OrderClauseFilter = java.util.Arrays.asList("primary", "directionService", "service", "sectionService", "emploi", "fonction", "dateEntreeFonction", "dateEntreeCollectiviteResponsable", "dateEntreeFonctionResponsable", "dateEntreeServiceResponsable", "gradePoste", "localisation", "fonctionResponsable", "idAgentShd", "idSirhFichePoste", "missions", "eae", "eaeFdpActivites", "eaeFdpCompetences", "agentShd");
+    public static final List<String> EaeFichePoste.fieldNames4OrderClauseFilter = java.util.Arrays.asList("primary", "directionService", "service", "sectionService", "emploi", "fonction", "dateEntreeFonction", "dateEntreeCollectiviteResponsable", "dateEntreeFonctionResponsable", "dateEntreeServiceResponsable", "gradePoste", "localisation", "fonctionResponsable", "idAgentShd", "idSirhFichePoste", "missions", "eae", "eaeFdpActivites", "eaeFdpCompetences", "codeService", "agentShd");
     
     public static final EntityManager EaeFichePoste.entityManager() {
         EntityManager em = new EaeFichePoste().entityManager;

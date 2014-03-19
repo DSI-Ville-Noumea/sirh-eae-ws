@@ -36,7 +36,7 @@ public class CalculEaeHelper {
 		return Long.valueOf(delta / MILLISECONDS_PER_DAY).intValue();
 	}
 	
-	public String getPositionAdmEAE(String codePA) {
+	public static String getPositionAdmEAE(String codePA) {
 		if (!codePA.equals("54") && !codePA.equals("56") && !codePA.equals("57")) {
 			// activite
 			return "AC";
@@ -52,7 +52,7 @@ public class CalculEaeHelper {
 		}
 	}
 	
-	public Date getDateAnterieure(Date date1, Date date2) {
+	public static Date getDateAnterieure(Date date1, Date date2) {
 		
 		if (date1 == null && date2 != null) {
 			return date2;

@@ -7,7 +7,6 @@ public interface ICalculEaeService {
 	void creerEaeSansAffecte(Integer idCampagneEae, Integer idAgent)
 			throws SirhWSConsumerException, ParseException;
 
-	void creerEaeAffecte(Integer idCampagneEae, Integer idAgent,
-			Integer anneeCampagne) throws Exception;
+	void creerEaeAffecte(Integer idCampagneEae, Integer idAgent) throws Exception;
 	
 }
