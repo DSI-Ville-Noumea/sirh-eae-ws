@@ -1,6 +1,9 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
+import java.text.ParseException;
+
 import nc.noumea.mairie.sirh.eae.service.ICalculEaeService;
+import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +29,47 @@ public class CalculEaeController {
 	@ResponseBody
 	@RequestMapping(value = "creerEAESansAffecte", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
 	@Transactional(value = "eaeTransactionManager")
-	public ResponseEntity<String> creerEAESansAffecte(@RequestParam("idCampagneEAE") int idCampagneEAE, @RequestParam("idAgent") int idAgent) {
+	public ResponseEntity<String> creerEAESansAffecte(@RequestParam("idCampagneEae") int idCampagneEae, @RequestParam("idAgent") int idAgent) {
 		
 		logger.debug("entered POST [calculEae/creerEAESansAffecte] => creerEAESansAffecte with parameter idCampagneEAE = {} , idAgent = {}",
-				idCampagneEAE, idAgent);
+				idCampagneEae, idAgent);
 		
+		try {	
+			calculEaeService.creerEaeSansAffecte(idCampagneEae, idAgent);
+		} catch (SirhWSConsumerException e) {
+			logger.error(e.getMessage());
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (ParseException e) {
+			logger.error(e.getMessage());
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "creerEaeAffecte", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	@Transactional(value = "eaeTransactionManager")
+	public ResponseEntity<String> creerEaeAffecte(@RequestParam("idCampagneEae") int idCampagneEae, @RequestParam("idAgent") int idAgent) {
+		
+		logger.debug("entered POST [calculEae/creerEaeAffecte] => creerEaeAffecte with parameter idCampagneEAE = {} , idAgent = {}",
+				idCampagneEae, idAgent);
+		
+		try {	
+			calculEaeService.creerEaeAffecte(idCampagneEae, idAgent);
+		} catch (SirhWSConsumerException e) {
+			logger.error(e.getMessage());
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (ParseException e) {
+			logger.error(e.getMessage());
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}

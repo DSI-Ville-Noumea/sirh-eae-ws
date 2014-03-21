@@ -63,7 +63,7 @@ public class CalculEaeService implements ICalculEaeService {
 	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
 	
 	@Override
-	public  void creerEaeAffecte(Integer idCampagneEae, Integer idAgent) throws Exception {
+	public  void creerEaeAffecte(Integer idCampagneEae, Integer idAgent) throws SirhWSConsumerException, ParseException {
 		
 		logger.info("Création de l'EAE pour l'agent : " + idAgent);
 		
