@@ -218,7 +218,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		String output = response.getEntity(String.class);
 		
 		result = new JSONDeserializer<List<T>>().use(null, ArrayList.class)
-				.use("values", targetClass).deserialize(output);
+				.use("values", targetClass).use(Date.class, new MSDateTransformer()).deserialize(output);
 		
 		return result;
 	}
@@ -301,7 +301,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		
 		Map<String, String> parameters = new HashMap<String, String>();
 			parameters.put("idAgent", String.valueOf(idAgent));
-			parameters.put("idService", String.valueOf(idFichePoste));
+			parameters.put("idFichePoste", String.valueOf(idFichePoste));
 	
 		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhListeAffectationsAgentAvecFPUrl());
 	

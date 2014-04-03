@@ -26,6 +26,7 @@
         <class>nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeCampagne</class>
         <class>nc.noumea.mairie.sirh.eae.domain.EaeFinalisation</class>
+        <class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask</class>
       	<exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>

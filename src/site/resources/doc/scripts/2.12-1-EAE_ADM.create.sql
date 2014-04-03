@@ -18,8 +18,8 @@ CREATE TABLE EAE_CAMPAGNE_TASK
 	"ID_CAMPAGNE_EAE" INTEGER not null, 
 	"ANNEE" INTEGER not null, 
 	"ID_AGENT" INTEGER not null, 
-	"DATE_CALCUL_EAE" DATE not null, 
-	"TASK_STATUS" varchar2(255),
+	"DATE_CALCUL_EAE" DATE, 
+	"TASK_STATUS" CLOB,
    constraint PK_CAMPAGNE_TASK
 		 primary key (ID_CAMPAGNE_TASK),
    constraint FK_CAMPAGNE_TASK

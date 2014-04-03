@@ -65,52 +65,66 @@ public class CalculEaeService implements ICalculEaeService {
 	@Override
 	public  void creerEaeAffecte(Integer idCampagneEae, Integer idAgent) throws SirhWSConsumerException, ParseException {
 		
-		logger.info("Création de l'EAE pour l'agent : " + idAgent);
-		
-		EaeCampagne eaeCampagne = eaeRepository.findEaeCampagne(idCampagneEae);
-		// Création de l'EAE
-		Eae eae = new Eae();
-		eae.setEaeCampagne(eaeCampagne);
-		eae.setDocAttache(false);
-		eae.setDateCreation(null);
-
-		// pour le CAP
-		// on cherche si il y a une ligne dans les avancements
-		// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
-		AvancementEaeDto avct = sirhWsConsumer.getAvancement(idAgent, eaeCampagne.getAnnee(), true);
-		if (avct != null && null != avct.getEtat() && avct.getEtat().equals(AvancementEaeDto.SGC)) {
-			// on a trouvé une ligne dans avancement, on regarde l'etat de la ligne
-			// si 'valid DRH' alors on met CAP à true;
-			eae.setCap(true);
-		} else {
-			eae.setCap(false);
+		// si on trouve un EAE dejà existant alors on ne fait rien
+		Eae eae = eaeRepository.findEaeAgent(idAgent, idCampagneEae);
+		if(null == eae) {
+			logger.info("Création de l'EAE pour l'agent : " + idAgent);
+			
+			EaeCampagne eaeCampagne = eaeRepository.findEaeCampagne(idCampagneEae);
+			
+			// Création de l'EAE
+			eae = new Eae();
+			eae.setEaeCampagne(eaeCampagne);
+			eae.setDocAttache(false);
+			eae.setDateCreation(null);
+	
+			// pour le CAP
+			// on cherche si il y a une ligne dans les avancements
+			// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
+			AvancementEaeDto avct = sirhWsConsumer.getAvancement(idAgent, eaeCampagne.getAnnee(), true);
+			if (avct != null && null != avct.getEtat() && avct.getEtat().equals(AvancementEaeDto.SGC)) {
+				// on a trouvé une ligne dans avancement, on regarde l'etat de la ligne
+				// si 'valid DRH' alors on met CAP à true;
+				eae.setCap(true);
+			} else {
+				eae.setCap(false);
+			}
+	
+			eae.setEtat(EaeEtatEnum.NA);
+			
+			Agent agent = agentService.getAgent(idAgent);
+			CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(idAgent, eaeCampagne.getAnnee()-1);
+			// on met les données dans EAE-evalue
+			creerEvalue(agent, eae, affAgent, true, true);
+			// on met les données dans EAE-Diplome
+			creerDiplome(eae, affAgent.getListDiplome());
+			// on met les données dans EAE-Parcours-Pro
+			creerParcoursPro(agent, eae, affAgent.getListParcoursPro());
+			// on met les données dans EAE-Formation
+			creerFormation(eae, affAgent.getListFormation());
+			
+			eaeRepository.persistEntity(eae);
+		}else{
+			logger.info("EAE deja existant pour l'agent : " + idAgent);
 		}
-
-		eae.setEtat(EaeEtatEnum.NA);
-		
-		Agent agent = agentService.getAgent(idAgent);
-		CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(idAgent, eaeCampagne.getAnnee()-1);
-		// on met les données dans EAE-evalue
-		creerEvalue(agent, eae, affAgent, true, true);
-		// on met les données dans EAE-Diplome
-		creerDiplome(eae, affAgent.getListDiplome());
-		// on met les données dans EAE-Parcours-Pro
-		creerParcoursPro(agent, eae, affAgent.getListParcoursPro());
-		// on met les données dans EAE-Formation
-		creerFormation(eae, affAgent.getListFormation());
-		
-		eaeRepository.persistEntity(eae);
 	}
 	
 	@Override
 	public void creerEaeSansAffecte(Integer idCampagneEae, Integer idAgent) throws SirhWSConsumerException, ParseException {
 		
+		// si on trouve un EAE dejà existant alors on ne fait rien
+		Eae eae = eaeRepository.findEaeAgent(idAgent, idCampagneEae);
+		if(null != eae) {
+			logger.info("EAE deja existant pour l'agent : " + idAgent);
+			return;
+		}
+		
 		logger.info("Création de l'EAE pour l'agent : " + idAgent);
 		
 		EaeCampagne eaeCampagne = eaeRepository.findEaeCampagne(idCampagneEae);
 		
 		// Création de l'EAE
-		Eae eae = new Eae();
+		eae = new Eae();
 			eae.setEaeCampagne(eaeCampagne);
 			eae.setDocAttache(false);
 			eae.setDateCreation(null);
@@ -258,7 +272,7 @@ public class CalculEaeService implements ICalculEaeService {
 			}
 		}
 
-		setCarriereActive(eaeInfosDto, evalAModif, eaeAnneePrec);
+		setCarriereActive(eaeInfosDto, evalAModif, eae);
 
 		// on regarde dans l'avancement pour le nouveau grade, le nouvel echelon et la date d'avancement
 		AvancementEaeDto avctFonct = sirhWsConsumer.getAvancement(agent.getIdAgent(), eae.getEaeCampagne().getAnnee(), false);
@@ -280,13 +294,13 @@ public class CalculEaeService implements ICalculEaeService {
 		evalAModif.setEstDetache(agentAffecte);
 		
 		eae.setEaeEvalue(evalAModif);
-		eaeRepository.persistEntity(evalAModif);
+//		eaeRepository.persistEntity(evalAModif);
 	}
 	
 	public void setCarriereActive(CalculEaeInfosDto eaeInfosDto, EaeEvalue evalAModif, Eae eae) {
 		
-		if (null != eaeInfosDto.getCarriereActive()) {
-			evalAModif.setStatut(EaeAgentStatutEnum.valueOf(CalculEaeHelper.getStatutCarriereEAE(eaeInfosDto.getCarriereActive().getCodeCategorie())));
+ 		if (null != eaeInfosDto.getCarriereActive()) {
+			evalAModif.setStatut(EaeAgentStatutEnum.valueOf(CalculEaeHelper.getStatutCarriereEAE(eaeInfosDto.getCarriereActive().getCodeCategorie().toString())));
 			if (EaeAgentStatutEnum.A.equals(evalAModif.getStatut())) {
 				evalAModif.setStatutPrecision(eaeInfosDto.getCarriereActive().getLibelleCategorie());
 			}
@@ -304,11 +318,14 @@ public class CalculEaeService implements ICalculEaeService {
 
 					// pour le grade on cherche la classe si elle existe
 					String classeString = CHAINE_VIDE;
+					if(null != grade.getGradeInitial()) {
+						classeString = grade.getGradeInitial().trim();
+					}
 					if (null != grade.getLibelleClasse()) {
-						classeString = grade.getLibelleClasse();
+						classeString += " " + grade.getLibelleClasse().trim();
 					}
 					
-					evalAModif.setGrade(grade.getGradeInitial() + " " + classeString);
+					evalAModif.setGrade(classeString);
 					evalAModif.setCategorie(grade.getCodeGradeGenerique());
 					
 					// pour l'echelon
@@ -380,6 +397,9 @@ public class CalculEaeService implements ICalculEaeService {
 						dateDebutService = affCours.getDateDebut();
 						break;
 					}
+				}else{
+					dateDebutService = affCours.getDateDebut();
+					break;
 				}
 			}
 		}
@@ -406,13 +426,13 @@ public class CalculEaeService implements ICalculEaeService {
 				eval.setDateEntreeService(getDateEntreeService(agentResp.getIdAgent(), fpResponsable.getCodeService()));
 			}
 			eae.getEaeEvaluateurs().add(eval);
-			eaeRepository.persistEntity(eval);
+//			eaeRepository.persistEntity(eval);
 		}
 	}
 	
 	public Date getDateEntreeAffectation(Integer idFichePoste, Integer idAgent) throws SirhWSConsumerException {
 		
-		List<CalculEaeInfosDto> listeAffectationSurMemeFDP = sirhWsConsumer.getListeAffectationsAgentAvecFP(idFichePoste, idAgent);
+		List<CalculEaeInfosDto> listeAffectationSurMemeFDP = sirhWsConsumer.getListeAffectationsAgentAvecFP(idAgent, idFichePoste );
 		
 		if(null != listeAffectationSurMemeFDP && !listeAffectationSurMemeFDP.isEmpty()) {
 			return listeAffectationSurMemeFDP.get(0).getDateDebut();
@@ -464,10 +484,12 @@ public class CalculEaeService implements ICalculEaeService {
 			
 			if (null != fpResp) {
 				Agent agentResp = agentService.getAgent(fpResp.getIdAgent());
-				eaeFichePoste.setAgentShd(agentResp);
+				
 				eaeFichePoste.setFonctionResponsable(tpResp.getLibTitrePoste());
 				
 				if (null != agentResp) {
+					eaeFichePoste.setAgentShd(agentResp);
+					eaeFichePoste.setIdAgentShd(agentResp.getIdAgent());
 					eaeFichePoste.setDateEntreeCollectiviteResponsable(agentResp.getDateDerniereEmbauche());
 				}
 
@@ -482,7 +504,7 @@ public class CalculEaeService implements ICalculEaeService {
 			creerActivitesFichePoste(fichePoste, eaeFichePoste);
 			creerCompetencesFichePoste(fichePoste, eaeFichePoste);
 			
-			eaeRepository.persistEntity(eaeFichePoste);
+//			eaeRepository.persistEntity(eaeFichePoste);
 			eae.addEaeFichePoste(eaeFichePoste);
 		}
 	}
@@ -496,7 +518,7 @@ public class CalculEaeService implements ICalculEaeService {
 				EaeFdpActivite acti = new EaeFdpActivite();
 					acti.setEaeFichePoste(eaeFichePoste);
 					acti.setLibelle(activite);
-				eaeRepository.persistEntity(acti);
+//				eaeRepository.persistEntity(acti);
 				eaeFichePoste.getEaeFdpActivites().add(acti);
 			}
 		}
@@ -519,7 +541,7 @@ public class CalculEaeService implements ICalculEaeService {
 					compEAE.setEaeFichePoste(eaeFichePoste);
 					compEAE.setType(type);
 					compEAE.setLibelle(libelleCompetence);
-				eaeRepository.persistEntity(compEAE);
+//				eaeRepository.persistEntity(compEAE);
 				eaeFichePoste.getEaeFdpCompetences().add(compEAE);
 			}
 		}
@@ -540,7 +562,7 @@ public class CalculEaeService implements ICalculEaeService {
 						+ " : ")
 						+ diplomeDto.getLibTitreDiplome() + " " + diplomeDto.getLibSpeDiplome());
 				
-				eaeRepository.persistEntity(eaeDiplome);
+//				eaeRepository.persistEntity(eaeDiplome);
 				eae.getEaeDiplomes().add(eaeDiplome);
 			}
 		}
@@ -558,7 +580,7 @@ public class CalculEaeService implements ICalculEaeService {
 				EaeParcoursPro parcours = new EaeParcoursPro();
 					parcours.setEae(eae);
 					parcours.setDateDebut(ppDto.getDateDebut());
-					parcours.setLibelleParcoursPro(ppDto.getDirection() + " - " + ppDto.getService());
+					parcours.setLibelleParcoursPro(ppDto.getDirection() + " " + ppDto.getService());
 				
 				if (null != ppDto.getDateFin()) {
 					for(int j=i; j < listParcoursPro.size(); j++) {
@@ -576,17 +598,16 @@ public class CalculEaeService implements ICalculEaeService {
 								parcours.setDateFin(listParcoursPro.get(j+1).getDateFin());
 								i=j+1;
 							} else {
+								parcours.setDateFin(listParcoursPro.get(j).getDateFin());
 								break;
 							}
 						} else {
+							parcours.setDateFin(listParcoursPro.get(j).getDateFin());
 							break;
 						}
 					}
-				} else {
-					parcours.setDateFin(ppDto.getDateFin());
 				}
 				
-				eaeRepository.persistEntity(parcours);
 				eae.getEaeParcoursPros().add(parcours);
 			}
 		}
@@ -602,39 +623,50 @@ public class CalculEaeService implements ICalculEaeService {
 			for (int i = 0; i < listAutreAdmin.size(); i++) {
 				AutreAdministrationAgentDto admAgent = listAutreAdmin.get(i);
 	
-				EaeParcoursPro parcours = new EaeParcoursPro();
-					parcours.setEae(eae);
-					parcours.setDateDebut(admAgent.getDateEntree());
-					parcours.setLibelleParcoursPro(admAgent.getLibelleAdministration());
+				// mise en place de cette verification, car probleme d index unique rencontre
+				boolean isParcoursExistant = false;
+				for(EaeParcoursPro parcoursDejaCree : eae.getEaeParcoursPros()) {
+					if(parcoursDejaCree.getDateDebut().equals(admAgent.getDateEntree())) {
+						isParcoursExistant = true;
+						break;
+					}
+				}
 				
-				if (null != admAgent.getDateSortie()) {
-					for(int j=i; j < listAutreAdmin.size(); j++) {
-					// la liste de parcours pro est trie par date de debut croissante du cote de SIRH-WS 
-						if(j+1 < listAutreAdmin.size()
-							&& null != listAutreAdmin.get(j+1).getDateEntree()
-							&& null != listAutreAdmin.get(j).getDateSortie()
-							&& admAgent.getLibelleAdministration().equals(listAutreAdmin.get(j+1).getLibelleAdministration())) {
-	
-							Calendar cal = Calendar.getInstance();
-								cal.setTime(listAutreAdmin.get(j).getDateSortie());
-								cal.add(Calendar.DAY_OF_YEAR, 1);
-							
-							if(listAutreAdmin.get(j+1).getDateEntree().equals(cal.getTime())) {
-								parcours.setDateFin(listAutreAdmin.get(j+1).getDateSortie());
-								i=j+1;
+				if(!isParcoursExistant) {
+					EaeParcoursPro parcours = new EaeParcoursPro();
+						parcours.setEae(eae);
+						parcours.setDateDebut(admAgent.getDateEntree());
+						parcours.setLibelleParcoursPro(admAgent.getLibelleAdministration());
+					
+					if (null != admAgent.getDateSortie()) {
+						for(int j=i; j < listAutreAdmin.size(); j++) {
+						// la liste de parcours pro est trie par date de debut croissante du cote de SIRH-WS 
+							if(j+1 < listAutreAdmin.size()
+								&& null != listAutreAdmin.get(j+1).getDateEntree()
+								&& null != listAutreAdmin.get(j).getDateSortie()
+								&& admAgent.getLibelleAdministration().equals(listAutreAdmin.get(j+1).getLibelleAdministration())) {
+		
+								Calendar cal = Calendar.getInstance();
+									cal.setTime(listAutreAdmin.get(j).getDateSortie());
+									cal.add(Calendar.DAY_OF_YEAR, 1);
+								
+								if(listAutreAdmin.get(j+1).getDateEntree().equals(cal.getTime())) {
+									parcours.setDateFin(listAutreAdmin.get(j+1).getDateSortie());
+									i=j+1;
+								} else {
+									break;
+								}
 							} else {
 								break;
 							}
-						} else {
-							break;
 						}
+					} else {
+						parcours.setDateFin(admAgent.getDateSortie());
 					}
-				} else {
-					parcours.setDateFin(admAgent.getDateSortie());
+					
+	//				eaeRepository.persistEntity(parcours);
+					eae.getEaeParcoursPros().add(parcours);
 				}
-				
-				eaeRepository.persistEntity(parcours);
-				eae.getEaeParcoursPros().add(parcours);
 			}
 		}
 	}
@@ -650,7 +682,7 @@ public class CalculEaeService implements ICalculEaeService {
 					form.setAnneeFormation(formation.getAnneeFormation());
 					form.setDureeFormation(formation.getDureeFormation().toString() + " " + formation.getUniteDuree());
 					form.setLibelleFormation(formation.getTitreFormation() + " - " + formation.getCentreFormation());
-				eaeRepository.persistEntity(form);
+//				eaeRepository.persistEntity(form);
 				eae.getEaeFormations().add(form);
 			}
 		}

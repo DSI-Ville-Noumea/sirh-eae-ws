@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -84,10 +85,10 @@ public class EaeFichePoste {
     @JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
     private Eae eae;
 
-    @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EaeFdpActivite> eaeFdpActivites = new HashSet<EaeFdpActivite>();
     
-    @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EaeFdpCompetence> eaeFdpCompetences = new HashSet<EaeFdpCompetence>();
 
     @Column(name = "CODE_SERVICE")

@@ -6,6 +6,7 @@ import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
+import nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask;
 
 import org.springframework.stereotype.Repository;
 
@@ -52,6 +53,20 @@ public class EaeRepository implements IEaeRepository {
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e inner join e.eaeEvalue ev where ev.idAgent = :idAgent and e.eaeCampagne.idCampagneEae = :idEaeCampagne ", Eae.class);
 		eaeQuery.setParameter("idAgent", idAgent);
 		eaeQuery.setParameter("idEaeCampagne", idEaeCampagne);
+		
+		if(0 < eaeQuery.getResultList().size())
+			result = eaeQuery.getSingleResult();
+		
+		return result;
+	}
+	
+	@Override
+	public EaeCampagneTask findEaeCampagneTask(Integer idEaeCampagneTask) {
+		
+		EaeCampagneTask result = null;
+		
+		TypedQuery<EaeCampagneTask> eaeQuery = eaeEntityManager.createNamedQuery("EaeCampagneTask.getEaeCampagneTask", EaeCampagneTask.class);
+			eaeQuery.setParameter("idEaeCampagneTask", idEaeCampagneTask);
 		
 		if(0 < eaeQuery.getResultList().size())
 			result = eaeQuery.getSingleResult();

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 @XmlRootElement
 public class FichePosteDto {
 
@@ -37,7 +36,6 @@ public class FichePosteDto {
 	private String agent;
 	private String categorie;
 	private String filiere;
-	private String diplome;
 	private String superieurHierarchiqueFP;
 	private String superieurHierarchiqueAgent;
 	private String remplaceFP;
@@ -245,14 +243,6 @@ public class FichePosteDto {
 
 	public void setFiliere(String filiere) {
 		this.filiere = filiere;
-	}
-
-	public String getDiplome() {
-		return diplome;
-	}
-
-	public void setDiplome(String diplome) {
-		this.diplome = diplome;
 	}
 
 	public String getSuperieurHierarchiqueFP() {

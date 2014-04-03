@@ -106,13 +106,11 @@ public class CalculEaeServiceTest {
 		EaeEvalue eaeEvalue = new EaeEvalue();
 			eaeEvalue.setDateEntreeFonctionnaire(dateEntreeFonctionnaire);
 			eaeEvalue.setDateEntreeAdministration(dateEntreeAdministration);
-		Eae eaeAnneePrec = new Eae();
-			eaeAnneePrec.setEaeEvalue(eaeEvalue);
 				
 		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
 			Mockito.when(eaeRepository.findEaeCampagne(Mockito.anyInt())).thenReturn(eaeCampagne);
 			Mockito.when(eaeRepository.findEaeCampagneByAnnee(Mockito.anyInt())).thenReturn(campagnePrec);
-			Mockito.when(eaeRepository.findEaeAgent(Mockito.anyInt(), Mockito.anyInt())).thenReturn(eaeAnneePrec);
+			Mockito.when(eaeRepository.findEaeAgent(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 		
 		Agent ag = new Agent();
 			ag.setIdAgent(9005138);
@@ -130,7 +128,6 @@ public class CalculEaeServiceTest {
 		
 		// Then
 		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(Eae.class));
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeEvalue.class));
 	}
 
 	@Test
@@ -189,13 +186,11 @@ public class CalculEaeServiceTest {
 		EaeEvalue eaeEvalue = new EaeEvalue();
 			eaeEvalue.setDateEntreeFonctionnaire(dateEntreeFonctionnaire);
 			eaeEvalue.setDateEntreeAdministration(dateEntreeAdministration);
-		Eae eaeAnneePrec = new Eae();
-			eaeAnneePrec.setEaeEvalue(eaeEvalue);
 				
 		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
 			Mockito.when(eaeRepository.findEaeCampagne(Mockito.anyInt())).thenReturn(eaeCampagne);
 			Mockito.when(eaeRepository.findEaeCampagneByAnnee(Mockito.anyInt())).thenReturn(campagnePrec);
-			Mockito.when(eaeRepository.findEaeAgent(Mockito.anyInt(), Mockito.anyInt())).thenReturn(eaeAnneePrec);
+			Mockito.when(eaeRepository.findEaeAgent(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 		
 		Agent ag = new Agent();
 			ag.setIdAgent(9005138);
@@ -213,7 +208,6 @@ public class CalculEaeServiceTest {
 		
 		// Then
 		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(Eae.class));
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeEvalue.class));
 	}
 	
 	@Test
@@ -286,8 +280,6 @@ public class CalculEaeServiceTest {
 		assertEquals(eae.getEaeEvalue().getDateEntreeFonctionnaire(), dateEntreeFonctionnaire);
 		assertEquals(eae.getEaeEvalue().getPosition(), EaeAgentPositionAdministrativeEnum.D);
 		assertTrue(eae.getEaeEvalue().isEstDetache());
-		
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeEvalue.class));
 	}
 	
 	@Test
@@ -296,7 +288,7 @@ public class CalculEaeServiceTest {
 		GradeDto grade = new GradeDto();
 		
 		CarriereDto carriereActive = new CarriereDto();
-			carriereActive.setCodeCategorie("5");
+			carriereActive.setCodeCategorie(5);
 			carriereActive.setLibelleCategorie("libelleCategorie");
 			carriereActive.setGrade(grade);
 			carriereActive.setDateDebut(sdf.parse("01/04/2011"));
@@ -341,7 +333,7 @@ public class CalculEaeServiceTest {
 			grade.setLibelleEchelon("libelleEchelon");
 		
 		CarriereDto carriereActive = new CarriereDto();
-			carriereActive.setCodeCategorie("1");
+			carriereActive.setCodeCategorie(1);
 			carriereActive.setLibelleCategorie("libelleCategorie");
 			carriereActive.setGrade(grade);
 			carriereActive.setDateDebut(sdf.parse("01/04/2011"));
@@ -380,7 +372,7 @@ public class CalculEaeServiceTest {
 			grade.setLibelleGrade("libelleGrade");
 		
 		CarriereDto carriereActive = new CarriereDto();
-			carriereActive.setCodeCategorie("7");
+			carriereActive.setCodeCategorie(7);
 			carriereActive.setLibelleCategorie("libelleCategorie");
 			carriereActive.setGrade(grade);
 			carriereActive.setDateDebut(sdf.parse("01/04/2011"));
@@ -617,7 +609,6 @@ public class CalculEaeServiceTest {
 		service.creerEvaluateur(eaeFDP, eae, tpResp, null);
 		
 		assertEquals(1, eae.getEaeEvaluateurs().size());
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeEvaluateur.class));
 	}
 	
 	@Test
@@ -643,7 +634,6 @@ public class CalculEaeServiceTest {
 		service.creerEvaluateur(eaeFDP, eae, tpResp, null);
 		
 		assertEquals(0, eae.getEaeEvaluateurs().size());
-		Mockito.verify(eaeRepository, Mockito.times(0)).persistEntity(Mockito.isA(EaeEvaluateur.class));
 	}
 	
 	@Test
@@ -729,7 +719,6 @@ public class CalculEaeServiceTest {
 		service.creerFichePoste(fichePosteDto, eae, fpResp, tpResp, true, true);
 		
 		assertEquals(1, eae.getEaeFichePostes().size());
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeFichePoste.class));
 		
 		EaeFichePoste fichePoste = null;
 		for(EaeFichePoste e : eae.getEaeFichePostes()) {
@@ -774,7 +763,6 @@ public class CalculEaeServiceTest {
 		service.creerActivitesFichePoste(fichePoste, eaeFichePoste);;
 		
 		assertEquals(1, eaeFichePoste.getEaeFdpActivites().size());
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeFdpActivite.class));
 		
 		for(EaeFdpActivite e : eaeFichePoste.getEaeFdpActivites()) {
 			assertEquals(e.getLibelle(), "activites");
@@ -823,7 +811,6 @@ public class CalculEaeServiceTest {
 		service.creerCompetencesFichePoste(fichePoste, eaeFichePoste);;
 		
 		assertEquals(3, eaeFichePoste.getEaeFdpCompetences().size());
-		Mockito.verify(eaeRepository, Mockito.times(3)).persistEntity(Mockito.isA(EaeFdpCompetence.class));
 		
 		for(EaeFdpCompetence e : eaeFichePoste.getEaeFdpCompetences()) {
 			if(e.getLibelle().equals("comportementsProfessionnels")) {
@@ -880,7 +867,6 @@ public class CalculEaeServiceTest {
 		service.creerDiplome(eae, listDiplomesAgent);
 		
 		assertEquals(1, eae.getEaeDiplomes().size());
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeDiplome.class));
 
 		for(EaeDiplome diplome : eae.getEaeDiplomes()) {
 			assertEquals("2014 : libTitreDiplome libSpeDiplome", diplome.getLibelleDiplome());
@@ -950,12 +936,11 @@ public class CalculEaeServiceTest {
 		service.creerParcoursPro(agent, eae, listParcoursPro);
 		
 		assertEquals(1, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 
 		for(EaeParcoursPro parcoursPro : eae.getEaeParcoursPros()) {
 			assertEquals(sdf.parse("10/10/2010"), parcoursPro.getDateDebut());
 			assertNull(parcoursPro.getDateFin());
-			assertEquals("direction - memeService", parcoursPro.getLibelleParcoursPro());
+			assertEquals("direction memeService", parcoursPro.getLibelleParcoursPro());
 		}
 	}
 	
@@ -1005,7 +990,6 @@ public class CalculEaeServiceTest {
 		service.creerParcoursPro(agent, eae, listParcoursPro);
 		
 		assertEquals(2, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(2)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 	}
 	
 	@Test
@@ -1054,7 +1038,6 @@ public class CalculEaeServiceTest {
 		service.creerParcoursPro(agent, eae, listParcoursPro);
 		
 		assertEquals(4, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(4)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 	}
 	
 	@Test
@@ -1103,7 +1086,6 @@ public class CalculEaeServiceTest {
 		service.creerParcoursPro(agent, eae, listParcoursPro);
 		
 		assertEquals(4, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(4)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 	}
 	
 	@Test
@@ -1148,7 +1130,6 @@ public class CalculEaeServiceTest {
 		service.creerParcoursProAvecAutreAdministration(agent, eae);
 		
 		assertEquals(1, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(1)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 	}
 	
 	@Test
@@ -1193,7 +1174,6 @@ public class CalculEaeServiceTest {
 		service.creerParcoursProAvecAutreAdministration(agent, eae);
 		
 		assertEquals(2, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(2)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 	}
 	
 	@Test
@@ -1238,7 +1218,6 @@ public class CalculEaeServiceTest {
 		service.creerParcoursProAvecAutreAdministration(agent, eae);
 		
 		assertEquals(4, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(4)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 	}
 	
 	@Test
@@ -1283,7 +1262,6 @@ public class CalculEaeServiceTest {
 		service.creerParcoursProAvecAutreAdministration(agent, eae);
 		
 		assertEquals(4, eae.getEaeParcoursPros().size());
-		Mockito.verify(eaeRepository, Mockito.times(4)).persistEntity(Mockito.isA(EaeParcoursPro.class));
 	}
 	
 	@Test
@@ -1318,7 +1296,6 @@ public class CalculEaeServiceTest {
 		
 		service.creerFormation(eae, listFormation);
 		
-		Mockito.verify(eaeRepository, Mockito.times(2)).persistEntity(Mockito.isA(EaeFormation.class));
 		assertEquals(eae.getEaeFormations().size(), 2);
 	}
 	

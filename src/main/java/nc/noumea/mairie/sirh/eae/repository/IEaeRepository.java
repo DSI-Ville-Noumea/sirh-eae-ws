@@ -2,6 +2,7 @@ package nc.noumea.mairie.sirh.eae.repository;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
+import nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask;
 
 public interface IEaeRepository {
 
@@ -14,4 +15,6 @@ public interface IEaeRepository {
 	EaeCampagne findEaeCampagneByAnnee(Integer annee);
 	
 	Eae findEaeAgent(Integer idAgent, Integer idEaeCampagne);
+	
+	EaeCampagneTask findEaeCampagneTask(Integer idEaeCampagneTask);
 }

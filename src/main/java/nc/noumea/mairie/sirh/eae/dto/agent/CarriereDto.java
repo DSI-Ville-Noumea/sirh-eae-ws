@@ -6,9 +6,8 @@ public class CarriereDto {
 
 	private Date dateDebut;
 	private Integer noMatr;
-	private String codeCategorie;
+	private Integer codeCategorie;
 	private String libelleCategorie;
-	private String codeGrade;
 	
 	private GradeDto grade;
 
@@ -28,20 +27,12 @@ public class CarriereDto {
 		this.noMatr = noMatr;
 	}
 
-	public String getCodeCategorie() {
+	public Integer getCodeCategorie() {
 		return codeCategorie;
 	}
 
-	public void setCodeCategorie(String codeCategorie) {
+	public void setCodeCategorie(Integer codeCategorie) {
 		this.codeCategorie = codeCategorie;
-	}
-
-	public String getCodeGrade() {
-		return codeGrade;
-	}
-
-	public void setCodeGrade(String codeGrade) {
-		this.codeGrade = codeGrade;
 	}
 
 	public String getLibelleCategorie() {

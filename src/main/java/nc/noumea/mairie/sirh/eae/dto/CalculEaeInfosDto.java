@@ -27,15 +27,12 @@ public class CalculEaeInfosDto {
 	private List<ParcoursProDto> listParcoursPro;
 	
 	private List<FormationDto> listFormation;
-	
 	// mairie.SPADMN
 	private PositionAdmAgentDto positionAdmAgentEnCours;
 	private PositionAdmAgentDto positionAdmAgentAncienne;
 	// mairie.Spcarr
 	CarriereDto carriereFonctionnaireAncienne;
 	CarriereDto carriereActive;
-	
-	AvancementEaeDto avancementEae;
 	
 
 	public FichePosteDto getFichePostePrincipale() {

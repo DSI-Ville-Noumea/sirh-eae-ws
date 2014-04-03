@@ -88,20 +88,20 @@ public class Eae {
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeEvaluateur> eaeEvaluateurs = new HashSet<EaeEvaluateur>();
     
-    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private EaeEvalue eaeEvalue;
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EaeFichePoste> eaeFichePostes = new HashSet<EaeFichePoste>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("idEaeDiplome asc")
 	private Set<EaeDiplome> eaeDiplomes = new HashSet<EaeDiplome>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeParcoursPro> eaeParcoursPros = new HashSet<EaeParcoursPro>();
     
-    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeFormation> eaeFormations = new HashSet<EaeFormation>();
     
     @OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
