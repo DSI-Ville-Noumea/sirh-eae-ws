@@ -65,7 +65,7 @@
 		override="false" />
 
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
-		description="BIRT report viewer base URL for EAEs reporting" value="http://172.16.24.19:8085/birt/"
+		description="BIRT report viewer base URL for EAEs reporting" value="http://***REMOVED***:8085/birt/"
 		override="false" />
 
 </Context>
