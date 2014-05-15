@@ -26,7 +26,7 @@ CREATE TABLE EAE_CAMPAGNE_TASK
          foreign key (ID_CAMPAGNE_EAE)
          references EAE_CAMPAGNE_EAE(ID_CAMPAGNE_EAE)
 ) 
-TABLESPACE TS_SIRHR_DATA;
+TABLESPACE TS_EAE_DATA;
 
 create public synonym EAE_CAMPAGNE_TASK for EAE_CAMPAGNE_TASK;
 grant select, insert, update, delete on EAE_CAMPAGNE_TASK to R_EAE_USR;
