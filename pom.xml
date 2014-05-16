@@ -11,8 +11,8 @@
 		<java.version>7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<roo.version>1.2.5.RELEASE</roo.version>
-		<slf4j.version>1.7.6</slf4j.version>
-		<spring.version>4.0.2.RELEASE</spring.version>
+		<slf4j.version>1.7.7</slf4j.version>
+		<spring.version>4.0.4.RELEASE</spring.version>
 	</properties>
 	<issueManagement>
 		<system>REDMINE</system>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.175</version>
+            <version>1.4.178</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
@@ -130,7 +130,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.3</version>
+			<version>3.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -218,12 +218,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.3.4.Final</version>
+			<version>4.3.5.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.3.4.Final</version>
+			<version>4.3.5.Final</version>
 			<exclusions>
 				<exclusion>
 					<groupId>cglib</groupId>
@@ -243,7 +243,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>5.1.0.Final</version>
+			<version>5.1.1.Final</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.xml.bind</groupId>
@@ -351,7 +351,7 @@
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-jsp</artifactId>
-			<version>3.0.3</version>
+			<version>3.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
