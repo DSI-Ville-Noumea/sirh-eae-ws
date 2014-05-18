@@ -1,61 +1,91 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-	
-	<persistence-unit name="eaePersistenceUnit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>nc.noumea.mairie.sirh.eae.domain.Eae</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluation</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeNiveau</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeEvalue</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeFichePoste</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeFormation</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeDiplome</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeResultat</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaePlanAction</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeCommentaire</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeAppreciation</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeEvolution</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeCampagne</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeFinalisation</class>
-        <class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask</class>
-      	<exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
-            <!-- value="create" to build a new database on each run; value="update" to modify an existing database; value="create-drop" means the same as "create" but also drops tables when Hibernate closes; value="validate" makes no changes to the database -->
-            <property name="hibernate.hbm2ddl.auto" value="validate"/>
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
-            <property name="hibernate.connection.charSet" value="UTF-8"/>
-<!-- 			<property name="hibernate.show_sql" value="true" /> -->
-            <!-- Uncomment the following two properties for JBoss only -->
-            <!-- property name="hibernate.validator.apply_to_ddl" value="false" /-->
-            <!-- property name="hibernate.validator.autoregister_listeners" value="false" /-->
-        </properties>
-    </persistence-unit>
-    
-    <persistence-unit name="sirhPersistenceUnit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>nc.noumea.mairie.sirh.domain.Agent</class>
-        <class>nc.noumea.mairie.mairie.domain.Spbhor</class>
-      	<exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.DB2400Dialect"/>
-            <!-- value="create" to build a new database on each run; value="update" to modify an existing database; value="create-drop" means the same as "create" but also drops tables when Hibernate closes; value="validate" makes no changes to the database -->
-            <property name="hibernate.hbm2ddl.auto" value="validate"/>
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
-            <property name="hibernate.connection.charSet" value="UTF-8"/>
-            <property name="org.hibernate.FlushMode" value="manual"/>
-            <!-- Uncomment the following two properties for JBoss only -->
-            <!-- property name="hibernate.validator.apply_to_ddl" value="false" /-->
-            <!-- property name="hibernate.validator.autoregister_listeners" value="false" /-->
-        </properties>
-    </persistence-unit>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+	<persistence-unit name="eaePersistenceUnit"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>nc.noumea.mairie.sirh.eae.domain.Eae</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluation</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeNiveau</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeEvalue</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeFichePoste</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeFormation</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeDiplome</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeResultat</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaePlanAction</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCommentaire</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeAppreciation</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeEvolution</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagne</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeFinalisation</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
+			<!-- value="create" to build a new database on each run; value="update" 
+				to modify an existing database; value="create-drop" means the same as "create" 
+				but also drops tables when Hibernate closes; value="validate" makes no changes 
+				to the database -->
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy" />
+			<property name="hibernate.connection.charSet" value="UTF-8" />
+			<!-- <property name="hibernate.show_sql" value="true" /> -->
+			<!-- Uncomment the following two properties for JBoss only -->
+			<!-- property name="hibernate.validator.apply_to_ddl" value="false" / -->
+			<!-- property name="hibernate.validator.autoregister_listeners" value="false" 
+				/ -->
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="sirhPersistenceUnit"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>nc.noumea.mairie.sirh.domain.Agent</class>
+		<class>nc.noumea.mairie.mairie.domain.Spbhor</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DB2400Dialect" />
+			<!-- value="create" to build a new database on each run; value="update" 
+				to modify an existing database; value="create-drop" means the same as "create" 
+				but also drops tables when Hibernate closes; value="validate" makes no changes 
+				to the database -->
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy" />
+			<property name="hibernate.connection.charSet" value="UTF-8" />
+			<property name="org.hibernate.FlushMode" value="manual" />
+			<!-- Uncomment the following two properties for JBoss only -->
+			<!-- property name="hibernate.validator.apply_to_ddl" value="false" / -->
+			<!-- property name="hibernate.validator.autoregister_listeners" value="false" 
+				/ -->
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="eaePostgresPersistenceUnit"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<!-- <class>nc.noumea.mairie.sirh.eae.domain.EaeCampagne</class> -->
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<!-- value="create" to build a new database on each run; value="update" 
+				to modify an existing database; value="create-drop" means the same as "create" 
+				but also drops tables when Hibernate closes; value="validate" makes no changes 
+				to the database -->
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy" />
+			<property name="hibernate.connection.charSet" value="UTF-8" />
+			<!-- <property name="hibernate.show_sql" value="true" /> -->
+		</properties>
+	</persistence-unit>
 </persistence>

@@ -55,6 +55,12 @@
 <!-- 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" -->
 <!-- 		jmxEnabled="true" username="opensirh" password="XHUZJ9BBQY" -->
 <!-- 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="***REMOVED***;" /> -->
+
+	<Resource name="jdbc/EAE_WS_DS3" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
+		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
+		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
+		poolPreparedStatements="true" />
 		
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/"

@@ -46,6 +46,9 @@
 
 	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/EAE_WS_DS2"
 		resource-ref="true" />
+		
+	<jee:jndi-lookup id="eaePostgresDataSource" jndi-name="jdbc/EAE_WS_DS3"
+		resource-ref="true" />
 
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
 		id="eaeTransactionManager">
@@ -78,6 +81,21 @@
 		<property name="basename">
 			<value>messages</value>
 		</property>
+	</bean>
+	
+
+	<tx:annotation-driven 
+		transaction-manager="eaePostgresTransactionManager" />
+	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
+		id="eaePostgresTransactionManager" primary="false">
+		<property name="entityManagerFactory" ref="eaePostgresEntityManagerFactory" />
+		<qualifier value="eaePostgresTransactionManager"/>
+	</bean>
+	<bean
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		id="eaePostgresEntityManagerFactory">
+		<property name="persistenceUnitName" value="eaePostgresPersistenceUnit" />
+		<property name="dataSource" ref="eaePostgresDataSource" />
 	</bean>
 	
 	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_BASE_URL" expected-type="java.lang.String"/>
