@@ -1,5 +1,8 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
 import nc.noumea.mairie.sirh.eae.service.EaeReportingServiceException;
@@ -25,13 +28,16 @@ public class EaeReportingController {
 	@Autowired
 	private IEaeReportingService eaeReportingService;
 
+	@PersistenceContext(unitName = "eaePersistenceUnit")
+	private EntityManager eaeEntityManager;
+
 	@ResponseBody
 	@RequestMapping(value = "eae", produces = "application/pdf", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getEaeIdentifitcation(@RequestParam("idEae") int idEae) {
 
 		logger.debug("entered GET [reporting/eae] => getEaeIdentifitcation with parameter  idEae = {}", idEae);
 
-		Eae eae = Eae.findEae(idEae);
+		Eae eae = eaeEntityManager.find(Eae.class, idEae);
 
 		if (eae == null)
 			return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);

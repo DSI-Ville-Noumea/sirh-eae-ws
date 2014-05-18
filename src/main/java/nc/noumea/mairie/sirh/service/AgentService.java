@@ -1,7 +1,10 @@
 package nc.noumea.mairie.sirh.service;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
@@ -66,7 +69,28 @@ public class AgentService implements IAgentService {
 
 	@Override
 	public Agent getAgent(Integer idAgent) {
-		if (idAgent == null) return null;
+		if (idAgent == null)
+			return null;
 		return sirhEntityManager.find(Agent.class, idAgent);
+	}
+
+	@Override
+	public void flush() {
+		sirhEntityManager.flush();
+	}
+
+	@Override
+	public void persist(Agent ag) {
+		sirhEntityManager.persist(ag);
+	}
+
+	@Override
+	public List<Agent> findAgentEntries(int min, int max) {
+		TypedQuery<Agent> query = sirhEntityManager.createQuery("select ag from Agent", Agent.class);
+		query.setFirstResult(min);
+		query.setMaxResults(max);
+		List<Agent> result = query.getResultList();
+
+		return result;
 	}
 }

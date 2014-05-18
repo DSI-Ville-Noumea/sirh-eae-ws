@@ -10,7 +10,6 @@
 		<aspectj.version>1.7.3</aspectj.version>
 		<java.version>7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<roo.version>1.2.5.RELEASE</roo.version>
 		<slf4j.version>1.7.7</slf4j.version>
 		<spring.version>4.0.4.RELEASE</spring.version>
 	</properties>
@@ -41,11 +40,6 @@
 			<name>Spring Maven Milestone Repository</name>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
-		<repository>
-			<id>spring-roo-repository</id>
-			<name>Spring Roo Repository</name>
-			<url>http://spring-roo-repository.springsource.org/release</url>
-		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -57,11 +51,6 @@
 			<id>spring-maven-milestone</id>
 			<name>Spring Maven Milestone Repository</name>
 			<url>http://maven.springframework.org/milestone</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-roo-repository</id>
-			<name>Spring Roo Repository</name>
-			<url>http://spring-roo-repository.springsource.org/release</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
@@ -137,13 +126,6 @@
 			<artifactId>jersey-client</artifactId>
 			<version>1.18.1</version>
 		</dependency>
-		<!-- ROO dependencies -->
-		<dependency>
-			<groupId>org.springframework.roo</groupId>
-			<artifactId>org.springframework.roo.annotations</artifactId>
-			<version>${roo.version}</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -202,19 +184,6 @@
 			<artifactId>spring-oxm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<!-- These 2 dependencies need to be here with Spring 3.2.1.RELEASE
-		A bug https://jira.springsource.org/browse/SPR-10218 prevents 
-		the transitive dependencies from begin loaded. To be removed when switchinh to 3.2.2.RELEASE-->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework</groupId> -->
-<!-- 			<artifactId>spring-tx</artifactId> -->
-<!-- 			<version>${spring.version}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework</groupId> -->
-<!-- 			<artifactId>spring-web</artifactId> -->
-<!-- 			<version>${spring.version}</version> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
@@ -366,7 +335,6 @@
 	</dependencies>
 	<build>
 		<finalName>sirh-eae-ws##${maven.build.timestamp}-${project.version}</finalName>
-		<!-- <finalName>sirh-eae-ws</finalName> -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -433,7 +401,6 @@
 								</formats>
 								<instrumentation>
 						            <excludes>
-						              <exclude>**/*_Roo_*.*</exclude>
 						            </excludes>
 						          </instrumentation>
 							</configuration>
@@ -556,7 +523,6 @@
 					<printSummary>false</printSummary>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 					<excludes>
-						<exclude>**/*_Roo_*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -580,7 +546,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>
-				<!-- Note 2.8 does not work with AspectJ aspect path -->
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
@@ -598,7 +563,6 @@
 					</additionalBuildcommands>
 					<additionalProjectnatures>
 						<projectnature>org.eclipse.ajdt.ui.ajnature</projectnature>
-						<projectnature>com.springsource.sts.roo.core.nature</projectnature>
 						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
 					</additionalProjectnatures>
 				</configuration>

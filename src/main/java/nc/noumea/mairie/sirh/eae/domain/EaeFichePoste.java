@@ -6,11 +6,18 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -18,14 +25,17 @@ import javax.persistence.Transient;
 import nc.noumea.mairie.sirh.domain.Agent;
 
 import org.hibernate.annotations.Type;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_FICHE_POSTE", identifierField = "idEaeFichePoste", identifierType = Integer.class, table = "EAE_FICHE_POSTE", sequenceName = "EAE_S_FICHE_POSTE")
+@Entity
+@Table(name = "EAE_FICHE_POSTE")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeFichePoste {
+
+	@Id
+	@SequenceGenerator(name = "eaeFichePosteGen", sequenceName = "EAE_S_FICHE_POSTE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFichePosteGen")
+	@Column(name = "ID_EAE_FICHE_POSTE")
+	private Integer idEaeFichePoste;
 
     @Column(name = "PRIMAIRE", nullable = false)
     @Type(type="boolean")
@@ -96,4 +106,180 @@ public class EaeFichePoste {
     
     @Transient
     private Agent agentShd;
+
+	public Integer getIdEaeFichePoste() {
+		return idEaeFichePoste;
+	}
+
+	public void setIdEaeFichePoste(Integer idEaeFichePoste) {
+		this.idEaeFichePoste = idEaeFichePoste;
+	}
+
+	public boolean isPrimary() {
+		return primary;
+	}
+
+	public void setPrimary(boolean primary) {
+		this.primary = primary;
+	}
+
+	public String getDirectionService() {
+		return directionService;
+	}
+
+	public void setDirectionService(String directionService) {
+		this.directionService = directionService;
+	}
+
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
+	}
+
+	public String getSectionService() {
+		return sectionService;
+	}
+
+	public void setSectionService(String sectionService) {
+		this.sectionService = sectionService;
+	}
+
+	public String getEmploi() {
+		return emploi;
+	}
+
+	public void setEmploi(String emploi) {
+		this.emploi = emploi;
+	}
+
+	public String getFonction() {
+		return fonction;
+	}
+
+	public void setFonction(String fonction) {
+		this.fonction = fonction;
+	}
+
+	public Date getDateEntreeFonction() {
+		return dateEntreeFonction;
+	}
+
+	public void setDateEntreeFonction(Date dateEntreeFonction) {
+		this.dateEntreeFonction = dateEntreeFonction;
+	}
+
+	public Date getDateEntreeCollectiviteResponsable() {
+		return dateEntreeCollectiviteResponsable;
+	}
+
+	public void setDateEntreeCollectiviteResponsable(Date dateEntreeCollectiviteResponsable) {
+		this.dateEntreeCollectiviteResponsable = dateEntreeCollectiviteResponsable;
+	}
+
+	public Date getDateEntreeFonctionResponsable() {
+		return dateEntreeFonctionResponsable;
+	}
+
+	public void setDateEntreeFonctionResponsable(Date dateEntreeFonctionResponsable) {
+		this.dateEntreeFonctionResponsable = dateEntreeFonctionResponsable;
+	}
+
+	public Date getDateEntreeServiceResponsable() {
+		return dateEntreeServiceResponsable;
+	}
+
+	public void setDateEntreeServiceResponsable(Date dateEntreeServiceResponsable) {
+		this.dateEntreeServiceResponsable = dateEntreeServiceResponsable;
+	}
+
+	public String getGradePoste() {
+		return gradePoste;
+	}
+
+	public void setGradePoste(String gradePoste) {
+		this.gradePoste = gradePoste;
+	}
+
+	public String getLocalisation() {
+		return localisation;
+	}
+
+	public void setLocalisation(String localisation) {
+		this.localisation = localisation;
+	}
+
+	public String getFonctionResponsable() {
+		return fonctionResponsable;
+	}
+
+	public void setFonctionResponsable(String fonctionResponsable) {
+		this.fonctionResponsable = fonctionResponsable;
+	}
+
+	public Integer getIdAgentShd() {
+		return idAgentShd;
+	}
+
+	public void setIdAgentShd(Integer idAgentShd) {
+		this.idAgentShd = idAgentShd;
+	}
+
+	public Integer getIdSirhFichePoste() {
+		return idSirhFichePoste;
+	}
+
+	public void setIdSirhFichePoste(Integer idSirhFichePoste) {
+		this.idSirhFichePoste = idSirhFichePoste;
+	}
+
+	public String getMissions() {
+		return missions;
+	}
+
+	public void setMissions(String missions) {
+		this.missions = missions;
+	}
+
+	public Eae getEae() {
+		return eae;
+	}
+
+	public void setEae(Eae eae) {
+		this.eae = eae;
+	}
+
+	public Set<EaeFdpActivite> getEaeFdpActivites() {
+		return eaeFdpActivites;
+	}
+
+	public void setEaeFdpActivites(Set<EaeFdpActivite> eaeFdpActivites) {
+		this.eaeFdpActivites = eaeFdpActivites;
+	}
+
+	public Set<EaeFdpCompetence> getEaeFdpCompetences() {
+		return eaeFdpCompetences;
+	}
+
+	public void setEaeFdpCompetences(Set<EaeFdpCompetence> eaeFdpCompetences) {
+		this.eaeFdpCompetences = eaeFdpCompetences;
+	}
+
+	public String getCodeService() {
+		return codeService;
+	}
+
+	public void setCodeService(String codeService) {
+		this.codeService = codeService;
+	}
+
+	public Agent getAgentShd() {
+		return agentShd;
+	}
+
+	public void setAgentShd(Agent agentShd) {
+		this.agentShd = agentShd;
+	}
 }

@@ -2,23 +2,32 @@ package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_EVALUATION", identifierField = "idEaeEvaluation", identifierType = Integer.class, table = "EAE_EVALUATION", sequenceName="EAE_S_EVALUATION")
+@Entity
+@Table(name = "EAE_EVALUATION")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeEvaluation {
+
+	@Id
+	@SequenceGenerator(name = "eaeEvaluationGen", sequenceName = "EAE_S_EVALUATION")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvaluationGen")
+	@Column(name = "ID_EAE_EVALUATION")
+	private Integer idEaeEvaluation;
 
     @Column(name = "NOTE_ANNEE", scale = 2, precision = 4, columnDefinition="NUMBER(4,2)")
     private Float noteAnnee;
@@ -68,4 +77,124 @@ public class EaeEvaluation {
     @OneToOne
     @JoinColumn(name = "ID_EAE")
     private Eae eae;
+
+	public Integer getIdEaeEvaluation() {
+		return idEaeEvaluation;
+	}
+
+	public void setIdEaeEvaluation(Integer idEaeEvaluation) {
+		this.idEaeEvaluation = idEaeEvaluation;
+	}
+
+	public Float getNoteAnnee() {
+		return noteAnnee;
+	}
+
+	public void setNoteAnnee(Float noteAnnee) {
+		this.noteAnnee = noteAnnee;
+	}
+
+	public Float getNoteAnneeN1() {
+		return noteAnneeN1;
+	}
+
+	public void setNoteAnneeN1(Float noteAnneeN1) {
+		this.noteAnneeN1 = noteAnneeN1;
+	}
+
+	public Float getNoteAnneeN2() {
+		return noteAnneeN2;
+	}
+
+	public void setNoteAnneeN2(Float noteAnneeN2) {
+		this.noteAnneeN2 = noteAnneeN2;
+	}
+
+	public Float getNoteAnneeN3() {
+		return noteAnneeN3;
+	}
+
+	public void setNoteAnneeN3(Float noteAnneeN3) {
+		this.noteAnneeN3 = noteAnneeN3;
+	}
+
+	public Boolean getAvisRevalorisation() {
+		return avisRevalorisation;
+	}
+
+	public void setAvisRevalorisation(Boolean avisRevalorisation) {
+		this.avisRevalorisation = avisRevalorisation;
+	}
+
+	public String getAvisShd() {
+		return avisShd;
+	}
+
+	public void setAvisShd(String avisShd) {
+		this.avisShd = avisShd;
+	}
+
+	public EaeAvancementEnum getPropositionAvancement() {
+		return propositionAvancement;
+	}
+
+	public void setPropositionAvancement(EaeAvancementEnum propositionAvancement) {
+		this.propositionAvancement = propositionAvancement;
+	}
+
+	public Boolean getAvisChangementClasse() {
+		return avisChangementClasse;
+	}
+
+	public void setAvisChangementClasse(Boolean avisChangementClasse) {
+		this.avisChangementClasse = avisChangementClasse;
+	}
+
+	public EaeNiveauEnum getNiveauEae() {
+		return niveauEae;
+	}
+
+	public void setNiveauEae(EaeNiveauEnum niveauEae) {
+		this.niveauEae = niveauEae;
+	}
+
+	public EaeCommentaire getCommentaireEvaluateur() {
+		return commentaireEvaluateur;
+	}
+
+	public void setCommentaireEvaluateur(EaeCommentaire commentaireEvaluateur) {
+		this.commentaireEvaluateur = commentaireEvaluateur;
+	}
+
+	public EaeCommentaire getCommentaireEvalue() {
+		return commentaireEvalue;
+	}
+
+	public void setCommentaireEvalue(EaeCommentaire commentaireEvalue) {
+		this.commentaireEvalue = commentaireEvalue;
+	}
+
+	public EaeCommentaire getCommentaireAvctEvaluateur() {
+		return commentaireAvctEvaluateur;
+	}
+
+	public void setCommentaireAvctEvaluateur(EaeCommentaire commentaireAvctEvaluateur) {
+		this.commentaireAvctEvaluateur = commentaireAvctEvaluateur;
+	}
+
+	public EaeCommentaire getCommentaireAvctEvalue() {
+		return commentaireAvctEvalue;
+	}
+
+	public void setCommentaireAvctEvalue(EaeCommentaire commentaireAvctEvalue) {
+		this.commentaireAvctEvalue = commentaireAvctEvalue;
+	}
+
+	public Eae getEae() {
+		return eae;
+	}
+
+	public void setEae(Eae eae) {
+		this.eae = eae;
+	}
 }

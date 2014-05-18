@@ -155,10 +155,10 @@ public class EvaluationService implements IEvaluationService {
 		// deleted)
 		for (EaeResultat res : listOfAllResultats) {
 			eae.getEaeResultats().remove(res);
-			res.remove();
+			eaeService.remove(res);
 		}
 
-		eae.flush();
+		eaeService.flush();
 	}
 
 	private void createAndAddNewEaeResultat(Eae eae, EaeResultat resPro, EaeTypeObjectifEnum type) {
@@ -199,7 +199,7 @@ public class EvaluationService implements IEvaluationService {
 	public void setEaeAppreciations(Eae eae, EaeAppreciationsDto dto) {
 
 		eae.getEaeAppreciations().clear();
-		eae.flush();
+		eaeService.flush();
 
 		eae.getEaeEvalue().setEstEncadrant(dto.isEstEncadrant());
 		fillAppreciationsWithArray(eae, dto.getTechniqueEvalue(), dto.getTechniqueEvaluateur(),
@@ -487,7 +487,7 @@ public class EvaluationService implements IEvaluationService {
 
 		for (EaeEvolutionSouhait souhait : listAllEvolutionSouhaits) {
 			evolution.getEaeEvolutionSouhaits().remove(souhait);
-			souhait.remove();
+			eaeService.remove(souhait);
 		}
 
 		// List of Developpements
@@ -508,7 +508,7 @@ public class EvaluationService implements IEvaluationService {
 
 		for (EaeDeveloppement dev : listAllDeveloppements) {
 			evolution.getEaeDeveloppements().remove(dev);
-			dev.remove();
+			eaeService.remove(dev);
 		}
 
 		try {

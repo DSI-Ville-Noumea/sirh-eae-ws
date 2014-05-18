@@ -1,17 +1,16 @@
 package nc.noumea.mairie.mairie.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.PostLoad;
+import javax.persistence.Table;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "sirhPersistenceUnit", table = "SPBHOR", versionField = "")
+@Entity
+@Table(name = "SPBHOR")
+@PersistenceUnit(unitName = "sirhPersistenceUnit")
 @NamedQuery(name = "Spbhor.whereCdTauxNotZero", query = "SELECT sp from Spbhor sp WHERE (sp.taux <> 0 and sp.taux <> 1) order by sp.taux DESC")
 public class Spbhor {
 
@@ -29,6 +28,30 @@ public class Spbhor {
 	protected void repair() {
 		if (label != null)
 			label = label.trim();
+	}
+
+	public Integer getCdThor() {
+		return cdThor;
+	}
+
+	public void setCdThor(Integer cdThor) {
+		this.cdThor = cdThor;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public Double getTaux() {
+		return taux;
+	}
+
+	public void setTaux(Double taux) {
+		this.taux = taux;
 	}
 
 }

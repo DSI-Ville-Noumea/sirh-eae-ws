@@ -3,23 +3,32 @@ package nc.noumea.mairie.sirh.eae.domain;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(table = "EAE_FINALISATION", sequenceName = "EAE_S_FINALISATION", identifierColumn = "ID_EAE_FINALISATION", identifierField = "idEaeFinalisation", identifierType = Integer.class, persistenceUnit = "eaePersistenceUnit")
+@Entity
+@Table(name = "EAE_FINALISATION")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeFinalisation {
-	
+
+	@Id
+	@SequenceGenerator(name = "eaeFinalisationGen", sequenceName = "EAE_S_FINALISATION")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFinalisationGen")
+	@Column(name = "ID_EAE_FINALISATION")
+	private Integer idEaeFinalisation;
+
 	@NotNull
 	@Column(name = "DATE_FINALISATION")
     @Temporal(TemporalType.TIMESTAMP)
@@ -44,4 +53,60 @@ public class EaeFinalisation {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_EAE")
 	private Eae eae;
+
+	public Integer getIdEaeFinalisation() {
+		return idEaeFinalisation;
+	}
+
+	public void setIdEaeFinalisation(Integer idEaeFinalisation) {
+		this.idEaeFinalisation = idEaeFinalisation;
+	}
+
+	public Date getDateFinalisation() {
+		return dateFinalisation;
+	}
+
+	public void setDateFinalisation(Date dateFinalisation) {
+		this.dateFinalisation = dateFinalisation;
+	}
+
+	public int getIdAgent() {
+		return idAgent;
+	}
+
+	public void setIdAgent(int idAgent) {
+		this.idAgent = idAgent;
+	}
+
+	public String getIdGedDocument() {
+		return idGedDocument;
+	}
+
+	public void setIdGedDocument(String idGedDocument) {
+		this.idGedDocument = idGedDocument;
+	}
+
+	public String getVersionGedDocument() {
+		return versionGedDocument;
+	}
+
+	public void setVersionGedDocument(String versionGedDocument) {
+		this.versionGedDocument = versionGedDocument;
+	}
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
+	}
+
+	public Eae getEae() {
+		return eae;
+	}
+
+	public void setEae(Eae eae) {
+		this.eae = eae;
+	}
 }

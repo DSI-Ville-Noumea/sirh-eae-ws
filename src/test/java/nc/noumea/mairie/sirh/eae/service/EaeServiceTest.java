@@ -371,9 +371,10 @@ public class EaeServiceTest {
 
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
-				entManagerMock.createQuery(
-						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
-						Eae.class)).thenReturn(queryMock);
+				entManagerMock
+						.createQuery(
+								"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
+								Eae.class)).thenReturn(queryMock);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
@@ -403,9 +404,10 @@ public class EaeServiceTest {
 
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(
-				entManagerMock.createQuery(
-						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
-						Eae.class)).thenReturn(queryMock);
+				entManagerMock
+						.createQuery(
+								"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
+								Eae.class)).thenReturn(queryMock);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
@@ -501,7 +503,8 @@ public class EaeServiceTest {
 
 		// Given
 		Eae eaeToDelete = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// TODO corriger spy flush
 		eaeToDelete.setIdEae(987);
 		eaeToDelete.setEtat(EaeEtatEnum.C);
 
@@ -516,12 +519,15 @@ public class EaeServiceTest {
 
 		eaeToDelete.getEaeFichePostes().add(fdp);
 
+		EntityManager emMock = Mockito.mock(EntityManager.class);
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
 
 		// When
 		service.resetEaeEvaluateur(eaeToDelete);
 
 		// Then
+		Mockito.verify(emMock, Mockito.times(1)).flush();
 		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
 		assertEquals(10000, eaeToDelete.getEaeEvaluateurs().iterator().next().getIdAgent());
 		assertEquals("fonction responsable", eaeToDelete.getEaeEvaluateurs().iterator().next().getFonction());
@@ -532,7 +538,8 @@ public class EaeServiceTest {
 
 		// Given
 		Eae eaeToDelete = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// TODO corriger spy flush
 		eaeToDelete.setIdEae(987);
 		eaeToDelete.setEtat(EaeEtatEnum.EC);
 
@@ -547,12 +554,16 @@ public class EaeServiceTest {
 
 		eaeToDelete.getEaeFichePostes().add(fdp);
 
+		EntityManager emMock = Mockito.mock(EntityManager.class);
+
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
 
 		// When
 		service.resetEaeEvaluateur(eaeToDelete);
 
 		// Then
+		Mockito.verify(emMock, Mockito.times(1)).flush();
 		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
 		assertEquals(10000, eaeToDelete.getEaeEvaluateurs().iterator().next().getIdAgent());
 		assertEquals("fonction responsable", eaeToDelete.getEaeEvaluateurs().iterator().next().getFonction());
@@ -563,7 +574,8 @@ public class EaeServiceTest {
 
 		// Given
 		Eae eaeToDelete = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// TODO corriger spy flush
 
 		eaeToDelete.setIdEae(987);
 		eaeToDelete.setEtat(EaeEtatEnum.ND);
@@ -579,12 +591,15 @@ public class EaeServiceTest {
 
 		eaeToDelete.getEaeFichePostes().add(fdp);
 
+		EntityManager emMock = Mockito.mock(EntityManager.class);
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
 
 		// When
 		service.resetEaeEvaluateur(eaeToDelete);
 
 		// Then
+		Mockito.verify(emMock, Mockito.times(1)).flush();
 		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
 		assertEquals(10000, eaeToDelete.getEaeEvaluateurs().iterator().next().getIdAgent());
 		assertEquals("fonction responsable", eaeToDelete.getEaeEvaluateurs().iterator().next().getFonction());
@@ -596,7 +611,8 @@ public class EaeServiceTest {
 
 		// Given
 		Eae eaeToDelete = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// org.mockito.Mockito.doNothing().when(eaeToDelete).flush();
+		// TODO corriger spy flush
 		eaeToDelete.setIdEae(987);
 		eaeToDelete.setEtat(EaeEtatEnum.EC);
 
@@ -610,12 +626,15 @@ public class EaeServiceTest {
 
 		eaeToDelete.getEaeFichePostes().add(fdp);
 
+		EntityManager emMock = Mockito.mock(EntityManager.class);
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
 
 		// When
 		service.resetEaeEvaluateur(eaeToDelete);
 
 		// Then
+		Mockito.verify(emMock, Mockito.times(1)).flush();
 		assertEquals(EaeEtatEnum.ND, eaeToDelete.getEtat());
 		assertEquals(0, eaeToDelete.getEaeEvaluateurs().size());
 	}

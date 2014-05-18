@@ -6,29 +6,39 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 
 import org.hibernate.annotations.Type;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", table = "EAE_EVOLUTION", sequenceName = "EAE_S_EVOLUTION", identifierColumn = "ID_EAE_EVOLUTION", identifierField = "idEaeEvolution", identifierType = Integer.class)
+@Entity
+@Table(name = "EAE_EVOLUTION")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeEvolution {
-	
+
+	@Id
+	@SequenceGenerator(name = "eaeEvolutionGen", sequenceName = "EAE_S_EVOLUTION")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvolutionGen")
+	@Column(name = "ID_EAE_EVOLUTION")
+	private Integer idEaeEvolution;
+
 	@Column(name = "MOBILIE_GEO", nullable = false)
     @Type(type="boolean")
     private boolean mobiliteGeo;
@@ -123,4 +133,212 @@ public class EaeEvolution {
 	@ManyToOne
     @JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
     private Eae eae;
+
+	public Integer getIdEaeEvolution() {
+		return idEaeEvolution;
+	}
+
+	public void setIdEaeEvolution(Integer idEaeEvolution) {
+		this.idEaeEvolution = idEaeEvolution;
+	}
+
+	public boolean isMobiliteGeo() {
+		return mobiliteGeo;
+	}
+
+	public void setMobiliteGeo(boolean mobiliteGeo) {
+		this.mobiliteGeo = mobiliteGeo;
+	}
+
+	public boolean isMobiliteFonctionnelle() {
+		return mobiliteFonctionnelle;
+	}
+
+	public void setMobiliteFonctionnelle(boolean mobiliteFonctionnelle) {
+		this.mobiliteFonctionnelle = mobiliteFonctionnelle;
+	}
+
+	public boolean isChangementMetier() {
+		return changementMetier;
+	}
+
+	public void setChangementMetier(boolean changementMetier) {
+		this.changementMetier = changementMetier;
+	}
+
+	public EaeDelaiEnum getDelaiEnvisage() {
+		return delaiEnvisage;
+	}
+
+	public void setDelaiEnvisage(EaeDelaiEnum delaiEnvisage) {
+		this.delaiEnvisage = delaiEnvisage;
+	}
+
+	public boolean isMobiliteService() {
+		return mobiliteService;
+	}
+
+	public void setMobiliteService(boolean mobiliteService) {
+		this.mobiliteService = mobiliteService;
+	}
+
+	public boolean isMobiliteDirection() {
+		return mobiliteDirection;
+	}
+
+	public void setMobiliteDirection(boolean mobiliteDirection) {
+		this.mobiliteDirection = mobiliteDirection;
+	}
+
+	public boolean isMobiliteCollectivite() {
+		return mobiliteCollectivite;
+	}
+
+	public void setMobiliteCollectivite(boolean mobiliteCollectivite) {
+		this.mobiliteCollectivite = mobiliteCollectivite;
+	}
+
+	public String getNomCollectivite() {
+		return nomCollectivite;
+	}
+
+	public void setNomCollectivite(String nomCollectivite) {
+		this.nomCollectivite = nomCollectivite;
+	}
+
+	public boolean isMobiliteAutre() {
+		return mobiliteAutre;
+	}
+
+	public void setMobiliteAutre(boolean mobiliteAutre) {
+		this.mobiliteAutre = mobiliteAutre;
+	}
+
+	public boolean isConcours() {
+		return concours;
+	}
+
+	public void setConcours(boolean concours) {
+		this.concours = concours;
+	}
+
+	public String getNomConcours() {
+		return nomConcours;
+	}
+
+	public void setNomConcours(String nomConcours) {
+		this.nomConcours = nomConcours;
+	}
+
+	public boolean isVae() {
+		return vae;
+	}
+
+	public void setVae(boolean vae) {
+		this.vae = vae;
+	}
+
+	public String getNomVae() {
+		return nomVae;
+	}
+
+	public void setNomVae(String nomVae) {
+		this.nomVae = nomVae;
+	}
+
+	public boolean isTempsPartiel() {
+		return tempsPartiel;
+	}
+
+	public void setTempsPartiel(boolean tempsPartiel) {
+		this.tempsPartiel = tempsPartiel;
+	}
+
+	public Integer getTempsPartielIdSpbhor() {
+		return tempsPartielIdSpbhor;
+	}
+
+	public void setTempsPartielIdSpbhor(Integer tempsPartielIdSpbhor) {
+		this.tempsPartielIdSpbhor = tempsPartielIdSpbhor;
+	}
+
+	public boolean isRetraite() {
+		return retraite;
+	}
+
+	public void setRetraite(boolean retraite) {
+		this.retraite = retraite;
+	}
+
+	public Date getDateRetraite() {
+		return dateRetraite;
+	}
+
+	public void setDateRetraite(Date dateRetraite) {
+		this.dateRetraite = dateRetraite;
+	}
+
+	public boolean isAutrePerspective() {
+		return autrePerspective;
+	}
+
+	public void setAutrePerspective(boolean autrePerspective) {
+		this.autrePerspective = autrePerspective;
+	}
+
+	public String getLibelleAutrePerspective() {
+		return libelleAutrePerspective;
+	}
+
+	public void setLibelleAutrePerspective(String libelleAutrePerspective) {
+		this.libelleAutrePerspective = libelleAutrePerspective;
+	}
+
+	public EaeCommentaire getCommentaireEvolution() {
+		return commentaireEvolution;
+	}
+
+	public void setCommentaireEvolution(EaeCommentaire commentaireEvolution) {
+		this.commentaireEvolution = commentaireEvolution;
+	}
+
+	public EaeCommentaire getCommentaireEvaluateur() {
+		return commentaireEvaluateur;
+	}
+
+	public void setCommentaireEvaluateur(EaeCommentaire commentaireEvaluateur) {
+		this.commentaireEvaluateur = commentaireEvaluateur;
+	}
+
+	public EaeCommentaire getCommentaireEvalue() {
+		return commentaireEvalue;
+	}
+
+	public void setCommentaireEvalue(EaeCommentaire commentaireEvalue) {
+		this.commentaireEvalue = commentaireEvalue;
+	}
+
+	public Set<EaeEvolutionSouhait> getEaeEvolutionSouhaits() {
+		return eaeEvolutionSouhaits;
+	}
+
+	public void setEaeEvolutionSouhaits(Set<EaeEvolutionSouhait> eaeEvolutionSouhaits) {
+		this.eaeEvolutionSouhaits = eaeEvolutionSouhaits;
+	}
+
+	public Set<EaeDeveloppement> getEaeDeveloppements() {
+		return eaeDeveloppements;
+	}
+
+	public void setEaeDeveloppements(Set<EaeDeveloppement> eaeDeveloppements) {
+		this.eaeDeveloppements = eaeDeveloppements;
+	}
+
+	public Eae getEae() {
+		return eae;
+	}
+
+	public void setEae(Eae eae) {
+		this.eae = eae;
+	}
 }

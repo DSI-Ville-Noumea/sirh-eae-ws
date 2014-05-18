@@ -152,7 +152,8 @@ public class EaeService implements IEaeService {
 			eaeToReset.setEtat(EaeEtatEnum.ND);
 
 		eaeToReset.getEaeEvaluateurs().clear();
-		eaeToReset.flush();
+
+		flush();
 
 		EaeFichePoste primaryFichePoste = eaeToReset.getPrimaryFichePoste();
 
@@ -308,8 +309,10 @@ public class EaeService implements IEaeService {
 
 	private List<Eae> findLatestEaesByAgentId(int agentId, int maxResults) {
 
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(
-				"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc", Eae.class);
+		TypedQuery<Eae> eaeQuery = eaeEntityManager
+				.createQuery(
+						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
+						Eae.class);
 		eaeQuery.setParameter("idAgent", agentId);
 		eaeQuery.setMaxResults(maxResults);
 		List<Eae> result = eaeQuery.getResultList();
@@ -392,7 +395,7 @@ public class EaeService implements IEaeService {
 
 	@Override
 	public Eae getEae(int idEae) {
-		return Eae.findEae(idEae);
+		return eaeEntityManager.find(Eae.class, idEae);
 	}
 
 	@Override
@@ -434,5 +437,20 @@ public class EaeService implements IEaeService {
 	@Override
 	public Eae findEae(int idEae) {
 		return eaeEntityManager.find(Eae.class, idEae);
+	}
+
+	@Override
+	public void flush() {
+		eaeEntityManager.flush();
+	}
+
+	@Override
+	public void remove(Object obj) {
+		eaeEntityManager.remove(obj);
+	}
+
+	@Override
+	public void clear() {
+		eaeEntityManager.clear();
 	}
 }

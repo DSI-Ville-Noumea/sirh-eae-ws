@@ -1,17 +1,26 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_FDP_ACTIVITE", identifierField = "idEaeFdpActivite", identifierType = Integer.class, table = "EAE_FDP_ACTIVITE", sequenceName="EAE_S_FDP_ACTIVITE")
+@Entity
+@Table(name = "EAE_FDP_ACTIVITE")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeFdpActivite {
+
+	@Id
+	@SequenceGenerator(name = "eaeFichePosteActiviteGen", sequenceName = "EAE_S_FDP_ACTIVITE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFichePosteActiviteGen")
+	@Column(name = "ID_EAE_FDP_ACTIVITE")
+	private Integer idEaeFdpActivite;
 
     @Column(name = "LIBELLE_ACTIVITE")
     private String libelle;
@@ -19,4 +28,28 @@ public class EaeFdpActivite {
     @ManyToOne
 	@JoinColumn(name = "ID_EAE_FICHE_POSTE", referencedColumnName = "ID_EAE_FICHE_POSTE")
     private EaeFichePoste eaeFichePoste;
+
+	public Integer getIdEaeFdpActivite() {
+		return idEaeFdpActivite;
+	}
+
+	public void setIdEaeFdpActivite(Integer idEaeFdpActivite) {
+		this.idEaeFdpActivite = idEaeFdpActivite;
+	}
+
+	public String getLibelle() {
+		return libelle;
+	}
+
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
+	}
+
+	public EaeFichePoste getEaeFichePoste() {
+		return eaeFichePoste;
+	}
+
+	public void setEaeFichePoste(EaeFichePoste eaeFichePoste) {
+		this.eaeFichePoste = eaeFichePoste;
+	}
 }

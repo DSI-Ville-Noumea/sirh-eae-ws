@@ -1,22 +1,31 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeCompetenceEnum;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_FDP_COMPETENCE", identifierField = "idEaeFdpCompetence", identifierType = Integer.class, table = "EAE_FDP_COMPETENCE", sequenceName="EAE_S_FDP_COMPETENCE")
+@Entity
+@Table(name = "EAE_FDP_COMPETENCE")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeFdpCompetence {
-	
+
+	@Id
+	@SequenceGenerator(name = "eaeFichePosteCompetenceGen", sequenceName = "EAE_S_FDP_COMPETENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFichePosteCompetenceGen")
+	@Column(name = "ID_EAE_FDP_COMPETENCE")
+	private Integer idEaeFdpCompetence;
+
 	@Column(name = "TYPE_COMPETENCE")
 	@Enumerated(EnumType.STRING)
     private EaeTypeCompetenceEnum type;
@@ -27,4 +36,36 @@ public class EaeFdpCompetence {
     @ManyToOne
 	@JoinColumn(name = "ID_EAE_FICHE_POSTE", referencedColumnName = "ID_EAE_FICHE_POSTE")
     private EaeFichePoste eaeFichePoste;
+
+	public Integer getIdEaeFdpCompetence() {
+		return idEaeFdpCompetence;
+	}
+
+	public void setIdEaeFdpCompetence(Integer idEaeFdpCompetence) {
+		this.idEaeFdpCompetence = idEaeFdpCompetence;
+	}
+
+	public EaeTypeCompetenceEnum getType() {
+		return type;
+	}
+
+	public void setType(EaeTypeCompetenceEnum type) {
+		this.type = type;
+	}
+
+	public String getLibelle() {
+		return libelle;
+	}
+
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
+	}
+
+	public EaeFichePoste getEaeFichePoste() {
+		return eaeFichePoste;
+	}
+
+	public void setEaeFichePoste(EaeFichePoste eaeFichePoste) {
+		this.eaeFichePoste = eaeFichePoste;
+	}
 }

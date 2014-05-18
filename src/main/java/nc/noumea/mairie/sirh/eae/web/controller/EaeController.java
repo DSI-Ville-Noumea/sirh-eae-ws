@@ -245,9 +245,9 @@ public class EaeController {
 			EaeFinalizationDto dto = new EaeFinalizationDto().deserializeFromJSON(eaeFinalizationDtoJson);
 			eaeService
 					.finalizEae(eae, agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent), dto);
-			eae.flush();
+			eaeService.flush();
 		} catch (EaeServiceException e) {
-			eae.clear();
+			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 

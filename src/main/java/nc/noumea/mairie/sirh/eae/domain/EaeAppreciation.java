@@ -1,22 +1,31 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", table = "EAE_APPRECIATION", sequenceName = "EAE_S_APPRECIATION", identifierColumn = "ID_EAE_APPRECIATION", identifierField = "idEaeAppreciation", identifierType = Integer.class)
+@Entity
+@Table(name = "EAE_APPRECIATION")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeAppreciation {
+
+	@Id
+	@SequenceGenerator(name = "eaeAppreciationGen", sequenceName = "EAE_S_APPRECIATION")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeAppreciationGen")
+	@Column(name = "ID_EAE_APPRECIATION")
+	private Integer idEaeAppreciation;
 
 	@Column(name = "TYPE_APPRECIATION")
 	@NotNull
@@ -37,4 +46,52 @@ public class EaeAppreciation {
 	@JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
 	@NotNull
 	private Eae eae;
+
+	public Integer getIdEaeAppreciation() {
+		return idEaeAppreciation;
+	}
+
+	public void setIdEaeAppreciation(Integer idEaeAppreciation) {
+		this.idEaeAppreciation = idEaeAppreciation;
+	}
+
+	public EaeTypeAppreciationEnum getTypeAppreciation() {
+		return typeAppreciation;
+	}
+
+	public void setTypeAppreciation(EaeTypeAppreciationEnum typeAppreciation) {
+		this.typeAppreciation = typeAppreciation;
+	}
+
+	public int getNumero() {
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
+	}
+
+	public String getNoteEvalue() {
+		return noteEvalue;
+	}
+
+	public void setNoteEvalue(String noteEvalue) {
+		this.noteEvalue = noteEvalue;
+	}
+
+	public String getNoteEvaluateur() {
+		return noteEvaluateur;
+	}
+
+	public void setNoteEvaluateur(String noteEvaluateur) {
+		this.noteEvaluateur = noteEvaluateur;
+	}
+
+	public Eae getEae() {
+		return eae;
+	}
+
+	public void setEae(Eae eae) {
+		this.eae = eae;
+	}
 }

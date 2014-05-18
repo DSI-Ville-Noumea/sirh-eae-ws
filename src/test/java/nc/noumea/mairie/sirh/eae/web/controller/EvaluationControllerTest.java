@@ -148,7 +148,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -317,7 +318,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -335,6 +337,7 @@ public class EvaluationControllerTest {
 		ResponseEntity<String> result = controller.setEaeResultats(789, 0, json);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).clear();
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
 		assertEquals("message", result.getBody());
 
@@ -441,7 +444,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -535,7 +539,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).flush();
+		// Mockito.doNothing().when(eaeToReturn).flush();
+		// TODO corriger spy flush
 
 		String json = "{}";
 
@@ -556,6 +561,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(1)).setEaeEvaluation(Mockito.eq(eaeToReturn),
 				Mockito.any(EaeEvaluationDto.class));
@@ -567,7 +573,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -588,6 +595,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
 		assertEquals("message", result.getBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).clear();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(0)).setEaeEvaluation(Mockito.eq(eaeToReturn),
 				Mockito.any(EaeEvaluationDto.class));
@@ -600,7 +608,8 @@ public class EvaluationControllerTest {
 
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -619,6 +628,7 @@ public class EvaluationControllerTest {
 		ResponseEntity<String> result = controller.setEaeEvaluation(789, 0, json);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).clear();
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
 		assertEquals("message", result.getBody());
 
@@ -695,7 +705,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).flush();
+		// Mockito.doNothing().when(eaeToReturn).flush();
+		// TODO corriger spy flush
 
 		String json = "{}";
 
@@ -716,6 +727,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(1)).setEaeAutoEvaluation(Mockito.eq(eaeToReturn),
 				Mockito.any(EaeAutoEvaluationDto.class));
@@ -727,7 +739,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -748,6 +761,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
 		assertEquals("message", result.getBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).clear();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(0)).setEaeAutoEvaluation(Mockito.eq(eaeToReturn),
 				Mockito.any(EaeAutoEvaluationDto.class));
@@ -821,7 +835,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).flush();
+		// Mockito.doNothing().when(eaeToReturn).flush();
+		// TODO corriger spy flush
 
 		String json = "{}";
 
@@ -842,6 +857,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(1)).setEaePlanAction(Mockito.eq(eaeToReturn),
 				Mockito.any(EaePlanActionDto.class));
@@ -853,7 +869,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -874,6 +891,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
 		assertEquals("message", result.getBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).clear();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(0)).setEaePlanAction(Mockito.eq(eaeToReturn),
 				Mockito.any(EaePlanActionDto.class));
@@ -947,7 +965,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).flush();
+		// Mockito.doNothing().when(eaeToReturn).flush();
+		// TODO corriger spy flush
 
 		String json = "{}";
 
@@ -968,6 +987,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(1)).setEaeEvolution(Mockito.eq(eaeToReturn),
 				Mockito.any(EaeEvolutionDto.class));
@@ -979,7 +999,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -1000,6 +1021,7 @@ public class EvaluationControllerTest {
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
 		assertEquals("message", result.getBody());
 
+		Mockito.verify(eaeServiceMock, Mockito.times(0)).clear();
 		verify(eaeServiceMock, times(1)).startEae(eaeToReturn);
 		verify(evaluationServiceMock, times(0)).setEaeEvolution(Mockito.eq(eaeToReturn),
 				Mockito.any(EaeEvolutionDto.class));
@@ -1011,7 +1033,8 @@ public class EvaluationControllerTest {
 		// Given
 		// Mock the Eae find static method to return our null eae
 		Eae eaeToReturn = spy(new Eae());
-		Mockito.doNothing().when(eaeToReturn).clear();
+		// Mockito.doNothing().when(eaeToReturn).clear();
+		// TODO à corriger sur le clear
 
 		String json = "{}";
 
@@ -1030,6 +1053,7 @@ public class EvaluationControllerTest {
 		ResponseEntity<String> result = controller.setEaeEvolution(789, 0, json);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).clear();
 		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
 		assertEquals("message", result.getBody());
 

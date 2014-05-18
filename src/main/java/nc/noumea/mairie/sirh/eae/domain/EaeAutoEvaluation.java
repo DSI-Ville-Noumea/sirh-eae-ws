@@ -1,32 +1,81 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", table = "EAE_AUTO_EVALUATION", sequenceName = "EAE_S_AUTO_EVALUATION", identifierColumn = "ID_EAE_AUTO_EVALUATION", identifierField = "idEaeAutoEvaluation", identifierType = Integer.class)
+@Entity
+@Table(name = "EAE_AUTO_EVALUATION")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeAutoEvaluation {
-	
+
+	@Id
+	@SequenceGenerator(name = "eaeAutoEvaluationGen", sequenceName = "EAE_S_AUTO_EVALUATION")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeAutoEvaluationGen")
+	@Column(name = "ID_EAE_AUTO_EVALUATION")
+	private Integer idEaeAutoEvaluation;
+
 	@Column(name = "PARTICULARITES")
 	@Lob
 	private String particularites;
-	
+
 	@Column(name = "ACQUIS")
 	@Lob
 	private String acquis;
-	
+
 	@Column(name = "SUCCES_DIFFICULTES")
 	@Lob
 	private String succesDifficultes;
-	
+
 	@OneToOne
-    @JoinColumn(name = "ID_EAE")
-    private Eae eae;
+	@JoinColumn(name = "ID_EAE")
+	private Eae eae;
+
+	public Integer getIdEaeAutoEvaluation() {
+		return idEaeAutoEvaluation;
+	}
+
+	public void setIdEaeAutoEvaluation(Integer idEaeAutoEvaluation) {
+		this.idEaeAutoEvaluation = idEaeAutoEvaluation;
+	}
+
+	public String getParticularites() {
+		return particularites;
+	}
+
+	public void setParticularites(String particularites) {
+		this.particularites = particularites;
+	}
+
+	public String getAcquis() {
+		return acquis;
+	}
+
+	public void setAcquis(String acquis) {
+		this.acquis = acquis;
+	}
+
+	public String getSuccesDifficultes() {
+		return succesDifficultes;
+	}
+
+	public void setSuccesDifficultes(String succesDifficultes) {
+		this.succesDifficultes = succesDifficultes;
+	}
+
+	public Eae getEae() {
+		return eae;
+	}
+
+	public void setEae(Eae eae) {
+		this.eae = eae;
+	}
 }

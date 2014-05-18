@@ -3,10 +3,17 @@ package nc.noumea.mairie.sirh.eae.domain;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -18,14 +25,17 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 
 import org.hibernate.annotations.Type;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_EVALUE", identifierField = "idEaeEvalue", identifierType = Integer.class, table = "EAE_EVALUE", sequenceName="EAE_S_EVALUE")
+@Entity
+@Table(name = "EAE_EVALUE")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeEvalue {
+
+	@Id
+	@SequenceGenerator(name = "eaeEvalueGen", sequenceName = "EAE_S_EVALUE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvalueGen")
+	@Column(name = "ID_EAE_EVALUE")
+	private Integer idEaeEvalue;
 
     @Column(name = "ID_AGENT")
     private int idAgent;
@@ -140,4 +150,212 @@ public class EaeEvalue {
     	
     	return "(NR)";
     }
+
+	public Integer getIdEaeEvalue() {
+		return idEaeEvalue;
+	}
+
+	public void setIdEaeEvalue(Integer idEaeEvalue) {
+		this.idEaeEvalue = idEaeEvalue;
+	}
+
+	public int getIdAgent() {
+		return idAgent;
+	}
+
+	public void setIdAgent(int idAgent) {
+		this.idAgent = idAgent;
+	}
+
+	public Date getDateEntreeService() {
+		return dateEntreeService;
+	}
+
+	public void setDateEntreeService(Date dateEntreeService) {
+		this.dateEntreeService = dateEntreeService;
+	}
+
+	public Date getDateEntreeCollectivite() {
+		return dateEntreeCollectivite;
+	}
+
+	public void setDateEntreeCollectivite(Date dateEntreeCollectivite) {
+		this.dateEntreeCollectivite = dateEntreeCollectivite;
+	}
+
+	public Date getDateEntreeFonctionnaire() {
+		return dateEntreeFonctionnaire;
+	}
+
+	public void setDateEntreeFonctionnaire(Date dateEntreeFonctionnaire) {
+		this.dateEntreeFonctionnaire = dateEntreeFonctionnaire;
+	}
+
+	public Date getDateEntreeAdministration() {
+		return dateEntreeAdministration;
+	}
+
+	public void setDateEntreeAdministration(Date dateEntreeAdministration) {
+		this.dateEntreeAdministration = dateEntreeAdministration;
+	}
+
+	public EaeAgentStatutEnum getStatut() {
+		return statut;
+	}
+
+	public void setStatut(EaeAgentStatutEnum statut) {
+		this.statut = statut;
+	}
+
+	public String getStatutPrecision() {
+		return statutPrecision;
+	}
+
+	public void setStatutPrecision(String statutPrecision) {
+		this.statutPrecision = statutPrecision;
+	}
+
+	public Integer getAncienneteEchelonJours() {
+		return ancienneteEchelonJours;
+	}
+
+	public void setAncienneteEchelonJours(Integer ancienneteEchelonJours) {
+		this.ancienneteEchelonJours = ancienneteEchelonJours;
+	}
+
+	public String getCadre() {
+		return cadre;
+	}
+
+	public void setCadre(String cadre) {
+		this.cadre = cadre;
+	}
+
+	public String getCategorie() {
+		return categorie;
+	}
+
+	public void setCategorie(String categorie) {
+		this.categorie = categorie;
+	}
+
+	public String getClassification() {
+		return classification;
+	}
+
+	public void setClassification(String classification) {
+		this.classification = classification;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public String getEchelon() {
+		return echelon;
+	}
+
+	public void setEchelon(String echelon) {
+		this.echelon = echelon;
+	}
+
+	public Date getDateEffetAvancement() {
+		return dateEffetAvancement;
+	}
+
+	public void setDateEffetAvancement(Date dateEffetAvancement) {
+		this.dateEffetAvancement = dateEffetAvancement;
+	}
+
+	public String getNouvGrade() {
+		return nouvGrade;
+	}
+
+	public void setNouvGrade(String nouvGrade) {
+		this.nouvGrade = nouvGrade;
+	}
+
+	public String getNouvEchelon() {
+		return nouvEchelon;
+	}
+
+	public void setNouvEchelon(String nouvEchelon) {
+		this.nouvEchelon = nouvEchelon;
+	}
+
+	public boolean isEstEncadrant() {
+		return estEncadrant;
+	}
+
+	public void setEstEncadrant(boolean estEncadrant) {
+		this.estEncadrant = estEncadrant;
+	}
+
+	public boolean isEstDetache() {
+		return estDetache;
+	}
+
+	public void setEstDetache(boolean estDetache) {
+		this.estDetache = estDetache;
+	}
+
+	public EaeTypeAvctEnum getTypeAvancement() {
+		return typeAvancement;
+	}
+
+	public void setTypeAvancement(EaeTypeAvctEnum typeAvancement) {
+		this.typeAvancement = typeAvancement;
+	}
+
+	public EaeAgentPositionAdministrativeEnum getPosition() {
+		return position;
+	}
+
+	public void setPosition(EaeAgentPositionAdministrativeEnum position) {
+		this.position = position;
+	}
+
+	public Integer getAvctDureeMin() {
+		return avctDureeMin;
+	}
+
+	public void setAvctDureeMin(Integer avctDureeMin) {
+		this.avctDureeMin = avctDureeMin;
+	}
+
+	public Integer getAvctDureeMoy() {
+		return avctDureeMoy;
+	}
+
+	public void setAvctDureeMoy(Integer avctDureeMoy) {
+		this.avctDureeMoy = avctDureeMoy;
+	}
+
+	public Integer getAvctDureeMax() {
+		return avctDureeMax;
+	}
+
+	public void setAvctDureeMax(Integer avctDureeMax) {
+		this.avctDureeMax = avctDureeMax;
+	}
+
+	public Eae getEae() {
+		return eae;
+	}
+
+	public void setEae(Eae eae) {
+		this.eae = eae;
+	}
+
+	public Agent getAgent() {
+		return agent;
+	}
+
+	public void setAgent(Agent agent) {
+		this.agent = agent;
+	}
 }

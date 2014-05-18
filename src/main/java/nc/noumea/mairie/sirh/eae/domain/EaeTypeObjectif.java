@@ -1,24 +1,49 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(persistenceUnit = "eaePersistenceUnit", identifierColumn = "ID_EAE_TYPE_OBJECTIF", identifierField = "idEaeTypeObjectif", identifierType = Integer.class, table = "EAE_TYPE_OBJECTIF", versionField = "", sequenceName="EAE_S_TYPE_OBJECTIF")
+@Entity
+@Table(name = "EAE_TYPE_OBJECTIF")
+@PersistenceUnit(unitName = "eaePersistenceUnit")
 public class EaeTypeObjectif {
-	
+
+	@Id
+	@SequenceGenerator(name = "eaeTypeObjectifGen", sequenceName = "EAE_S_TYPE_OBJECTIF")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeTypeObjectifGen")
+	@Column(name = "ID_EAE_TYPE_OBJECTIF")
+	private Integer idEaeTypeObjectif;
+
 	@Column(name = "LIBELLE_TYPE_OBJECTIF")
 	private String libelle;
-	
+
 	@Transient
 	public EaeTypeObjectifEnum getTypeObjectifAsEnum() {
-    	return EaeTypeObjectifEnum.valueOf(libelle);
-    }
+		return EaeTypeObjectifEnum.valueOf(libelle);
+	}
+
+	public Integer getIdEaeTypeObjectif() {
+		return idEaeTypeObjectif;
+	}
+
+	public void setIdEaeTypeObjectif(Integer idEaeTypeObjectif) {
+		this.idEaeTypeObjectif = idEaeTypeObjectif;
+	}
+
+	public String getLibelle() {
+		return libelle;
+	}
+
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
+	}
 }

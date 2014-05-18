@@ -58,6 +58,7 @@ import nc.noumea.mairie.sirh.service.IAgentService;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -286,14 +287,18 @@ public class EvaluationServiceTest {
 		dto.setIdEae(789);
 
 		Eae eae = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeResultats(eae, dto);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		assertEquals(dto.getCommentaireGeneral(), eae.getCommentaire().getText());
 	}
 
@@ -306,22 +311,28 @@ public class EvaluationServiceTest {
 		dto.setIdEae(789);
 
 		Eae eae = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
 		EaeCommentaire c = new EaeCommentaire();
 		c.setText("text before");
 		eae.setCommentaire(c);
 
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeResultats(eae, dto);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		assertEquals(dto.getCommentaireGeneral(), eae.getCommentaire().getText());
 	}
 
 	@Test
-	public void testSetEaeResultats_1NewResultatPro_createResultatWithRightObjectifType() throws EvaluationServiceException {
+	public void testSetEaeResultats_1NewResultatPro_createResultatWithRightObjectifType()
+			throws EvaluationServiceException {
 
 		// Given
 		EaeResultatsDto dto = new EaeResultatsDto();
@@ -335,15 +346,19 @@ public class EvaluationServiceTest {
 		dto.getObjectifsProfessionnels().add(r);
 
 		Eae eae = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "typeObjectifService", objService);
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeResultats(eae, dto);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		assertEquals(1, eae.getEaeResultats().size());
 
 		Iterator<EaeResultat> it = eae.getEaeResultats().iterator();
@@ -356,7 +371,8 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeResultats_1NewResultatIndividuel_createResultatWithRightObjectifType() throws EvaluationServiceException {
+	public void testSetEaeResultats_1NewResultatIndividuel_createResultatWithRightObjectifType()
+			throws EvaluationServiceException {
 
 		// Given
 		EaeResultatsDto dto = new EaeResultatsDto();
@@ -371,15 +387,19 @@ public class EvaluationServiceTest {
 		dto.getObjectifsIndividuels().add(r2);
 
 		Eae eae = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
 
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "typeObjectifService", objService);
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeResultats(eae, dto);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		assertEquals(1, eae.getEaeResultats().size());
 
 		Iterator<EaeResultat> it = eae.getEaeResultats().iterator();
@@ -407,7 +427,8 @@ public class EvaluationServiceTest {
 		dto.getObjectifsProfessionnels().add(r);
 
 		Eae eae = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
 		EaeResultat existingResultat = new EaeResultat();
 		existingResultat.setEae(eae);
 		existingResultat.setIdEaeResultat(678);
@@ -418,12 +439,16 @@ public class EvaluationServiceTest {
 		existingResultat.setCommentaire(c);
 		eae.getEaeResultats().add(existingResultat);
 
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeResultats(eae, dto);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		assertEquals(1, eae.getEaeResultats().size());
 
 		Iterator<EaeResultat> it = eae.getEaeResultats().iterator();
@@ -435,7 +460,8 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeResultats_2ExistingResultats_1MissingInDto_deleteResultatAndComment() throws EvaluationServiceException {
+	public void testSetEaeResultats_2ExistingResultats_1MissingInDto_deleteResultatAndComment()
+			throws EvaluationServiceException {
 
 		// Given
 		EaeResultatsDto dto = new EaeResultatsDto();
@@ -450,7 +476,8 @@ public class EvaluationServiceTest {
 		dto.getObjectifsProfessionnels().add(r);
 
 		Eae eae = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
 		EaeResultat existingResultat = new EaeResultat();
 		existingResultat.setEae(eae);
 		existingResultat.setIdEaeResultat(678);
@@ -463,7 +490,8 @@ public class EvaluationServiceTest {
 		eae.getEaeResultats().add(existingResultat);
 
 		EaeResultat existingResultat2 = spy(new EaeResultat());
-		org.mockito.Mockito.doNothing().when(existingResultat2).remove();
+		// org.mockito.Mockito.doNothing().when(existingResultat2).remove();
+		// TODO gerer le remove
 		existingResultat2.setEae(eae);
 		existingResultat2.setIdEaeResultat(679);
 		existingResultat2.setObjectif("old obj2");
@@ -474,12 +502,17 @@ public class EvaluationServiceTest {
 		existingResultat2.setCommentaire(cExisting2);
 		eae.getEaeResultats().add(existingResultat2);
 
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
+
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeResultats(eae, dto);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).remove(existingResultat2);
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		assertEquals(1, eae.getEaeResultats().size());
 
 		Iterator<EaeResultat> it = eae.getEaeResultats().iterator();
@@ -489,7 +522,8 @@ public class EvaluationServiceTest {
 		assertEquals("new res", resultat.getResultat());
 		assertEquals("new obj comment", resultat.getCommentaire().getText());
 
-		org.mockito.Mockito.verify(existingResultat2).remove();
+		// org.mockito.Mockito.verify(existingResultat2).remove();
+		// TODO gerer le remove
 	}
 
 	@Test
@@ -515,7 +549,8 @@ public class EvaluationServiceTest {
 		// Given
 		Eae eae = spy(new Eae());
 		eae.setEaeEvalue(new EaeEvalue());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
 
 		eae.setIdEae(789);
 		EaeAppreciationsDto dto = new EaeAppreciationsDto();
@@ -530,12 +565,15 @@ public class EvaluationServiceTest {
 		dto.setResultatsEvaluateur(new String[] { "A", "B", "C", "D" });
 		dto.setResultatsEvalue(new String[] { "A", "B", "C", "D" });
 
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 		EvaluationService service = new EvaluationService();
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeAppreciations(eae, dto);
 
 		// Then
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).flush();
 		assertEquals(16, eae.getEaeAppreciations().size());
 		assertTrue(eae.getEaeEvalue().isEstEncadrant());
 	}
@@ -566,7 +604,8 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeEvaluation_valuesInDto_setEaeEvaluationValues() throws EvaluationServiceException, EaeDataConsistencyServiceException {
+	public void testSetEaeEvaluation_valuesInDto_setEaeEvaluationValues() throws EvaluationServiceException,
+			EaeDataConsistencyServiceException {
 
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
@@ -622,8 +661,8 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeEvaluation_valuesInDtoAndExistingValuesInEvaluation_overwriteValues() throws EvaluationServiceException,
-			EaeDataConsistencyServiceException {
+	public void testSetEaeEvaluation_valuesInDtoAndExistingValuesInEvaluation_overwriteValues()
+			throws EvaluationServiceException, EaeDataConsistencyServiceException {
 
 		// Given
 		EaeEvaluationDto dto = new EaeEvaluationDto();
@@ -1122,7 +1161,8 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeEvolution_EmptyEaeEvolutionSetPropertiesAndCommentaire_FillEvolutionfromDto() throws EvaluationServiceException {
+	public void testSetEaeEvolution_EmptyEaeEvolutionSetPropertiesAndCommentaire_FillEvolutionfromDto()
+			throws EvaluationServiceException {
 
 		// Given
 		Eae eae = new Eae();
@@ -1160,7 +1200,7 @@ public class EvaluationServiceTest {
 
 		ValueWithListDto tempsPartiel = new ValueWithListDto();
 		tempsPartiel.setCourant("1");
-		dto.setPourcentageTempsPartiel(tempsPartiel);		
+		dto.setPourcentageTempsPartiel(tempsPartiel);
 
 		Spbhor t = new Spbhor();
 		t.setCdThor(1);
@@ -1204,7 +1244,8 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeEvolution_EmptyEaeEvolutionSetSouhaitsAndDeveloppements_FillEvolutionfromDto() throws EvaluationServiceException {
+	public void testSetEaeEvolution_EmptyEaeEvolutionSetSouhaitsAndDeveloppements_FillEvolutionfromDto()
+			throws EvaluationServiceException {
 
 		// Given
 		Eae eae = new Eae();
@@ -1288,7 +1329,8 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeEvolution_ExistingEaeEvolutionSetSouhait_ReplaceEvolutionfromDto() throws EvaluationServiceException {
+	public void testSetEaeEvolution_ExistingEaeEvolutionSetSouhait_ReplaceEvolutionfromDto()
+			throws EvaluationServiceException {
 
 		// Given
 		Eae eae = new Eae();
@@ -1329,11 +1371,13 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeEvolution_2ExistingEaeEvolutionSetSouhait_ReplaceOneAndDeleteOther() throws EvaluationServiceException {
+	public void testSetEaeEvolution_2ExistingEaeEvolutionSetSouhait_ReplaceOneAndDeleteOther()
+			throws EvaluationServiceException {
 
 		// Given
 		Eae eae = spy(new Eae());
-		org.mockito.Mockito.doNothing().when(eae).flush();
+		// org.mockito.Mockito.doNothing().when(eae).flush();
+		// TODO corriger spy flush
 		eae.setIdEae(19);
 		EaeEvolution evol = new EaeEvolution();
 		eae.setEaeEvolution(evol);
@@ -1345,7 +1389,8 @@ public class EvaluationServiceTest {
 		evol.getEaeEvolutionSouhaits().add(s1);
 
 		EaeEvolutionSouhait s2 = spy(new EaeEvolutionSouhait());
-		org.mockito.Mockito.doNothing().when(s2).remove();
+		// org.mockito.Mockito.doNothing().when(s2).remove();
+		// TODO gerer le remove
 		s2.setIdEaeEvolutionSouhait(90);
 		s2.setSouhait("souhait 2");
 		s2.setSuggestion("suggestion 2");
@@ -1362,9 +1407,11 @@ public class EvaluationServiceTest {
 		dto.getSouhaitsSuggestions().add(existingSouhait);
 
 		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeEvolution(eae, dto);
@@ -1372,15 +1419,19 @@ public class EvaluationServiceTest {
 		// Then
 		EaeEvolution evo = eae.getEaeEvolution();
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).remove(s2);
+		Mockito.verify(eaeServiceMock, Mockito.times(0)).remove(s1);
 		assertEquals(1, evo.getEaeEvolutionSouhaits().size());
 		assertEquals("le souhait existant", evo.getEaeEvolutionSouhaits().iterator().next().getSouhait());
 		assertEquals("la suggestion existante", evo.getEaeEvolutionSouhaits().iterator().next().getSuggestion());
 
-		verify(s2).remove();
+		// verify(s2).remove();
+		// TODO gerer le remove
 	}
 
 	@Test
-	public void testSetEaeEvolution_ExistingEaeEvolutionSetDeveloppement_ReplaceEvolutionfromDto() throws EvaluationServiceException {
+	public void testSetEaeEvolution_ExistingEaeEvolutionSetDeveloppement_ReplaceEvolutionfromDto()
+			throws EvaluationServiceException {
 
 		// Given
 		Eae eae = new Eae();
@@ -1418,11 +1469,13 @@ public class EvaluationServiceTest {
 
 		assertEquals(1, evo.getEaeDeveloppements().size());
 		assertEquals("comportement existant", evo.getEaeDeveloppements().iterator().next().getLibelle());
-		assertEquals(new DateTime(2012, 12, 12, 13, 57, 0, 0).toDate(), evo.getEaeDeveloppements().iterator().next().getEcheance());
+		assertEquals(new DateTime(2012, 12, 12, 13, 57, 0, 0).toDate(), evo.getEaeDeveloppements().iterator().next()
+				.getEcheance());
 	}
 
 	@Test
-	public void testSetEaeEvolution_ExistingEaeEvolutionWithDeveloppement_RemoveDeveloppementfromEvolution() throws EvaluationServiceException {
+	public void testSetEaeEvolution_ExistingEaeEvolutionWithDeveloppement_RemoveDeveloppementfromEvolution()
+			throws EvaluationServiceException {
 
 		// Given
 		Eae eae = new Eae();
@@ -1431,7 +1484,8 @@ public class EvaluationServiceTest {
 		eae.setEaeEvolution(evol);
 
 		EaeDeveloppement existingDeveloppement = spy(new EaeDeveloppement());
-		org.mockito.Mockito.doNothing().when(existingDeveloppement).remove();
+		// org.mockito.Mockito.doNothing().when(existingDeveloppement).remove();
+		// TODO gerer le remove
 		existingDeveloppement.setIdEaeDeveloppement(89);
 		existingDeveloppement.setLibelle("comportement existant");
 		existingDeveloppement.setEcheance(new DateTime(2009, 12, 12, 13, 57, 0, 0).toDate());
@@ -1443,10 +1497,11 @@ public class EvaluationServiceTest {
 		dto.setIdEae(19);
 
 		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
-
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 		// When
 		service.setEaeEvolution(eae, dto);
 
@@ -1455,11 +1510,14 @@ public class EvaluationServiceTest {
 
 		assertEquals(0, evo.getEaeDeveloppements().size());
 
-		org.mockito.Mockito.verify(existingDeveloppement).remove();
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).remove(existingDeveloppement);
+		// org.mockito.Mockito.verify(existingDeveloppement).remove();
+		// TODO gerer le remove
 	}
 
 	@Test
-	public void testSetEaeEvolution_ExistingEaeEvolutionWithEvolSouhait_RemoveEvolSouhaitfromEvolution() throws EvaluationServiceException {
+	public void testSetEaeEvolution_ExistingEaeEvolutionWithEvolSouhait_RemoveEvolSouhaitfromEvolution()
+			throws EvaluationServiceException {
 
 		// Given
 		Eae eae = new Eae();
@@ -1468,7 +1526,8 @@ public class EvaluationServiceTest {
 		eae.setEaeEvolution(evol);
 
 		EaeEvolutionSouhait existingSouhait = spy(new EaeEvolutionSouhait());
-		org.mockito.Mockito.doNothing().when(existingSouhait).remove();
+		// org.mockito.Mockito.doNothing().when(existingSouhait).remove();
+		// TODO gerer le remove
 		existingSouhait.setIdEaeEvolutionSouhait(89);
 		evol.getEaeEvolutionSouhaits().add(existingSouhait);
 
@@ -1476,9 +1535,11 @@ public class EvaluationServiceTest {
 		dto.setIdEae(19);
 
 		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
+		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
+		ReflectionTestUtils.setField(service, "eaeService", eaeServiceMock);
 
 		// When
 		service.setEaeEvolution(eae, dto);
@@ -1486,6 +1547,7 @@ public class EvaluationServiceTest {
 		// Then
 		EaeEvolution evo = eae.getEaeEvolution();
 
+		Mockito.verify(eaeServiceMock, Mockito.times(1)).remove(existingSouhait);
 		assertEquals(0, evo.getEaeEvolutionSouhaits().size());
 	}
 
@@ -1511,14 +1573,15 @@ public class EvaluationServiceTest {
 	}
 
 	@Test
-	public void testSetEaeEvolution_ErrorDuringDataConsistency_throwException() throws EaeDataConsistencyServiceException {
+	public void testSetEaeEvolution_ErrorDuringDataConsistency_throwException()
+			throws EaeDataConsistencyServiceException {
 		// Given
 		Eae eae = new Eae();
 		EaeEvolutionDto dto = new EaeEvolutionDto();
 
 		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
-		doThrow(new EaeDataConsistencyServiceException("La propriété 'delaiEnvisage' de l'évolution est incorrecte.")).when(dataConsistencyService)
-				.checkDataConsistencyForEaeEvolution(eae);
+		doThrow(new EaeDataConsistencyServiceException("La propriété 'delaiEnvisage' de l'évolution est incorrecte."))
+				.when(dataConsistencyService).checkDataConsistencyForEaeEvolution(eae);
 
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
@@ -1563,7 +1626,8 @@ public class EvaluationServiceTest {
 		// Then
 		assertEquals(new DateTime(2012, 01, 03, 0, 0, 0, 0).toDate(), eae.getDateEntretien());
 		assertEquals(new DateTime(1972, 01, 10, 0, 0, 0, 0).toDate(), eae.getEaeEvalue().getDateEntreeAdministration());
-		assertEquals(new DateTime(1984, 06, 15, 0, 0, 0, 0).toDate(), eae.getPrimaryFichePoste().getDateEntreeFonction());
+		assertEquals(new DateTime(1984, 06, 15, 0, 0, 0, 0).toDate(), eae.getPrimaryFichePoste()
+				.getDateEntreeFonction());
 	}
 
 }
