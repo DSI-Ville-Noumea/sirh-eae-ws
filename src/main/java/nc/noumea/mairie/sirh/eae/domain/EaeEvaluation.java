@@ -29,54 +29,54 @@ public class EaeEvaluation {
 	@Column(name = "ID_EAE_EVALUATION")
 	private Integer idEaeEvaluation;
 
-    @Column(name = "NOTE_ANNEE", scale = 2, precision = 4, columnDefinition="DECIMAL")
-    private Double noteAnnee;
+	@Column(name = "NOTE_ANNEE", columnDefinition = "numeric")
+	private Float noteAnnee;
 
-    @Column(name = "NOTE_ANNEE_N1", scale = 2, precision = 4, columnDefinition="DECIMAL(4,2)")
-    private Float noteAnneeN1;
+	@Column(name = "NOTE_ANNEE_N1", columnDefinition = "numeric")
+	private Float noteAnneeN1;
 
-    @Column(name = "NOTE_ANNEE_N2", scale = 2, precision = 4, columnDefinition="DECIMAL(4,2)")
-    private Float noteAnneeN2;
+	@Column(name = "NOTE_ANNEE_N2", columnDefinition = "numeric")
+	private Float noteAnneeN2;
 
-    @Column(name = "NOTE_ANNEE_N3", scale = 2, precision = 4, columnDefinition="DECIMAL(4,2)")
-    private Float noteAnneeN3;
+	@Column(name = "NOTE_ANNEE_N3", columnDefinition = "numeric")
+	private Float noteAnneeN3;
 
-    @Column(name = "AVIS_REVALORISATION")
-    private Boolean avisRevalorisation;
-    
-    @Column(name = "AVIS_SHD")
-    private String avisShd;
+	@Column(name = "AVIS_REVALORISATION")
+	private Boolean avisRevalorisation;
 
-    @Column(name = "PROPOSITION_AVANCEMENT")
-    @Enumerated(EnumType.STRING)
-    private EaeAvancementEnum propositionAvancement;
+	@Column(name = "AVIS_SHD")
+	private String avisShd;
 
-    @Column(name = "AVIS_CHANGEMENT_CLASSE")
-    private Boolean avisChangementClasse;
+	@Column(name = "PROPOSITION_AVANCEMENT")
+	@Enumerated(EnumType.STRING)
+	private EaeAvancementEnum propositionAvancement;
 
-    @Column(name = "NIVEAU")
-    @Enumerated(EnumType.STRING)
-    private EaeNiveauEnum niveauEae;
-    
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COM_EVALUATEUR")
-    private EaeCommentaire commentaireEvaluateur;
-    
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COM_EVALUE")
-    private EaeCommentaire commentaireEvalue;
-    
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COM_AVCT_EVALUATEUR")
-    private EaeCommentaire commentaireAvctEvaluateur;
-    
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COM_AVCT_EVALUE")
-    private EaeCommentaire commentaireAvctEvalue;
-    
-    @OneToOne
-    @JoinColumn(name = "ID_EAE")
-    private Eae eae;
+	@Column(name = "AVIS_CHANGEMENT_CLASSE")
+	private Boolean avisChangementClasse;
+
+	@Column(name = "NIVEAU")
+	@Enumerated(EnumType.STRING)
+	private EaeNiveauEnum niveauEae;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "ID_EAE_COM_EVALUATEUR")
+	private EaeCommentaire commentaireEvaluateur;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "ID_EAE_COM_EVALUE")
+	private EaeCommentaire commentaireEvalue;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "ID_EAE_COM_AVCT_EVALUATEUR")
+	private EaeCommentaire commentaireAvctEvaluateur;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "ID_EAE_COM_AVCT_EVALUE")
+	private EaeCommentaire commentaireAvctEvalue;
+
+	@OneToOne
+	@JoinColumn(name = "ID_EAE")
+	private Eae eae;
 
 	public Integer getIdEaeEvaluation() {
 		return idEaeEvaluation;
@@ -86,11 +86,11 @@ public class EaeEvaluation {
 		this.idEaeEvaluation = idEaeEvaluation;
 	}
 
-	public Double getNoteAnnee() {
+	public Float getNoteAnnee() {
 		return noteAnnee;
 	}
 
-	public void setNoteAnnee(Double noteAnnee) {
+	public void setNoteAnnee(Float noteAnnee) {
 		this.noteAnnee = noteAnnee;
 	}
 
