@@ -83,21 +83,6 @@
 		</property>
 	</bean>
 	
-
-	<tx:annotation-driven 
-		transaction-manager="eaePostgresTransactionManager" />
-	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
-		id="eaePostgresTransactionManager" primary="false">
-		<property name="entityManagerFactory" ref="eaePostgresEntityManagerFactory" />
-		<qualifier value="eaePostgresTransactionManager"/>
-	</bean>
-	<bean
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-		id="eaePostgresEntityManagerFactory">
-		<property name="persistenceUnitName" value="eaePostgresPersistenceUnit" />
-		<property name="dataSource" ref="eaePostgresDataSource" />
-	</bean>
-	
 	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_BASE_URL" expected-type="java.lang.String"/>
 	
 	<jee:jndi-lookup id="reportServerPath" jndi-name="REPORTING_SERVER_REPORT_PATH" expected-type="java.lang.String"/>

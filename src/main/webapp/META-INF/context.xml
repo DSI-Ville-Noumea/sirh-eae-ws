@@ -24,16 +24,10 @@
 		/> -->
 
 	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual"
-		maxWait="10000" initialSize="1" username="EAE" password="EAE"
-		driverClassName="oracle.jdbc.driver.OracleDriver" url="***REMOVED***"
-		poolPreparedStatements="true" /> 
-		
-<!-- 	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource" -->
-<!-- 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1 from dual" -->
-<!-- 		maxWait="10000" initialSize="1" username="EAE_Debug" password="qsd159" -->
-<!-- 		driverClassName="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@svpdoracle.site-mairie.noumea.nc:1525:SIRHP" -->
-<!-- 		poolPreparedStatements="true" /> -->
+		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
+		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
+		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
+		poolPreparedStatements="true" />
 
 
 	<Resource name="jdbc/EAE_WS_DS2" auth="Container" type="javax.sql.DataSource"
@@ -44,24 +38,20 @@
 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500"
 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
 		jmxEnabled="true" username="opensirh" password="XHUZJ9BBQY"
-		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
+		driverClassName="com.ibm.as400.access.AS400JDBCDriver"
+		url="jdbc:as400://robinnw;naming=system;libraries=MAIRIE,SIRH,SYSIBM;" />
 
-<!-- 	<Resource name="jdbc/EAE_WS_DS2" auth="Container" type="javax.sql.DataSource" -->
-<!-- 		factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory" -->
-<!-- 		testWhileIdle="true" testOnBorrow="true" testOnReturn="false" -->
-<!-- 		validationQuery="select 1 from sysdummy1" validationInterval="30000" -->
-<!-- 		timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" -->
-<!-- 		maxWait="30000" initialSize="10" removeAbandonedTimeout="500" -->
-<!-- 		removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" -->
-<!-- 		jmxEnabled="true" username="opensirh" password="XHUZJ9BBQY" -->
-<!-- 		driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="***REMOVED***;" /> -->
+	<!-- <Resource name="jdbc/EAE_WS_DS2" auth="Container" type="javax.sql.DataSource" -->
+	<!-- factory="org.apache.tomcat.dbcp.dbcp.BasicDataSourceFactory" -->
+	<!-- testWhileIdle="true" testOnBorrow="true" testOnReturn="false" -->
+	<!-- validationQuery="select 1 from sysdummy1" validationInterval="30000" -->
+	<!-- timeBetweenEvictionRunsMillis="30000" maxActive="300" maxIdle="30" -->
+	<!-- maxWait="30000" initialSize="10" removeAbandonedTimeout="500" -->
+	<!-- removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" -->
+	<!-- jmxEnabled="true" username="opensirh" password="XHUZJ9BBQY" -->
+	<!-- driverClassName="com.ibm.as400.access.AS400JDBCDriver" url="***REMOVED***;" 
+		/> -->
 
-	<Resource name="jdbc/EAE_WS_DS3" auth="Container" type="javax.sql.DataSource"
-		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
-		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
-		poolPreparedStatements="true" />
-		
 	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
 		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/"
 		override="false" />
