@@ -41,13 +41,10 @@
 			type="annotation" />
 	</context:component-scan>
 
-	<jee:jndi-lookup id="eaeOracleDataSource" jndi-name="jdbc/EAE_WS_DS1"
+	<jee:jndi-lookup id="eaeDataSource" jndi-name="jdbc/EAE_WS_DS1"
 		resource-ref="true" />
 
 	<jee:jndi-lookup id="sirhDb400DataSource" jndi-name="jdbc/EAE_WS_DS2"
-		resource-ref="true" />
-		
-	<jee:jndi-lookup id="eaePostgresDataSource" jndi-name="jdbc/EAE_WS_DS3"
 		resource-ref="true" />
 
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
@@ -60,7 +57,7 @@
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 		id="eaeEntityManagerFactory">
 		<property name="persistenceUnitName" value="eaePersistenceUnit" />
-		<property name="dataSource" ref="eaeOracleDataSource" />
+		<property name="dataSource" ref="eaeDataSource" />
 	</bean>
 
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"

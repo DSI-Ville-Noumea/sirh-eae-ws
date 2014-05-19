@@ -260,9 +260,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc</artifactId>
-			<version>6</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.3-1101-jdbc41</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jt400</groupId>
