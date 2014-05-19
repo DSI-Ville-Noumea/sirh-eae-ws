@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,32 +23,31 @@ import javax.validation.constraints.NotNull;
 public class EaeFinalisation {
 
 	@Id
-	@SequenceGenerator(name = "eaeFinalisationGen", sequenceName = "EAE_S_FINALISATION")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFinalisationGen")
 	@Column(name = "ID_EAE_FINALISATION")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeFinalisation;
 
 	@NotNull
 	@Column(name = "DATE_FINALISATION")
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateFinalisation;
-	
+
 	@NotNull
 	@Column(name = "ID_AGENT")
 	private int idAgent;
-	
+
 	@NotNull
 	@Column(name = "ID_GED_DOCUMENT")
 	private String idGedDocument;
-	
+
 	@NotNull
 	@Column(name = "VERSION_GED_DOCUMENT")
 	private String versionGedDocument;
-	
+
 	@Lob
 	@Column(name = "COMMENTAIRE")
 	private String commentaire;
-	
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_EAE")
 	private Eae eae;

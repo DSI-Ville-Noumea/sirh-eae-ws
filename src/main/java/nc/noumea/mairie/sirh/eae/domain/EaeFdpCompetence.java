@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeCompetenceEnum;
@@ -21,21 +20,20 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeCompetenceEnum;
 public class EaeFdpCompetence {
 
 	@Id
-	@SequenceGenerator(name = "eaeFichePosteCompetenceGen", sequenceName = "EAE_S_FDP_COMPETENCE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFichePosteCompetenceGen")
 	@Column(name = "ID_EAE_FDP_COMPETENCE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeFdpCompetence;
 
 	@Column(name = "TYPE_COMPETENCE")
 	@Enumerated(EnumType.STRING)
-    private EaeTypeCompetenceEnum type;
+	private EaeTypeCompetenceEnum type;
 
-    @Column(name = "LIBELLE_COMPETENCE")
-    private String libelle;
-    
-    @ManyToOne
+	@Column(name = "LIBELLE_COMPETENCE")
+	private String libelle;
+
+	@ManyToOne
 	@JoinColumn(name = "ID_EAE_FICHE_POSTE", referencedColumnName = "ID_EAE_FICHE_POSTE")
-    private EaeFichePoste eaeFichePoste;
+	private EaeFichePoste eaeFichePoste;
 
 	public Integer getIdEaeFdpCompetence() {
 		return idEaeFdpCompetence;

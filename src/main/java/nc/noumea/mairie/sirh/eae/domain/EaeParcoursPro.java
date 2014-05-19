@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,9 +20,8 @@ import javax.persistence.TemporalType;
 public class EaeParcoursPro {
 
 	@Id
-	@SequenceGenerator(name = "eaeParcoursProGen", sequenceName = "EAE_S_PARCOURS_PRO")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeParcoursProGen")
 	@Column(name = "ID_EAE_PARCOURS_PRO")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeParcoursPro;
 
 	@Column(name = "DATE_DEBUT")

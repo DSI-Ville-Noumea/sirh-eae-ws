@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -18,9 +17,8 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 public class EaeNiveau {
 
 	@Id
-	@SequenceGenerator(name = "eaeNiveauGen", sequenceName = "EAE_S_NIVEAU")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeNiveauGen")
 	@Column(name = "ID_EAE_NIVEAU")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeNiveau;
 
 	@Column(name = "LIBELLE_NIVEAU_EAE")

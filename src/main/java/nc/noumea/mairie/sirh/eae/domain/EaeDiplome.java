@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -18,15 +17,14 @@ import javax.validation.constraints.NotNull;
 public class EaeDiplome {
 
 	@Id
-	@SequenceGenerator(name = "eaeDiplomeGen", sequenceName = "EAE_S_DIPLOME")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeDiplomeGen")
 	@Column(name = "ID_EAE_DIPLOME")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeDiplome;
 
 	@Column(name = "LIBELLE_DIPLOME", length = 255)
 	@NotNull
 	private String libelleDiplome;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
 	private Eae eae;

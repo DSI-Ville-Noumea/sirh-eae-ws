@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -17,17 +16,16 @@ import javax.persistence.Table;
 public class EaeFdpActivite {
 
 	@Id
-	@SequenceGenerator(name = "eaeFichePosteActiviteGen", sequenceName = "EAE_S_FDP_ACTIVITE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFichePosteActiviteGen")
 	@Column(name = "ID_EAE_FDP_ACTIVITE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeFdpActivite;
 
-    @Column(name = "LIBELLE_ACTIVITE")
-    private String libelle;
-    
-    @ManyToOne
+	@Column(name = "LIBELLE_ACTIVITE")
+	private String libelle;
+
+	@ManyToOne
 	@JoinColumn(name = "ID_EAE_FICHE_POSTE", referencedColumnName = "ID_EAE_FICHE_POSTE")
-    private EaeFichePoste eaeFichePoste;
+	private EaeFichePoste eaeFichePoste;
 
 	public Integer getIdEaeFdpActivite() {
 		return idEaeFdpActivite;

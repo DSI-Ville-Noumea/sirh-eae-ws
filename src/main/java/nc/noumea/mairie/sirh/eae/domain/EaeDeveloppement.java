@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,28 +25,27 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 public class EaeDeveloppement {
 
 	@Id
-	@SequenceGenerator(name = "eaeDeveloppementGen", sequenceName = "EAE_S_DEVELOPPEMENT")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeDeveloppementGen")
 	@Column(name = "ID_EAE_DEVELOPPEMENT")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeDeveloppement;
 
 	@Column(name = "LIBELLE", length = 300)
 	private String libelle;
-	
+
 	@Column(name = "ECHEANCE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date echeance;
-	
+
 	@Column(name = "PRIORISATION")
 	private int priorisation;
-	
+
 	@Column(name = "TYPE_DEVELOPPEMENT")
 	@Enumerated(EnumType.STRING)
 	private EaeTypeDeveloppementEnum typeDeveloppement;
-	
+
 	@NotNull
 	@OneToOne
-    @JoinColumn(name = "ID_EAE_EVOLUTION")
+	@JoinColumn(name = "ID_EAE_EVOLUTION")
 	private EaeEvolution eaeEvolution;
 
 	public Integer getIdEaeDeveloppement() {

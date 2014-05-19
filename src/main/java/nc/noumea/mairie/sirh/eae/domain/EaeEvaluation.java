@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
@@ -24,10 +23,9 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 public class EaeEvaluation {
 
 	@Id
-	@SequenceGenerator(name = "eaeEvaluationGen", sequenceName = "EAE_S_EVALUATION")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvaluationGen")
 	@Column(name = "ID_EAE_EVALUATION")
-	private Integer idEaeEvaluation;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int idEaeEvaluation;
 
 	@Column(name = "NOTE_ANNEE", columnDefinition = "numeric")
 	private Float noteAnnee;

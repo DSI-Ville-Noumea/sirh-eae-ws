@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -19,23 +21,19 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "EAE_CAMPAGNE_TASK")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
-@NamedQueries({
-	@NamedQuery(
-			name = "EaeCampagneTask.getEaeCampagneTask", 
-			query = "select e from EaeCampagneTask e where e.idEaeCampagneTask = :idEaeCampagneTask"
-			)
-})
+@NamedQueries({ @NamedQuery(name = "EaeCampagneTask.getEaeCampagneTask", query = "select e from EaeCampagneTask e where e.idEaeCampagneTask = :idEaeCampagneTask") })
 public class EaeCampagneTask {
 
 	@Id
 	@Column(name = "ID_CAMPAGNE_TASK")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idEaeCampagneTask;
-	
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "ID_CAMPAGNE_EAE", referencedColumnName = "ID_CAMPAGNE_EAE")
 	private EaeCampagne eaeCampagne;
-	
+
 	@NotNull
 	@Column(name = "ANNEE")
 	private int annee;
@@ -43,11 +41,11 @@ public class EaeCampagneTask {
 	@NotNull
 	@Column(name = "ID_AGENT")
 	private Integer idAgent;
-	
+
 	@Column(name = "DATE_CALCUL_EAE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCalculEae;
-	
+
 	@Lob
 	@Column(name = "TASK_STATUS")
 	private String taskStatus;
@@ -99,5 +97,5 @@ public class EaeCampagneTask {
 	public void setTaskStatus(String taskStatus) {
 		this.taskStatus = taskStatus;
 	}
-	
+
 }

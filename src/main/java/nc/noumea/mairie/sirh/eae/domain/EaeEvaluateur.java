@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,9 +23,8 @@ import nc.noumea.mairie.sirh.domain.Agent;
 public class EaeEvaluateur {
 
 	@Id
-	@SequenceGenerator(name = "eaeEvaluateurGen", sequenceName = "EAE_S_EVALUATEUR")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvaluateurGen")
 	@Column(name = "ID_EAE_EVALUATEUR")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeEvaluateur;
 
 	@Column(name = "ID_AGENT")

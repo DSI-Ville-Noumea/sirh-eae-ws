@@ -18,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,9 +33,8 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 public class Eae {
 
 	@Id
-	@SequenceGenerator(name = "eaeGen", sequenceName = "EAE_S_EAE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeGen")
 	@Column(name = "ID_EAE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEae;
 
 	/*

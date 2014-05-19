@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -18,21 +17,20 @@ import javax.persistence.Table;
 public class EaeEvolutionSouhait {
 
 	@Id
-	@SequenceGenerator(name = "eaeEvolutionSouhaitGen", sequenceName = "EAE_S_EVOL_SOUHAIT")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvolutionSouhaitGen")
 	@Column(name = "ID_EAE_EVOL_SOUHAIT")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeEvolutionSouhait;
 
 	@Column(name = "LIB_SOUHAIT")
 	@Lob
 	private String souhait;
-	
+
 	@Column(name = "LIB_SUGGESTION")
 	@Lob
 	private String suggestion;
-	
+
 	@OneToOne
-    @JoinColumn(name = "ID_EAE_EVOLUTION")
+	@JoinColumn(name = "ID_EAE_EVOLUTION")
 	private EaeEvolution eaeEvolution;
 
 	public Integer getIdEaeEvolutionSouhait() {

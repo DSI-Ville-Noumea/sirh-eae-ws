@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -17,9 +16,8 @@ import javax.persistence.Table;
 public class EaePlanAction {
 
 	@Id
-	@SequenceGenerator(name = "eaePlanActionGen", sequenceName = "EAE_S_PLAN_ACTION")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaePlanActionGen")
 	@Column(name = "ID_EAE_PLAN_ACTION")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaePlanAction;
 
 	@Column(name = "OBJECTIF", length = 1000)

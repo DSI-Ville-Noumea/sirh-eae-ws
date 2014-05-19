@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -19,9 +18,8 @@ import javax.validation.constraints.NotNull;
 public class EaeResultat {
 
 	@Id
-	@SequenceGenerator(name = "eaeResultatGen", sequenceName = "EAE_S_RESULTAT")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeResultatGen")
 	@Column(name = "ID_EAE_RESULTAT")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeResultat;
 
 	@Column(name = "OBJECTIF", length = 1000)

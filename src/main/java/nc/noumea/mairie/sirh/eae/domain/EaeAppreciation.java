@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -22,9 +21,8 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 public class EaeAppreciation {
 
 	@Id
-	@SequenceGenerator(name = "eaeAppreciationGen", sequenceName = "EAE_S_APPRECIATION")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeAppreciationGen")
 	@Column(name = "ID_EAE_APPRECIATION")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeAppreciation;
 
 	@Column(name = "TYPE_APPRECIATION")

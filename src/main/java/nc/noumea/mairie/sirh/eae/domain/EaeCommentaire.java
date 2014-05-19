@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -16,9 +15,8 @@ import javax.persistence.Table;
 public class EaeCommentaire {
 
 	@Id
-	@SequenceGenerator(name = "eaeCommentaireGen", sequenceName = "EAE_S_COMMENTAIRE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeCommentaireGen")
 	@Column(name = "ID_EAE_COMMENTAIRE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeCommentaire;
 
 	@Column(name = "TEXT")

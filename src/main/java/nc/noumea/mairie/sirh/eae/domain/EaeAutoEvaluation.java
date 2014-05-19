@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -18,9 +17,8 @@ import javax.persistence.Table;
 public class EaeAutoEvaluation {
 
 	@Id
-	@SequenceGenerator(name = "eaeAutoEvaluationGen", sequenceName = "EAE_S_AUTO_EVALUATION")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeAutoEvaluationGen")
 	@Column(name = "ID_EAE_AUTO_EVALUATION")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeAutoEvaluation;
 
 	@Column(name = "PARTICULARITES")

@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -17,14 +16,13 @@ import javax.persistence.Table;
 public class EaeCampagne {
 
 	@Id
-	@SequenceGenerator(name = "eaeCampagneEaeGen", sequenceName = "EAE_S_CAMPAGNE_EAE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeCampagneEaeGen")
 	@Column(name = "ID_CAMPAGNE_EAE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idCampagneEae;
-	
+
 	@Column(name = "ANNEE")
 	private int annee;
-	
+
 	@Column(name = "DATE_DEBUT")
 	private Date dateDebut;
 

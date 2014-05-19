@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -18,9 +17,8 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeObjectifEnum;
 public class EaeTypeObjectif {
 
 	@Id
-	@SequenceGenerator(name = "eaeTypeObjectifGen", sequenceName = "EAE_S_TYPE_OBJECTIF")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeTypeObjectifGen")
 	@Column(name = "ID_EAE_TYPE_OBJECTIF")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeTypeObjectif;
 
 	@Column(name = "LIBELLE_TYPE_OBJECTIF")

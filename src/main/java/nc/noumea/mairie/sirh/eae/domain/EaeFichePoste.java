@@ -16,7 +16,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,80 +31,79 @@ import org.hibernate.annotations.Type;
 public class EaeFichePoste {
 
 	@Id
-	@SequenceGenerator(name = "eaeFichePosteGen", sequenceName = "EAE_S_FICHE_POSTE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFichePosteGen")
 	@Column(name = "ID_EAE_FICHE_POSTE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeFichePoste;
 
-    @Column(name = "PRIMAIRE", nullable = false)
-    @Type(type="boolean")
-    private boolean primary;
+	@Column(name = "PRIMAIRE", nullable = false)
+	@Type(type = "boolean")
+	private boolean primary;
 
-    @Column(name = "DIRECTION_SERVICE")
-    private String directionService;
+	@Column(name = "DIRECTION_SERVICE")
+	private String directionService;
 
-    @Column(name = "SERVICE")
-    private String service;
+	@Column(name = "SERVICE")
+	private String service;
 
-    @Column(name = "SECTION_SERVICE")
-    private String sectionService;
+	@Column(name = "SECTION_SERVICE")
+	private String sectionService;
 
-    @Column(name = "EMPLOI")
-    private String emploi;
+	@Column(name = "EMPLOI")
+	private String emploi;
 
-    @Column(name = "FONCTION")
-    private String fonction;
+	@Column(name = "FONCTION")
+	private String fonction;
 
-    @Column(name = "DATE_ENTREE_FONCTION")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeFonction;
-    
-    @Column(name = "DATE_ENTREE_COLLECT_RESP")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeCollectiviteResponsable;
-    
-    @Column(name = "DATE_ENTREE_FONCTION_RESP")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeFonctionResponsable;
-    
-    @Column(name = "DATE_ENTREE_SERVICE_RESP")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeServiceResponsable;
+	@Column(name = "DATE_ENTREE_FONCTION")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeFonction;
 
-    @Column(name = "GRADE_POSTE")
-    private String gradePoste;
+	@Column(name = "DATE_ENTREE_COLLECT_RESP")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeCollectiviteResponsable;
 
-    @Column(name = "LOCALISATION")
-    private String localisation;
+	@Column(name = "DATE_ENTREE_FONCTION_RESP")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeFonctionResponsable;
 
-    @Column(name = "FONCTION_RESP")
-    private String fonctionResponsable;
+	@Column(name = "DATE_ENTREE_SERVICE_RESP")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeServiceResponsable;
 
-    @Column(name = "ID_SHD")
-    private Integer idAgentShd;
-    
-    @Column(name = "ID_SIRH_FICHE_POSTE")
-    private Integer idSirhFichePoste;
-    
-    @Column(name = "MISSIONS")
-    @Lob
-    private String missions;
+	@Column(name = "GRADE_POSTE")
+	private String gradePoste;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
-    private Eae eae;
+	@Column(name = "LOCALISATION")
+	private String localisation;
 
-    @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<EaeFdpActivite> eaeFdpActivites = new HashSet<EaeFdpActivite>();
-    
-    @OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<EaeFdpCompetence> eaeFdpCompetences = new HashSet<EaeFdpCompetence>();
+	@Column(name = "FONCTION_RESP")
+	private String fonctionResponsable;
 
-    @Column(name = "CODE_SERVICE")
-    private String codeService; 
-    
-    @Transient
-    private Agent agentShd;
+	@Column(name = "ID_SHD")
+	private Integer idAgentShd;
+
+	@Column(name = "ID_SIRH_FICHE_POSTE")
+	private Integer idSirhFichePoste;
+
+	@Column(name = "MISSIONS")
+	@Lob
+	private String missions;
+
+	@ManyToOne
+	@JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
+	private Eae eae;
+
+	@OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<EaeFdpActivite> eaeFdpActivites = new HashSet<EaeFdpActivite>();
+
+	@OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<EaeFdpCompetence> eaeFdpCompetences = new HashSet<EaeFdpCompetence>();
+
+	@Column(name = "CODE_SERVICE")
+	private String codeService;
+
+	@Transient
+	private Agent agentShd;
 
 	public Integer getIdEaeFichePoste() {
 		return idEaeFichePoste;

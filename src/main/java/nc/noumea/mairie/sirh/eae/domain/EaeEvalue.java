@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,124 +31,123 @@ import org.hibernate.annotations.Type;
 public class EaeEvalue {
 
 	@Id
-	@SequenceGenerator(name = "eaeEvalueGen", sequenceName = "EAE_S_EVALUE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvalueGen")
 	@Column(name = "ID_EAE_EVALUE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeEvalue;
 
-    @Column(name = "ID_AGENT")
-    private int idAgent;
+	@Column(name = "ID_AGENT")
+	private int idAgent;
 
-    @Column(name = "DATE_ENTREE_SERVICE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeService;
+	@Column(name = "DATE_ENTREE_SERVICE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeService;
 
-    @Column(name = "DATE_ENTREE_COLLECTIVITE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeCollectivite;
+	@Column(name = "DATE_ENTREE_COLLECTIVITE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeCollectivite;
 
-    @Column(name = "DATE_ENTREE_FONCTIONNAIRE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeFonctionnaire;
+	@Column(name = "DATE_ENTREE_FONCTIONNAIRE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeFonctionnaire;
 
-    @Column(name = "DATE_ENTREE_ADMINISTRATION")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntreeAdministration;
+	@Column(name = "DATE_ENTREE_ADMINISTRATION")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateEntreeAdministration;
 
-    @Column(name = "STATUT")
-    @Enumerated(EnumType.STRING)
-    private EaeAgentStatutEnum statut;
-    
-    @Column(name = "STATUT_PRECISION")
-    private String statutPrecision;
+	@Column(name = "STATUT")
+	@Enumerated(EnumType.STRING)
+	private EaeAgentStatutEnum statut;
 
-    @Column(name = "ANCIENNETE_ECHELON_JOURS")
-    private Integer ancienneteEchelonJours;
+	@Column(name = "STATUT_PRECISION")
+	private String statutPrecision;
 
-    @Column(name = "CADRE")
-    private String cadre;
+	@Column(name = "ANCIENNETE_ECHELON_JOURS")
+	private Integer ancienneteEchelonJours;
 
-    @Column(name = "CATEGORIE")
-    private String categorie;
+	@Column(name = "CADRE")
+	private String cadre;
 
-    @Column(name = "CLASSIFICATION")
-    private String classification;
+	@Column(name = "CATEGORIE")
+	private String categorie;
 
-    @Column(name = "GRADE")
-    private String grade;
+	@Column(name = "CLASSIFICATION")
+	private String classification;
 
-    @Column(name = "ECHELON")
-    private String echelon;
+	@Column(name = "GRADE")
+	private String grade;
 
-    @Column(name = "DATE_EFFET_AVCT")
-    private Date dateEffetAvancement;
+	@Column(name = "ECHELON")
+	private String echelon;
 
-    @Column(name = "NOUV_GRADE")
-    private String nouvGrade;
+	@Column(name = "DATE_EFFET_AVCT")
+	private Date dateEffetAvancement;
 
-    @Column(name = "NOUV_ECHELON")
-    private String nouvEchelon;
+	@Column(name = "NOUV_GRADE")
+	private String nouvGrade;
 
-    @Column(name = "EST_ENCADRANT", nullable = false)
-    @Type(type="boolean")
-    private boolean estEncadrant;
-    
-    @Column(name = "AGENT_DETACHE", nullable = false)
-    @Type(type="boolean")
-    private boolean estDetache;
-    
-    @Column(name = "TYPE_AVCT")
-    @Enumerated(EnumType.STRING)
-    private EaeTypeAvctEnum typeAvancement;
-    
-    @Column(name = "POSITION")
-    @Enumerated(EnumType.STRING)
-    private EaeAgentPositionAdministrativeEnum position;
-    
-    @Column(name = "AVCT_DUR_MIN")
-    private Integer avctDureeMin;
-    
-    @Column(name = "AVCT_DUR_MOY")
-    private Integer avctDureeMoy;
-    
-    @Column(name = "AVCT_DUR_MAX")
-    private Integer avctDureeMax;
-    
-    @OneToOne
-    @JoinColumn(name = "ID_EAE")
-    private Eae eae;
-    
-    /*
-     * Transient properties (will be populated by AS400 entity manager)
-     */
-    @Transient
-    private Agent agent;
-    
-    @Transient
-    public String getAvctDureeMinDisplay() {
-    	return String.format("%s %s", EaeAvancementEnum.MINI.toString(), getAvctDureeDisplay(getAvctDureeMin()));
-    }
-    
-    @Transient
-    public String getAvctDureeMoyDisplay() {
-    	return String.format("%s %s", EaeAvancementEnum.MOY.toString(), getAvctDureeDisplay(getAvctDureeMoy()));
-    }
-    
-    @Transient
-    public String getAvctDureeMaxDisplay() {
-    	return String.format("%s %s", EaeAvancementEnum.MAXI.toString(), getAvctDureeDisplay(getAvctDureeMax()));
-    }
-    
-    protected String getAvctDureeDisplay(Integer duree) {
-    	
-    	if (statut != EaeAgentStatutEnum.F)
-    		return "";
-    	
-    	if (duree != null && duree != 0)
-    		return String.format("(%d mois)", duree);
-    	
-    	return "(NR)";
-    }
+	@Column(name = "NOUV_ECHELON")
+	private String nouvEchelon;
+
+	@Column(name = "EST_ENCADRANT", nullable = false)
+	@Type(type = "boolean")
+	private boolean estEncadrant;
+
+	@Column(name = "AGENT_DETACHE", nullable = false)
+	@Type(type = "boolean")
+	private boolean estDetache;
+
+	@Column(name = "TYPE_AVCT")
+	@Enumerated(EnumType.STRING)
+	private EaeTypeAvctEnum typeAvancement;
+
+	@Column(name = "POSITION")
+	@Enumerated(EnumType.STRING)
+	private EaeAgentPositionAdministrativeEnum position;
+
+	@Column(name = "AVCT_DUR_MIN")
+	private Integer avctDureeMin;
+
+	@Column(name = "AVCT_DUR_MOY")
+	private Integer avctDureeMoy;
+
+	@Column(name = "AVCT_DUR_MAX")
+	private Integer avctDureeMax;
+
+	@OneToOne
+	@JoinColumn(name = "ID_EAE")
+	private Eae eae;
+
+	/*
+	 * Transient properties (will be populated by AS400 entity manager)
+	 */
+	@Transient
+	private Agent agent;
+
+	@Transient
+	public String getAvctDureeMinDisplay() {
+		return String.format("%s %s", EaeAvancementEnum.MINI.toString(), getAvctDureeDisplay(getAvctDureeMin()));
+	}
+
+	@Transient
+	public String getAvctDureeMoyDisplay() {
+		return String.format("%s %s", EaeAvancementEnum.MOY.toString(), getAvctDureeDisplay(getAvctDureeMoy()));
+	}
+
+	@Transient
+	public String getAvctDureeMaxDisplay() {
+		return String.format("%s %s", EaeAvancementEnum.MAXI.toString(), getAvctDureeDisplay(getAvctDureeMax()));
+	}
+
+	protected String getAvctDureeDisplay(Integer duree) {
+
+		if (statut != EaeAgentStatutEnum.F)
+			return "";
+
+		if (duree != null && duree != 0)
+			return String.format("(%d mois)", duree);
+
+		return "(NR)";
+	}
 
 	public Integer getIdEaeEvalue() {
 		return idEaeEvalue;

@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -17,20 +16,19 @@ import javax.persistence.Table;
 public class EaeFormation {
 
 	@Id
-	@SequenceGenerator(name = "eaeFormationGen", sequenceName = "EAE_S_FORMATION")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeFormationGen")
 	@Column(name = "ID_EAE_FORMATION")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeFormation;
 
 	@Column(name = "ANNEE_FORMATION")
 	private int anneeFormation;
-	
+
 	@Column(name = "DUREE_FORMATION")
 	private String dureeFormation;
-	
+
 	@Column(name = "LIBELLE_FORMATION", length = 255)
 	private String libelleFormation;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
 	private Eae eae;

@@ -19,7 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,105 +33,104 @@ import org.hibernate.annotations.Type;
 public class EaeEvolution {
 
 	@Id
-	@SequenceGenerator(name = "eaeEvolutionGen", sequenceName = "EAE_S_EVOLUTION")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "eaeEvolutionGen")
 	@Column(name = "ID_EAE_EVOLUTION")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeEvolution;
 
 	@Column(name = "MOBILIE_GEO", nullable = false)
-    @Type(type="boolean")
-    private boolean mobiliteGeo;
-	
+	@Type(type = "boolean")
+	private boolean mobiliteGeo;
+
 	@Column(name = "MOBILIE_FONCT", nullable = false)
-    @Type(type="boolean")
-    private boolean mobiliteFonctionnelle;
-	
+	@Type(type = "boolean")
+	private boolean mobiliteFonctionnelle;
+
 	@Column(name = "CHANGEMENT_METIER", nullable = false)
-    @Type(type="boolean")
-    private boolean changementMetier;
-	
+	@Type(type = "boolean")
+	private boolean changementMetier;
+
 	@Column(name = "DELAI_ENVISAGE")
 	@Enumerated(EnumType.STRING)
 	private EaeDelaiEnum delaiEnvisage;
-	
+
 	@Column(name = "MOBILITE_SERVICE", nullable = false)
-    @Type(type="boolean")
-    private boolean mobiliteService;
-	
+	@Type(type = "boolean")
+	private boolean mobiliteService;
+
 	@Column(name = "MOBILITE_DIRECTION", nullable = false)
-    @Type(type="boolean")
-    private boolean mobiliteDirection;
-	
+	@Type(type = "boolean")
+	private boolean mobiliteDirection;
+
 	@Column(name = "MOBILITE_COLLECTIVITE", nullable = false)
-    @Type(type="boolean")
-    private boolean mobiliteCollectivite;
-	
+	@Type(type = "boolean")
+	private boolean mobiliteCollectivite;
+
 	@Column(name = "NOM_COLLECTIVITE", length = 100)
 	private String nomCollectivite;
-	
+
 	@Column(name = "MOBILITE_AUTRE", nullable = false)
-    @Type(type="boolean")
-    private boolean mobiliteAutre;
-	
+	@Type(type = "boolean")
+	private boolean mobiliteAutre;
+
 	@Column(name = "CONCOURS", nullable = false)
-    @Type(type="boolean")
+	@Type(type = "boolean")
 	private boolean concours;
-	
+
 	@Column(name = "NOM_CONCOURS", length = 100)
 	private String nomConcours;
-	
+
 	@Column(name = "VAE", nullable = false)
-    @Type(type="boolean")
+	@Type(type = "boolean")
 	private boolean vae;
-	
+
 	@Column(name = "NOM_VAE", length = 100)
 	private String nomVae;
-	
+
 	@Column(name = "TEMPS_PARTIEL", nullable = false)
-    @Type(type="boolean")
+	@Type(type = "boolean")
 	private boolean tempsPartiel;
-	
+
 	@Column(name = "TEMPS_PARTIEL_ID_SPBHOR")
 	private Integer tempsPartielIdSpbhor;
-	
+
 	@Column(name = "RETRAITE", nullable = false)
-    @Type(type="boolean")
+	@Type(type = "boolean")
 	private boolean retraite;
-	
+
 	@Column(name = "DATE_RETRAITE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateRetraite;
-	
+
 	@Column(name = "AUTRE_PERSPECTIVE", nullable = false)
-    @Type(type="boolean")
+	@Type(type = "boolean")
 	private boolean autrePerspective;
-	
+
 	@Column(name = "LIB_AUTRE_PERSPECTIVE", length = 255)
 	private String libelleAutrePerspective;
-	
+
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COM_EVOLUTION")
+	@JoinColumn(name = "ID_EAE_COM_EVOLUTION")
 	private EaeCommentaire commentaireEvolution;
-	
+
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COM_EVALUATEUR")
+	@JoinColumn(name = "ID_EAE_COM_EVALUATEUR")
 	private EaeCommentaire commentaireEvaluateur;
-	
+
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ID_EAE_COM_EVALUE")
+	@JoinColumn(name = "ID_EAE_COM_EVALUE")
 	private EaeCommentaire commentaireEvalue;
-	
+
 	@OneToMany(mappedBy = "eaeEvolution", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("idEaeEvolutionSouhait ASC")
 	private Set<EaeEvolutionSouhait> eaeEvolutionSouhaits = new HashSet<EaeEvolutionSouhait>();
-	
+
 	@OneToMany(mappedBy = "eaeEvolution", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("idEaeDeveloppement ASC")
 	private Set<EaeDeveloppement> eaeDeveloppements = new HashSet<EaeDeveloppement>();
-	
+
 	@ManyToOne
-    @JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
-    private Eae eae;
+	@JoinColumn(name = "ID_EAE", referencedColumnName = "ID_EAE")
+	private Eae eae;
 
 	public Integer getIdEaeEvolution() {
 		return idEaeEvolution;
