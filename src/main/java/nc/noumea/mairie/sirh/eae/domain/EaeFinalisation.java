@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
@@ -44,7 +43,6 @@ public class EaeFinalisation {
 	@Column(name = "VERSION_GED_DOCUMENT")
 	private String versionGedDocument;
 
-	@Lob
 	@Column(name = "COMMENTAIRE")
 	private String commentaire;
 

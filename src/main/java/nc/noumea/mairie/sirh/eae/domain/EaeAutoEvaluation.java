@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
@@ -22,15 +21,12 @@ public class EaeAutoEvaluation {
 	private Integer idEaeAutoEvaluation;
 
 	@Column(name = "PARTICULARITES")
-	@Lob
 	private String particularites;
 
 	@Column(name = "ACQUIS")
-	@Lob
 	private String acquis;
 
 	@Column(name = "SUCCES_DIFFICULTES")
-	@Lob
 	private String succesDifficultes;
 
 	@OneToOne

@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
@@ -22,11 +21,9 @@ public class EaeEvolutionSouhait {
 	private Integer idEaeEvolutionSouhait;
 
 	@Column(name = "LIB_SOUHAIT")
-	@Lob
 	private String souhait;
 
 	@Column(name = "LIB_SUGGESTION")
-	@Lob
 	private String suggestion;
 
 	@OneToOne
