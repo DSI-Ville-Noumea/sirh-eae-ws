@@ -37,8 +37,8 @@ public class EaeEvaluationDtoTest {
 		eval.setNoteAnneeN1(13f);
 		eval.setNoteAnneeN2(14f);
 		eval.setNoteAnneeN3(15f);
-		eval.setAvisRevalorisation(true);
-		eval.setAvisChangementClasse(false);
+		eval.setAvisRevalorisation(1);
+		eval.setAvisChangementClasse(0);
 		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
 		eval.setNiveauEae(EaeNiveauEnum.INSUFFISANT);
 		eval.setCommentaireAvctEvaluateur(new EaeCommentaire());

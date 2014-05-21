@@ -15,11 +15,11 @@ public class EaeDashboardItemDtoTest {
 		// Given
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.NA);
-		
+
 		// When
 		EaeDashboardItemDto dto = new EaeDashboardItemDto();
 		dto.incrementCountersWithEae(eae);
-		
+
 		// Then
 		assertEquals(1, dto.getNonAffecte());
 		assertEquals(0, dto.getNonDebute());
@@ -27,14 +27,14 @@ public class EaeDashboardItemDtoTest {
 		assertEquals(0, dto.getEnCours());
 		assertEquals(0, dto.getFinalise());
 		assertEquals(0, dto.getFige());
-		
+
 		assertEquals(1, dto.getNonDefini());
 		assertEquals(0, dto.getMini());
 		assertEquals(0, dto.getMaxi());
 		assertEquals(0, dto.getMoy());
 		assertEquals(0, dto.getChangClasse());
 	}
-	
+
 	@Test
 	public void testIncrementCountersWithEae_EaeIsNDAvancementIsMini() {
 		// Given
@@ -43,11 +43,11 @@ public class EaeDashboardItemDtoTest {
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setPropositionAvancement(EaeAvancementEnum.MINI);
 		eae.setEaeEvaluation(eval);
-		
+
 		// When
 		EaeDashboardItemDto dto = new EaeDashboardItemDto();
 		dto.incrementCountersWithEae(eae);
-		
+
 		// Then
 		assertEquals(0, dto.getNonAffecte());
 		assertEquals(1, dto.getNonDebute());
@@ -55,14 +55,14 @@ public class EaeDashboardItemDtoTest {
 		assertEquals(0, dto.getEnCours());
 		assertEquals(0, dto.getFinalise());
 		assertEquals(0, dto.getFige());
-		
+
 		assertEquals(0, dto.getNonDefini());
 		assertEquals(1, dto.getMini());
 		assertEquals(0, dto.getMaxi());
 		assertEquals(0, dto.getMoy());
 		assertEquals(0, dto.getChangClasse());
 	}
-	
+
 	@Test
 	public void testIncrementCountersWithEae_EaeIsCAvancementIsMaxiAvisDefavorable() {
 		// Given
@@ -70,13 +70,13 @@ public class EaeDashboardItemDtoTest {
 		eae.setEtat(EaeEtatEnum.C);
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
-		eval.setAvisChangementClasse(false);
+		eval.setAvisChangementClasse(0);
 		eae.setEaeEvaluation(eval);
-		
+
 		// When
 		EaeDashboardItemDto dto = new EaeDashboardItemDto();
 		dto.incrementCountersWithEae(eae);
-		
+
 		// Then
 		assertEquals(0, dto.getNonAffecte());
 		assertEquals(0, dto.getNonDebute());
@@ -84,14 +84,14 @@ public class EaeDashboardItemDtoTest {
 		assertEquals(0, dto.getEnCours());
 		assertEquals(0, dto.getFinalise());
 		assertEquals(0, dto.getFige());
-		
+
 		assertEquals(0, dto.getNonDefini());
 		assertEquals(0, dto.getMini());
 		assertEquals(1, dto.getMaxi());
 		assertEquals(0, dto.getMoy());
 		assertEquals(0, dto.getChangClasse());
 	}
-	
+
 	@Test
 	public void testIncrementCountersWithEae_EaeIsECAvancementIsMoyAvisFavorable() {
 		// Given
@@ -99,13 +99,13 @@ public class EaeDashboardItemDtoTest {
 		eae.setEtat(EaeEtatEnum.EC);
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setPropositionAvancement(EaeAvancementEnum.MOY);
-		eval.setAvisChangementClasse(true);
+		eval.setAvisChangementClasse(1);
 		eae.setEaeEvaluation(eval);
-		
+
 		// When
 		EaeDashboardItemDto dto = new EaeDashboardItemDto();
 		dto.incrementCountersWithEae(eae);
-		
+
 		// Then
 		assertEquals(0, dto.getNonAffecte());
 		assertEquals(0, dto.getNonDebute());
@@ -113,24 +113,24 @@ public class EaeDashboardItemDtoTest {
 		assertEquals(1, dto.getEnCours());
 		assertEquals(0, dto.getFinalise());
 		assertEquals(0, dto.getFige());
-		
+
 		assertEquals(0, dto.getNonDefini());
 		assertEquals(0, dto.getMini());
 		assertEquals(0, dto.getMaxi());
 		assertEquals(1, dto.getMoy());
 		assertEquals(1, dto.getChangClasse());
 	}
-	
+
 	@Test
 	public void testIncrementCountersWithEae_EaeIsFAvancementIsNonDefini() {
 		// Given
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.F);
-		
+
 		// When
 		EaeDashboardItemDto dto = new EaeDashboardItemDto();
 		dto.incrementCountersWithEae(eae);
-		
+
 		// Then
 		assertEquals(0, dto.getNonAffecte());
 		assertEquals(0, dto.getNonDebute());
@@ -138,24 +138,24 @@ public class EaeDashboardItemDtoTest {
 		assertEquals(0, dto.getEnCours());
 		assertEquals(1, dto.getFinalise());
 		assertEquals(0, dto.getFige());
-		
+
 		assertEquals(1, dto.getNonDefini());
 		assertEquals(0, dto.getMini());
 		assertEquals(0, dto.getMaxi());
 		assertEquals(0, dto.getMoy());
 		assertEquals(0, dto.getChangClasse());
 	}
-	
+
 	@Test
 	public void testIncrementCountersWithEae_EaeIsCOAvancementIsNonDefini() {
 		// Given
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.CO);
-		
+
 		// When
 		EaeDashboardItemDto dto = new EaeDashboardItemDto();
 		dto.incrementCountersWithEae(eae);
-		
+
 		// Then
 		assertEquals(0, dto.getNonAffecte());
 		assertEquals(0, dto.getNonDebute());
@@ -163,7 +163,7 @@ public class EaeDashboardItemDtoTest {
 		assertEquals(0, dto.getEnCours());
 		assertEquals(0, dto.getFinalise());
 		assertEquals(1, dto.getFige());
-		
+
 		assertEquals(1, dto.getNonDefini());
 		assertEquals(0, dto.getMini());
 		assertEquals(0, dto.getMaxi());

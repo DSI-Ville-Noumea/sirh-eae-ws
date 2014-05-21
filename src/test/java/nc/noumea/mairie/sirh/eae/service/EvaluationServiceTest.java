@@ -1,7 +1,6 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
@@ -653,8 +652,8 @@ public class EvaluationServiceTest {
 		assertEquals("com4", eval.getCommentaireEvalue().getText());
 		assertEquals("com1", eval.getCommentaireAvctEvaluateur().getText());
 		assertEquals("com2", eval.getCommentaireAvctEvalue().getText());
-		assertFalse(eval.getAvisChangementClasse());
-		assertTrue(eval.getAvisRevalorisation());
+		assertEquals(0, (int) eval.getAvisChangementClasse());
+		assertEquals(1, (int) eval.getAvisRevalorisation());
 		assertEquals(new Integer(127), eval.getEae().getDureeEntretienMinutes());
 		assertEquals(EaeNiveauEnum.NECESSITANT_DES_PROGRES, eval.getNiveauEae());
 		assertEquals(EaeAvancementEnum.MAXI, eval.getPropositionAvancement());
@@ -730,8 +729,8 @@ public class EvaluationServiceTest {
 		assertEquals("com3", eval.getCommentaireAvctEvaluateur().getText());
 		assertEquals(comBefore4.getIdEaeCommentaire(), eval.getCommentaireAvctEvalue().getIdEaeCommentaire());
 		assertEquals("com4", eval.getCommentaireAvctEvalue().getText());
-		assertFalse(eval.getAvisChangementClasse());
-		assertTrue(eval.getAvisRevalorisation());
+		assertEquals(0, (int) eval.getAvisChangementClasse());
+		assertEquals(1, (int) eval.getAvisRevalorisation());
 		assertEquals(new Integer(127), eval.getEae().getDureeEntretienMinutes());
 		assertEquals(EaeNiveauEnum.SATISFAISANT, eval.getNiveauEae());
 		assertEquals(EaeAvancementEnum.MAXI, eval.getPropositionAvancement());
@@ -866,7 +865,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.REVA);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisRevalorisation(false);
+		evaluation.setAvisRevalorisation(0);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();
@@ -887,7 +886,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.REVA);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisRevalorisation(true);
+		evaluation.setAvisRevalorisation(1);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();
@@ -908,7 +907,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisChangementClasse(false);
+		evaluation.setAvisChangementClasse(0);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();
@@ -929,7 +928,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisChangementClasse(true);
+		evaluation.setAvisChangementClasse(1);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();

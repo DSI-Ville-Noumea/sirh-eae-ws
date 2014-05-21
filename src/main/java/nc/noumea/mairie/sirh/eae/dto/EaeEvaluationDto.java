@@ -60,9 +60,9 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
 		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
 		avisRevalorisation = eaeEvaluation.getAvisRevalorisation() == null ? true : eaeEvaluation
-				.getAvisRevalorisation();
+				.getAvisRevalorisation() == 0 ? false : true;
 		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation
-				.getAvisChangementClasse();
+				.getAvisChangementClasse() == 0 ? false : true;
 		commentaireEvaluateur = eaeEvaluation.getCommentaireEvaluateur();
 		commentaireEvalue = eaeEvaluation.getCommentaireEvalue();
 		commentaireAvctEvaluateur = eaeEvaluation.getCommentaireAvctEvaluateur();

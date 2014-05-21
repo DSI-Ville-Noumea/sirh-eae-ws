@@ -6,7 +6,7 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import flexjson.JSONSerializer;
 
 public class EaeDashboardItemDto {
-	
+
 	private String nom;
 	private String prenom;
 	private int nonAffecte;
@@ -20,20 +20,20 @@ public class EaeDashboardItemDto {
 	private int maxi;
 	private int moy;
 	private int changClasse;
-	
+
 	public EaeDashboardItemDto() {
-		
+
 	}
-	
+
 	public EaeDashboardItemDto(List<Eae> eaes) {
-		
-		for(Eae e : eaes) {
+
+		for (Eae e : eaes) {
 			incrementCountersWithEae(e);
 		}
 	}
-	
+
 	public void incrementCountersWithEae(Eae eae) {
-		
+
 		switch (eae.getEtat()) {
 			case NA:
 				nonAffecte++;
@@ -56,12 +56,12 @@ public class EaeDashboardItemDto {
 			case S:
 				break;
 		}
-		
+
 		if (eae.getEaeEvaluation() == null || eae.getEaeEvaluation().getPropositionAvancement() == null) {
 			nonDefini++;
 			return;
 		}
-		
+
 		switch (eae.getEaeEvaluation().getPropositionAvancement()) {
 			case MINI:
 				mini++;
@@ -73,95 +73,120 @@ public class EaeDashboardItemDto {
 				maxi++;
 				break;
 		}
-		
-		if (eae.getEaeEvaluation().getAvisChangementClasse() != null && eae.getEaeEvaluation().getAvisChangementClasse()) {
+
+		if (eae.getEaeEvaluation().getAvisChangementClasse() != null
+				&& eae.getEaeEvaluation().getAvisChangementClasse() == 1) {
 			changClasse++;
 			return;
 		}
-			
+
 	}
-	
+
 	public static JSONSerializer getSerializerForEaeDashboardItemDto() {
-		
-		return new JSONSerializer()
-			.exclude("*.class");
+
+		return new JSONSerializer().exclude("*.class");
 	}
-	
+
 	public String getNom() {
 		return nom;
 	}
+
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
+
 	public String getPrenom() {
 		return prenom;
 	}
+
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
 	}
+
 	public int getNonAffecte() {
 		return nonAffecte;
 	}
+
 	public void setNonAffecte(int nonAffecte) {
 		this.nonAffecte = nonAffecte;
 	}
+
 	public int getNonDebute() {
 		return nonDebute;
 	}
+
 	public void setNonDebute(int nonDebute) {
 		this.nonDebute = nonDebute;
 	}
+
 	public int getCree() {
 		return cree;
 	}
+
 	public void setCree(int cree) {
 		this.cree = cree;
 	}
+
 	public int getEnCours() {
 		return enCours;
 	}
+
 	public void setEnCours(int enCours) {
 		this.enCours = enCours;
 	}
+
 	public int getFinalise() {
 		return finalise;
 	}
+
 	public void setFinalise(int finalise) {
 		this.finalise = finalise;
 	}
+
 	public int getFige() {
 		return fige;
 	}
+
 	public void setFige(int fige) {
 		this.fige = fige;
 	}
+
 	public int getNonDefini() {
 		return nonDefini;
 	}
+
 	public void setNonDefini(int nonDefini) {
 		this.nonDefini = nonDefini;
 	}
+
 	public int getMini() {
 		return mini;
 	}
+
 	public void setMini(int mini) {
 		this.mini = mini;
 	}
+
 	public int getMaxi() {
 		return maxi;
 	}
+
 	public void setMaxi(int maxi) {
 		this.maxi = maxi;
 	}
+
 	public int getMoy() {
 		return moy;
 	}
+
 	public void setMoy(int moy) {
 		this.moy = moy;
 	}
+
 	public int getChangClasse() {
 		return changClasse;
 	}
+
 	public void setChangClasse(int changClasse) {
 		this.changClasse = changClasse;
 	}
