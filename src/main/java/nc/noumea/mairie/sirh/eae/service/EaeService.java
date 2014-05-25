@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
@@ -21,6 +22,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
@@ -411,14 +413,14 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public Eae findEaeByAgentAndYear(int idAgent, String annee) {
+	public Eae findEaeByAgentAndYear(int idAgent, Integer annee) {
 
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e.* from eae e ");
 		sb.append("inner join eae_campagne_eae c on e.id_campagne_eae=c.id_campagne_eae ");
 		sb.append("inner join eae_evalue ev on e.id_eae=ev.id_eae ");
-		sb.append("where c.annee=:annee and ev.id_agent=:idAgent");
+		sb.append("where c.annee=:annee and ev.id_agent=:idAgent and e.etat != 'S' ");
 
 		Query q = eaeEntityManager.createNativeQuery(sb.toString(), Eae.class);
 		q.setParameter("idAgent", idAgent);
@@ -452,5 +454,77 @@ public class EaeService implements IEaeService {
 	@Override
 	public void clear() {
 		eaeEntityManager.clear();
+	}
+
+	@Override
+	public CampagneEaeDto getEaeCampagneOuverte() {
+		CampagneEaeDto result = new CampagneEaeDto();
+		EaeCampagne camp = null;
+
+		Query query = eaeEntityManager
+				.createQuery(
+						"select camp from EaeCampagne camp where camp.dateOuvertureKiosque is not null and camp.dateFermetureKiosque is null and  camp.dateOuvertureKiosque<:dateJour",
+						EaeCampagne.class);
+
+		query.setParameter("dateJour", new Date());
+		try {
+			camp = (EaeCampagne) query.getSingleResult();
+			result = new CampagneEaeDto(camp);
+		} catch (Exception e) {
+			// aucune campagne trouvée
+		}
+
+		return result;
+	}
+
+	@Override
+	public String getAvisSHD(int idEae) {
+		Eae eae = getEae(idEae);
+		if (eae == null || eae.getEaeEvaluation() == null)
+			return "";
+
+		return eae.getEaeEvaluation().getAvisShd();
+	}
+
+	@Override
+	public Integer compterlistIdEaeByCampagneAndAgent(int idCampagneEae, List<Integer> idAgents, int idAgent) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(e) from Eae e ");
+		sb.append("JOIN e.eaeEvalue ");
+		sb.append("where (e.eaeEvalue.idAgent in :idAgents ");
+		sb.append("OR e.idAgentDelegataire = :idAgent ");
+		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :idAgent) ) ");
+		sb.append("and e.eaeCampagne.idCampagneEae = :idCampagne");
+
+		TypedQuery<Long> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Long.class);
+		eaeQuery.setParameter("idAgents", idAgents.size() == 0 ? null : idAgents);
+		eaeQuery.setParameter("idCampagne", idCampagneEae);
+		eaeQuery.setParameter("idAgent", idAgent);
+
+		Long nbRes = eaeQuery.getSingleResult();
+
+		return nbRes.intValue();
+	}
+
+	@Override
+	public List<String> getEaesGedIdsForAgents(List<Integer> agentIds, int annee) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT DISTINCT fin.idGedDocument ");
+		sb.append("FROM EaeFinalisation fin ");
+		sb.append("INNER JOIN fin.eae AS e ");
+		sb.append("INNER JOIN e.eaeCampagne AS c ");
+		sb.append("INNER JOIN e.eaeEvalue AS ev ");
+		sb.append("WHERE c.annee = :annee ");
+		sb.append("AND ev.idAgent IN :agentIds");
+
+		TypedQuery<String> qEaesIds = eaeEntityManager.createQuery(sb.toString(), String.class);
+		qEaesIds.setParameter("annee", annee);
+		qEaesIds.setParameter("agentIds", agentIds.size() == 0 ? null : agentIds);
+
+		List<String> result = qEaesIds.getResultList();
+
+		return result;
 	}
 }

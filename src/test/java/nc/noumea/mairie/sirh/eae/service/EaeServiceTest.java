@@ -1271,7 +1271,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		Eae result = service.findEaeByAgentAndYear(ag.getIdAgent(), annee);
+		Eae result = service.findEaeByAgentAndYear(ag.getIdAgent(), Integer.valueOf(annee));
 
 		// Then
 		assertEquals(eae1.getEtat(), result.getEtat());

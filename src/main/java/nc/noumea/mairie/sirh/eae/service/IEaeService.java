@@ -3,6 +3,7 @@ package nc.noumea.mairie.sirh.eae.service;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
@@ -147,7 +148,7 @@ public interface IEaeService {
 	 */
 	EaeEvalueNameDto getEvalueName(Eae eae);
 
-	Eae findEaeByAgentAndYear(int idAgent, String annee);
+	Eae findEaeByAgentAndYear(int idAgent, Integer annee);
 
 	Eae findEae(int idEae);
 
@@ -156,4 +157,28 @@ public interface IEaeService {
 	void remove(Object obj);
 
 	void clear();
+
+	/**
+	 * FOR SIRH-WS
+	 * 
+	 * @return CampagneEaeDto
+	 */
+	CampagneEaeDto getEaeCampagneOuverte();
+
+	/**
+	 * FOR SIRH-WS
+	 * 
+	 * @return String avis SHD pour CAP
+	 */
+	String getAvisSHD(int idEae);
+
+	/*
+	 * FOR SIRH-WS
+	 */
+	Integer compterlistIdEaeByCampagneAndAgent(int idCampagneEae, List<Integer> idAgents, int idAgent);
+
+	/*
+	 * FOR SIRH-WS
+	 */
+	List<String> getEaesGedIdsForAgents(List<Integer> list, int annee);
 }

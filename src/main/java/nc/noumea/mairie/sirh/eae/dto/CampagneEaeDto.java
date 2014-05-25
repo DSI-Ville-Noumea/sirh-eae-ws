@@ -2,6 +2,8 @@ package nc.noumea.mairie.sirh.eae.dto;
 
 import java.util.Date;
 
+import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
+
 public class CampagneEaeDto {
 	private Integer idCampagneEae;
 	private Integer annee;
@@ -9,6 +11,19 @@ public class CampagneEaeDto {
 	private Date dateFin;
 	private Date dateOuvertureKiosque;
 	private Date dateFermetureKiosque;
+
+	public CampagneEaeDto(EaeCampagne camp) {
+		this.idCampagneEae = camp.getIdCampagneEae();
+		this.annee = camp.getAnnee();
+		this.dateDebut = camp.getDateDebut();
+		this.dateFin = camp.getDateFin();
+		this.dateOuvertureKiosque = camp.getDateOuvertureKiosque();
+		this.dateFermetureKiosque = camp.getDateFermetureKiosque();
+
+	}
+
+	public CampagneEaeDto() {
+	}
 
 	public Integer getIdCampagneEae() {
 		return idCampagneEae;

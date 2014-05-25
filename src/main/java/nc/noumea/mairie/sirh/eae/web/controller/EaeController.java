@@ -1,15 +1,18 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
+import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
 import nc.noumea.mairie.sirh.eae.service.EaeReportingServiceException;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
@@ -17,6 +20,7 @@ import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeReportingService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
+import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @Controller
 @RequestMapping("/eaes")
@@ -323,5 +330,121 @@ public class EaeController {
 		EaeEvalueNameDto fullName = eaeService.getEvalueName(eae);
 
 		return new ResponseEntity<String>(fullName.serializeInJSON(), HttpStatus.OK);
+	}
+
+	/*
+	 * POUR SIRH-WS
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getEaeCampagneOuverte", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public ResponseEntity<String> getEaeCampagneOuverte() {
+
+		logger.debug("entered GET [eaes/getEaeCampagneOuverte] => getEaeCampagneOuverte ");
+
+		CampagneEaeDto campagneEnCours = eaeService.getEaeCampagneOuverte();
+
+		String json = new JSONSerializer().exclude("*.class").transform(new MSDateTransformer(), Date.class)
+				.serialize(campagneEnCours);
+
+		return new ResponseEntity<String>(json, HttpStatus.OK);
+	}
+
+	/*
+	 * POUR SIRH-WS
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getAvisSHD", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public ResponseEntity<String> getAvisSHD(@RequestParam("idEae") int idEae) {
+
+		logger.debug("entered GET [eaes/getAvisSHD] => getAvisSHD with parameter idEae = {}", idEae);
+
+		String avis = eaeService.getAvisSHD(idEae);
+
+		ReturnMessageDto rmDto = new ReturnMessageDto();
+		rmDto.getInfos().add(avis);
+
+		String jsonResult = new JSONSerializer().exclude("*.class").deepSerialize(rmDto);
+
+		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
+	}
+
+	/*
+	 * POUR SIRH-WS
+	 */
+	@ResponseBody
+	@RequestMapping(value = "findEaeByAgentAndYear", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public ResponseEntity<String> findEaeByAgentAndYear(@RequestParam("idAgent") int idAgent,
+			@RequestParam("annee") int annee) {
+
+		logger.debug(
+				"entered GET [eaes/findEaeByAgentAndYear] => findEaeByAgentAndYear with parameter idAgent = {} and annee = {}",
+				idAgent, annee);
+		Eae eae = eaeService.findEaeByAgentAndYear(idAgent, annee);
+		ReturnMessageDto rmDto = new ReturnMessageDto();
+
+		if (eae != null) {
+			rmDto.getInfos().add(eae.getIdEae().toString());
+
+		}
+
+		String response = new JSONSerializer().exclude("*.class").deepSerialize(rmDto);
+		return new ResponseEntity<String>(response, HttpStatus.OK);
+	}
+
+	/*
+	 * POUR SIRH-WS
+	 */
+	@ResponseBody
+	@RequestMapping(value = "compterlistIdEaeByCampagneAndAgent", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public ResponseEntity<String> compterlistIdEaeByCampagneAndAgent(@RequestParam("idCampagneEae") int idCampagneEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String idAgents) {
+
+		logger.debug(
+				"entered POST [eaes/compterlistIdEaeByCampagneAndAgent] => compterlistIdEaeByCampagneAndAgent with parameter idAgent = {} and idCampagneEae = {} and idAgents = {}",
+				idAgent, idCampagneEae, idAgents);
+
+		List<Integer> list = new JSONDeserializer<List<Integer>>().use("values", Integer.class).deserialize(idAgents);
+
+		Integer nbEae = eaeService.compterlistIdEaeByCampagneAndAgent(idCampagneEae, list, idAgent);
+		ReturnMessageDto rmDto = new ReturnMessageDto();
+
+		if (nbEae != null) {
+			rmDto.getInfos().add(nbEae.toString());
+
+		}
+
+		String response = new JSONSerializer().exclude("*.class").deepSerialize(rmDto);
+		return new ResponseEntity<String>(response, HttpStatus.OK);
+	}
+
+	/*
+	 * POUR SIRH-WS
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getEaesGedIdsForAgents", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public ResponseEntity<String> getEaesGedIdsForAgents(@RequestParam("annee") int annee, @RequestBody String idAgents) {
+
+		logger.debug(
+				"entered POST [eaes/getEaesGedIdsForAgents] => getEaesGedIdsForAgents with parameter annee = {}  and idAgents = {}",
+				annee, idAgents);
+
+		List<Integer> list = new JSONDeserializer<List<Integer>>().use("values", Integer.class).deserialize(idAgents);
+
+		List<String> listGEDDocument = eaeService.getEaesGedIdsForAgents(list, annee);
+		ReturnMessageDto rmDto = new ReturnMessageDto();
+
+		if (listGEDDocument != null) {
+			for (String ged : listGEDDocument) {
+				rmDto.getInfos().add(ged);
+			}
+		}
+
+		String response = new JSONSerializer().exclude("*.class").deepSerialize(rmDto);
+		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
 }

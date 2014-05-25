@@ -201,7 +201,7 @@ public class EvaluationController {
 		if (annee != null) {
 			// on trouve l'id de l'agent de l'EAE
 			Eae eaeAgent = eaeService.getEae(idEae);
-			eae = eaeService.findEaeByAgentAndYear(eaeAgent.getEaeEvalue().getIdAgent(), annee);
+			eae = eaeService.findEaeByAgentAndYear(eaeAgent.getEaeEvalue().getIdAgent(), Integer.valueOf(annee));
 			if (eae == null) {
 
 				dto = new EaeAppreciationsDto();
