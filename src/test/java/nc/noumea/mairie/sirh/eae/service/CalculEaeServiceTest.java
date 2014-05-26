@@ -40,6 +40,8 @@ import nc.noumea.mairie.sirh.eae.dto.poste.TitrePosteDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.service.AgentService;
 import nc.noumea.mairie.sirh.service.IAgentService;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.junit.Test;
 import org.mockito.Mockito;

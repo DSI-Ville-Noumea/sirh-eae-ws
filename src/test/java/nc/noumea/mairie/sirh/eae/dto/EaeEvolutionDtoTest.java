@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
@@ -15,6 +14,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 
@@ -57,11 +57,11 @@ public class EaeEvolutionDtoTest {
 		evolution.setCommentaireEvalue(new EaeCommentaire());
 		
 		eae.setEaeEvolution(evolution);
-		Spbhor t1 = new Spbhor();
+		SpbhorDto t1 = new SpbhorDto();
 		t1.setCdThor(1);
 		t1.setLabel("label");
 		t1.setTaux(0.9);
-		List<Spbhor> tempsPartiels = Arrays.asList(t1);
+		List<SpbhorDto> tempsPartiels = Arrays.asList(t1);
 		
 		// When
 		EaeEvolutionDto dto = new EaeEvolutionDto(eae, tempsPartiels);
@@ -147,7 +147,7 @@ public class EaeEvolutionDtoTest {
 		evolution.getEaeDeveloppements().add(dev6);
 		
 		// When
-		EaeEvolutionDto dto = new EaeEvolutionDto(eae, new ArrayList<Spbhor>());
+		EaeEvolutionDto dto = new EaeEvolutionDto(eae, new ArrayList<SpbhorDto>());
 		
 		// Then
 		assertEquals(1, dto.getSouhaitsSuggestions().size());

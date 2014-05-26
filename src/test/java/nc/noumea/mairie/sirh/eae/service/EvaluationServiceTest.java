@@ -14,10 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
-import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
@@ -49,10 +45,13 @@ import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationSituationDt
 import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
 import nc.noumea.mairie.sirh.eae.dto.planAction.PlanActionItemDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.EaeDataConsistencyServiceException;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.IEaeDataConsistencyService;
 import nc.noumea.mairie.sirh.service.IAgentService;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
@@ -1135,22 +1134,18 @@ public class EvaluationServiceTest {
 		assertEquals(5, eae.getEaePlanActions().size());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetEaeEvolution_WithEae_FillEvolutionDtoAndReturn() {
+	public void testGetEaeEvolution_WithEae_FillEvolutionDtoAndReturn() throws SirhWSConsumerException {
 
 		// Given
 		Eae eae = new Eae();
 		eae.setIdEae(789);
 
-		TypedQuery<Spbhor> q = mock(TypedQuery.class);
-		when(q.getResultList()).thenReturn(new ArrayList<Spbhor>());
-
-		EntityManager sirhEntityManagerMock = mock(EntityManager.class);
-		when(sirhEntityManagerMock.createNamedQuery("Spbhor.whereCdTauxNotZero", Spbhor.class)).thenReturn(q);
+		ISirhWsConsumer sirhWSConsumer = mock(ISirhWsConsumer.class);
+		when(sirhWSConsumer.getListSpbhor()).thenReturn(new ArrayList<SpbhorDto>());
 
 		EvaluationService service = new EvaluationService();
-		ReflectionTestUtils.setField(service, "sirhEntityManager", sirhEntityManagerMock);
+		ReflectionTestUtils.setField(service, "sirhWSConsumer", sirhWSConsumer);
 
 		// When
 		EaeEvolutionDto result = service.getEaeEvolution(eae);
@@ -1161,7 +1156,7 @@ public class EvaluationServiceTest {
 
 	@Test
 	public void testSetEaeEvolution_EmptyEaeEvolutionSetPropertiesAndCommentaire_FillEvolutionfromDto()
-			throws EvaluationServiceException {
+			throws EvaluationServiceException, SirhWSConsumerException {
 
 		// Given
 		Eae eae = new Eae();
@@ -1201,17 +1196,17 @@ public class EvaluationServiceTest {
 		tempsPartiel.setCourant("1");
 		dto.setPourcentageTempsPartiel(tempsPartiel);
 
-		Spbhor t = new Spbhor();
-		t.setCdThor(1);
+		SpbhorDto t = new SpbhorDto();
+			t.setCdThor(1);
 
 		IEaeDataConsistencyService dataConsistencyService = mock(IEaeDataConsistencyService.class);
 
-		EntityManager sirhManagerMock = mock(EntityManager.class);
-		when(sirhManagerMock.find(Spbhor.class, 1)).thenReturn(t);
+		ISirhWsConsumer sirhWSConsumer = mock(ISirhWsConsumer.class);
+		when(sirhWSConsumer.getSpbhorById(1)).thenReturn(t);
 
 		EvaluationService service = new EvaluationService();
 		ReflectionTestUtils.setField(service, "eaeDataConsistencyService", dataConsistencyService);
-		ReflectionTestUtils.setField(service, "sirhEntityManager", sirhManagerMock);
+		ReflectionTestUtils.setField(service, "sirhWSConsumer", sirhWSConsumer);
 
 		// When
 		service.setEaeEvolution(eae, dto);

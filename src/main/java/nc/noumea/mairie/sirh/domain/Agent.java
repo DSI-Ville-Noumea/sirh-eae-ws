@@ -2,54 +2,16 @@ package nc.noumea.mairie.sirh.domain;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-
-@Entity
-@Table(name = "AGENT")
-@PersistenceUnit(unitName = "sirhPersistenceUnit")
 public class Agent {
 
-	@Id
-	@Column(name = "ID_AGENT")
 	private Integer idAgent;
-
-	@NotNull
-	@Column(name = "NOMATR")
 	private Integer nomatr;
-
-	@Column(name = "NOM_MARITAL")
 	private String nomMarital;
-
-	@NotNull
-	@Column(name = "NOM_PATRONYMIQUE")
 	private String nomPatronymique;
-
-	@Column(name = "NOM_USAGE")
 	private String nomUsage;
-
-	@NotNull
-	@Column(name = "PRENOM")
 	private String prenom;
-
-	@NotNull
-	@Column(name = "PRENOM_USAGE")
 	private String prenomUsage;
-
-	@NotNull
-	@Column(name = "DATE_NAISSANCE")
-	@Temporal(TemporalType.DATE)
 	private Date dateNaissance;
-
-	@NotNull
-	@Column(name = "DATE_DERNIERE_EMBAUCHE")
-	@Temporal(TemporalType.DATE)
 	private Date dateDerniereEmbauche;
 
 	public String getDisplayPrenom() {

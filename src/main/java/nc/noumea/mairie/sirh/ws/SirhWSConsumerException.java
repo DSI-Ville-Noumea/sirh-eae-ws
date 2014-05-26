@@ -1,4 +1,4 @@
-package nc.noumea.mairie.sirh.eae.service;
+package nc.noumea.mairie.sirh.ws;
 
 public class SirhWSConsumerException extends Exception {
 

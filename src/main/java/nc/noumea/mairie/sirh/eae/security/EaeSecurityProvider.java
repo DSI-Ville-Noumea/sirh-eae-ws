@@ -6,8 +6,8 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
-import nc.noumea.mairie.sirh.eae.service.ISirhWsConsumer;
-import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

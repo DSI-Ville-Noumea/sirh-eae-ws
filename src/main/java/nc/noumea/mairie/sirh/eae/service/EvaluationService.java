@@ -3,10 +3,6 @@ package nc.noumea.mairie.sirh.eae.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
 import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
@@ -35,15 +31,22 @@ import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
 import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
 import nc.noumea.mairie.sirh.eae.dto.planAction.PlanActionItemDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.EaeDataConsistencyServiceException;
 import nc.noumea.mairie.sirh.eae.service.dataConsistency.IEaeDataConsistencyService;
 import nc.noumea.mairie.sirh.service.IAgentService;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EvaluationService implements IEvaluationService {
+
+	private Logger logger = LoggerFactory.getLogger(EvaluationService.class);
 
 	@Autowired
 	private IAgentService agentService;
@@ -59,9 +62,6 @@ public class EvaluationService implements IEvaluationService {
 
 	@Autowired
 	private ISirhWsConsumer sirhWSConsumer;
-
-	@PersistenceContext(unitName = "sirhPersistenceUnit")
-	private EntityManager sirhEntityManager;
 
 	@Override
 	public EaeIdentificationDto getEaeIdentification(Eae eae) {
@@ -399,8 +399,13 @@ public class EvaluationService implements IEvaluationService {
 		if (eae == null)
 			return null;
 
-		List<Spbhor> listOfPartialTimes = sirhEntityManager.createNamedQuery("Spbhor.whereCdTauxNotZero", Spbhor.class)
-				.getResultList();
+		List<SpbhorDto> listOfPartialTimes = null;
+		try {
+			listOfPartialTimes = sirhWSConsumer.getListSpbhor();
+		} catch (SirhWSConsumerException e) {
+			logger.debug(e.getMessage());
+			return null;
+		}
 
 		return new EaeEvolutionDto(eae, listOfPartialTimes);
 	}
@@ -431,9 +436,12 @@ public class EvaluationService implements IEvaluationService {
 			try {
 				selectedId = Integer.parseInt(dto.getPourcentageTempsPartiel().getCourant());
 
-				if (sirhEntityManager.find(Spbhor.class, selectedId) == null)
+				if (sirhWSConsumer.getSpbhorById(selectedId) == null)
 					throw new EvaluationServiceException(
 							"La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");
+			} catch (SirhWSConsumerException e) {
+				throw new EvaluationServiceException(
+						"Erreur lors de l'appel à SIRH-WS.");
 			} catch (NumberFormatException ex) {
 				throw new EvaluationServiceException(
 						"La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");

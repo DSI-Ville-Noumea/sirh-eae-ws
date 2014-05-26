@@ -5,8 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 
 public class ValueWithListDto {
 
@@ -48,22 +48,24 @@ public class ValueWithListDto {
 				: null;
 	}
 
-	public ValueWithListDto(Integer valueId, List<Spbhor> choices) {
+	public ValueWithListDto(Integer valueId, List<SpbhorDto> choices) {
 
 		this();
 
 		DecimalFormat df = new DecimalFormat("#");
 		df.setRoundingMode(RoundingMode.FLOOR);
 		
-		for (Spbhor n : choices) {
-			
-			ListItemDto item = new ListItemDto();
-			item.setCode(n.getCdThor().toString());
-			item.setValeur(String.format("%s - %s%%", n.getLabel(), df.format(n.getTaux() * 100)));
-			liste.add(item);
-
-			if (n.getCdThor().equals(valueId))
-				courant = n.getCdThor().toString();
+		if(null != choices) {
+			for (SpbhorDto n : choices) {
+				
+				ListItemDto item = new ListItemDto();
+				item.setCode(n.getCdThor().toString());
+				item.setValeur(String.format("%s - %s%%", n.getLabel(), df.format(n.getTaux() * 100)));
+				liste.add(item);
+	
+				if (n.getCdThor().equals(valueId))
+					courant = n.getCdThor().toString();
+			}
 		}
 
 	}

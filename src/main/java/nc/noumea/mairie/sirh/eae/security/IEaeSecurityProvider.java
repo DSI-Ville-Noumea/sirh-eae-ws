@@ -1,7 +1,7 @@
 package nc.noumea.mairie.sirh.eae.security;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.springframework.http.ResponseEntity;
 

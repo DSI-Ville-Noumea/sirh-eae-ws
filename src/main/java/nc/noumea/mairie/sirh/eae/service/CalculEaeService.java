@@ -35,6 +35,8 @@ import nc.noumea.mairie.sirh.eae.dto.poste.TitrePosteDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.CalculEaeHelper;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

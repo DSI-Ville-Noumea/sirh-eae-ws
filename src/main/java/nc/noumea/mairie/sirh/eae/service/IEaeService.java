@@ -10,6 +10,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public interface IEaeService {
 

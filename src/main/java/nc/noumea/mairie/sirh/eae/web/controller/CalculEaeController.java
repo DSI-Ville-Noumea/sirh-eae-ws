@@ -6,7 +6,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.eae.service.ICalculEaeService;
-import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

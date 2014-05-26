@@ -1,10 +1,13 @@
-package nc.noumea.mairie.sirh.eae.service;
+package nc.noumea.mairie.sirh.ws;
 
 import java.util.List;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public interface ISirhWsConsumer {
 
@@ -30,4 +33,10 @@ public interface ISirhWsConsumer {
 			throws SirhWSConsumerException;
 
 	List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent) throws SirhWSConsumerException;
+
+	List<SpbhorDto> getListSpbhor() throws SirhWSConsumerException;
+
+	SpbhorDto getSpbhorById(Integer idSpbhor) throws SirhWSConsumerException;
+
+	Agent getAgent(Integer idAgent) throws SirhWSConsumerException;
 }

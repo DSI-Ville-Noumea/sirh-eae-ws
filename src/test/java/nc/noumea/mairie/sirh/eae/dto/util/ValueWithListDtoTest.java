@@ -5,9 +5,9 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 
-import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.eae.domain.EaeNiveau;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 
 import org.junit.Test;
 
@@ -76,12 +76,12 @@ public class ValueWithListDtoTest {
 	@Test
 	public void testConstructorWithSpbhor() {
 		// Given
-		Spbhor t1 = new Spbhor();
+		SpbhorDto t1 = new SpbhorDto();
 		t1.setCdThor(1);
 		t1.setLabel("t1");
 		t1.setTaux(0.666666667d);
 		
-		Spbhor t2 = new Spbhor();
+		SpbhorDto t2 = new SpbhorDto();
 		t2.setCdThor(2);
 		t2.setLabel("t2");
 		t2.setTaux(0.75);
@@ -102,12 +102,12 @@ public class ValueWithListDtoTest {
 	@Test
 	public void testConstructorWithSpbhor_noSelection() {
 		// Given
-		Spbhor t1 = new Spbhor();
+		SpbhorDto t1 = new SpbhorDto();
 		t1.setCdThor(1);
 		t1.setLabel("t1");
 		t1.setTaux(0.666666667d);
 		
-		Spbhor t2 = new Spbhor();
+		SpbhorDto t2 = new SpbhorDto();
 		t2.setCdThor(2);
 		t2.setLabel("t2");
 		t2.setTaux(0.75);

@@ -7,6 +7,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import nc.noumea.mairie.sirh.ws.SirhWSConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
+
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;

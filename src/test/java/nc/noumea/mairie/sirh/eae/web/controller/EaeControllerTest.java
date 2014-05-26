@@ -25,7 +25,7 @@ import nc.noumea.mairie.sirh.eae.service.AgentMatriculeConverterServiceException
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
-import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

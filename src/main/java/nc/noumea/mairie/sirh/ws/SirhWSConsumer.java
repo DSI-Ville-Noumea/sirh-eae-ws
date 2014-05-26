@@ -1,4 +1,4 @@
-package nc.noumea.mairie.sirh.eae.service;
+package nc.noumea.mairie.sirh.ws;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,6 +43,9 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private static final String sirhListeAffectationsAgentAvecFPUrl = "calculEae/listeAffectationsAgentAvecFP";
 	private static final String sirhAutreAdministrationAgentAncienneUrl = "calculEae/autreAdministrationAgentAncienne";
 	private static final String sirhListeAutreAdministrationAgentUrl = "calculEae/listeAutreAdministrationAgent";
+	private static final String sirhListSpbhorUrl = "fichePostes/listeSpbhor";
+	private static final String sirhSpbhorByIdUrl = "fichePostes/spbhorById";
+	private static final String sirhAgentUrl = "agents/agent";
 
 	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
@@ -83,6 +89,18 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 	private String getSirhListeAutreAdministrationAgentUrl() {
 		return sirhWsBaseUrl + sirhListeAutreAdministrationAgentUrl;
+	}
+	
+	private String getSirhListSpbhorUrl() {
+		return sirhWsBaseUrl + sirhListSpbhorUrl;
+	}
+	
+	private String getSirhSpbhorByIdUrl() {
+		return sirhWsBaseUrl + sirhSpbhorByIdUrl;
+	}
+	
+	private String getSirhAgentUrl() {
+		return sirhWsBaseUrl + sirhAgentUrl;
 	}
 
 	public ClientResponse createAndFireRequest(int agentId, int maxDepth, String url) throws SirhWSConsumerException {
@@ -305,5 +323,37 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhListeAutreAdministrationAgentUrl());
 
 		return readResponseAsList(AutreAdministrationAgentDto.class, res, getSirhListeAutreAdministrationAgentUrl());
+	}
+	
+	@Override
+	public List<SpbhorDto> getListSpbhor() throws SirhWSConsumerException {
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+	
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhListSpbhorUrl());
+	
+		return readResponseAsList(SpbhorDto.class, res, getSirhListSpbhorUrl());
+	}
+	
+	@Override
+	public SpbhorDto getSpbhorById(Integer idSpbhor) throws SirhWSConsumerException {
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idSpbhor", String.valueOf(idSpbhor));
+	
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhSpbhorByIdUrl());
+	
+		return readResponseDto(SpbhorDto.class, res, getSirhSpbhorByIdUrl());
+	}
+	
+	@Override
+	public Agent getAgent(Integer idAgent) throws SirhWSConsumerException {
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+	
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAgentUrl());
+	
+		return readResponseDto(Agent.class, res, getSirhAgentUrl());
 	}
 }

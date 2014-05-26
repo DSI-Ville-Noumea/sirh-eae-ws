@@ -7,13 +7,13 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import nc.noumea.mairie.mairie.domain.Spbhor;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
@@ -66,7 +66,7 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		delaiEnvisage = new ValueWithListDto(null, EaeDelaiEnum.class);
 	}
 
-	public EaeEvolutionDto(Eae eae, List<Spbhor> tempsPartiels) {
+	public EaeEvolutionDto(Eae eae, List<SpbhorDto> tempsPartiels) {
 		this();
 		idEae = eae.getIdEae();
 		

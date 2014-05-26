@@ -5,13 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,7 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 public class AgentServiceTest {
 
 	@Test
-	public void testFillAgentForEaeEvaluateurWhenEaeEvaluateurIsValid() {
+	public void testFillAgentForEaeEvaluateurWhenEaeEvaluateurIsValid() throws SirhWSConsumerException {
 
 		// Given
 		EaeEvaluateur eval = new EaeEvaluateur();
@@ -33,11 +33,11 @@ public class AgentServiceTest {
 		agentToReturn.setIdAgent(998);
 		agentToReturn.setNomPatronymique("Bilbo");
 
-		EntityManager emMock = Mockito.mock(EntityManager.class);
-		Mockito.when(emMock.find(Agent.class, 998)).thenReturn(agentToReturn);
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getAgent(998)).thenReturn(agentToReturn);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
 		// When
 		EaeEvaluateur eva = service.fillEaeEvaluateurWithAgent(eval);
@@ -48,7 +48,7 @@ public class AgentServiceTest {
 	}
 
 	@Test
-	public void testFillAgentForEaeFichePoste() {
+	public void testFillAgentForEaeFichePoste() throws SirhWSConsumerException {
 
 		// Given
 		EaeFichePoste fdp = new EaeFichePoste();
@@ -59,11 +59,11 @@ public class AgentServiceTest {
 		agentToReturn.setIdAgent(998);
 		agentToReturn.setNomPatronymique("Bilbo");
 
-		EntityManager emMock = Mockito.mock(EntityManager.class);
-		Mockito.when(emMock.find(Agent.class, 998)).thenReturn(agentToReturn);
-
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getAgent(998)).thenReturn(agentToReturn);
+		
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
 		// When
 		service.fillEaeFichePosteWithAgent(fdp);
@@ -73,7 +73,7 @@ public class AgentServiceTest {
 	}
 
 	@Test
-	public void testFillAgentForEaeEvalue() {
+	public void testFillAgentForEaeEvalue() throws SirhWSConsumerException {
 
 		// Given
 		EaeEvalue evalue = new EaeEvalue();
@@ -84,11 +84,12 @@ public class AgentServiceTest {
 		agentToReturn.setIdAgent(995);
 		agentToReturn.setNomPatronymique("Billy");
 
-		EntityManager emMock = Mockito.mock(EntityManager.class);
-		Mockito.when(emMock.find(Agent.class, 995)).thenReturn(agentToReturn);
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getAgent(995)).thenReturn(agentToReturn);
+		
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
 		// When
 		service.fillEaeEvalueWithAgent(evalue);
@@ -98,7 +99,7 @@ public class AgentServiceTest {
 	}
 
 	@Test
-	public void testfillEaeWithAgents_When1DelegataireAnd1ShdNoEvaluateurs_returnFilledInObject() {
+	public void testfillEaeWithAgents_When1DelegataireAnd1ShdNoEvaluateurs_returnFilledInObject() throws SirhWSConsumerException {
 
 		// Given
 		int idAgent = 9;
@@ -129,14 +130,13 @@ public class AgentServiceTest {
 		agentDelegataireToReturn.setNomPatronymique("yet another person");
 
 		// Set the mock as the entityManager of the service class
-		EntityManager emMock = Mockito.mock(EntityManager.class);
-		Mockito.when(emMock.find(Agent.class, fdp.getIdAgentShd())).thenReturn(agentShdToReturn);
-		Mockito.when(emMock.find(Agent.class, idAgent)).thenReturn(agentToReturn);
-		Mockito.when(emMock.find(Agent.class, eaeToReturn.getIdAgentDelegataire()))
-				.thenReturn(agentDelegataireToReturn);
-
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getAgent(fdp.getIdAgentShd())).thenReturn(agentShdToReturn);
+		Mockito.when(sirhWsConsumer.getAgent(idAgent)).thenReturn(agentToReturn);
+		Mockito.when(sirhWsConsumer.getAgent(eaeToReturn.getIdAgentDelegataire())).thenReturn(agentDelegataireToReturn);
+		
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
 		// When
 		Eae result = service.fillEaeWithAgents(eaeToReturn);
@@ -148,7 +148,7 @@ public class AgentServiceTest {
 	}
 
 	@Test
-	public void testfillEaeWithAgents_When2Evaluateurs_returnFilledInObject() {
+	public void testfillEaeWithAgents_When2Evaluateurs_returnFilledInObject() throws SirhWSConsumerException {
 
 		// Given
 		int idAgent = 9;
@@ -172,12 +172,12 @@ public class AgentServiceTest {
 		agentToReturn2.setIdAgent(eval1.getIdAgent());
 		agentToReturn2.setNomPatronymique("Bilbo2");
 
-		EntityManager emMock = Mockito.mock(EntityManager.class);
-		Mockito.when(emMock.find(Agent.class, evalue.getIdAgent())).thenReturn(agentToReturn);
-		Mockito.when(emMock.find(Agent.class, eval1.getIdAgent())).thenReturn(agentToReturn2);
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getAgent(evalue.getIdAgent())).thenReturn(agentToReturn);
+		Mockito.when(sirhWsConsumer.getAgent(eval1.getIdAgent())).thenReturn(agentToReturn2);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
 		// When
 		Eae result = service.fillEaeWithAgents(eaeToReturn);
@@ -190,17 +190,17 @@ public class AgentServiceTest {
 	}
 
 	@Test
-	public void testGetAgent_callAgentStaticFinder() {
+	public void testGetAgent_callAgentStaticFinder() throws SirhWSConsumerException {
 
 		// Given
 		Agent agentToReturn = new Agent();
 		agentToReturn.setIdAgent(789);
-
-		EntityManager emMock = Mockito.mock(EntityManager.class);
-		Mockito.when(emMock.find(Agent.class, 789)).thenReturn(agentToReturn);
+		
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getAgent(789)).thenReturn(agentToReturn);
 
 		AgentService service = new AgentService();
-		ReflectionTestUtils.setField(service, "sirhEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
 		// When
 		Agent result = service.getAgent(789);

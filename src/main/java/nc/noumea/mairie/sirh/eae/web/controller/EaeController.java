@@ -19,7 +19,7 @@ import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeReportingService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
-import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 
 import org.slf4j.Logger;

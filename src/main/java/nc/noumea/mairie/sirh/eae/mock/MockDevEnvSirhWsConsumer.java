@@ -5,11 +5,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
-import nc.noumea.mairie.sirh.eae.service.ISirhWsConsumer;
-import nc.noumea.mairie.sirh.eae.service.SirhWSConsumerException;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 
@@ -73,6 +75,25 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 	@Override
 	public List<AutreAdministrationAgentDto> getListeAutreAdministrationAgent(Integer idAgent)
 			throws SirhWSConsumerException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<SpbhorDto> getListSpbhor() throws SirhWSConsumerException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SpbhorDto getSpbhorById(Integer idSpbhor)
+			throws SirhWSConsumerException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Agent getAgent(Integer idAgent) throws SirhWSConsumerException {
 		// TODO Auto-generated method stub
 		return null;
 	}
