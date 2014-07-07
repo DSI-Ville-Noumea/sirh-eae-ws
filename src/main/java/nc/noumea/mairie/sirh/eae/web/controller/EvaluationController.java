@@ -80,8 +80,8 @@ public class EvaluationController {
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeIdentificationDtoJson) {
 
 		logger.debug(
-				"entered POST [evaluation/eaeIdentification] => setEaeIdentifitcation with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+				"entered POST [evaluation/eaeIdentification] => setEaeIdentifitcation with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaeIdentificationDtoJson);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -159,8 +159,8 @@ public class EvaluationController {
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeResultatsDtoJson) {
 
 		logger.debug(
-				"entered POST [evaluation/eaeResultats] => setEaeResultats with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+				"entered POST [evaluation/eaeResultats] => setEaeResultats with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaeResultatsDtoJson);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -234,8 +234,8 @@ public class EvaluationController {
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAppreciationsDtoJson) {
 
 		logger.debug(
-				"entered POST [evaluation/eaeAppreciations] => setEaeAppreciations with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+				"entered POST [evaluation/eaeAppreciations] => setEaeAppreciations with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaeAppreciationsDtoJson);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -286,8 +286,8 @@ public class EvaluationController {
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvaluationDtoJson) {
 
 		logger.debug(
-				"entered POST [evaluation/eaeEvaluation] => setEaeEvaluation with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+				"entered POST [evaluation/eaeEvaluation] => setEaeEvaluation with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaeEvaluationDtoJson);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -343,8 +343,8 @@ public class EvaluationController {
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAutoEvaluationDtoJson) {
 
 		logger.debug(
-				"entered POST [evaluation/eaeAutoEvaluation] => setEaeAutoEvaluation with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+				"entered POST [evaluation/eaeAutoEvaluation] => setEaeAutoEvaluation with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaeAutoEvaluationDtoJson);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -397,8 +397,8 @@ public class EvaluationController {
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaePlanActionDtoJson) {
 
 		logger.debug(
-				"entered POST [evaluation/eaePlanAction] => setEaePlanAction with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+				"entered POST [evaluation/eaePlanAction] => setEaePlanAction with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaePlanActionDtoJson);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -450,8 +450,8 @@ public class EvaluationController {
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvolutionDtoJson) {
 
 		logger.debug(
-				"entered POST [evaluation/eaeEvolution] => setEaeEvolution with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+				"entered POST [evaluation/eaeEvolution] => setEaeEvolution with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaeEvolutionDtoJson);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
