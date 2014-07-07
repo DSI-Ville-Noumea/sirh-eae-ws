@@ -111,7 +111,7 @@ public class MSDateTransformerTest {
 		} catch (JSONException ex) {
 			// Then
 			assertEquals(
-					"Unable to parse '/DAT(1355270400000)/' as a valid date time. Expected format is '/[Dd][Aa][Tt][Ee]\\(\\-?([0-9]+)([\\+\\-]{1}[0-9]{4})*\\)/'",
+					"Unable to parse '/DAT(1355270400000)/' as a valid date time. Expected format is '/[Dd][Aa][Tt][Ee]\\((\\-?[0-9]+)([\\+\\-]{1}[0-9]{4})*\\)/'",
 					ex.getMessage());
 		}
 	}
