@@ -162,6 +162,7 @@ public class EvaluationService implements IEvaluationService {
 	}
 
 	private void createAndAddNewEaeResultat(Eae eae, EaeResultat resPro, EaeTypeObjectifEnum type) {
+		resPro.setIdEaeResultat(null);
 		resPro.setTypeObjectif(typeObjectifService.getTypeObjectifForLibelle(type.name()));
 		eae.getEaeResultats().add(resPro);
 		resPro.setEae(eae);
@@ -482,6 +483,7 @@ public class EvaluationService implements IEvaluationService {
 
 		for (EaeEvolutionSouhait evolSouhait : dto.getSouhaitsSuggestions()) {
 			if (evolSouhait.getIdEaeEvolutionSouhait() == null || evolSouhait.getIdEaeEvolutionSouhait().equals(0)) {
+				evolSouhait.setIdEaeEvolutionSouhait(null);
 				evolution.getEaeEvolutionSouhaits().add(evolSouhait);
 				evolSouhait.setEaeEvolution(evolution);
 			} else {
@@ -533,8 +535,10 @@ public class EvaluationService implements IEvaluationService {
 
 		for (EaeDeveloppement dev : dtoDeveloppements) {
 			if (dev.getIdEaeDeveloppement() == null || dev.getIdEaeDeveloppement().equals(0)) {
+				dev.setIdEaeDeveloppement(null);
 				dev.setEaeEvolution(evolution);
 				dev.setTypeDeveloppement(typeDeveloppement);
+				dev.setIdEaeDeveloppement(null);
 				evolution.getEaeDeveloppements().add(dev);
 			} else {
 				for (EaeDeveloppement existingDev : evolution.getEaeDeveloppements()) {
