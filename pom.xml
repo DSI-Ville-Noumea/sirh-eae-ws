@@ -12,6 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.7</slf4j.version>
 		<spring.version>4.0.4.RELEASE</spring.version>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 	</properties>
 	<issueManagement>
 		<system>REDMINE</system>
@@ -353,7 +354,7 @@
 					</webResources>
 				</configuration>
 			</plugin>
-			<!--<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.3</version>
@@ -435,7 +436,7 @@
 						</plugin>
 					</reportPlugins>
 				</configuration>
-			</plugin>-->
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-scm-plugin</artifactId>
