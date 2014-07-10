@@ -12,33 +12,30 @@
 <!-- The contents of this file will be loaded for each web application -->
 <Context reloadable="true" cookies="true">
 
-	<!-- Default set of monitored resources -->
-	<!-- <WatchedResource>WEB-INF/web.xml</WatchedResource> -->
-
-	<!-- Uncomment this to disable session persistence across Tomcat restarts -->
-	<!-- <Manager pathname="" /> -->
-
-	<!-- Uncomment this to enable Comet connection tacking (provides events 
-		on session expiration as well as webapp lifecycle) -->
-	<!-- <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" 
-		/> -->
-
+	<!--  -->
+	<!-- DATASOURCES -->
+	<!--  -->	
 	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
 		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
 		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
 		poolPreparedStatements="true" />
+		
 
-	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String"
-		description="SIRH WS endpoint url for EAEs" value="http://***REMOVED***:8085/sirhws/"
-		override="false" />
+	<!--  -->
+	<!-- WS SIRH -->
+	<!--  -->
+	<Environment name="SIRH_WS_BASE_URL" type="java.lang.String" description="SIRH WS endpoint url for EAEs" 
+		value="http://***REMOVED***:8085/sirhws/" override="false" />
+		
 
-	<Environment name="REPORTING_SERVER_REPORT_PATH" type="java.lang.String"
-		description="SIRH-EAE reports path on Birt" value="report/sirh-eae-reports/"
-		override="false" />
+	<!--  -->
+	<!-- BIRT -->
+	<!--  -->
+	<Environment name="REPORTING_SERVER_REPORT_PATH" type="java.lang.String" description="SIRH-EAE reports path on Birt" 
+		value="report/sirh-eae-reports/" override="false" />
 
-	<Environment name="REPORTING_BASE_URL" type="java.lang.String"
-		description="BIRT report viewer base URL for EAEs reporting" value="http://***REMOVED***:8085/birt/"
-		override="false" />
+	<Environment name="REPORTING_BASE_URL" type="java.lang.String" description="BIRT report viewer base URL for EAEs reporting" 
+		value="http://***REMOVED***:8085/birt/" override="false" />
 
 </Context>
