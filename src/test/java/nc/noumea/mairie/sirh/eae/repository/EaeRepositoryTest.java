@@ -1,6 +1,9 @@
 package nc.noumea.mairie.sirh.eae.repository;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -25,120 +28,119 @@ public class EaeRepositoryTest {
 
 	@Autowired
 	IEaeRepository repository;
-	
+
 	@PersistenceContext(unitName = "eaePersistenceUnit")
 	private EntityManager eaePersistenceUnit;
-	
+
 	@Test
 	@Transactional("eaeTransactionManager")
 	public void findEaeCampagneByAnnee_1result() {
-		
+
 		EaeCampagne eaeCampagne = new EaeCampagne();
-			eaeCampagne.setAnnee(2010);
-			eaeCampagne.setDateDebut(new Date());
+		eaeCampagne.setAnnee(2010);
+		eaeCampagne.setDateDebut(new Date());
 		eaePersistenceUnit.persist(eaeCampagne);
-		
+
 		EaeCampagne result = repository.findEaeCampagneByAnnee(2010);
-		
+
 		assertNotNull(result);
 		assertEquals(2010, result.getAnnee());
 	}
-	
+
 	@Test
 	@Transactional("eaeTransactionManager")
 	public void findEaeCampagneByAnnee_noResult() {
-		
+
 		EaeCampagne eaeCampagne = new EaeCampagne();
-			eaeCampagne.setAnnee(2010);
-			eaeCampagne.setDateDebut(new Date());
+		eaeCampagne.setAnnee(2010);
+		eaeCampagne.setDateDebut(new Date());
 		eaePersistenceUnit.persist(eaeCampagne);
-		
+
 		EaeCampagne result = repository.findEaeCampagneByAnnee(2011);
-		
+
 		assertNull(result);
 	}
-	
-	
-	//@Test
-	//@Transactional("eaeTransactionManager")
-//	public void findEaeAgent_1result() {
-//		
-//		EaeCampagne eaeCampagne = new EaeCampagne();
-//			eaeCampagne.setAnnee(2010);
-//			eaeCampagne.setDateDebut(new Date());
-//		eaePersistenceUnit.persist(eaeCampagne);
-//	
-//		EaeEvalue eaeEvalue = new EaeEvalue();
-//			eaeEvalue.setIdAgent(9005138);
-//		
-//		Eae eae = new Eae();
-//			eae.setCap(true);
-//			eae.setEtat(EaeEtatEnum.C);
-//			eae.setEaeEvalue(eaeEvalue);
-//			eae.setEaeCampagne(eaeCampagne);
-//		eaePersistenceUnit.persist(eae);
-//		
-//		eaeEvalue.setEae(eae);
-//		eaePersistenceUnit.persist(eaeEvalue);
-//		
-//		Eae result = repository.findEaeAgent(9005138, eaeCampagne.getIdCampagneEae());
-//		
-//		assertNotNull(result);
-//		assertEquals(EaeEtatEnum.C, result.getEtat());
-//		assertTrue(result.isCap());
-//	}
-	
+
+	@Test
+	@Transactional("eaeTransactionManager")
+	public void findEaeAgent_1result() {
+
+		EaeCampagne eaeCampagne = new EaeCampagne();
+		eaeCampagne.setAnnee(2010);
+		eaeCampagne.setDateDebut(new Date());
+		eaePersistenceUnit.persist(eaeCampagne);
+
+		EaeEvalue eaeEvalue = new EaeEvalue();
+		eaeEvalue.setIdAgent(9005138);
+
+		Eae eae = new Eae();
+		eae.setCap(true);
+		eae.setEtat(EaeEtatEnum.C);
+		eae.setEaeEvalue(eaeEvalue);
+		eae.setEaeCampagne(eaeCampagne);
+		eaePersistenceUnit.persist(eae);
+
+		eaeEvalue.setEae(eae);
+		eaePersistenceUnit.persist(eaeEvalue);
+
+		Eae result = repository.findEaeAgent(9005138, eaeCampagne.getIdCampagneEae());
+
+		assertNotNull(result);
+		assertEquals(EaeEtatEnum.C, result.getEtat());
+		assertTrue(result.isCap());
+	}
+
 	@Test
 	@Transactional("eaeTransactionManager")
 	public void findEaeAgent_badAgent() {
-		
+
 		EaeCampagne eaeCampagne = new EaeCampagne();
-			eaeCampagne.setAnnee(2010);
-			eaeCampagne.setDateDebut(new Date());
+		eaeCampagne.setAnnee(2010);
+		eaeCampagne.setDateDebut(new Date());
 		eaePersistenceUnit.persist(eaeCampagne);
-	
+
 		EaeEvalue eaeEvalue = new EaeEvalue();
-			eaeEvalue.setIdAgent(9005138);
-		
+		eaeEvalue.setIdAgent(9005138);
+
 		Eae eae = new Eae();
-			eae.setCap(true);
-			eae.setEtat(EaeEtatEnum.C);
-			eae.setEaeEvalue(eaeEvalue);
-			eae.setEaeCampagne(eaeCampagne);
+		eae.setCap(true);
+		eae.setEtat(EaeEtatEnum.C);
+		eae.setEaeEvalue(eaeEvalue);
+		eae.setEaeCampagne(eaeCampagne);
 		eaePersistenceUnit.persist(eae);
-		
+
 		eaeEvalue.setEae(eae);
 		eaePersistenceUnit.persist(eaeEvalue);
-		
+
 		Eae result = repository.findEaeAgent(9005137, eaeCampagne.getIdCampagneEae());
-		
+
 		assertNull(result);
 	}
-	
+
 	@Test
 	@Transactional("eaeTransactionManager")
 	public void findEaeAgent_badCampagne() {
-		
+
 		EaeCampagne eaeCampagne = new EaeCampagne();
-			eaeCampagne.setAnnee(2010);
-			eaeCampagne.setDateDebut(new Date());
+		eaeCampagne.setAnnee(2010);
+		eaeCampagne.setDateDebut(new Date());
 		eaePersistenceUnit.persist(eaeCampagne);
-	
+
 		EaeEvalue eaeEvalue = new EaeEvalue();
-			eaeEvalue.setIdAgent(9005138);
-		
+		eaeEvalue.setIdAgent(9005138);
+
 		Eae eae = new Eae();
-			eae.setCap(true);
-			eae.setEtat(EaeEtatEnum.C);
-			eae.setEaeEvalue(eaeEvalue);
-			eae.setEaeCampagne(eaeCampagne);
+		eae.setCap(true);
+		eae.setEtat(EaeEtatEnum.C);
+		eae.setEaeEvalue(eaeEvalue);
+		eae.setEaeCampagne(eaeCampagne);
 		eaePersistenceUnit.persist(eae);
-		
+
 		eaeEvalue.setEae(eae);
 		eaePersistenceUnit.persist(eaeEvalue);
-		
-		Eae result = repository.findEaeAgent(9005138, eaeCampagne.getIdCampagneEae()+1);
-		
+
+		Eae result = repository.findEaeAgent(9005138, eaeCampagne.getIdCampagneEae() + 1);
+
 		assertNull(result);
 	}
 }
