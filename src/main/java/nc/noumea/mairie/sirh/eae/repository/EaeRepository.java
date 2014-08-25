@@ -51,13 +51,13 @@ public class EaeRepository implements IEaeRepository {
 		Eae result = null;
 		
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(
-				"select e from Eae e inner join e.eaeEvalue ev where ev.idAgent = :idAgent and e.eaeCampagne.idCampagneEae = :idEaeCampagne and e.etat = 'CO' ",
+				"select e from Eae e inner join e.eaeEvalue ev where ev.idAgent = :idAgent and e.eaeCampagne.idCampagneEae = :idEaeCampagne order by e.idEae desc ",
 				Eae.class);
 		eaeQuery.setParameter("idAgent", idAgent);
 		eaeQuery.setParameter("idEaeCampagne", idEaeCampagne);
 		
 		if(0 < eaeQuery.getResultList().size())
-			result = eaeQuery.getSingleResult();
+			result = eaeQuery.getResultList().get(0);
 		
 		return result;
 	}
