@@ -369,7 +369,7 @@ public class EaeService implements IEaeService {
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
-		sb.append("LEFT JOIN FETCH e.eaeFichePostes LEFT JOIN FETCH e.eaeEvaluateurs JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution ");
+		sb.append("LEFT JOIN FETCH e.eaeFichePostes LEFT JOIN FETCH e.eaeEvaluateurs JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution LEFT JOIN FETCH e.eaeFinalisations ");
 		sb.append("where (e.eaeEvalue.idAgent in :agentIds ");
 		sb.append("OR e.idAgentDelegataire = :agentId ");
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");
