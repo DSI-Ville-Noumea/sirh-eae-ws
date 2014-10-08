@@ -46,7 +46,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private static final String sirhListSpbhorUrl = "fichePostes/listeSpbhor";
 	private static final String sirhSpbhorByIdUrl = "fichePostes/spbhorById";
 	private static final String sirhAgentUrl = "agents/agent";
-	private static final String sirhDateAvctUrl = "calculEae/calculDateavancement";
+	private static final String sirhDateAvctUrl = "calculEae/calculDateAvancement";
 
 	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
