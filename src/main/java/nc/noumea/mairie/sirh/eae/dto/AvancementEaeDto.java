@@ -14,6 +14,7 @@ public class AvancementEaeDto {
 	
 	private Date dateAvctMoy;
 	private GradeDto grade;
+	private Integer idMotifAvct;
 
 	public String getEtat() {
 		return etat;
@@ -45,6 +46,14 @@ public class AvancementEaeDto {
 
 	public void setGrade(GradeDto grade) {
 		this.grade = grade;
+	}
+
+	public Integer getIdMotifAvct() {
+		return idMotifAvct;
+	}
+
+	public void setIdMotifAvct(Integer idMotifAvct) {
+		this.idMotifAvct = idMotifAvct;
 	}
 	
 }
