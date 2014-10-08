@@ -30,6 +30,7 @@ import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.CarriereDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DiplomeDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.FormationDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.GradeDto;
@@ -88,6 +89,9 @@ public class CalculEaeServiceTest {
 		AvancementEaeDto avancement = new AvancementEaeDto();
 		avancement.setEtat(AvancementEaeDto.SGC);
 
+		DateAvctDto dateAvct= new DateAvctDto();
+		dateAvct.setDateAvct(new Date());
+		
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
 		Mockito.when(sirhWsConsumer.getAvancement(9005138, 2014, true)).thenReturn(avancement);
 		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, true)).thenReturn(autreAdmin);
@@ -95,6 +99,7 @@ public class CalculEaeServiceTest {
 				autreAdminAncienne);
 		Mockito.when(sirhWsConsumer.getAvancementDetache(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 		Mockito.when(sirhWsConsumer.getDetailAffectationActiveByAgent(9005138, 2013)).thenReturn(eaeInfosDto);
+		Mockito.when(sirhWsConsumer.getCalculDateAvct(9005138)).thenReturn(dateAvct);
 
 		EaeCampagne eaeCampagne = new EaeCampagne();
 		eaeCampagne.setIdCampagneEae(1);
@@ -169,6 +174,9 @@ public class CalculEaeServiceTest {
 		AvancementEaeDto avancement = new AvancementEaeDto();
 		avancement.setEtat(AvancementEaeDto.SGC);
 
+		DateAvctDto dateAvct= new DateAvctDto();
+		dateAvct.setDateAvct(new Date());
+
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
 		Mockito.when(sirhWsConsumer.getAvancement(9005138, 2014, true)).thenReturn(avancement);
 		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, true)).thenReturn(autreAdmin);
@@ -176,6 +184,7 @@ public class CalculEaeServiceTest {
 				autreAdminAncienne);
 		Mockito.when(sirhWsConsumer.getAvancementDetache(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 		Mockito.when(sirhWsConsumer.getDetailAffectationActiveByAgent(9005138, 2013)).thenReturn(eaeInfosDto);
+		Mockito.when(sirhWsConsumer.getCalculDateAvct(9005138)).thenReturn(dateAvct);
 
 		EaeCampagne eaeCampagne = new EaeCampagne();
 		eaeCampagne.setIdCampagneEae(1);
@@ -253,6 +262,7 @@ public class CalculEaeServiceTest {
 		Mockito.when(sirhWsConsumer.getAvancement(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyBoolean()))
 				.thenReturn(null);
 		Mockito.when(sirhWsConsumer.getAvancementDetache(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
+		Mockito.when(sirhWsConsumer.getCalculDateAvct(9005138)).thenReturn(new DateAvctDto());
 
 		EaeCampagne campagnePrec = new EaeCampagne();
 		campagnePrec.setIdCampagneEae(1);

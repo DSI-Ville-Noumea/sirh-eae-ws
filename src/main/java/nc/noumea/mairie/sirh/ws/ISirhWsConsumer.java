@@ -6,8 +6,8 @@ import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
-import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public interface ISirhWsConsumer {
 
@@ -39,4 +39,6 @@ public interface ISirhWsConsumer {
 	SpbhorDto getSpbhorById(Integer idSpbhor) throws SirhWSConsumerException;
 
 	Agent getAgent(Integer idAgent) throws SirhWSConsumerException;
+
+	DateAvctDto getCalculDateAvct(Integer idAgent) throws SirhWSConsumerException;
 }

@@ -26,6 +26,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EtatAvancementEnum;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DiplomeDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.FormationDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.GradeDto;
@@ -304,6 +305,11 @@ public class CalculEaeService implements ICalculEaeService {
 					.getAnnee());
 			if (null != avctDetache) {
 				setAvancementEvalue(evalAModif, avctDetache);
+			} else {
+				// si il n'y a pas d'avancement alors on calcul la date
+				// d'avancement #11504
+				DateAvctDto dateAvct = sirhWsConsumer.getCalculDateAvct(agent.getIdAgent());
+				evalAModif.setDateEffetAvancement(dateAvct.getDateAvct());
 			}
 		} else {
 			setAvancementEvalue(evalAModif, avctFonct);
