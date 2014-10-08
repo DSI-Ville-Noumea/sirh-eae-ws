@@ -299,7 +299,7 @@ public class EaeController {
 			case PDF:
 				contentType = "application/pdf";
 				break;
-			case DOC:
+			case DOCX:
 				contentType = "application/msword";
 		}
 
