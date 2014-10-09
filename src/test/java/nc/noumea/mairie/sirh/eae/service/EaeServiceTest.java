@@ -429,11 +429,15 @@ public class EaeServiceTest {
 		eaeToStart.setIdEae(987);
 		eaeToStart.setEtat(EaeEtatEnum.ND);
 
-		EaeService service = new EaeService();
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eaeToStart);
 
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+				
 		try {
 			// When
-			service.startEae(eaeToStart);
+			service.startEae(987);
 		} catch (EaeServiceException ex) {
 			// Then
 			assertEquals("Impossible de démarrer l'EAE id '987': le statut de cet Eae est 'Non débuté'.",
@@ -449,10 +453,14 @@ public class EaeServiceTest {
 		eaeToStart.setIdEae(987);
 		eaeToStart.setEtat(EaeEtatEnum.C);
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eaeToStart);
+
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.startEae(eaeToStart);
+		service.startEae(987);
 
 		// Then
 		assertEquals(EaeEtatEnum.EC, eaeToStart.getEtat());
@@ -466,10 +474,14 @@ public class EaeServiceTest {
 		eaeToStart.setIdEae(987);
 		eaeToStart.setEtat(EaeEtatEnum.EC);
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eaeToStart);
+
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.startEae(eaeToStart);
+		service.startEae(987);
 
 		// Then
 		assertEquals(EaeEtatEnum.EC, eaeToStart.getEtat());
@@ -646,6 +658,7 @@ public class EaeServiceTest {
 		// Given
 		Eae eae = new Eae();
 		eae.setIdAgentDelegataire(123);
+		eae.setIdEae(987);
 		Integer idAgentDelegataire = 1789;
 
 		// Mock the agent find static method to return our agent
@@ -655,12 +668,12 @@ public class EaeServiceTest {
 
 		EntityManager emMock = Mockito.mock(EntityManager.class);
 		Mockito.when(emMock.find(Agent.class, idAgentDelegataire)).thenReturn(agentToReturn);
+		when(emMock.find(Eae.class, 987)).thenReturn(eae);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
-
 		// When
-		service.setDelegataire(eae, idAgentDelegataire);
+		service.setDelegataire(987, idAgentDelegataire);
 
 		// Then
 		assertEquals(idAgentDelegataire, eae.getIdAgentDelegataire());
@@ -671,6 +684,7 @@ public class EaeServiceTest {
 		// Given
 		Eae eae = new Eae();
 		eae.setIdAgentDelegataire(123);
+		eae.setIdEae(987);
 		Integer idAgentDelegataire = 1789;
 
 		// Mock the agent find static method to return our null agent
@@ -678,13 +692,14 @@ public class EaeServiceTest {
 
 		EntityManager emMock = Mockito.mock(EntityManager.class);
 		Mockito.when(emMock.find(Agent.class, idAgentDelegataire)).thenReturn(agentToReturn);
+		when(emMock.find(Eae.class, 987)).thenReturn(eae);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
 
 		try {
 			// When
-			service.setDelegataire(eae, idAgentDelegataire);
+			service.setDelegataire(987, idAgentDelegataire);
 		} catch (EaeServiceException ex) {
 			// Then
 			assertEquals("Impossible d'affecter l'agent '1789' en tant que délégataire: cet Agent n'existe pas.",
@@ -981,10 +996,14 @@ public class EaeServiceTest {
 		// Given
 		Eae eae = null;
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
+		
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
+		FinalizationInformationDto dto = service.getFinalizationInformation(9);
 
 		// Then
 		assertNull(dto);
@@ -995,25 +1014,29 @@ public class EaeServiceTest {
 
 		// Given
 		EaeCampagne camp = new EaeCampagne();
-		camp.setAnnee(2014);
+			camp.setAnnee(2014);
 		Eae eae = new Eae();
-		eae.setEaeEvalue(new EaeEvalue());
-		eae.setIdEae(7896);
-		eae.setEaeCampagne(camp);
+			eae.setEaeEvalue(new EaeEvalue());
+			eae.setIdEae(7896);
+			eae.setEaeCampagne(camp);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setNoteAnnee(13.03f);
+			evaluation.setNoteAnnee(13.03f);
 		eae.setEaeEvaluation(evaluation);
 
 		IAgentService agentServiceMock = Mockito.mock(IAgentService.class);
 		ISirhWsConsumer sirhMock = Mockito.mock(ISirhWsConsumer.class);
 		when(sirhMock.getListOfShdAgentsForAgentId(9005138)).thenReturn(new ArrayList<Integer>());
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 7896)).thenReturn(eae);
+		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
+		FinalizationInformationDto dto = service.getFinalizationInformation(7896);
 
 		// Then
 		assertNotNull(dto);
@@ -1025,14 +1048,14 @@ public class EaeServiceTest {
 
 		// Given
 		EaeCampagne camp = new EaeCampagne();
-		camp.setAnnee(2014);
+			camp.setAnnee(2014);
 		Eae eae = new Eae();
-		eae.setEaeEvalue(new EaeEvalue());
-		eae.getEaeEvalue().setIdAgent(9005138);
-		eae.setIdEae(7896);
-		eae.setEaeCampagne(camp);
+			eae.setEaeEvalue(new EaeEvalue());
+			eae.getEaeEvalue().setIdAgent(9005138);
+			eae.setIdEae(7896);
+			eae.setEaeCampagne(camp);
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setNoteAnnee(13.03f);
+			eval.setNoteAnnee(13.03f);
 		eae.setEaeEvaluation(eval);
 
 		Agent shd1 = new Agent();
@@ -1048,12 +1071,16 @@ public class EaeServiceTest {
 		when(sirhMock.getListOfShdAgentsForAgentId(9005138)).thenReturn(
 				Arrays.asList(shd1.getIdAgent(), shd2.getIdAgent()));
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 7896)).thenReturn(eae);
+		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		FinalizationInformationDto dto = service.getFinalizationInformation(eae);
+		FinalizationInformationDto dto = service.getFinalizationInformation(7896);
 
 		// Then
 		assertNotNull(dto);
@@ -1070,27 +1097,32 @@ public class EaeServiceTest {
 
 		// Given
 		Eae eae = new Eae();
-		eae.setEtat(EaeEtatEnum.EC);
+			eae.setEtat(EaeEtatEnum.EC);
+			eae.setIdEae(987);
 		Integer idAgent = 90899;
 		EaeEvaluation eval = new EaeEvaluation();
-		eval.setNoteAnnee(13.03f);
+			eval.setNoteAnnee(13.03f);
 		eae.setEaeEvaluation(eval);
 
 		EaeFinalizationDto dto = new EaeFinalizationDto();
-		dto.setCommentaire("le commentaire");
-		dto.setIdDocument("çççdikjnvekusvb");
-		dto.setVersionDocument("10.1");
-		dto.setNoteAnnee(13.03f);
+			dto.setCommentaire("le commentaire");
+			dto.setIdDocument("çççdikjnvekusvb");
+			dto.setVersionDocument("10.1");
+			dto.setNoteAnnee(13.03f);
 
 		IAgentMatriculeConverterService converterMock = Mockito.mock(IAgentMatriculeConverterService.class);
 		when(converterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(900899);
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
+
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "agentMatriculeConverterService", converterMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.finalizEae(eae, idAgent, dto);
+		service.finalizEae(987, idAgent, dto);
 
 		// Then
 		assertEquals(helperMock.getCurrentDate(), eae.getDateFinalisation());
@@ -1113,7 +1145,8 @@ public class EaeServiceTest {
 
 		// Given
 		Eae eae = new Eae();
-		eae.setEtat(EaeEtatEnum.CO);
+			eae.setEtat(EaeEtatEnum.CO);
+			eae.setIdEae(987);
 		Integer idAgent = 90899;
 
 		EaeEvaluation evaluation = new EaeEvaluation();
@@ -1129,12 +1162,16 @@ public class EaeServiceTest {
 		IAgentMatriculeConverterService converterMock = Mockito.mock(IAgentMatriculeConverterService.class);
 		when(converterMock.tryConvertFromADIdAgentToEAEIdAgent(idAgent)).thenReturn(900899);
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
+
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "agentMatriculeConverterService", converterMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.finalizEae(eae, idAgent, dto);
+		service.finalizEae(987, idAgent, dto);
 
 		// Then
 		assertEquals(helperMock.getCurrentDate(), eae.getDateFinalisation());
@@ -1157,7 +1194,8 @@ public class EaeServiceTest {
 
 		// Given
 		Eae eae = new Eae();
-		eae.setEtat(EaeEtatEnum.C);
+			eae.setEtat(EaeEtatEnum.C);
+			eae.setIdEae(987);
 		Integer idAgent = 90899;
 
 		EaeFinalizationDto dto = new EaeFinalizationDto();
@@ -1170,12 +1208,16 @@ public class EaeServiceTest {
 				mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class),
 						Mockito.any(Locale.class))).thenReturn("Impossible de finaliser l'Eae car son état est 'Créé'");
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
+
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "messageSource", mSource);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		try {
 			// When
-			service.finalizEae(eae, idAgent, dto);
+			service.finalizEae(987, idAgent, dto);
 		} catch (EaeServiceException ex) {
 			// Then
 			assertEquals("Impossible de finaliser l'Eae car son état est 'Créé'", ex.getMessage());
@@ -1190,18 +1232,23 @@ public class EaeServiceTest {
 	public void canFinalizEae_EaeIsNotEC_ReturnMessageAndFalse() {
 		// Given
 		Eae eae = new Eae();
-		eae.setEtat(EaeEtatEnum.C);
+			eae.setIdEae(987);
+			eae.setEtat(EaeEtatEnum.C);
 
 		MessageSource mSource = Mockito.mock(MessageSource.class);
 		when(
 				mSource.getMessage(Mockito.eq("EAE_CANNOT_FINALIZE"), Mockito.any(Object[].class),
 						Mockito.any(Locale.class))).thenReturn("Impossible de finaliser l'Eae car son état est 'Créé'");
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
+
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "messageSource", mSource);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		CanFinalizeEaeDto result = service.canFinalizEae(eae);
+		CanFinalizeEaeDto result = service.canFinalizEae(987);
 
 		// Then
 		assertFalse(result.isCanFinalize());
@@ -1212,11 +1259,17 @@ public class EaeServiceTest {
 	public void canFinalizEae_EaeIsEC_ReturnNoMessageAndTrue() {
 		// Given
 		Eae eae = new Eae();
-		eae.setEtat(EaeEtatEnum.EC);
+			eae.setEtat(EaeEtatEnum.EC);
+			eae.setIdEae(987);
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
+		
 		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		CanFinalizeEaeDto result = service.canFinalizEae(eae);
+		CanFinalizeEaeDto result = service.canFinalizEae(987);
 
 		// Then
 		assertTrue(result.isCanFinalize());
@@ -1228,18 +1281,23 @@ public class EaeServiceTest {
 		// Given
 		Eae eae = new Eae();
 		EaeEvalue evalue = new EaeEvalue();
-		evalue.setAgent(new Agent());
-		evalue.getAgent().setPrenom("NICOLAS");
-		evalue.getAgent().setNomUsage("RAYNAUD");
+			evalue.setAgent(new Agent());
+			evalue.getAgent().setPrenom("NICOLAS");
+			evalue.getAgent().setNomUsage("RAYNAUD");
 		eae.setEaeEvalue(evalue);
+		eae.setIdEae(987);
 
 		IAgentService agentServiceMock = mock(IAgentService.class);
 
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
+
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "agentService", agentServiceMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		EaeEvalueNameDto dto = service.getEvalueName(eae);
+		EaeEvalueNameDto dto = service.getEvalueName(987);
 
 		// Then
 		assertEquals("RAYNAUD", dto.getNom());

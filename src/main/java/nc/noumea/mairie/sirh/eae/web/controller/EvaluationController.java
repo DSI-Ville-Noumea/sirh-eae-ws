@@ -2,7 +2,6 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 
 import java.util.List;
 
-import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
@@ -24,7 +23,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +49,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeIdentifitcation(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent) {
 
@@ -64,9 +61,7 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
-		EaeIdentificationDto dto = evaluationService.getEaeIdentification(eae);
+		EaeIdentificationDto dto = evaluationService.getEaeIdentification(idEae);
 
 		String result = dto.serializeInJSON();
 
@@ -75,7 +70,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeIdentificationDtoJson) {
 
@@ -88,17 +82,12 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
 		try {
-			eaeService.startEae(eae);
 			EaeIdentificationDto dto = new EaeIdentificationDto().deserializeFromJSON(eaeIdentificationDtoJson);
-			evaluationService.setEaeIdentification(eae, dto);
+			evaluationService.setEaeIdentification(idEae, dto);
 		} catch (EaeServiceException e) {
-			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (EvaluationServiceException e) {
-			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 
@@ -107,7 +96,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeFichePoste", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeFichePoste(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent) {
 
@@ -120,9 +108,7 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
-		List<EaeFichePosteDto> dtos = evaluationService.getEaeFichePoste(eae);
+		List<EaeFichePosteDto> dtos = evaluationService.getEaeFichePoste(idEae);
 
 		String result = EaeFichePosteDto.getSerializerForEaeFichePosteDto().serialize(dtos);
 
@@ -131,7 +117,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeResultats", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
 		logger.debug(
@@ -143,9 +128,7 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
-		EaeResultatsDto dto = evaluationService.getEaeResultats(eae);
+		EaeResultatsDto dto = evaluationService.getEaeResultats(idEae);
 
 		String result = dto.serializeInJSON();
 
@@ -154,7 +137,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeResultats", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeResultats(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeResultatsDtoJson) {
 
@@ -167,12 +149,9 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
 		try {
-			eaeService.startEae(eae);
 			EaeResultatsDto dto = new EaeResultatsDto().deserializeFromJSON(eaeResultatsDtoJson);
-			evaluationService.setEaeResultats(eae, dto);
+			evaluationService.setEaeResultats(idEae, dto);
 		} catch (EaeServiceException e) {
 			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
@@ -186,7 +165,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAppreciations", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeAppreciations(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestParam(value = "annee", required = false) String annee) {
 
@@ -194,34 +172,19 @@ public class EvaluationController {
 				"entered GET [evaluation/eaeAppreciations] => getEaeAppreciations with parameter idAgent = {} , idEae = {}",
 				idAgent, idEae);
 
-		// si l'année est renseignée, alors il faut trouver l'EAE de l'annee
-		// precedente de la personne
-		Eae eae = null;
-		EaeAppreciationsDto dto = null;
-		if (annee != null) {
-			// on trouve l'id de l'agent de l'EAE
-			Eae eaeAgent = eaeService.getEae(idEae);
-			eae = eaeService.findEaeByAgentAndYear(eaeAgent.getEaeEvalue().getIdAgent(), Integer.valueOf(annee));
-			if (eae == null) {
-
-				dto = new EaeAppreciationsDto();
-			} else {
-				dto = evaluationService.getEaeAppreciations(eae);
-			}
-		} else {
+		if(null == annee) {
 			ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 			if (response != null)
 				return response;
-
-			eae = eaeService.findEae(idEae);
-
-			if (eae == null) {
-				return new ResponseEntity<String>("AUCUN EAE TROUVE", HttpStatus.CONFLICT);
-			}
-
-			dto = evaluationService.getEaeAppreciations(eae);
 		}
+		// si l'année est renseignée, alors il faut trouver l'EAE de l'annee
+		// precedente de la personne
+		EaeAppreciationsDto dto = evaluationService.getEaeAppreciations(idEae, annee);
 
+		if(null == dto) {
+			return new ResponseEntity<String>("AUCUN EAE TROUVE", HttpStatus.CONFLICT);
+		}
+		
 		String result = dto.serializeInJSON();
 
 		return new ResponseEntity<String>(result, HttpStatus.OK);
@@ -229,7 +192,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAppreciations", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeAppreciations(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAppreciationsDtoJson) {
 
@@ -242,12 +204,9 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
 		try {
-			eaeService.startEae(eae);
 			EaeAppreciationsDto dto = new EaeAppreciationsDto().deserializeFromJSON(eaeAppreciationsDtoJson);
-			evaluationService.setEaeAppreciations(eae, dto);
+			evaluationService.setEaeAppreciations(idEae, dto);
 		} catch (EaeServiceException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
@@ -257,7 +216,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeEvaluation(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent) {
 
@@ -270,9 +228,7 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
-		EaeEvaluationDto dto = evaluationService.getEaeEvaluation(eae);
+		EaeEvaluationDto dto = evaluationService.getEaeEvaluation(idEae);
 
 		String result = dto.serializeInJSON();
 
@@ -281,7 +237,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeEvaluation(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvaluationDtoJson) {
 
@@ -294,18 +249,12 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
 		try {
-			eaeService.startEae(eae);
 			EaeEvaluationDto dto = new EaeEvaluationDto().deserializeFromJSON(eaeEvaluationDtoJson);
-			evaluationService.setEaeEvaluation(eae, dto);
-			eaeService.flush();
+			evaluationService.setEaeEvaluation(idEae, dto);
 		} catch (EaeServiceException e) {
-			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (EvaluationServiceException e) {
-			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 
@@ -314,7 +263,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeAutoEvaluation(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent) {
 
@@ -327,9 +275,7 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
-		EaeAutoEvaluationDto dto = evaluationService.getEaeAutoEvaluation(eae);
+		EaeAutoEvaluationDto dto = evaluationService.getEaeAutoEvaluation(idEae);
 
 		String result = dto.serializeInJSON();
 
@@ -338,7 +284,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeAutoEvaluation(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAutoEvaluationDtoJson) {
 
@@ -351,15 +296,10 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
 		try {
-			eaeService.startEae(eae);
 			EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto().deserializeFromJSON(eaeAutoEvaluationDtoJson);
-			evaluationService.setEaeAutoEvaluation(eae, dto);
-			eaeService.flush();
+			evaluationService.setEaeAutoEvaluation(idEae, dto);
 		} catch (EaeServiceException e) {
-			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 
@@ -368,7 +308,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaePlanAction(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent) {
 
@@ -381,9 +320,7 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
-		EaePlanActionDto dto = evaluationService.getEaePlanAction(eae);
+		EaePlanActionDto dto = evaluationService.getEaePlanAction(idEae);
 
 		String result = dto.serializeInJSON();
 
@@ -392,7 +329,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaePlanAction(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaePlanActionDtoJson) {
 
@@ -405,15 +341,10 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
 		try {
-			eaeService.startEae(eae);
 			EaePlanActionDto dto = new EaePlanActionDto().deserializeFromJSON(eaePlanActionDtoJson);
-			evaluationService.setEaePlanAction(eae, dto);
-			eaeService.flush();
+			evaluationService.setEaePlanAction(idEae, dto);
 		} catch (EaeServiceException e) {
-			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 
@@ -422,7 +353,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeEvolution", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	@Transactional(readOnly = true)
 	public ResponseEntity<String> getEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
 		logger.debug(
@@ -434,9 +364,7 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
-		EaeEvolutionDto dto = evaluationService.getEaeEvolution(eae);
+		EaeEvolutionDto dto = evaluationService.getEaeEvolution(idEae);
 
 		String result = dto.serializeInJSON();
 
@@ -445,7 +373,6 @@ public class EvaluationController {
 
 	@ResponseBody
 	@RequestMapping(value = "eaeEvolution", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> setEaeEvolution(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvolutionDtoJson) {
 
@@ -458,17 +385,12 @@ public class EvaluationController {
 		if (response != null)
 			return response;
 
-		Eae eae = eaeService.findEae(idEae);
-
 		try {
-			eaeService.startEae(eae);
 			EaeEvolutionDto dto = new EaeEvolutionDto().deserializeFromJSON(eaeEvolutionDtoJson);
-			evaluationService.setEaeEvolution(eae, dto);
-			eaeService.flush();
+			evaluationService.setEaeEvolution(idEae, dto);
 		} catch (EaeServiceException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (EvaluationServiceException e) {
-			eaeService.clear();
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
 		}
 

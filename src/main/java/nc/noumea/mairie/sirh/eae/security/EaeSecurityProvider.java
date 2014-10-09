@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EaeSecurityProvider implements IEaeSecurityProvider {
@@ -76,6 +77,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public ResponseEntity<String> checkEaeAndReadRight(int idEae, int idAgent) {
 		
 		Eae eae = eaeService.findEae(idEae);
@@ -94,6 +96,7 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public ResponseEntity<String> checkEaeAndWriteRight(int idEae, int idEvaluateur) {
 		
 		Eae eae = eaeService.findEae(idEae);

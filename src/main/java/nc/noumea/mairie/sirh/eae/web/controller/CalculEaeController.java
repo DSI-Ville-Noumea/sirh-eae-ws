@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +35,6 @@ public class CalculEaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "creerEAESansAffecte", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> creerEAESansAffecte(@RequestParam("idCampagneEae") int idCampagneEae, @RequestParam("idAgent") int idAgent) {
 		
 		logger.debug("entered POST [calculEae/creerEAESansAffecte] => creerEAESansAffecte with parameter idCampagneEAE = {} , idAgent = {}",
@@ -67,7 +65,6 @@ public class CalculEaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "creerEaeAffecte", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> creerEaeAffecte(@RequestParam("idCampagneEae") int idCampagneEae, @RequestParam("idAgent") int idAgent) {
 		
 		logger.debug("entered POST [calculEae/creerEaeAffecte] => creerEaeAffecte with parameter idCampagneEAE = {} , idAgent = {}",
@@ -98,7 +95,6 @@ public class CalculEaeController {
 	
 	@ResponseBody
 	@RequestMapping(value = "getEaeCampagneTask", method = RequestMethod.GET)
-	@Transactional(value = "eaeTransactionManager")
 	public ResponseEntity<String> findEaeCampagneTask(@RequestParam("idEaeCampagneTask") int idEaeCampagneTask) {
 
 		EaeCampagneTask result = eaeRepository.findEaeCampagneTask(idEaeCampagneTask);

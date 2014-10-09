@@ -9,6 +9,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class EaeRepository implements IEaeRepository {
@@ -63,6 +64,7 @@ public class EaeRepository implements IEaeRepository {
 	}
 	
 	@Override
+	@Transactional(value = "eaeTransactionManager")
 	public EaeCampagneTask findEaeCampagneTask(Integer idEaeCampagneTask) {
 		
 		EaeCampagneTask result = null;

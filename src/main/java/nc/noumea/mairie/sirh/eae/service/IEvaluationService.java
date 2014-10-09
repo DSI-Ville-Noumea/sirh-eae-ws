@@ -2,7 +2,6 @@ package nc.noumea.mairie.sirh.eae.service;
 
 import java.util.List;
 
-import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
@@ -19,7 +18,7 @@ public interface IEvaluationService {
 	 * @param eae
 	 * @return EaeIdentificationDto
 	 */
-	public EaeIdentificationDto getEaeIdentification(Eae eae);
+	EaeIdentificationDto getEaeIdentification(Integer idEae);
 	
 	/**
 	 * Saves the information for EAE identification data
@@ -27,21 +26,21 @@ public interface IEvaluationService {
 	 * @param dto
 	 * @throws EvaluationServiceException
 	 */
-	public void setEaeIdentification(Eae eae, EaeIdentificationDto dto) throws EvaluationServiceException;
+	public void setEaeIdentification(Integer idEae, EaeIdentificationDto dto) throws EvaluationServiceException, EaeServiceException;
 	
 	/**
 	 * Returns the data related to the FichePoste objects linked to the EAE
 	 * @param eae
 	 * @return List<EaeFichePosteDto>
 	 */
-	public List<EaeFichePosteDto> getEaeFichePoste(Eae eae);
+	public List<EaeFichePosteDto> getEaeFichePoste(Integer  idEae);
 	
 	/**
 	 * Returns the data for viewing/filling in the results of last year's EAE objectives
 	 * @param eae
 	 * @return EaeResultatsDto
 	 */
-	public EaeResultatsDto getEaeResultats(Eae eae);
+	public EaeResultatsDto getEaeResultats(Integer idEae);
 	
 	/**
 	 * Saves the filled in results for last year's EAE objectives
@@ -49,28 +48,28 @@ public interface IEvaluationService {
 	 * @param dto
 	 * @throws EvaluationServiceException
 	 */
-	public void setEaeResultats(Eae eae, EaeResultatsDto dto) throws EvaluationServiceException;
+	public void setEaeResultats(Integer idEae, EaeResultatsDto dto) throws EvaluationServiceException, EaeServiceException;
 	
 	/**
 	 * Returns the data for viewing/filling in appreciations in someone's EAE
 	 * @param eae
 	 * @return EaeAppreciationsDto
 	 */
-	public EaeAppreciationsDto getEaeAppreciations(Eae eae);
+	public EaeAppreciationsDto getEaeAppreciations(Integer idEae);
 	
 	/**
 	 * Saves the filled in appreciations for someone's EAE
 	 * @param eae
 	 * @param dto
 	 */
-	public void setEaeAppreciations(Eae eae, EaeAppreciationsDto dto);
+	public void setEaeAppreciations(Integer idEae, EaeAppreciationsDto dto) throws EaeServiceException;
 	
 	/**
 	 * Returns the data for viewing/filling in the evaluation part of an EAE
 	 * @param eae
 	 * @return EaeEvaluationDto
 	 */
-	public EaeEvaluationDto getEaeEvaluation(Eae eae);
+	public EaeEvaluationDto getEaeEvaluation(Integer idEae);
 	
 	/**
 	 * Saves the filled in evaluation for someone's EAE
@@ -78,14 +77,14 @@ public interface IEvaluationService {
 	 * @param dto
 	 * @throws EvaluationServiceException
 	 */
-	public void setEaeEvaluation(Eae eae, EaeEvaluationDto dto) throws EvaluationServiceException;
+	public void setEaeEvaluation(Integer idEae, EaeEvaluationDto dto) throws EvaluationServiceException, EaeServiceException;
 	
 	/**
 	 * Returns the data for viewing/filling in the auto evaluation part of an EAE
 	 * @param eae
 	 * @return EaeAutoEvaluationDto
 	 */
-	public EaeAutoEvaluationDto getEaeAutoEvaluation(Eae eae);
+	public EaeAutoEvaluationDto getEaeAutoEvaluation(Integer idEae);
 	
 	/**
 	 * Saves the filled in auto evaluation for someone's EAE
@@ -93,14 +92,14 @@ public interface IEvaluationService {
 	 * @param dto
 	 * @throws EvaluationServiceException
 	 */
-	public void setEaeAutoEvaluation(Eae eae, EaeAutoEvaluationDto dto);
+	public void setEaeAutoEvaluation(Integer idEae, EaeAutoEvaluationDto dto) throws EaeServiceException;
 	
 	/**
 	 * Returns the data for viewing/filling in the auto evaluation part of an EAE
 	 * @param eae
 	 * @return EaePlanActionDto
 	 */
-	public EaePlanActionDto getEaePlanAction(Eae eae);
+	public EaePlanActionDto getEaePlanAction(Integer idEae);
 	
 	/**
 	 * Saves the filled in auto evaluation for someone's EAE
@@ -108,7 +107,7 @@ public interface IEvaluationService {
 	 * @param dto
 	 * @throws EvaluationServiceException
 	 */
-	public void setEaePlanAction(Eae eae, EaePlanActionDto dto);
+	public void setEaePlanAction(Integer idEae, EaePlanActionDto dto) throws EaeServiceException;
 	
 
 	/**
@@ -116,7 +115,7 @@ public interface IEvaluationService {
 	 * @param eae
 	 * @return EaeEvolutionDto
 	 */
-	public EaeEvolutionDto getEaeEvolution(Eae eae);
+	public EaeEvolutionDto getEaeEvolution(Integer idEae);
 	
 	/**
 	 * Saves the filled in evolution for someone's EAE
@@ -124,5 +123,8 @@ public interface IEvaluationService {
 	 * @param dto
 	 * @throws EvaluationServiceException
 	 */
-	public void setEaeEvolution(Eae eae, EaeEvolutionDto dto) throws EvaluationServiceException;
+	public void setEaeEvolution(Integer idEae, EaeEvolutionDto dto) throws EvaluationServiceException, EaeServiceException;
+
+	EaeAppreciationsDto getEaeAppreciations(Integer idEae, String annee);
+
 }

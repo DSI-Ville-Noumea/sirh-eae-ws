@@ -38,7 +38,7 @@ public interface IEaeService {
 	 * @param eaeToStart
 	 * @throws EaeServiceException
 	 */
-	void startEae(Eae eaeToStart) throws EaeServiceException;
+	Eae startEae(Integer idEaeToStart) throws EaeServiceException;
 
 	/**
 	 * Resets the EAE by changing its Etat and reinitializing the list of
@@ -57,7 +57,7 @@ public interface IEaeService {
 	 * @param eae
 	 * @return CanFinalizeEaeDto
 	 */
-	CanFinalizeEaeDto canFinalizEae(Eae eae);
+	CanFinalizeEaeDto canFinalizEae(Integer idEae);
 
 	/**
 	 * Retrieves the necessary information for the final EAE document to be
@@ -66,7 +66,7 @@ public interface IEaeService {
 	 * @param eae
 	 * @return FinalizationInformationDto
 	 */
-	FinalizationInformationDto getFinalizationInformation(Eae eae) throws SirhWSConsumerException;
+	FinalizationInformationDto getFinalizationInformation(Integer idEae) throws SirhWSConsumerException;
 
 	/**
 	 * Proceeds to the finalization of the given Eae (setting its Etat to F) as
@@ -79,7 +79,7 @@ public interface IEaeService {
 	 * @param dto
 	 * @throws EaeServiceException
 	 */
-	void finalizEae(Eae eae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException;
+	void finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException;
 
 	/**
 	 * Sets the Delegataire of an Eae if existing in SIRH Agents
@@ -87,7 +87,7 @@ public interface IEaeService {
 	 * @param eae
 	 * @throws EaeServiceException
 	 */
-	void setDelegataire(Eae eae, int idAgentDelegataire) throws EaeServiceException;
+	void setDelegataire(Integer idEae, int idAgentDelegataire) throws EaeServiceException;
 
 	/**
 	 * Retrieves the dashboard of current ongoing EAEs for a SHD, an evaluateur
@@ -134,23 +134,21 @@ public interface IEaeService {
 	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId);
 
 	/**
-	 * Returns an EAE by its technical Id
-	 * 
-	 * @param idEae
-	 * @return the EAE corresponding to the given Id
-	 */
-	Eae getEae(int idEae);
-
-	/**
 	 * Returns an EAE evalue's first and lastnames
 	 * 
 	 * @param eae
 	 * @return EaeEvalueNameDto
 	 */
-	EaeEvalueNameDto getEvalueName(Eae eae);
+	EaeEvalueNameDto getEvalueName(Integer idEae);
 
 	Eae findEaeByAgentAndYear(int idAgent, Integer annee);
-
+	
+	/**
+	 * Returns an EAE by its technical Id
+	 * 
+	 * @param idEae
+	 * @return the EAE corresponding to the given Id
+	 */
 	Eae findEae(int idEae);
 
 	void flush();

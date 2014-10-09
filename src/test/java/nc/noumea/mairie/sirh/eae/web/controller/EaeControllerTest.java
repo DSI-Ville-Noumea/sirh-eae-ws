@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -228,12 +227,10 @@ public class EaeControllerTest {
 		int agentId = 12;
 		int eaeId = 13;
 		int agentDelegataireId = 14;
-		Eae lastEae = new Eae();
 		EaeServiceException ex = new EaeServiceException("message");
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
-		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock).setDelegataire(lastEae, agentDelegataireId);
+		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock).setDelegataire(eaeId, agentDelegataireId);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
@@ -256,10 +253,8 @@ public class EaeControllerTest {
 		int agentId = 12;
 		int eaeId = 13;
 		int agentDelegataireId = 14;
-		Eae lastEae = new Eae();
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.getEae(eaeId)).thenReturn(lastEae);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
@@ -274,7 +269,7 @@ public class EaeControllerTest {
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertFalse(result.hasBody());
 
-		verify(eaeServiceMock, times(1)).setDelegataire(lastEae, agentDelegataireId);
+		verify(eaeServiceMock, times(1)).setDelegataire(eaeId, agentDelegataireId);
 	}
 
 	@Test
@@ -352,12 +347,10 @@ public class EaeControllerTest {
 	public void testGetFinalizationInformation_EaeExistsAndServiceReturnsData_Return200()
 			throws SirhWSConsumerException {
 		// Given
-		Eae eae = new Eae();
 		FinalizationInformationDto resultOfService = new FinalizationInformationDto();
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.getEae(1)).thenReturn(eae);
-		when(eaeServiceMock.getFinalizationInformation(eae)).thenReturn(resultOfService);
+		when(eaeServiceMock.getFinalizationInformation(1)).thenReturn(resultOfService);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
@@ -408,15 +401,11 @@ public class EaeControllerTest {
 	@Test
 	public void testFinalizeEae_EaeCantBeFinalized_Return409() throws EaeServiceException {
 		// Given
-		Eae eae = spy(new Eae());
-		// Mockito.doNothing().when(eae).clear();
-
 		EaeServiceException ex = new EaeServiceException("message");
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.getEae(1)).thenReturn(eae);
 		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock)
-				.finalizEae(Mockito.eq(eae), Mockito.eq(1), Mockito.any(EaeFinalizationDto.class));
+				.finalizEae(Mockito.anyInt(), Mockito.eq(1), Mockito.any(EaeFinalizationDto.class));
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
@@ -434,11 +423,7 @@ public class EaeControllerTest {
 	@Test
 	public void testFinalizeEae_EaeIsFinalized_Return200() throws EaeServiceException {
 		// Given
-		Eae eae = spy(new Eae());
-		// Mockito.doNothing().when(eae).flush();
-
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.getEae(1)).thenReturn(eae);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
@@ -473,15 +458,12 @@ public class EaeControllerTest {
 	@Test
 	public void testCanFinalizeEae_CannotFinalizeEae_Return409AndMessage() {
 		// Given
-		Eae eae = new Eae();
-
 		CanFinalizeEaeDto dto = new CanFinalizeEaeDto();
 		dto.setCanFinalize(false);
 		dto.setMessage("message");
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.getEae(1)).thenReturn(eae);
-		when(eaeServiceMock.canFinalizEae(eae)).thenReturn(dto);
+		when(eaeServiceMock.canFinalizEae(1)).thenReturn(dto);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
@@ -498,15 +480,12 @@ public class EaeControllerTest {
 	@Test
 	public void testCanFinalizeEae_CanFinalizeEae_Return200AndNoMessage() {
 		// Given
-		Eae eae = new Eae();
-
 		CanFinalizeEaeDto dto = new CanFinalizeEaeDto();
 		dto.setCanFinalize(true);
 		dto.setMessage("message");
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.getEae(1)).thenReturn(eae);
-		when(eaeServiceMock.canFinalizEae(eae)).thenReturn(dto);
+		when(eaeServiceMock.canFinalizEae(1)).thenReturn(dto);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
@@ -559,13 +538,11 @@ public class EaeControllerTest {
 		when(eaeSecurityProvider.checkEaeAndReadRight(1, 1)).thenReturn(null);
 
 		EaeEvalueNameDto dto = new EaeEvalueNameDto();
-		dto.setPrenom("NICOLAS");
-		dto.setNom("RAYNAUD");
-
-		Eae eae = new Eae();
+			dto.setPrenom("NICOLAS");
+			dto.setNom("RAYNAUD");
+		
 		IEaeService service = mock(IEaeService.class);
-		when(service.getEae(1)).thenReturn(eae);
-		when(service.getEvalueName(eae)).thenReturn(dto);
+		when(service.getEvalueName(1)).thenReturn(dto);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);

@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EaeService implements IEaeService {
@@ -68,6 +69,7 @@ public class EaeService implements IEaeService {
 	 */
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException {
 
 		List<EaeListItemDto> result = new ArrayList<EaeListItemDto>();
@@ -91,6 +93,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(value = "eaeTransactionManager")
 	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
 
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
@@ -132,8 +135,10 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void startEae(Eae eaeToStart) throws EaeServiceException {
+	public Eae startEae(Integer idEaeToStart) throws EaeServiceException {
 
+		Eae eaeToStart = findEae(idEaeToStart);
+		
 		if (eaeToStart.getEtat() != EaeEtatEnum.C && eaeToStart.getEtat() != EaeEtatEnum.EC)
 			throw new EaeServiceException(String.format(
 					"Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(),
@@ -141,6 +146,8 @@ public class EaeService implements IEaeService {
 
 		if (eaeToStart.getEtat() != EaeEtatEnum.EC)
 			eaeToStart.setEtat(EaeEtatEnum.EC);
+		
+		return eaeToStart;
 	}
 
 	@Override
@@ -172,8 +179,11 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void setDelegataire(Eae eae, int idAgentDelegataire) throws EaeServiceException {
+	@Transactional(value = "eaeTransactionManager")
+	public void setDelegataire(Integer idEae, int idAgentDelegataire) throws EaeServiceException {
 
+		Eae eae = findEae(idEae);
+		
 		Agent agentDelegataire = eaeEntityManager.find(Agent.class, idAgentDelegataire);
 
 		if (agentDelegataire == null)
@@ -185,6 +195,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<EaeDashboardItemDto> getEaesDashboard(int idAgent) throws SirhWSConsumerException {
 
 		List<EaeDashboardItemDto> result = new ArrayList<EaeDashboardItemDto>();
@@ -241,8 +252,11 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public CanFinalizeEaeDto canFinalizEae(Eae eae) {
+	@Transactional(value = "eaeTransactionManager")
+	public CanFinalizeEaeDto canFinalizEae(Integer idEae) {
 
+		Eae eae = findEae(idEae);
+		
 		if (eae == null)
 			return null;
 
@@ -257,8 +271,11 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public FinalizationInformationDto getFinalizationInformation(Eae eae) throws SirhWSConsumerException {
+	@Transactional(readOnly = true)
+	public FinalizationInformationDto getFinalizationInformation(Integer idEae) throws SirhWSConsumerException {
 
+		Eae eae = findEae(idEae);
+		
 		if (eae == null)
 			return null;
 
@@ -275,8 +292,11 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public void finalizEae(Eae eae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException {
+	@Transactional(value = "eaeTransactionManager")
+	public void finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException {
 
+		Eae eae = findEae(idEae);
+		
 		if (eae == null)
 			return;
 
@@ -304,7 +324,6 @@ public class EaeService implements IEaeService {
 
 		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		eaeEvaluation.setNoteAnnee(dto.getNoteAnnee());
-
 	}
 
 	/*
@@ -336,6 +355,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Eae> findCurrentAndPreviousEaesByAgentId(int agentId) {
 
 		List<Eae> result = findLatestEaesByAgentId(agentId, 2);
@@ -369,7 +389,7 @@ public class EaeService implements IEaeService {
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
-		sb.append("LEFT JOIN FETCH e.eaeFichePostes LEFT JOIN FETCH e.eaeEvaluateurs JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution LEFT JOIN FETCH e.eaeFinalisations ");
+		sb.append("LEFT JOIN FETCH e.eaeFichePostes LEFT JOIN FETCH e.eaeEvaluateurs JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution ");
 		sb.append("where (e.eaeEvalue.idAgent in :agentIds ");
 		sb.append("OR e.idAgentDelegataire = :agentId ");
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");
@@ -398,13 +418,11 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public Eae getEae(int idEae) {
-		return eaeEntityManager.find(Eae.class, idEae);
-	}
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public EaeEvalueNameDto getEvalueName(Integer idEae) {
 
-	@Override
-	public EaeEvalueNameDto getEvalueName(Eae eae) {
-
+		Eae eae = findEae(idEae);
+		
 		agentService.fillEaeEvalueWithAgent(eae.getEaeEvalue());
 
 		EaeEvalueNameDto dto = new EaeEvalueNameDto();
@@ -415,6 +433,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public Eae findEaeByAgentAndYear(int idAgent, Integer annee) {
 
 		// Query
@@ -459,6 +478,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public CampagneEaeDto getEaeCampagneOuverte() {
 		CampagneEaeDto result = new CampagneEaeDto();
 		EaeCampagne camp = null;
@@ -480,8 +500,10 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public String getAvisSHD(int idEae) {
-		Eae eae = getEae(idEae);
+		
+		Eae eae = findEae(idEae);
 		if (eae == null || eae.getEaeEvaluation() == null)
 			return "";
 
@@ -489,6 +511,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public Integer compterlistIdEaeByCampagneAndAgent(int idCampagneEae, List<Integer> idAgents, int idAgent) {
 
 		StringBuilder sb = new StringBuilder();
@@ -510,6 +533,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public List<String> getEaesGedIdsForAgents(List<Integer> agentIds, int annee) {
 
 		StringBuilder sb = new StringBuilder();
