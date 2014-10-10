@@ -54,9 +54,9 @@ public class EaeAutoEvaluationDtoTest {
 		dto.setIdEae(19);
 		dto.setAcquis("acquis");
 		dto.setParticularites("particularités");
-		dto.setSuccesDifficultes("succes & Difficultés");
+		dto.setSuccesDifficultes("succes et Difficultés");
 		
-		String expectedJson = "{\"acquis\":\"acquis\",\"idEae\":19,\"particularites\":\"particularités\",\"succesDifficultes\":\"succes & Difficultés\"}";
+		String expectedJson = "{\"acquis\":\"acquis\",\"idEae\":19,\"particularites\":\"particularités\",\"succesDifficultes\":\"succes et Difficultés\"}";
 		
 		// When
 		String json = dto.serializeInJSON();

@@ -45,7 +45,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		this(eae.getEaeEvaluation());
 		this.propositionAvancement = getDureesAvancement(eae.getEaeEvaluation(), eae.getEaeEvalue());
 		this.anneeAvancement = eae.getEaeCampagne().getAnnee();
-		this.statut = eae.getEaeEvalue().getStatut() == null ? null : eae.getEaeEvalue().getStatut().name();
+		this.statut = eae.getEaeEvalue().getStatut() == null ? "" : eae.getEaeEvalue().getStatut().name();
 		this.typeAvct = eae.getEaeEvalue().getTypeAvancement() == null ? null : eae.getEaeEvalue().getTypeAvancement()
 				.name();
 		this.cap = eae.isCap();

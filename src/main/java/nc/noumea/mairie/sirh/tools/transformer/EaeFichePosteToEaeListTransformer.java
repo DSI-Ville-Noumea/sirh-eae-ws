@@ -30,7 +30,7 @@ public class EaeFichePosteToEaeListTransformer extends AbstractTransformer imple
 	    if (!typeContext.isFirst()) 
 	    	getContext().writeComma();
 	    
-//	    typeContext.setFirst(false);
+	    typeContext.setFirst(false);
 	    
 	    getContext().writeName("directionService");
 	    getContext().transform(fdp.getDirectionService());

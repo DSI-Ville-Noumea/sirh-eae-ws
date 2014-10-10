@@ -41,10 +41,18 @@ public class EaeEvaluationDtoTest {
 		eval.setAvisChangementClasse(0);
 		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
 		eval.setNiveauEae(EaeNiveauEnum.INSUFFISANT);
-		eval.setCommentaireAvctEvaluateur(new EaeCommentaire());
-		eval.setCommentaireAvctEvalue(new EaeCommentaire());
-		eval.setCommentaireEvaluateur(new EaeCommentaire());
-		eval.setCommentaireEvalue(new EaeCommentaire());
+		EaeCommentaire commentaireAvctEvaluateur = new EaeCommentaire();
+		commentaireAvctEvaluateur.setText("commentaireAvctEvaluateur");
+		eval.setCommentaireAvctEvaluateur(commentaireAvctEvaluateur);
+		EaeCommentaire commentaireAvctEvalue = new EaeCommentaire();
+		commentaireAvctEvalue.setText("commentaireAvctEvalue");
+		eval.setCommentaireAvctEvalue(commentaireAvctEvalue);
+		EaeCommentaire commentaireEvaluateur = new EaeCommentaire();
+		commentaireEvaluateur.setText("commentaireEvaluateur");
+		eval.setCommentaireEvaluateur(commentaireEvaluateur);
+		EaeCommentaire commentaireEvalue = new EaeCommentaire();
+		commentaireEvalue.setText("commentaireEvalue");
+		eval.setCommentaireEvalue(commentaireEvalue);
 
 		// When
 		EaeEvaluationDto dto = new EaeEvaluationDto(eval);
@@ -58,10 +66,10 @@ public class EaeEvaluationDtoTest {
 		assertTrue(dto.getAvisRevalorisation());
 		assertFalse(dto.getAvisChangementClasse());
 		assertEquals(EaeNiveauEnum.INSUFFISANT.toString(), dto.getNiveau().getCourant());
-		assertEquals(eval.getCommentaireAvctEvaluateur(), dto.getCommentaireAvctEvaluateur());
-		assertEquals(eval.getCommentaireAvctEvalue(), dto.getCommentaireAvctEvalue());
-		assertEquals(eval.getCommentaireEvaluateur(), dto.getCommentaireEvaluateur());
-		assertEquals(eval.getCommentaireEvalue(), dto.getCommentaireEvalue());
+		assertEquals(eval.getCommentaireAvctEvaluateur().getText(), dto.getCommentaireAvctEvaluateur().getText());
+		assertEquals(eval.getCommentaireAvctEvalue().getText(), dto.getCommentaireAvctEvalue().getText());
+		assertEquals(eval.getCommentaireEvaluateur().getText(), dto.getCommentaireEvaluateur().getText());
+		assertEquals(eval.getCommentaireEvalue().getText(), dto.getCommentaireEvalue().getText());
 	}
 
 	@Test

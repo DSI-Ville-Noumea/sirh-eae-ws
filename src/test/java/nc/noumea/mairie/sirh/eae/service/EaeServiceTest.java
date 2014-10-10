@@ -247,13 +247,18 @@ public class EaeServiceTest {
 	@Test
 	public void testInitilizeEae_setCreationDateAndStatus() throws EaeServiceException {
 		// Given
-		EaeService service = new EaeService();
-		ReflectionTestUtils.setField(service, "helper", helperMock);
 
 		// Mock the EAE
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
+		
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eaeToInit);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
 		service.initializeEae(eaeToInit, null);
@@ -265,13 +270,16 @@ public class EaeServiceTest {
 	@Test
 	public void testInitilizeEae_noPreviousEaes_createNoEaeResultat() throws EaeServiceException {
 		// Given
-		EaeService service = new EaeService();
-		ReflectionTestUtils.setField(service, "helper", helperMock);
-
-		// Mock the EAE
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
+
+		EntityManager eaeEntityManager = mock(EntityManager.class);
+		when(eaeEntityManager.find(Eae.class, 987)).thenReturn(eaeToInit);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", eaeEntityManager);
 
 		// When
 		service.initializeEae(eaeToInit, null);
@@ -284,14 +292,18 @@ public class EaeServiceTest {
 	public void testInitilizeEae_1PreviousEae_createEaeResultatFromPreviousPlanActionAndCopyNotes()
 			throws EaeServiceException {
 		// Given
-		EaeService service = new EaeService();
-		ReflectionTestUtils.setField(service, "helper", helperMock);
-
-		// Mock EAEs list (current, previous)
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
 
+		EntityManager eaeEntityManager = mock(EntityManager.class);
+		when(eaeEntityManager.find(Eae.class, 987)).thenReturn(eaeToInit);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", eaeEntityManager);
+
+		// Mock EAEs list (current, previous)
 		Eae previousEae = new Eae();
 		EaePlanAction p1 = new EaePlanAction();
 		p1.setObjectif("obj1");
@@ -339,12 +351,16 @@ public class EaeServiceTest {
 	@Test
 	public void testInitilizeEae_eaeNotInEtatND_throwException() {
 		// Given
-		EaeService service = new EaeService();
-		ReflectionTestUtils.setField(service, "helper", helperMock);
-
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.EC);
+
+		EntityManager eaeEntityManager = mock(EntityManager.class);
+		when(eaeEntityManager.find(Eae.class, 987)).thenReturn(eaeToInit);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", eaeEntityManager);
 
 		// When
 		String exMessage = "";
@@ -667,11 +683,14 @@ public class EaeServiceTest {
 		agentToReturn.setNomPatronymique("Bilbo");
 
 		EntityManager emMock = Mockito.mock(EntityManager.class);
-		Mockito.when(emMock.find(Agent.class, idAgentDelegataire)).thenReturn(agentToReturn);
 		when(emMock.find(Eae.class, 987)).thenReturn(eae);
 
+		IAgentService agentService = Mockito.mock(IAgentService.class);
+		Mockito.when(agentService.getAgent(idAgentDelegataire)).thenReturn(agentToReturn);
+		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "agentService", agentService);
 		// When
 		service.setDelegataire(987, idAgentDelegataire);
 
@@ -694,8 +713,12 @@ public class EaeServiceTest {
 		Mockito.when(emMock.find(Agent.class, idAgentDelegataire)).thenReturn(agentToReturn);
 		when(emMock.find(Eae.class, 987)).thenReturn(eae);
 
+		IAgentService agentService = mock(IAgentService.class);
+		when(agentService.getAgent(idAgentDelegataire)).thenReturn(agentToReturn);
+		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "eaeEntityManager", emMock);
+		ReflectionTestUtils.setField(service, "agentService", agentService);
 
 		try {
 			// When

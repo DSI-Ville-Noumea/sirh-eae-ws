@@ -15,6 +15,10 @@ public class MinutesToHoursAndMinutesTransformer extends AbstractTransformer imp
 	@Override
 	public void transform(Object object) {
 
+		if(null == object) {
+			return;
+		}
+		
 		Integer minutes = (Integer) object;
 		Integer hours = (minutes/60);
 		Integer minutesRemaining = minutes%60;
