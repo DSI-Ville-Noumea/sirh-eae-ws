@@ -96,6 +96,8 @@ public class EaeService implements IEaeService {
 	@Transactional(value = "eaeTransactionManager")
 	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
 
+		eaeToInitialize = findEae(eaeToInitialize.getIdEae());
+		
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
 			throw new EaeServiceException(String.format(
 					"Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
@@ -184,7 +186,7 @@ public class EaeService implements IEaeService {
 
 		Eae eae = findEae(idEae);
 		
-		Agent agentDelegataire = eaeEntityManager.find(Agent.class, idAgentDelegataire);
+		Agent agentDelegataire = agentService.getAgent(idAgentDelegataire);
 
 		if (agentDelegataire == null)
 			throw new EaeServiceException(String.format(
@@ -385,7 +387,7 @@ public class EaeService implements IEaeService {
 
 	@Override
 	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId) {
-
+		
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
