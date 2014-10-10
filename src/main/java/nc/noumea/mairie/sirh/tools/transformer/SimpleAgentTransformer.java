@@ -40,7 +40,7 @@ public class SimpleAgentTransformer extends AbstractTransformer implements Inlin
 	    if (!typeContext.isFirst()) 
 	    	getContext().writeComma();
 	    
-	    typeContext.setFirst(false);
+//	    typeContext.setFirst(false);
 		
 		getContext().writeName("idAgent");
 	    getContext().transform(agent.getIdAgent());

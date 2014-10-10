@@ -123,7 +123,7 @@ public class EaeController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "affecterDelegataire", method = RequestMethod.GET)
+	@RequestMapping(value = "affecterDelegataire", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae,
 			@RequestParam("idAgent") int idAgent, @RequestParam("idDelegataire") int idDelegataire) {
 

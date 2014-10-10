@@ -37,12 +37,26 @@ public class MinutesToHoursAndMinutesTransformer extends AbstractTransformer imp
 
 		if (value == null)
 			return null;
-		
+
 		HashMap<String,Integer> hoursAndMinutes = (HashMap<String,Integer>) value;
-		int hours = hoursAndMinutes.get(HOURS) != null ? hoursAndMinutes.get(HOURS) : 0;
-		int minutes = hoursAndMinutes.get(MINUTES) != null ? hoursAndMinutes.get(MINUTES) : 0;
+
+		Integer hours = convertJSonNumberToInteger(context, hoursAndMinutes.get(HOURS), targetType);
+		Integer minutes = convertJSonNumberToInteger(context, hoursAndMinutes.get(MINUTES), targetType);
 		
 		return (hours*60) + minutes;
+	}
+	
+	private Integer convertJSonNumberToInteger(ObjectBinder context, Object value, Type targetType) {
+		
+		if (value instanceof Number) {
+	        return ((Number) value).intValue();
+	    } else {
+	        try {
+	            return Integer.parseInt(value.toString());
+	        } catch (Exception e) {
+	            throw context.cannotConvertValueToTargetType(value, Integer.class);
+	        }
+	    }
 	}
 
 }

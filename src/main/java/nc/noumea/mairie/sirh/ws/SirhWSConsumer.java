@@ -141,8 +141,8 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 		String output = response.getEntity(String.class);
 
-		result = new JSONDeserializer<List<Integer>>().deserialize(output);
-
+		result = new JSONDeserializer<List<Integer>>().use(null, ArrayList.class).use("values", Integer.class).deserialize(output);
+		
 		return result;
 	}
 

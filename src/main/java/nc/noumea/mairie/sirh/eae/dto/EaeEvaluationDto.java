@@ -45,7 +45,7 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 		this(eae.getEaeEvaluation());
 		this.propositionAvancement = getDureesAvancement(eae.getEaeEvaluation(), eae.getEaeEvalue());
 		this.anneeAvancement = eae.getEaeCampagne().getAnnee();
-		this.statut = eae.getEaeEvalue().getStatut().name();
+		this.statut = eae.getEaeEvalue().getStatut() == null ? null : eae.getEaeEvalue().getStatut().name();
 		this.typeAvct = eae.getEaeEvalue().getTypeAvancement() == null ? null : eae.getEaeEvalue().getTypeAvancement()
 				.name();
 		this.cap = eae.isCap();
@@ -63,10 +63,10 @@ public class EaeEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeEva
 				.getAvisRevalorisation() == 0 ? false : true;
 		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation
 				.getAvisChangementClasse() == 0 ? false : true;
-		commentaireEvaluateur = eaeEvaluation.getCommentaireEvaluateur();
-		commentaireEvalue = eaeEvaluation.getCommentaireEvalue();
-		commentaireAvctEvaluateur = eaeEvaluation.getCommentaireAvctEvaluateur();
-		commentaireAvctEvalue = eaeEvaluation.getCommentaireAvctEvalue();
+		commentaireEvaluateur = eaeEvaluation.getCommentaireEvaluateur() == null || eaeEvaluation.getCommentaireEvaluateur().getText() == null ? new EaeCommentaire() : eaeEvaluation.getCommentaireEvaluateur();
+		commentaireEvalue = eaeEvaluation.getCommentaireEvalue() == null || eaeEvaluation.getCommentaireEvalue().getText() == null ? new EaeCommentaire() : eaeEvaluation.getCommentaireEvalue();
+		commentaireAvctEvaluateur = eaeEvaluation.getCommentaireAvctEvaluateur() == null || eaeEvaluation.getCommentaireAvctEvaluateur().getText() == null ? new EaeCommentaire() : eaeEvaluation.getCommentaireAvctEvaluateur();
+		commentaireAvctEvalue = eaeEvaluation.getCommentaireAvctEvalue() == null || eaeEvaluation.getCommentaireAvctEvalue().getText() == null ? new EaeCommentaire() : eaeEvaluation.getCommentaireAvctEvalue();
 
 		if (eaeEvaluation.getNiveauEae() == null)
 			niveau = new ValueWithListDto(EaeNiveauEnum.SATISFAISANT, EaeNiveauEnum.class);
