@@ -97,6 +97,7 @@ public class EaeService implements IEaeService {
 	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
 
 		eaeToInitialize = findEae(eaeToInitialize.getIdEae());
+		previousEae = findEae(previousEae.getIdEae());
 		
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
 			throw new EaeServiceException(String.format(
