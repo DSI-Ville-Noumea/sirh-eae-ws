@@ -296,13 +296,6 @@ public class EaeServiceTest {
 		eaeToInit.setIdEae(987);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
 
-		EntityManager eaeEntityManager = mock(EntityManager.class);
-		when(eaeEntityManager.find(Eae.class, 987)).thenReturn(eaeToInit);
-		
-		EaeService service = new EaeService();
-		ReflectionTestUtils.setField(service, "helper", helperMock);
-		ReflectionTestUtils.setField(service, "eaeEntityManager", eaeEntityManager);
-
 		// Mock EAEs list (current, previous)
 		Eae previousEae = new Eae();
 		EaePlanAction p1 = new EaePlanAction();
@@ -322,7 +315,16 @@ public class EaeServiceTest {
 		eval.setNoteAnneeN3(16.06f);
 
 		previousEae.setEaeEvaluation(eval);
+		previousEae.setIdEae(789);
 
+		EntityManager eaeEntityManager = mock(EntityManager.class);
+		when(eaeEntityManager.find(Eae.class, 987)).thenReturn(eaeToInit);
+		when(eaeEntityManager.find(Eae.class, previousEae.getIdEae())).thenReturn(previousEae);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "eaeEntityManager", eaeEntityManager);
+		
 		// When
 		service.initializeEae(eaeToInit, previousEae);
 
