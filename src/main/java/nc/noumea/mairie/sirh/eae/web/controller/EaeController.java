@@ -313,7 +313,7 @@ public class EaeController {
 	}
 
 	/*
-	 * POUR SIRH-WS
+	 * POUR SIRH-WS et KIOSQUE-J2EE
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getEaeCampagneOuverte", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
