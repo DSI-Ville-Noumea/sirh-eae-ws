@@ -64,7 +64,7 @@
 		</property>
 	</bean>
 	
-	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_BASE_URL" expected-type="java.lang.String"/>
+	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_URL" expected-type="java.lang.String"/>
 	
 	<jee:jndi-lookup id="reportServerPath" jndi-name="REPORTING_SERVER_REPORT_PATH" expected-type="java.lang.String"/>
 	
