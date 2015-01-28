@@ -33,6 +33,7 @@ public class CalculEaeInfosDto {
 	// mairie.Spcarr
 	CarriereDto carriereFonctionnaireAncienne;
 	CarriereDto carriereActive;
+	CarriereDto carriereAncienneDansGrade;
 	
 
 	public FichePosteDto getFichePostePrincipale() {
@@ -132,6 +133,14 @@ public class CalculEaeInfosDto {
 
 	public void setCarriereActive(CarriereDto carriereActive) {
 		this.carriereActive = carriereActive;
+	}
+
+	public CarriereDto getCarriereAncienneDansGrade() {
+		return carriereAncienneDansGrade;
+	}
+
+	public void setCarriereAncienneDansGrade(CarriereDto carriereAncienneDansGrade) {
+		this.carriereAncienneDansGrade = carriereAncienneDansGrade;
 	}
 	
 }

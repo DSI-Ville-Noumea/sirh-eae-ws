@@ -89,9 +89,9 @@ public class CalculEaeServiceTest {
 		AvancementEaeDto avancement = new AvancementEaeDto();
 		avancement.setEtat(AvancementEaeDto.SGC);
 
-		DateAvctDto dateAvct= new DateAvctDto();
+		DateAvctDto dateAvct = new DateAvctDto();
 		dateAvct.setDateAvct(new Date());
-		
+
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
 		Mockito.when(sirhWsConsumer.getAvancement(9005138, 2014, true)).thenReturn(avancement);
 		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, true)).thenReturn(autreAdmin);
@@ -174,7 +174,7 @@ public class CalculEaeServiceTest {
 		AvancementEaeDto avancement = new AvancementEaeDto();
 		avancement.setEtat(AvancementEaeDto.SGC);
 
-		DateAvctDto dateAvct= new DateAvctDto();
+		DateAvctDto dateAvct = new DateAvctDto();
 		dateAvct.setDateAvct(new Date());
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
@@ -302,6 +302,12 @@ public class CalculEaeServiceTest {
 
 		GradeDto grade = new GradeDto();
 
+		CarriereDto carriereAncienneDansGrade = new CarriereDto();
+		carriereAncienneDansGrade.setCodeCategorie(5);
+		carriereAncienneDansGrade.setLibelleCategorie("libelleCategorie");
+		carriereAncienneDansGrade.setGrade(grade);
+		carriereAncienneDansGrade.setDateDebut(sdf.parse("01/04/2010"));
+
 		CarriereDto carriereActive = new CarriereDto();
 		carriereActive.setCodeCategorie(5);
 		carriereActive.setLibelleCategorie("libelleCategorie");
@@ -310,6 +316,7 @@ public class CalculEaeServiceTest {
 
 		CalculEaeInfosDto eaeInfosDto = new CalculEaeInfosDto();
 		eaeInfosDto.setCarriereActive(carriereActive);
+		eaeInfosDto.setCarriereAncienneDansGrade(carriereAncienneDansGrade);
 
 		EaeEvalue evalAModif = new EaeEvalue();
 
@@ -332,7 +339,7 @@ public class CalculEaeServiceTest {
 		assertNull(evalAModif.getCategorie());
 		assertNull(evalAModif.getEchelon());
 		assertNull(evalAModif.getClassification());
-		assertEquals(evalAModif.getAncienneteEchelonJours().intValue(), 273);
+		assertEquals(evalAModif.getAncienneteEchelonJours().intValue(), 638);
 	}
 
 	@Test
