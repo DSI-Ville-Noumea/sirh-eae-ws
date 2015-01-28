@@ -33,7 +33,8 @@ public class EaeReportingController {
 
 	@ResponseBody
 	@RequestMapping(value = "eae", produces = "application/pdf", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getEaeIdentifitcation(@RequestParam("idEae") int idEae) {
+	public ResponseEntity<byte[]> getEaeIdentifitcation(@RequestParam("idEae") int idEae,
+			@RequestParam(value = "format", required = false) String format) {
 
 		logger.debug("entered GET [reporting/eae] => getEaeIdentifitcation with parameter  idEae = {}", idEae);
 
@@ -43,9 +44,11 @@ public class EaeReportingController {
 			return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
 
 		byte[] responseData = null;
+		EaeReportFormatEnum formatValue = null;
 
 		try {
-			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, EaeReportFormatEnum.PDF);
+			formatValue = eaeReportingService.getFileFormatFromString(format);
+			responseData = eaeReportingService.getEaeReportAsByteArray(idEae, formatValue);
 		} catch (EaeReportingServiceException e) {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
