@@ -610,11 +610,10 @@ public class EvaluationService implements IEvaluationService {
 				dev.setIdEaeDeveloppement(null);
 				dev.setEaeEvolution(evolution);
 				dev.setTypeDeveloppement(typeDeveloppement);
-				dev.setIdEaeDeveloppement(null);
 				evolution.getEaeDeveloppements().add(dev);
 			} else {
 				for (EaeDeveloppement existingDev : evolution.getEaeDeveloppements()) {
-					if (existingDev.getIdEaeDeveloppement().equals(dev.getIdEaeDeveloppement())) {
+					if (existingDev.getIdEaeDeveloppement()!=null && existingDev.getIdEaeDeveloppement().equals(dev.getIdEaeDeveloppement())) {
 						existingDev.setLibelle(dev.getLibelle());
 						existingDev.setEcheance(dev.getEcheance());
 						existingDev.setPriorisation(dev.getPriorisation());
