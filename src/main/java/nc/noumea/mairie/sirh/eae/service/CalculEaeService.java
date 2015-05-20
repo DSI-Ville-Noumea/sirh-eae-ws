@@ -105,6 +105,15 @@ public class CalculEaeService implements ICalculEaeService {
 			Agent agent = agentService.getAgent(idAgent);
 			CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(idAgent,
 					eaeCampagne.getAnnee() - 1);
+
+			// #15578 : on recupere le delegataire de l'année précédente
+			EaeCampagne campagnePrec = eaeRepository.findEaeCampagneByAnnee(eae.getEaeCampagne().getAnnee() - 1);
+			Eae eaeAnneePrec = eaeRepository.findEaeAgent(agent.getIdAgent(), campagnePrec.getIdCampagneEae());
+			if (eaeAnneePrec != null && eaeAnneePrec.getAgentDelegataire() != null
+					&& eaeAnneePrec.getAgentDelegataire().getIdAgent() != null) {
+				eae.setAgentDelegataire(eaeAnneePrec.getAgentDelegataire());
+			}
+
 			// on met les données dans EAE-evalue
 			creerEvalue(agent, eae, affAgent, true, true);
 			// on met les données dans EAE-Diplome
@@ -181,6 +190,15 @@ public class CalculEaeService implements ICalculEaeService {
 		}
 
 		Agent agent = agentService.getAgent(idAgent);
+
+		// #15578 : on recupere le delegataire de l'année précédente
+		EaeCampagne campagnePrec = eaeRepository.findEaeCampagneByAnnee(eae.getEaeCampagne().getAnnee() - 1);
+		Eae eaeAnneePrec = eaeRepository.findEaeAgent(agent.getIdAgent(), campagnePrec.getIdCampagneEae());
+		if (eaeAnneePrec != null && eaeAnneePrec.getAgentDelegataire() != null
+				&& eaeAnneePrec.getAgentDelegataire().getIdAgent() != null) {
+			eae.setAgentDelegataire(eaeAnneePrec.getAgentDelegataire());
+		}
+
 		// on met les données dans EAE-evalué
 		creerEvalue(agent, eae, affAgent, true, false);
 		// on met les données dans EAE-FichePoste, EAE-FDP-Activites et
