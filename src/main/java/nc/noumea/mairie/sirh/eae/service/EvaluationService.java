@@ -69,7 +69,7 @@ public class EvaluationService implements IEvaluationService {
 	public EaeIdentificationDto getEaeIdentification(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -86,24 +86,12 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void setEaeIdentification(Integer idEae, EaeIdentificationDto dto) throws EvaluationServiceException, EaeServiceException {
-		
-		Eae eae = eaeService.startEae(idEae);
-		
-		eae.setDateEntretien(dto.getDateEntretien());
-		eae.getEaeEvalue().setDateEntreeAdministration(dto.getSituation().getDateEntreeAdministration());
-		eae.getEaeEvalue().setDateEntreeFonctionnaire(dto.getSituation().getDateEntreeFonctionnaire());
-		if (eae.getPrimaryFichePoste() != null)
-			eae.getPrimaryFichePoste().setDateEntreeFonction(dto.getSituation().getDateEntreeFonction());
+	public void setEaeIdentification(Integer idEae, EaeIdentificationDto dto) throws EvaluationServiceException,
+			EaeServiceException {
 
-		for (EaeEvaluateur evaluateur : eae.getEaeEvaluateurs()) {
-			for (EaeEvaluateur evalDto : dto.getEvaluateurs()) {
-				if (evaluateur.getIdAgent() == evalDto.getIdAgent()) {
-					evaluateur.setDateEntreeFonction(evalDto.getDateEntreeFonction());
-					evaluateur.setDateEntreeService(evalDto.getDateEntreeService());
-				}
-			}
-		}
+		Eae eae = eaeService.startEae(idEae);
+
+		eae.setDateEntretien(dto.getDateEntretien());
 	}
 
 	@Override
@@ -111,7 +99,7 @@ public class EvaluationService implements IEvaluationService {
 	public List<EaeFichePosteDto> getEaeFichePoste(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -130,7 +118,7 @@ public class EvaluationService implements IEvaluationService {
 	public EaeResultatsDto getEaeResultats(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -139,10 +127,11 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void setEaeResultats(Integer idEae, EaeResultatsDto dto) throws EvaluationServiceException, EaeServiceException {
+	public void setEaeResultats(Integer idEae, EaeResultatsDto dto) throws EvaluationServiceException,
+			EaeServiceException {
 
 		Eae eae = eaeService.startEae(idEae);
-		
+
 		if (eae.getCommentaire() == null)
 			eae.setCommentaire(new EaeCommentaire());
 
@@ -207,12 +196,12 @@ public class EvaluationService implements IEvaluationService {
 	@Override
 	@Transactional(readOnly = true)
 	public EaeAppreciationsDto getEaeAppreciations(Integer idEae, String annee) {
-		
+
 		Eae eae = null;
 		EaeAppreciationsDto dto = null;
-		
+
 		// si l'année est renseignée, alors il faut trouver l'EAE de l'annee
-				// precedente de la personne
+		// precedente de la personne
 		if (annee != null) {
 			// on trouve l'id de l'agent de l'EAE
 			Eae eaeAgent = eaeService.findEae(idEae);
@@ -225,16 +214,16 @@ public class EvaluationService implements IEvaluationService {
 		} else {
 			dto = getEaeAppreciations(idEae);
 		}
-		
+
 		return dto;
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public EaeAppreciationsDto getEaeAppreciations(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -246,7 +235,7 @@ public class EvaluationService implements IEvaluationService {
 	public void setEaeAppreciations(Integer idEae, EaeAppreciationsDto dto) throws EaeServiceException {
 
 		Eae eae = eaeService.startEae(idEae);
-		
+
 		eae.getEaeAppreciations().clear();
 		eaeService.flush();
 
@@ -280,7 +269,7 @@ public class EvaluationService implements IEvaluationService {
 	public EaeEvaluationDto getEaeEvaluation(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -289,10 +278,11 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void setEaeEvaluation(Integer idEae, EaeEvaluationDto dto) throws EvaluationServiceException, EaeServiceException {
+	public void setEaeEvaluation(Integer idEae, EaeEvaluationDto dto) throws EvaluationServiceException,
+			EaeServiceException {
 
 		Eae eae = eaeService.startEae(idEae);
-		
+
 		eae.setDureeEntretienMinutes(dto.getDureeEntretien());
 		EaeEvaluation evaluation = eae.getEaeEvaluation();
 		evaluation.setAvisChangementClasse(dto.getAvisChangementClasse() == null ? null
@@ -383,7 +373,7 @@ public class EvaluationService implements IEvaluationService {
 	public EaeAutoEvaluationDto getEaeAutoEvaluation(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -395,7 +385,7 @@ public class EvaluationService implements IEvaluationService {
 	public void setEaeAutoEvaluation(Integer idEae, EaeAutoEvaluationDto dto) throws EaeServiceException {
 
 		Eae eae = eaeService.startEae(idEae);
-		
+
 		EaeAutoEvaluation autoEval = eae.getEaeAutoEvaluation();
 
 		if (autoEval == null) {
@@ -414,7 +404,7 @@ public class EvaluationService implements IEvaluationService {
 	public EaePlanActionDto getEaePlanAction(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -426,7 +416,7 @@ public class EvaluationService implements IEvaluationService {
 	public void setEaePlanAction(Integer idEae, EaePlanActionDto dto) throws EaeServiceException {
 
 		Eae eae = eaeService.startEae(idEae);
-		
+
 		// Clear previous plan actions items
 		eae.getEaePlanActions().clear();
 
@@ -465,7 +455,7 @@ public class EvaluationService implements IEvaluationService {
 	public EaeEvolutionDto getEaeEvolution(Integer idEae) {
 
 		Eae eae = eaeService.findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -482,10 +472,11 @@ public class EvaluationService implements IEvaluationService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void setEaeEvolution(Integer idEae, EaeEvolutionDto dto) throws EvaluationServiceException, EaeServiceException {
+	public void setEaeEvolution(Integer idEae, EaeEvolutionDto dto) throws EvaluationServiceException,
+			EaeServiceException {
 
 		Eae eae = eaeService.startEae(idEae);
-		
+
 		EaeEvolution evolution = eae.getEaeEvolution();
 
 		if (evolution == null) {
@@ -513,8 +504,7 @@ public class EvaluationService implements IEvaluationService {
 					throw new EvaluationServiceException(
 							"La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");
 			} catch (SirhWSConsumerException e) {
-				throw new EvaluationServiceException(
-						"Erreur lors de l'appel à SIRH-WS.");
+				throw new EvaluationServiceException("Erreur lors de l'appel à SIRH-WS.");
 			} catch (NumberFormatException ex) {
 				throw new EvaluationServiceException(
 						"La propriété 'pourcentage temps partiel' de l'évolution est incorrecte.");
@@ -613,7 +603,8 @@ public class EvaluationService implements IEvaluationService {
 				evolution.getEaeDeveloppements().add(dev);
 			} else {
 				for (EaeDeveloppement existingDev : evolution.getEaeDeveloppements()) {
-					if (existingDev.getIdEaeDeveloppement()!=null && existingDev.getIdEaeDeveloppement().equals(dev.getIdEaeDeveloppement())) {
+					if (existingDev.getIdEaeDeveloppement() != null
+							&& existingDev.getIdEaeDeveloppement().equals(dev.getIdEaeDeveloppement())) {
 						existingDev.setLibelle(dev.getLibelle());
 						existingDev.setEcheance(dev.getEcheance());
 						existingDev.setPriorisation(dev.getPriorisation());

@@ -1767,9 +1767,6 @@ public class EvaluationServiceTest {
 
 		// Then
 		assertEquals(new DateTime(2012, 01, 03, 0, 0, 0, 0).toDate(), eae.getDateEntretien());
-		assertEquals(new DateTime(1972, 01, 10, 0, 0, 0, 0).toDate(), eae.getEaeEvalue().getDateEntreeAdministration());
-		assertEquals(new DateTime(1984, 06, 15, 0, 0, 0, 0).toDate(), eae.getPrimaryFichePoste()
-				.getDateEntreeFonction());
 	}
 
 }
