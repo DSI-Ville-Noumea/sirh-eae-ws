@@ -100,6 +100,9 @@ public class EaeFichePoste {
 	@Column(name = "CODE_SERVICE")
 	private String codeService;
 
+	@Column(name = "ID_SERVICE_ADS")
+	private Integer idServiceADS;
+
 	@Transient
 	private Agent agentShd;
 
@@ -277,5 +280,13 @@ public class EaeFichePoste {
 
 	public void setAgentShd(Agent agentShd) {
 		this.agentShd = agentShd;
+	}
+
+	public Integer getIdServiceADS() {
+		return idServiceADS;
+	}
+
+	public void setIdServiceADS(Integer idServiceADS) {
+		this.idServiceADS = idServiceADS;
 	}
 }
