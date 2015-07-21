@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.domain.Agent;
 
@@ -100,6 +101,7 @@ public class EaeFichePoste {
 	@Column(name = "CODE_SERVICE")
 	private String codeService;
 
+	@NotNull
 	@Column(name = "ID_SERVICE_ADS")
 	private Integer idServiceADS;
 

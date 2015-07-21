@@ -761,6 +761,7 @@ public class CalculEaeServiceTest {
 
 		assertEquals(fichePoste.getIdSirhFichePoste(), fichePosteDto.getIdFichePoste());
 		assertEquals(fichePoste.getCodeService(), fichePosteDto.getCodeService());
+		assertEquals(fichePoste.getIdServiceADS(), fichePosteDto.getIdServiceADS());
 		assertTrue(fichePoste.isPrimary());
 		assertEquals(fichePoste.getDirectionService(), fichePosteDto.getDirection());
 		assertEquals(fichePoste.getService(), fichePosteDto.getService());

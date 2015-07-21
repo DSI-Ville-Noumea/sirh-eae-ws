@@ -528,6 +528,7 @@ public class CalculEaeService implements ICalculEaeService {
 			eaeFichePoste.setIdSirhFichePoste(fichePoste.getIdFichePoste());
 			eaeFichePoste.setPrimary(isFPPrimaire);
 			eaeFichePoste.setCodeService(fichePoste.getCodeService());
+			eaeFichePoste.setIdServiceADS(fichePoste.getIdServiceADS());
 			eaeFichePoste.setDirectionService(fichePoste.getDirection());
 			eaeFichePoste.setService(fichePoste.getService());
 			eaeFichePoste.setSectionService(fichePoste.getSection());

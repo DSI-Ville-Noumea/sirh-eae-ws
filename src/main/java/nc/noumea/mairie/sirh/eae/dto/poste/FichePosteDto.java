@@ -18,6 +18,7 @@ public class FichePosteDto {
 	private String cadreEmploi;
 	private String niveauEtudes;
 	private String codeService;
+	private Integer idServiceADS;
 	private String service;
 	private String section;
 	private String lieu;
@@ -395,6 +396,14 @@ public class FichePosteDto {
 
 	public void setIdAgent(Integer idAgent) {
 		this.idAgent = idAgent;
+	}
+
+	public Integer getIdServiceADS() {
+		return idServiceADS;
+	}
+
+	public void setIdServiceADS(Integer idServiceADS) {
+		this.idServiceADS = idServiceADS;
 	}
 
 }
