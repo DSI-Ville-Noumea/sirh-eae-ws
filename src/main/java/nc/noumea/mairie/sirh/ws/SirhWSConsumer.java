@@ -141,8 +141,9 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 		String output = response.getEntity(String.class);
 
-		result = new JSONDeserializer<List<Integer>>().use(null, ArrayList.class).use("values", Integer.class).deserialize(output);
-		
+		result = new JSONDeserializer<List<Integer>>().use(null, ArrayList.class).use("values", Integer.class)
+				.deserialize(output);
+
 		return result;
 	}
 
@@ -275,12 +276,12 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	}
 
 	@Override
-	public List<CalculEaeInfosDto> getListeAffectationsAgentAvecService(Integer idAgent, String idService)
+	public List<CalculEaeInfosDto> getListeAffectationsAgentAvecService(Integer idAgent, Integer idService)
 			throws SirhWSConsumerException {
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgent", String.valueOf(idAgent));
-		parameters.put("idService", idService);
+		parameters.put("idServiceADS", idService.toString());
 
 		ClientResponse res = createAndFireRequestWithParameter(parameters,
 				getSirhListeAffectationsAgentAvecServiceUrl());

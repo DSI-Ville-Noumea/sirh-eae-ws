@@ -23,7 +23,7 @@ public interface ISirhWsConsumer {
 	CalculEaeInfosDto getDetailAffectationActiveByAgent(Integer idAgent, Integer anneeFormation)
 			throws SirhWSConsumerException;
 
-	List<CalculEaeInfosDto> getListeAffectationsAgentAvecService(Integer idAgent, String idService)
+	List<CalculEaeInfosDto> getListeAffectationsAgentAvecService(Integer idAgent, Integer idService)
 			throws SirhWSConsumerException;
 
 	List<CalculEaeInfosDto> getListeAffectationsAgentAvecFP(Integer idAgent, Integer idFichePoste)

@@ -503,13 +503,13 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyString()))
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
 				.thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
-		Date result = service.getDateEntreeService(9005138, "codeService");
+		Date result = service.getDateEntreeService(9005138, 1);
 
 		assertEquals(result, sdf.parse("01/01/2010"));
 	}
@@ -530,13 +530,13 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyString()))
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
 				.thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
-		Date result = service.getDateEntreeService(9005138, "codeService");
+		Date result = service.getDateEntreeService(9005138, 1);
 
 		assertEquals(result, sdf.parse("01/01/2010"));
 	}
@@ -558,13 +558,13 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyString()))
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
 				.thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
-		Date result = service.getDateEntreeService(9005138, "codeService");
+		Date result = service.getDateEntreeService(9005138, 1);
 
 		assertEquals(result, sdf.parse("03/02/2010"));
 	}
@@ -585,13 +585,13 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto2);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyString()))
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
 				.thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
-		Date result = service.getDateEntreeService(9005138, "codeService");
+		Date result = service.getDateEntreeService(9005138, 1);
 
 		assertEquals(result, sdf.parse("01/01/2010"));
 	}
@@ -600,13 +600,13 @@ public class CalculEaeServiceTest {
 	public void getDateEntreeService_returnNull() throws SirhWSConsumerException {
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyString()))
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
 				.thenReturn(null);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 
-		Date result = service.getDateEntreeService(9005138, "codeService");
+		Date result = service.getDateEntreeService(9005138, 1);
 
 		assertNull(result);
 	}
@@ -731,7 +731,7 @@ public class CalculEaeServiceTest {
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
 		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecFP(Mockito.anyInt(), Mockito.anyInt())).thenReturn(
 				null);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyString()))
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
 				.thenReturn(null);
 
 		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);

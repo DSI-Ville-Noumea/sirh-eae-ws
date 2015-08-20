@@ -237,7 +237,7 @@ public class CalculEaeService implements ICalculEaeService {
 
 		if (eaeInfosDto != null && eaeInfosDto.getFichePostePrincipale() != null) {
 			evalAModif.setDateEntreeService(getDateEntreeService(agent.getIdAgent(), eaeInfosDto
-					.getFichePostePrincipale().getCodeService()));
+					.getFichePostePrincipale().getIdServiceADS()));
 		}
 
 		evalAModif.setDateEntreeCollectivite(agent.getDateDerniereEmbauche());
@@ -436,12 +436,12 @@ public class CalculEaeService implements ICalculEaeService {
 		}
 	}
 
-	public Date getDateEntreeService(Integer idAgent, String codeService) throws SirhWSConsumerException {
+	public Date getDateEntreeService(Integer idAgent, Integer idServiceADS) throws SirhWSConsumerException {
 		// on cherche toutes les affectations sur le meme service et on prend la
 		// date la plus ancienne
 		// NB : pour les affectations successives
 		List<CalculEaeInfosDto> listeAffectationService = sirhWsConsumer.getListeAffectationsAgentAvecService(idAgent,
-				codeService);
+				idServiceADS);
 
 		Date dateDebutService = null;
 		if (null != listeAffectationService) {
@@ -486,10 +486,10 @@ public class CalculEaeService implements ICalculEaeService {
 			eval.setDateEntreeCollectivite(agentResp.getDateDerniereEmbauche());
 			// on cherche toutes les affectations sur la FDP du responsable
 			// on prend la date la plus ancienne
-			if (fpResponsable != null && fpResponsable.getCodeService() != null) {
+			if (fpResponsable != null && fpResponsable.getIdServiceADS() != null) {
 				eval.setDateEntreeFonction(getDateEntreeAffectation(fpResponsable.getIdFichePoste(),
 						agentResp.getIdAgent()));
-				eval.setDateEntreeService(getDateEntreeService(agentResp.getIdAgent(), fpResponsable.getCodeService()));
+				eval.setDateEntreeService(getDateEntreeService(agentResp.getIdAgent(), fpResponsable.getIdServiceADS()));
 			}
 			eae.getEaeEvaluateurs().add(eval);
 			// eaeRepository.persistEntity(eval);
@@ -569,7 +569,7 @@ public class CalculEaeService implements ICalculEaeService {
 					eaeFichePoste.setDateEntreeFonctionResponsable(getDateEntreeAffectation(fpResp.getIdFichePoste(),
 							agentResp.getIdAgent()));
 					eaeFichePoste.setDateEntreeServiceResponsable(getDateEntreeService(agentResp.getIdAgent(),
-							fpResp.getCodeService()));
+							fpResp.getIdServiceADS()));
 				}
 			}
 

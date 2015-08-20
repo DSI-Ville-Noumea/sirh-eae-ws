@@ -53,7 +53,7 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 	}
 
 	@Override
-	public List<CalculEaeInfosDto> getListeAffectationsAgentAvecService(Integer idAgent, String idService)
+	public List<CalculEaeInfosDto> getListeAffectationsAgentAvecService(Integer idAgent, Integer idServiceADS)
 			throws SirhWSConsumerException {
 		// TODO Auto-generated method stub
 		return null;
