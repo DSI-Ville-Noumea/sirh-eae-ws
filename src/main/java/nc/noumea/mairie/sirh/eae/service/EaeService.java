@@ -97,16 +97,17 @@ public class EaeService implements IEaeService {
 	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
 
 		eaeToInitialize = findEae(eaeToInitialize.getIdEae());
-		if(null != previousEae) {
+		if (null != previousEae) {
 			previousEae = findEae(previousEae.getIdEae());
 		}
-		
-		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
-			throw new EaeServiceException(String.format(
-					"Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
-					eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
 
-		eaeToInitialize.setDateCreation(helper.getCurrentDate());
+		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
+			throw new EaeServiceException(String.format("Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
+
+		// #19139 : ne pas modifier la date de creation initiale
+		if (eaeToInitialize.getDateCreation() == null) {
+			eaeToInitialize.setDateCreation(helper.getCurrentDate());
+		}
 		eaeToInitialize.setEtat(EaeEtatEnum.C);
 
 		if (eaeToInitialize.getEaeEvaluation() == null) {
@@ -143,26 +144,21 @@ public class EaeService implements IEaeService {
 	public Eae startEae(Integer idEaeToStart) throws EaeServiceException {
 
 		Eae eaeToStart = findEae(idEaeToStart);
-		
+
 		if (eaeToStart.getEtat() != EaeEtatEnum.C && eaeToStart.getEtat() != EaeEtatEnum.EC)
-			throw new EaeServiceException(String.format(
-					"Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(),
-					eaeToStart.getEtat().toString()));
+			throw new EaeServiceException(String.format("Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(), eaeToStart.getEtat().toString()));
 
 		if (eaeToStart.getEtat() != EaeEtatEnum.EC)
 			eaeToStart.setEtat(EaeEtatEnum.EC);
-		
+
 		return eaeToStart;
 	}
 
 	@Override
 	public void resetEaeEvaluateur(Eae eaeToReset) throws EaeServiceException {
 
-		if (eaeToReset.getEtat() != EaeEtatEnum.C && eaeToReset.getEtat() != EaeEtatEnum.EC
-				&& eaeToReset.getEtat() != EaeEtatEnum.ND)
-			throw new EaeServiceException(String.format(
-					"Impossible de réinitialiser l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToReset.getIdEae(),
-					eaeToReset.getEtat().toString()));
+		if (eaeToReset.getEtat() != EaeEtatEnum.C && eaeToReset.getEtat() != EaeEtatEnum.EC && eaeToReset.getEtat() != EaeEtatEnum.ND)
+			throw new EaeServiceException(String.format("Impossible de réinitialiser l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToReset.getIdEae(), eaeToReset.getEtat().toString()));
 
 		if (eaeToReset.getEtat() != EaeEtatEnum.ND)
 			eaeToReset.setEtat(EaeEtatEnum.ND);
@@ -188,13 +184,11 @@ public class EaeService implements IEaeService {
 	public void setDelegataire(Integer idEae, int idAgentDelegataire) throws EaeServiceException {
 
 		Eae eae = findEae(idEae);
-		
+
 		Agent agentDelegataire = agentService.getAgent(idAgentDelegataire);
 
 		if (agentDelegataire == null)
-			throw new EaeServiceException(String.format(
-					"Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.",
-					idAgentDelegataire));
+			throw new EaeServiceException(String.format("Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.", idAgentDelegataire));
 
 		eae.setIdAgentDelegataire(idAgentDelegataire);
 	}
@@ -261,7 +255,7 @@ public class EaeService implements IEaeService {
 	public CanFinalizeEaeDto canFinalizEae(Integer idEae) {
 
 		Eae eae = findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -280,7 +274,7 @@ public class EaeService implements IEaeService {
 	public FinalizationInformationDto getFinalizationInformation(Integer idEae) throws SirhWSConsumerException {
 
 		Eae eae = findEae(idEae);
-		
+
 		if (eae == null)
 			return null;
 
@@ -301,14 +295,13 @@ public class EaeService implements IEaeService {
 	public void finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException {
 
 		Eae eae = findEae(idEae);
-		
+
 		if (eae == null)
 			return;
 
 		if (eae.getEtat() != EaeEtatEnum.EC)
 			if (eae.getEtat() != EaeEtatEnum.CO)
-				throw new EaeServiceException(messageSource.getMessage("EAE_CANNOT_FINALIZE",
-						new Object[] { eae.getEtat() }, null));
+				throw new EaeServiceException(messageSource.getMessage("EAE_CANNOT_FINALIZE", new Object[] { eae.getEtat() }, null));
 
 		Date finalisationDate = helper.getCurrentDate();
 
@@ -337,10 +330,7 @@ public class EaeService implements IEaeService {
 
 	private List<Eae> findLatestEaesByAgentId(int agentId, int maxResults) {
 
-		TypedQuery<Eae> eaeQuery = eaeEntityManager
-				.createQuery(
-						"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc",
-						Eae.class);
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc", Eae.class);
 		eaeQuery.setParameter("idAgent", agentId);
 		eaeQuery.setMaxResults(maxResults);
 		List<Eae> result = eaeQuery.getResultList();
@@ -390,7 +380,7 @@ public class EaeService implements IEaeService {
 
 	@Override
 	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId) {
-		
+
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
@@ -427,7 +417,7 @@ public class EaeService implements IEaeService {
 	public EaeEvalueNameDto getEvalueName(Integer idEae) {
 
 		Eae eae = findEae(idEae);
-		
+
 		agentService.fillEaeEvalueWithAgent(eae.getEaeEvalue());
 
 		EaeEvalueNameDto dto = new EaeEvalueNameDto();
@@ -488,10 +478,8 @@ public class EaeService implements IEaeService {
 		CampagneEaeDto result = new CampagneEaeDto();
 		EaeCampagne camp = null;
 
-		Query query = eaeEntityManager
-				.createQuery(
-						"select camp from EaeCampagne camp where camp.dateOuvertureKiosque is not null and camp.dateFermetureKiosque is null and  camp.dateOuvertureKiosque<:dateJour",
-						EaeCampagne.class);
+		Query query = eaeEntityManager.createQuery(
+				"select camp from EaeCampagne camp where camp.dateOuvertureKiosque is not null and camp.dateFermetureKiosque is null and  camp.dateOuvertureKiosque<:dateJour", EaeCampagne.class);
 
 		query.setParameter("dateJour", new Date());
 		try {
@@ -507,7 +495,7 @@ public class EaeService implements IEaeService {
 	@Override
 	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public String getAvisSHD(int idEae) {
-		
+
 		Eae eae = findEae(idEae);
 		if (eae == null || eae.getEaeEvaluation() == null)
 			return "";
