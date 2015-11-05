@@ -39,6 +39,7 @@
 	<context:component-scan base-package="nc.noumea.mairie">
 		<context:exclude-filter expression="org.springframework.stereotype.Controller"
 			type="annotation" />
+        <context:exclude-filter type="regex" expression="nc.noumea.mairie.apidocs.SwaggerConfig" />	
 	</context:component-scan>
 
 	<jee:jndi-lookup id="eaePostgresDataSource" jndi-name="jdbc/EAE_WS_DS1"

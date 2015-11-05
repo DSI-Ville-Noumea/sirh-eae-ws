@@ -40,5 +40,7 @@
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+    
+	<bean class="nc.noumea.mairie.apidocs.SwaggerConfig" />
 
 </beans>
