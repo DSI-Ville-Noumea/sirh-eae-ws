@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -43,6 +42,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
@@ -1156,7 +1156,10 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.finalizEae(987, idAgent, dto);
+		ReturnMessageDto result = service.finalizEae(987, idAgent, dto);
+
+		// Then
+		assertEquals(result.getErrors().size(), 0);
 
 		// Then
 		assertEquals(helperMock.getCurrentDate(), eae.getDateFinalisation());
@@ -1205,9 +1208,10 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.finalizEae(987, idAgent, dto);
+		ReturnMessageDto result = service.finalizEae(987, idAgent, dto);
 
 		// Then
+		assertEquals(result.getErrors().size(), 0);
 		assertEquals(helperMock.getCurrentDate(), eae.getDateFinalisation());
 		assertEquals(EaeEtatEnum.CO, eae.getEtat());
 		assertTrue(eae.isDocAttache());
@@ -1247,17 +1251,12 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "messageSource", mSource);
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
-		try {
-			// When
-			service.finalizEae(987, idAgent, dto);
-		} catch (EaeServiceException ex) {
-			// Then
-			assertEquals("Impossible de finaliser l'Eae car son état est 'Créé'", ex.getMessage());
-			assertFalse(eae.isDocAttache());
-			return;
-		}
+		ReturnMessageDto result = service.finalizEae(987, idAgent, dto);
 
-		fail("Should have thrown an exception");
+		// Then
+		assertEquals(result.getErrors().size(), 1);
+		assertEquals(result.getErrors().get(0), "Impossible de finaliser l'Eae car son état n'est pas 'En Cours' mais 'Créé'.");
+		assertFalse(eae.isDocAttache());
 	}
 
 	@Test

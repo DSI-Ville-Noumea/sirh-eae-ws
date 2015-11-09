@@ -29,6 +29,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
@@ -292,16 +293,25 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException {
+	public ReturnMessageDto finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto) {
+		// #19138 : on cnage le mode de fonctionnement de ce WS afin que
+		// Sharepoint affiche les messages ici du WS et qu'il arrete d'avoir les
+		// messages en dur dans le code sharepoint
+		ReturnMessageDto result = new ReturnMessageDto();
 
 		Eae eae = findEae(idEae);
 
-		if (eae == null)
-			return;
+		if (eae == null) {
+			result.getErrors().add("L'EAE n'a pu être trouvé, merci de contacter la DRH.");
+			return result;
+		}
 
-		if (eae.getEtat() != EaeEtatEnum.EC)
-			if (eae.getEtat() != EaeEtatEnum.CO)
-				throw new EaeServiceException(messageSource.getMessage("EAE_CANNOT_FINALIZE", new Object[] { eae.getEtat() }, null));
+		if (eae.getEtat() != EaeEtatEnum.EC) {
+			if (eae.getEtat() != EaeEtatEnum.CO) {
+				result.getErrors().add(String.format("Impossible de finaliser l'Eae car son état n'est pas 'En Cours' mais '%s'.", eae.getEtat().toString()));
+				return result;
+			}
+		}
 
 		Date finalisationDate = helper.getCurrentDate();
 
@@ -322,6 +332,7 @@ public class EaeService implements IEaeService {
 
 		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		eaeEvaluation.setNoteAnnee(dto.getNoteAnnee());
+		return result;
 	}
 
 	/*

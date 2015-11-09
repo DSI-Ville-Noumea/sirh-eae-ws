@@ -10,6 +10,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public interface IEaeService {
@@ -79,7 +80,7 @@ public interface IEaeService {
 	 * @param dto
 	 * @throws EaeServiceException
 	 */
-	void finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto) throws EaeServiceException;
+	ReturnMessageDto finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto);
 
 	/**
 	 * Sets the Delegataire of an Eae if existing in SIRH Agents
@@ -142,7 +143,7 @@ public interface IEaeService {
 	EaeEvalueNameDto getEvalueName(Integer idEae);
 
 	Eae findEaeByAgentAndYear(int idAgent, Integer annee);
-	
+
 	/**
 	 * Returns an EAE by its technical Id
 	 * 

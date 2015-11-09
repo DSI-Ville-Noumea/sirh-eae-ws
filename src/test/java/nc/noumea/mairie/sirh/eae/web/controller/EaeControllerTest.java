@@ -19,6 +19,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
 import nc.noumea.mairie.sirh.eae.service.AgentMatriculeConverterServiceException;
 import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
@@ -400,12 +401,12 @@ public class EaeControllerTest {
 
 	@Test
 	public void testFinalizeEae_EaeCantBeFinalized_Return409() throws EaeServiceException {
-		// Given
-		EaeServiceException ex = new EaeServiceException("message");
+		// Given		
+		ReturnMessageDto resultMsg = new ReturnMessageDto();
+		resultMsg.getErrors().add("L'EAE n'a pu être trouvé, merci de contacter la DRH.");
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		org.mockito.Mockito.doThrow(ex).when(eaeServiceMock)
-				.finalizEae(Mockito.anyInt(), Mockito.eq(1), Mockito.any(EaeFinalizationDto.class));
+		when(eaeServiceMock.finalizEae(Mockito.anyInt(), Mockito.eq(1), Mockito.any(EaeFinalizationDto.class))).thenReturn(resultMsg);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
@@ -416,8 +417,8 @@ public class EaeControllerTest {
 		ResponseEntity<String> result = controller.finalizeEae(1, 1, "{}");
 
 		// Then
-		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-		assertEquals("message", result.getBody());
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertEquals("{\"errors\":[\"L'EAE n'a pu être trouvé, merci de contacter la DRH.\"],\"infos\":[]}", result.getBody());
 	}
 
 	@Test
