@@ -332,6 +332,8 @@ public class EaeService implements IEaeService {
 
 		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		eaeEvaluation.setNoteAnnee(dto.getNoteAnnee());
+		// si ok alors on renvoi un message d'info
+		result.getInfos().add("EAE_FINALISE_OK");
 		return result;
 	}
 
