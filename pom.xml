@@ -235,6 +235,7 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.3-1101-jdbc41</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jt400</groupId>
