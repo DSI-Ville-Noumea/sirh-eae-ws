@@ -181,4 +181,13 @@ public interface IEaeService {
 	 * FOR SIRH-WS
 	 */
 	List<String> getEaesGedIdsForAgents(List<Integer> list, int annee);
+
+	/**
+	 * for KiosqueRH : page accueil nombre EAE a realiser
+	 * 
+	 * @param agentId int
+	 * @return Integer
+	 * @throws SirhWSConsumerException
+	 */
+	Integer countListEaesByAgentId(int agentId) throws SirhWSConsumerException;
 }

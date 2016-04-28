@@ -30,6 +30,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
+import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
@@ -65,6 +66,9 @@ public class EaeService implements IEaeService {
 	@Autowired
 	private MessageSource messageSource;
 
+	@Autowired
+	private IEaeRepository eaeRepository;
+
 	/*
 	 * Interface implementation
 	 */
@@ -91,6 +95,19 @@ public class EaeService implements IEaeService {
 		}
 
 		return result;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Integer countListEaesByAgentId(int agentId) throws SirhWSConsumerException {
+		
+		// Get the list of agents whose responsible is the given agent
+		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(agentId);
+
+		// Retrieve the EAEs
+		List<Eae> result = eaeRepository.findEaesNonDebuteOuCreeOuEnCoursForEaeListByAgentIds(agentIds, agentId);
+
+		return null == result ? 0 : result.size();
 	}
 
 	@Override
@@ -397,7 +414,12 @@ public class EaeService implements IEaeService {
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
-		sb.append("LEFT JOIN FETCH e.eaeFichePostes LEFT JOIN FETCH e.eaeEvaluateurs JOIN FETCH e.eaeEvalue LEFT JOIN FETCH e.eaeEvaluation LEFT JOIN FETCH e.eaeAutoEvaluation LEFT JOIN FETCH e.eaeEvolution ");
+		sb.append("LEFT JOIN FETCH e.eaeFichePostes "
+				+ "LEFT JOIN FETCH e.eaeEvaluateurs "
+				+ "JOIN FETCH e.eaeEvalue "
+				+ "LEFT JOIN FETCH e.eaeEvaluation "
+				+ "LEFT JOIN FETCH e.eaeAutoEvaluation "
+				+ "LEFT JOIN FETCH e.eaeEvolution ");
 		sb.append("where (e.eaeEvalue.idAgent in :agentIds ");
 		sb.append("OR e.idAgentDelegataire = :agentId ");
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");

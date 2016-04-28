@@ -43,6 +43,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
+import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
@@ -1364,5 +1365,49 @@ public class EaeServiceTest {
 
 		// Then
 		assertEquals(eae1.getEtat(), result.getEtat());
+	}
+	
+	@Test
+	public void countListEaesByAgentId() throws SirhWSConsumerException {
+		
+		Integer idAgent = 9005138;
+		
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getListOfSubAgentsForAgentId(idAgent)).thenReturn(Arrays.asList(9005131));
+
+		Eae eae = new Eae();
+		Eae eae2 = new Eae();
+		List<Eae> listEae = new ArrayList<Eae>();
+		listEae.add(eae);
+		listEae.add(eae2);
+		
+		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
+		Mockito.when(eaeRepository.findEaesNonDebuteOuCreeOuEnCoursForEaeListByAgentIds(Arrays.asList(9005131), idAgent))
+			.thenReturn(listEae);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		assertEquals(2, service.countListEaesByAgentId(idAgent).intValue());
+	}
+	
+	@Test
+	public void countListEaesByAgentId_return0() throws SirhWSConsumerException {
+		
+		Integer idAgent = 9005138;
+		
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getListOfSubAgentsForAgentId(idAgent)).thenReturn(Arrays.asList(9005131));
+		
+		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
+		Mockito.when(eaeRepository.findEaesNonDebuteOuCreeOuEnCoursForEaeListByAgentIds(Arrays.asList(9005131), idAgent))
+			.thenReturn(null);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		assertEquals(0, service.countListEaesByAgentId(idAgent).intValue());
 	}
 }

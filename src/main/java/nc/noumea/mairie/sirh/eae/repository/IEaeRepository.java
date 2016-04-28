@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.eae.repository;
 
+import java.util.List;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask;
@@ -17,4 +19,7 @@ public interface IEaeRepository {
 	Eae findEaeAgent(Integer idAgent, Integer idEaeCampagne);
 	
 	EaeCampagneTask findEaeCampagneTask(Integer idEaeCampagneTask);
+
+	List<Eae> findEaesNonDebuteOuCreeOuEnCoursForEaeListByAgentIds(
+			List<Integer> agentIds, Integer agentId);
 }

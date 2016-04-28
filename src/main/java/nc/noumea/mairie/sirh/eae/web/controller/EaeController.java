@@ -61,6 +61,27 @@ public class EaeController {
 	private IEaeReportingService eaeReportingService;
 
 	@ResponseBody
+	@RequestMapping(value = "countListEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	public ResponseEntity<String> countListEaesByAgent(@RequestParam("idAgent") int idAgent) {
+
+		logger.debug("entered GET [eaes/listEaesByAgent] => listEaesByAgent with parameter idAgent = {}", idAgent);
+
+		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
+
+		Integer result;
+		try {
+			result = eaeService.countListEaesByAgentId(convertedId);
+		} catch (SirhWSConsumerException e) {
+			logger.error(e.getMessage(), e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		String jsonResult = new JSONSerializer().exclude("*.class").deepSerialize(result);
+
+		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
+	}
+
+	@ResponseBody
 	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	public ResponseEntity<String> listEaesByAgent(@RequestParam("idAgent") int idAgent) {
 
