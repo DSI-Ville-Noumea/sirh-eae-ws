@@ -68,13 +68,13 @@ public class EaeControllerTest {
 		EaeController controller = new EaeController();
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.listEaesByAgentId(0)).thenReturn(new ArrayList<EaeListItemDto>());
+		when(eaeServiceMock.listEaesByAgentId(0,null)).thenReturn(new ArrayList<EaeListItemDto>());
 
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 
 		// When
-		ResponseEntity<String> result = controller.listEaesByAgent(0);
+		ResponseEntity<String> result = controller.listEaesByAgent(0,null);
 
 		// Then
 		assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
@@ -90,13 +90,13 @@ public class EaeControllerTest {
 		EaeController controller = new EaeController();
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.listEaesByAgentId(1)).thenReturn(resultOfService);
+		when(eaeServiceMock.listEaesByAgentId(1,"EC")).thenReturn(resultOfService);
 
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 
 		// When
-		ResponseEntity<String> result = controller.listEaesByAgent(1);
+		ResponseEntity<String> result = controller.listEaesByAgent(1,"EC");
 
 		// Then
 		assertEquals(HttpStatus.OK, result.getStatusCode());

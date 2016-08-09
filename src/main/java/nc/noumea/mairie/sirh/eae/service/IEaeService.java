@@ -22,7 +22,7 @@ public interface IEaeService {
 	 *            the agentId of the user
 	 * @return the list of EAEs
 	 */
-	List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException;
+	List<EaeListItemDto> listEaesByAgentId(int agentId,String idRefEtat) throws SirhWSConsumerException;
 
 	/**
 	 * Initializes an EAE based on the previous year's EAE (if existing)
@@ -132,7 +132,7 @@ public interface IEaeService {
 	 *            : the list of Ids
 	 * @return the list of EAEs corresponding to the Ids
 	 */
-	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId);
+	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId,String etat);
 
 	/**
 	 * Returns an EAE evalue's first and lastnames
@@ -190,4 +190,6 @@ public interface IEaeService {
 	 * @throws SirhWSConsumerException
 	 */
 	Integer countListEaesByAgentId(int agentId) throws SirhWSConsumerException;
+
+	List<EaeFinalizationDto> listEeaControleByAgent(Integer convertedId);
 }

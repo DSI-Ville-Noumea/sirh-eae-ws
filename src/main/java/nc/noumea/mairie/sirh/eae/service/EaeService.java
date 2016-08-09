@@ -12,6 +12,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
@@ -36,38 +43,31 @@ import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 public class EaeService implements IEaeService {
 
-	private Logger logger = LoggerFactory.getLogger(EaeService.class);
+	private Logger							logger	= LoggerFactory.getLogger(EaeService.class);
 
 	@PersistenceContext(unitName = "eaePersistenceUnit")
-	private EntityManager eaeEntityManager;
+	private EntityManager					eaeEntityManager;
 
 	@Autowired
-	private IAgentService agentService;
+	private IAgentService					agentService;
 
 	@Autowired
-	private IHelper helper;
+	private IHelper							helper;
 
 	@Autowired
-	private ISirhWsConsumer sirhWsConsumer;
+	private ISirhWsConsumer					sirhWsConsumer;
 
 	@Autowired
-	private IAgentMatriculeConverterService agentMatriculeConverterService;
+	private IAgentMatriculeConverterService	agentMatriculeConverterService;
 
 	@Autowired
-	private MessageSource messageSource;
+	private MessageSource					messageSource;
 
 	@Autowired
-	private IEaeRepository eaeRepository;
+	private IEaeRepository					eaeRepository;
 
 	/*
 	 * Interface implementation
@@ -75,7 +75,7 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException {
+	public List<EaeListItemDto> listEaesByAgentId(int agentId, String etat) throws SirhWSConsumerException {
 
 		List<EaeListItemDto> result = new ArrayList<EaeListItemDto>();
 
@@ -83,7 +83,7 @@ public class EaeService implements IEaeService {
 		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(agentId);
 
 		// Retrieve the EAEs
-		List<Eae> queryResult = findEaesForEaeListByAgentIds(agentIds, agentId);
+		List<Eae> queryResult = findEaesForEaeListByAgentIds(agentIds, agentId, etat);
 
 		// For each EAE result, retrieve extra information from SIRH
 		for (Eae eae : queryResult) {
@@ -100,7 +100,7 @@ public class EaeService implements IEaeService {
 	@Override
 	@Transactional(readOnly = true)
 	public Integer countListEaesByAgentId(int agentId) throws SirhWSConsumerException {
-		
+
 		// Get the list of agents whose responsible is the given agent
 		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(agentId);
 
@@ -120,7 +120,8 @@ public class EaeService implements IEaeService {
 		}
 
 		if (eaeToInitialize.getEtat() != EaeEtatEnum.ND)
-			throw new EaeServiceException(String.format("Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
+			throw new EaeServiceException(String.format("Impossible d'initialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
+					eaeToInitialize.getIdEae(), eaeToInitialize.getEtat().toString()));
 
 		// #19139 : ne pas modifier la date de creation initiale
 		if (eaeToInitialize.getDateCreation() == null) {
@@ -164,7 +165,8 @@ public class EaeService implements IEaeService {
 		Eae eaeToStart = findEae(idEaeToStart);
 
 		if (eaeToStart.getEtat() != EaeEtatEnum.C && eaeToStart.getEtat() != EaeEtatEnum.EC)
-			throw new EaeServiceException(String.format("Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(), eaeToStart.getEtat().toString()));
+			throw new EaeServiceException(String.format("Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(),
+					eaeToStart.getEtat().toString()));
 
 		if (eaeToStart.getEtat() != EaeEtatEnum.EC)
 			eaeToStart.setEtat(EaeEtatEnum.EC);
@@ -176,7 +178,8 @@ public class EaeService implements IEaeService {
 	public void resetEaeEvaluateur(Eae eaeToReset) throws EaeServiceException {
 
 		if (eaeToReset.getEtat() != EaeEtatEnum.C && eaeToReset.getEtat() != EaeEtatEnum.EC && eaeToReset.getEtat() != EaeEtatEnum.ND)
-			throw new EaeServiceException(String.format("Impossible de réinitialiser l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToReset.getIdEae(), eaeToReset.getEtat().toString()));
+			throw new EaeServiceException(String.format("Impossible de réinitialiser l'EAE id '%d': le statut de cet Eae est '%s'.",
+					eaeToReset.getIdEae(), eaeToReset.getEtat().toString()));
 
 		if (eaeToReset.getEtat() != EaeEtatEnum.ND)
 			eaeToReset.setEtat(EaeEtatEnum.ND);
@@ -206,7 +209,8 @@ public class EaeService implements IEaeService {
 		Agent agentDelegataire = agentService.getAgent(idAgentDelegataire);
 
 		if (agentDelegataire == null)
-			throw new EaeServiceException(String.format("Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.", idAgentDelegataire));
+			throw new EaeServiceException(
+					String.format("Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.", idAgentDelegataire));
 
 		eae.setIdAgentDelegataire(idAgentDelegataire);
 	}
@@ -325,7 +329,8 @@ public class EaeService implements IEaeService {
 
 		if (eae.getEtat() != EaeEtatEnum.EC) {
 			if (eae.getEtat() != EaeEtatEnum.CO) {
-				result.getErrors().add(String.format("Impossible de finaliser l'Eae car son état n'est pas 'En Cours' mais '%s'.", eae.getEtat().toString()));
+				result.getErrors()
+						.add(String.format("Impossible de finaliser l'Eae car son état n'est pas 'En Cours' mais '%s'.", eae.getEtat().toString()));
 				return result;
 			}
 		}
@@ -360,7 +365,8 @@ public class EaeService implements IEaeService {
 
 	private List<Eae> findLatestEaesByAgentId(int agentId, int maxResults) {
 
-		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery("select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc", Eae.class);
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(
+				"select e from Eae e where e.eaeEvalue.idAgent = :idAgent and e.etat != 'S' order by e.eaeCampagne.annee desc", Eae.class);
 		eaeQuery.setParameter("idAgent", agentId);
 		eaeQuery.setMaxResults(maxResults);
 		List<Eae> result = eaeQuery.getResultList();
@@ -397,7 +403,8 @@ public class EaeService implements IEaeService {
 		sb.append("where (e.eaeEvalue.idAgent in :agentIds ");
 		sb.append("OR e.idAgentDelegataire = :agentId ");
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");
-		sb.append("and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
+		sb.append(
+				"and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
 
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Eae.class);
 		eaeQuery.setParameter("agentIds", agentIds.size() == 0 ? null : agentIds);
@@ -409,26 +416,31 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId) {
+	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId, String etat) {
 
 		// Query
 		StringBuilder sb = new StringBuilder();
 		sb.append("select e from Eae e ");
-		sb.append("LEFT JOIN FETCH e.eaeFichePostes "
-				+ "LEFT JOIN FETCH e.eaeEvaluateurs "
-				+ "JOIN FETCH e.eaeEvalue "
-				+ "LEFT JOIN FETCH e.eaeEvaluation "
-				+ "LEFT JOIN FETCH e.eaeAutoEvaluation "
-				+ "LEFT JOIN FETCH e.eaeEvolution ");
+		sb.append("LEFT JOIN FETCH e.eaeFichePostes " + "LEFT JOIN FETCH e.eaeEvaluateurs " + "JOIN FETCH e.eaeEvalue "
+				+ "LEFT JOIN FETCH e.eaeEvaluation " + "LEFT JOIN FETCH e.eaeAutoEvaluation " + "LEFT JOIN FETCH e.eaeEvolution ");
 		sb.append("where (e.eaeEvalue.idAgent in :agentIds ");
 		sb.append("OR e.idAgentDelegataire = :agentId ");
 		sb.append("OR e.idEae in (select eva.eae.idEae from EaeEvaluateur eva where eva.idAgent = :agentId) ) ");
-		sb.append("and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
+		sb.append(
+				"and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
+
+		if (etat != null) {
+			sb.append("and e.etat = :etat");
+		}
 
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Eae.class);
 		eaeQuery.setParameter("agentIds", agentIds.size() == 0 ? null : agentIds);
 		eaeQuery.setParameter("agentId", agentId);
 		eaeQuery.setParameter("date", helper.getCurrentDate());
+
+		if (etat != null) {
+			eaeQuery.setParameter("etat", EaeEtatEnum.getEaeEtatEnum(etat));
+		}
 
 		List<Eae> queryResult = eaeQuery.getResultList();
 
@@ -514,7 +526,8 @@ public class EaeService implements IEaeService {
 		EaeCampagne camp = null;
 
 		Query query = eaeEntityManager.createQuery(
-				"select camp from EaeCampagne camp where camp.dateOuvertureKiosque is not null and camp.dateFermetureKiosque is null and  camp.dateOuvertureKiosque<:dateJour", EaeCampagne.class);
+				"select camp from EaeCampagne camp where camp.dateOuvertureKiosque is not null and camp.dateFermetureKiosque is null and  camp.dateOuvertureKiosque<:dateJour",
+				EaeCampagne.class);
 
 		query.setParameter("dateJour", new Date());
 		try {
@@ -578,6 +591,34 @@ public class EaeService implements IEaeService {
 		qEaesIds.setParameter("agentIds", agentIds.size() == 0 ? null : agentIds);
 
 		List<String> result = qEaesIds.getResultList();
+
+		return result;
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public List<EaeFinalizationDto> listEeaControleByAgent(Integer idAgent) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT fin ");
+		sb.append("FROM EaeFinalisation fin ");
+		sb.append("INNER JOIN fin.eae AS e ");
+		sb.append("INNER JOIN e.eaeCampagne AS c ");
+		sb.append("INNER JOIN e.eaeEvalue AS ev ");
+		sb.append("WHERE ev.idAgent = :idAgent ");
+		sb.append("and e.etat = :etat ");
+		sb.append("order by  c.annee desc ");
+
+		TypedQuery<EaeFinalisation> qEaesIds = eaeEntityManager.createQuery(sb.toString(), EaeFinalisation.class);
+		qEaesIds.setParameter("idAgent", idAgent);
+		qEaesIds.setParameter("etat", EaeEtatEnum.CO);
+
+		List<EaeFinalisation> resultReq = qEaesIds.getResultList();
+		List<EaeFinalizationDto> result = new ArrayList<>();
+		for (EaeFinalisation finalisation : resultReq) {
+			EaeFinalizationDto dto = new EaeFinalizationDto(finalisation);
+			result.add(dto);
+		}
 
 		return result;
 	}

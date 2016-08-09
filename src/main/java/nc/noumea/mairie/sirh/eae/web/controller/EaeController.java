@@ -3,6 +3,22 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
 import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
@@ -22,43 +38,26 @@ import nc.noumea.mairie.sirh.eae.service.IEaeService;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
-
 @Controller
 @RequestMapping("/eaes")
 public class EaeController {
 
-	private Logger logger = LoggerFactory.getLogger(EaeController.class);
+	private Logger							logger	= LoggerFactory.getLogger(EaeController.class);
 
 	@Autowired
-	private MessageSource messageSource;
+	private MessageSource					messageSource;
 
 	@Autowired
-	private IEaeService eaeService;
+	private IEaeService						eaeService;
 
 	@Autowired
-	private IAgentMatriculeConverterService agentMatriculeConverterService;
+	private IAgentMatriculeConverterService	agentMatriculeConverterService;
 
 	@Autowired
-	private IEaeSecurityProvider eaeSecurityProvider;
+	private IEaeSecurityProvider			eaeSecurityProvider;
 
 	@Autowired
-	private IEaeReportingService eaeReportingService;
+	private IEaeReportingService			eaeReportingService;
 
 	@ResponseBody
 	@RequestMapping(value = "countListEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
@@ -83,7 +82,7 @@ public class EaeController {
 
 	@ResponseBody
 	@RequestMapping(value = "listEaesByAgent", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> listEaesByAgent(@RequestParam("idAgent") int idAgent) {
+	public ResponseEntity<String> listEaesByAgent(@RequestParam("idAgent") int idAgent, @RequestParam(value = "etat", required = false) String etat) {
 
 		logger.debug("entered GET [eaes/listEaesByAgent] => listEaesByAgent with parameter idAgent = {}", idAgent);
 
@@ -91,7 +90,7 @@ public class EaeController {
 
 		List<EaeListItemDto> result;
 		try {
-			result = eaeService.listEaesByAgentId(convertedId);
+			result = eaeService.listEaesByAgentId(convertedId, etat);
 		} catch (SirhWSConsumerException e) {
 			logger.error(e.getMessage(), e);
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -141,9 +140,11 @@ public class EaeController {
 
 	@ResponseBody
 	@RequestMapping(value = "affecterDelegataire", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam("idDelegataire") int idDelegataire) {
+	public ResponseEntity<String> setDelegataire(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestParam("idDelegataire") int idDelegataire) {
 
-		logger.debug("entered GET [eaes/affecterDelegataire] => setDelegataire with parameter idAgent = {} , idDelegataire = {}", idAgent, idDelegataire);
+		logger.debug("entered GET [eaes/affecterDelegataire] => setDelegataire with parameter idAgent = {} , idDelegataire = {}", idAgent,
+				idDelegataire);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -208,7 +209,8 @@ public class EaeController {
 	@RequestMapping(value = "getFinalizationInformation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	public ResponseEntity<String> getFinalizationInformation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug("entered GET [eaes/getFinalizationInformation] => getFinalizationInformation with parameter idAgent = {} , idEae = {}", idAgent, idEae);
+		logger.debug("entered GET [eaes/getFinalizationInformation] => getFinalizationInformation with parameter idAgent = {} , idEae = {}", idAgent,
+				idEae);
 
 		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
@@ -231,7 +233,8 @@ public class EaeController {
 
 	@ResponseBody
 	@RequestMapping(value = "finalizeEae", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
-	public ResponseEntity<String> finalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestBody String eaeFinalizationDtoJson) {
+	public ResponseEntity<String> finalizeEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody String eaeFinalizationDtoJson) {
 
 		logger.debug("entered POST [eaes/finalizeEae] => finalizeEae with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
@@ -250,7 +253,8 @@ public class EaeController {
 	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping(value = "downloadEae", method = RequestMethod.GET)
-	public ResponseEntity downloadEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent, @RequestParam(value = "format", required = false) String format) {
+	public ResponseEntity downloadEae(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestParam(value = "format", required = false) String format) {
 
 		logger.debug("entered GET [eaes/downloadEae] => downloadEae with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
@@ -368,10 +372,12 @@ public class EaeController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "compterlistIdEaeByCampagneAndAgent", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
-	public ResponseEntity<String> compterlistIdEaeByCampagneAndAgent(@RequestParam("idCampagneEae") int idCampagneEae, @RequestParam("idAgent") int idAgent, @RequestBody String idAgents) {
+	public ResponseEntity<String> compterlistIdEaeByCampagneAndAgent(@RequestParam("idCampagneEae") int idCampagneEae,
+			@RequestParam("idAgent") int idAgent, @RequestBody String idAgents) {
 
-		logger.debug("entered POST [eaes/compterlistIdEaeByCampagneAndAgent] => compterlistIdEaeByCampagneAndAgent with parameter idAgent = {} and idCampagneEae = {} and idAgents = {}", idAgent,
-				idCampagneEae, idAgents);
+		logger.debug(
+				"entered POST [eaes/compterlistIdEaeByCampagneAndAgent] => compterlistIdEaeByCampagneAndAgent with parameter idAgent = {} and idCampagneEae = {} and idAgents = {}",
+				idAgent, idCampagneEae, idAgents);
 
 		List<Integer> list = new JSONDeserializer<List<Integer>>().use("values", Integer.class).deserialize(idAgents);
 
@@ -393,7 +399,8 @@ public class EaeController {
 	@RequestMapping(value = "getEaesGedIdsForAgents", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
 	public ResponseEntity<String> getEaesGedIdsForAgents(@RequestParam("annee") int annee, @RequestBody String idAgents) {
 
-		logger.debug("entered POST [eaes/getEaesGedIdsForAgents] => getEaesGedIdsForAgents with parameter annee = {}  and idAgents = {}", annee, idAgents);
+		logger.debug("entered POST [eaes/getEaesGedIdsForAgents] => getEaesGedIdsForAgents with parameter annee = {}  and idAgents = {}", annee,
+				idAgents);
 
 		List<Integer> list = new JSONDeserializer<List<Integer>>().use("values", Integer.class).deserialize(idAgents);
 
@@ -408,5 +415,29 @@ public class EaeController {
 
 		String response = new JSONSerializer().exclude("*.class").deepSerialize(rmDto);
 		return new ResponseEntity<String>(response, HttpStatus.OK);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "getEeaControle", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	public ResponseEntity<String> getEeaControleByAgent(@RequestParam("idAgent") int idAgent) {
+
+		logger.debug("entered GET [eaes/getEeaControle] => getEeaControleByAgent with parameter idAgent = {}", idAgent);
+
+		Integer convertedId = agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent);
+
+		List<EaeFinalizationDto> result;
+		try {
+			result = eaeService.listEeaControleByAgent(convertedId);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		if (result.isEmpty())
+			return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+
+		String jsonResult = EaeFinalizationDto.getSerializerForEaeFinalizationDto().serialize(result);
+
+		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
 	}
 }
