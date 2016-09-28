@@ -34,6 +34,10 @@
 			<name>Spring Maven Milestone Repository</name>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -101,7 +105,7 @@
 		<dependency>
 			<groupId>net.sf.flexjson</groupId>
 			<artifactId>flexjson</artifactId>
-			<version>2.2-MAIRIE</version>
+			<version>3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -316,6 +320,13 @@
 		    <groupId>io.springfox</groupId>
 		    <artifactId>springfox-swagger2</artifactId>
 		    <version>2.2.2</version>
+		</dependency>
+
+		<!-- CMIS ALfresco Client -->
+		<dependency>
+		    <groupId>com.github.DSI-Ville-Noumea</groupId>
+		    <artifactId>sirh-alfresco-cmis-common</artifactId>
+		    <version>1.2.3</version>
 		</dependency>
 	</dependencies>
 	<build>
