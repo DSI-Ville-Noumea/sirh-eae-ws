@@ -47,6 +47,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private static final String sirhSpbhorByIdUrl = "fichePostes/spbhorById";
 	private static final String sirhAgentUrl = "agents/agent";
 	private static final String sirhDateAvctUrl = "calculEae/calculDateAvancement";
+	private static final String sirhIsUserSirhUrl = "utilisateur/isUtilisateurSIRH";
 
 	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
@@ -145,6 +146,23 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 				.deserialize(output);
 
 		return result;
+	}
+	
+	public String readResponse(ClientResponse response, String url) throws SirhWSConsumerException {
+
+		String result = null;
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return result;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhWSConsumerException(String.format(
+					"An error occured when querying '%s'. Return code is : %s", url,
+					response.getStatus()));
+		}
+
+		return response.getEntity(String.class);
 	}
 
 	@Override
@@ -372,5 +390,33 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 	private String getSirhdateavcturl() {
 		return sirhWsBaseUrl + sirhDateAvctUrl;
+	}
+	
+
+
+	@Override
+	public boolean isUtilisateurSirh(Integer idAgent) throws SirhWSConsumerException {
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhIsUserSirhUrl());
+		
+		String result = null;
+		try {
+			result = readResponse(res, getSirhIsUserSirhUrl());
+		} catch(SirhWSConsumerException e) {
+			return false;
+		}
+		
+		if(null != result) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	private String getSirhIsUserSirhUrl() {
+		return sirhWsBaseUrl + sirhIsUserSirhUrl;
 	}
 }

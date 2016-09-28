@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
@@ -19,36 +21,36 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "EAE_FINALISATION")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
+@NamedQueries({
+		@NamedQuery(name = "lastdocumentFinalise", query = "select e.nodeRefAlfresco from EaeFinalisation e where eae.idEae = :idEae order by e.dateFinalisation desc") })
 public class EaeFinalisation {
 
 	@Id
 	@Column(name = "ID_EAE_FINALISATION")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer idEaeFinalisation;
+	private Integer	idEaeFinalisation;
 
 	@NotNull
 	@Column(name = "DATE_FINALISATION")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date dateFinalisation;
+	private Date	dateFinalisation;
 
 	@NotNull
 	@Column(name = "ID_AGENT")
-	private int idAgent;
+	private int		idAgent;
 
-	@NotNull
-	@Column(name = "ID_GED_DOCUMENT")
-	private String idGedDocument;
+	@Column(name = "node_ref_alfresco")
+	private String	nodeRefAlfresco;
 
-	@NotNull
-	@Column(name = "VERSION_GED_DOCUMENT")
-	private String versionGedDocument;
+	@Column(name = "commentaire_alfresco")
+	private String	commentaireAlfresco;
 
 	@Column(name = "COMMENTAIRE")
-	private String commentaire;
+	private String	commentaire;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_EAE")
-	private Eae eae;
+	private Eae		eae;
 
 	public Integer getIdEaeFinalisation() {
 		return idEaeFinalisation;
@@ -74,22 +76,6 @@ public class EaeFinalisation {
 		this.idAgent = idAgent;
 	}
 
-	public String getIdGedDocument() {
-		return idGedDocument;
-	}
-
-	public void setIdGedDocument(String idGedDocument) {
-		this.idGedDocument = idGedDocument;
-	}
-
-	public String getVersionGedDocument() {
-		return versionGedDocument;
-	}
-
-	public void setVersionGedDocument(String versionGedDocument) {
-		this.versionGedDocument = versionGedDocument;
-	}
-
 	public String getCommentaire() {
 		return commentaire;
 	}
@@ -104,5 +90,21 @@ public class EaeFinalisation {
 
 	public void setEae(Eae eae) {
 		this.eae = eae;
+	}
+
+	public String getNodeRefAlfresco() {
+		return nodeRefAlfresco;
+	}
+
+	public void setNodeRefAlfresco(String nodeRefAlfresco) {
+		this.nodeRefAlfresco = nodeRefAlfresco;
+	}
+
+	public String getCommentaireAlfresco() {
+		return commentaireAlfresco;
+	}
+
+	public void setCommentaireAlfresco(String commentaireAlfresco) {
+		this.commentaireAlfresco = commentaireAlfresco;
 	}
 }

@@ -3,49 +3,39 @@ package nc.noumea.mairie.sirh.eae.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
-import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
-import flexjson.JSONSerializer;
+import nc.noumea.mairie.sirh.eae.dto.agent.AgentDto;
 
-public class FinalizationInformationDto implements IJSONSerialize {
+public class FinalizationInformationDto {
 
 	private int idEae;
 	private int annee;
-	private Agent agentEvalue;
-	private Agent agentDelegataire;
-	private List<Agent> agentsEvaluateurs;
-	private List<Agent> agentsShd;
+	
+	private AgentDto agentEvalue;
+	private AgentDto agentDelegataire;
+	private List<AgentDto> agentsEvaluateurs;
+	private List<AgentDto> agentsShd;
 	private Float noteAnnee;
 
 	public FinalizationInformationDto() {
-		agentsEvaluateurs = new ArrayList<Agent>();
-		agentsShd = new ArrayList<Agent>();
+		agentsEvaluateurs = new ArrayList<AgentDto>();
+		agentsShd = new ArrayList<AgentDto>();
 	}
 
 	public FinalizationInformationDto(Eae eae) {
 		this();
 		idEae = eae.getIdEae();
 		annee = eae.getEaeCampagne().getAnnee();
-		agentEvalue = eae.getEaeEvalue().getAgent();
-		agentDelegataire = eae.getAgentDelegataire();
+		agentEvalue = null == eae.getEaeEvalue().getAgent() ? null : new AgentDto(eae.getEaeEvalue().getAgent());
+		agentDelegataire = null == eae.getEaeEvalue().getAgent() ? null : new AgentDto(eae.getAgentDelegataire());
 
 		for (EaeEvaluateur eval : eae.getEaeEvaluateurs()) {
-			agentsEvaluateurs.add(eval.getAgent());
+			agentsEvaluateurs.add(new AgentDto(eval.getAgent()));
 		}
 		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		noteAnnee = eaeEvaluation.getNoteAnnee();
-	}
-
-	public static JSONSerializer getSerializerForFinalizationInformationDto() {
-		return new JSONSerializer().exclude("*.class").include("*").transform(new SimpleAgentTransformer(), Agent.class);
-	}
-
-	@Override
-	public String serializeInJSON() {
-		return getSerializerForFinalizationInformationDto().serialize(this);
 	}
 
 	public int getIdEae() {
@@ -64,35 +54,35 @@ public class FinalizationInformationDto implements IJSONSerialize {
 		this.annee = annee;
 	}
 
-	public Agent getAgentEvalue() {
+	public AgentDto getAgentEvalue() {
 		return agentEvalue;
 	}
 
-	public void setAgentEvalue(Agent agentEvalue) {
+	public void setAgentEvalue(AgentDto agentEvalue) {
 		this.agentEvalue = agentEvalue;
 	}
 
-	public Agent getAgentDelegataire() {
+	public AgentDto getAgentDelegataire() {
 		return agentDelegataire;
 	}
 
-	public void setAgentDelegataire(Agent agentDelegataire) {
+	public void setAgentDelegataire(AgentDto agentDelegataire) {
 		this.agentDelegataire = agentDelegataire;
 	}
 
-	public List<Agent> getAgentsEvaluateurs() {
+	public List<AgentDto> getAgentsEvaluateurs() {
 		return agentsEvaluateurs;
 	}
 
-	public void setAgentsEvaluateurs(List<Agent> agentsEvaluateurs) {
+	public void setAgentsEvaluateurs(List<AgentDto> agentsEvaluateurs) {
 		this.agentsEvaluateurs = agentsEvaluateurs;
 	}
 
-	public List<Agent> getAgentsShd() {
+	public List<AgentDto> getAgentsShd() {
 		return agentsShd;
 	}
 
-	public void setAgentsShd(List<Agent> agentsShd) {
+	public void setAgentsShd(List<AgentDto> agentsShd) {
 		this.agentsShd = agentsShd;
 	}
 

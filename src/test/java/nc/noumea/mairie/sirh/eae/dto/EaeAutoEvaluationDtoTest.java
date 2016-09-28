@@ -46,37 +46,4 @@ public class EaeAutoEvaluationDtoTest {
 		assertNull( dto.getAcquis());
 		assertNull(dto.getSuccesDifficultes());
 	}
-	
-	@Test
-	public void testSerializeInJSON() {
-		// Given
-		EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto();
-		dto.setIdEae(19);
-		dto.setAcquis("acquis");
-		dto.setParticularites("particularités");
-		dto.setSuccesDifficultes("succes et Difficultés");
-		
-		String expectedJson = "{\"acquis\":\"acquis\",\"idEae\":19,\"particularites\":\"particularités\",\"succesDifficultes\":\"succes et Difficultés\"}";
-		
-		// When
-		String json = dto.serializeInJSON();
-		
-		// Then
-		assertEquals(expectedJson, json);
-	}
-	
-	@Test
-	public void testDeSerializeFromJSON() {
-		// Given
-		String json = "{\"acquis\":\"acquis\",\"idEae\":19,\"particularites\":\"particularités\",\"succesDifficultes\":\"succes & difficultés\"}";
-		
-		// When
-		EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto().deserializeFromJSON(json);
-		
-		// Then
-		assertEquals(19, dto.getIdEae());
-		assertEquals("particularités", dto.getParticularites());
-		assertEquals("acquis", dto.getAcquis());
-		assertEquals("succes & difficultés", dto.getSuccesDifficultes());
-	}
 }

@@ -1,8 +1,8 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,19 +31,17 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import flexjson.JSONDeserializer;
 
 public class EaeControllerTest {
 
-	private static IAgentMatriculeConverterService agentMatriculeMock;
+	private static IAgentMatriculeConverterService	agentMatriculeMock;
 
-	IEaeSecurityProvider eaeSecurityProvider;
-	MessageSource messageSourceMock;
+	IEaeSecurityProvider							eaeSecurityProvider;
+	MessageSource									messageSourceMock;
 
 	@Before
 	public void SetUp() {
@@ -61,24 +59,26 @@ public class EaeControllerTest {
 	}
 
 	@Test
-	public void testNoEaeForIdAgent_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException,
-			SirhWSConsumerException {
+	public void testNoEaeForIdAgent_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException, SirhWSConsumerException {
 
 		// Given
 		EaeController controller = new EaeController();
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.listEaesByAgentId(0,null)).thenReturn(new ArrayList<EaeListItemDto>());
+		when(eaeServiceMock.listEaesByAgentId(0)).thenReturn(new ArrayList<EaeListItemDto>());
 
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 
 		// When
-		ResponseEntity<String> result = controller.listEaesByAgent(0,null);
+		try {
+			controller.listEaesByAgent(0);
+		} catch (NoContentException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-		assertFalse(result.hasBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -90,21 +90,17 @@ public class EaeControllerTest {
 		EaeController controller = new EaeController();
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.listEaesByAgentId(1,"EC")).thenReturn(resultOfService);
+		when(eaeServiceMock.listEaesByAgentId(1)).thenReturn(resultOfService);
 
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 
 		// When
-		ResponseEntity<String> result = controller.listEaesByAgent(1,"EC");
+		List<EaeListItemDto> result = controller.listEaesByAgent(1);
 
 		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertTrue(result.hasBody());
-
-		JSONDeserializer<List<Eae>> deserializer = new JSONDeserializer<List<Eae>>();
-		List<Eae> returnedResult = deserializer.deserialize(result.getBody().toString());
-		assertEquals(1, returnedResult.size());
+		assertNotNull(result);
+		assertEquals(1, result.size());
 	}
 
 	@Test
@@ -120,6 +116,8 @@ public class EaeControllerTest {
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 		when(eaeServiceMock.findCurrentAndPreviousEaesByAgentId(agentEvalueId)).thenReturn(eaeToCreateList);
 
+		when(messageSourceMock.getMessage("EAE_INITIALISE_OK", null, null)).thenReturn("L'eae a �t� initialis� avec succ�s");
+
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
@@ -127,11 +125,15 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 
 		// When
-		ResponseEntity<String> result = controller.initializeEae(agentId, agentEvalueId);
+		ReturnMessageDto result = null;
+		try {
+			result = controller.initializeEae(agentId, agentEvalueId);
+		} catch (Exception e) {
+			fail("Shoud have not thrown an exception");
+		}
 
 		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertFalse(result.hasBody());
+		assertEquals(result.getInfos().get(0), "L'eae a �t� initialis� avec succ�s");
 
 		verify(eaeSecurityProvider, times(1)).checkEaeAndWriteRight(120, agentId);
 		verify(eaeServiceMock, times(1)).findCurrentAndPreviousEaesByAgentId(agentEvalueId);
@@ -155,13 +157,14 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.initializeEae(agentId, agentEvalueId);
+		try {
+			controller.initializeEae(agentId, agentEvalueId);
+		} catch (NotFoundException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-		assertFalse(result.hasBody());
-
-		verify(eaeServiceMock, times(1)).findCurrentAndPreviousEaesByAgentId(agentEvalueId);
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -185,12 +188,15 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.initializeEae(agentId, agentEvalueId);
+		ReturnMessageDto result = new ReturnMessageDto();
+		try {
+			result = controller.initializeEae(agentId, agentEvalueId);
+		} catch (ConflictException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-		assertTrue(result.hasBody());
-		assertEquals(ex.getMessage(), result.getBody());
+		assertEquals(result.getErrors().get(0), "message");
 	}
 
 	@Test
@@ -206,8 +212,11 @@ public class EaeControllerTest {
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 		when(eaeServiceMock.findCurrentAndPreviousEaesByAgentId(agentEvalueId)).thenReturn(eaeToCreateList);
 
-		when(eaeSecurityProvider.checkEaeAndWriteRight(lastEae.getIdEae(), agentId)).thenReturn(
-				new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				throw new ForbiddenException("");
+			}
+		}).when(eaeSecurityProvider).checkEaeAndWriteRight(lastEae.getIdEae(), agentId);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
@@ -215,10 +224,14 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.initializeEae(agentId, agentEvalueId);
+		try {
+			controller.initializeEae(agentId, agentEvalueId);
+		} catch (ForbiddenException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -239,12 +252,16 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
+		ReturnMessageDto result = null;
+		try {
+			result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
+		} catch (ConflictException e) {
+			assertEquals(e.getMessage(), "message");
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-		assertTrue(result.hasBody());
-		assertEquals(ex.getMessage(), result.getBody());
+		assertEquals(result.getErrors().get(0), "message");
 	}
 
 	@Test
@@ -257,6 +274,8 @@ public class EaeControllerTest {
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 
+		when(messageSourceMock.getMessage("EAE_DELEGATAIRE_OK", null, null)).thenReturn("Le d�l�gataire �t� affect� avec succ�s");
+
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
@@ -264,12 +283,15 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
 
 		// When
-		ResponseEntity<String> result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
+		ReturnMessageDto result = null;
+		try {
+			result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
+		} catch (Exception e) {
+			fail("Shoud have not thrown an exception");
+		}
 
 		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertFalse(result.hasBody());
-
+		assertEquals("Le d�l�gataire �t� affect� avec succ�s", result.getInfos().get(0));
 		verify(eaeServiceMock, times(1)).setDelegataire(eaeId, agentDelegataireId);
 	}
 
@@ -281,22 +303,27 @@ public class EaeControllerTest {
 		int eaeId = 13;
 		int agentDelegataireId = 14;
 
-		when(eaeSecurityProvider.checkEaeAndWriteRight(eaeId, agentId)).thenReturn(
-				new ResponseEntity<String>(HttpStatus.FORBIDDEN));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				throw new ForbiddenException("");
+			}
+		}).when(eaeSecurityProvider).checkEaeAndWriteRight(eaeId, agentId);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.setDelegataire(eaeId, agentId, agentDelegataireId);
+		try {
+			controller.setDelegataire(eaeId, agentId, agentDelegataireId);
+		} catch (Exception e) {
+			return;
+		}
 
-		// Then
-		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
-	public void testgetEaesDashboard_NoEaes_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException,
-			SirhWSConsumerException {
+	public void testgetEaesDashboard_NoEaes_ReturnNoContentHttpCode() throws AgentMatriculeConverterServiceException, SirhWSConsumerException {
 
 		// Given
 		EaeController controller = new EaeController();
@@ -309,11 +336,14 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.getEaesDashboard(0);
+		try {
+			controller.getEaesDashboard(0);
+		} catch (NoContentException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-		assertFalse(result.hasBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -321,8 +351,7 @@ public class EaeControllerTest {
 			throws AgentMatriculeConverterServiceException, SirhWSConsumerException {
 
 		// Given
-		List<EaeDashboardItemDto> resultOfService = new ArrayList<EaeDashboardItemDto>(
-				Arrays.asList(new EaeDashboardItemDto()));
+		List<EaeDashboardItemDto> resultOfService = new ArrayList<EaeDashboardItemDto>(Arrays.asList(new EaeDashboardItemDto()));
 		EaeController controller = new EaeController();
 
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
@@ -333,20 +362,19 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.getEaesDashboard(1);
+		List<EaeDashboardItemDto> result = null;
+		try {
+			result = controller.getEaesDashboard(1);
+		} catch (NoContentException e) {
+			fail("Shoud have not thrown an exception");
+		}
 
 		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertTrue(result.hasBody());
-
-		JSONDeserializer<List<EaeDashboardItemDto>> deserializer = new JSONDeserializer<List<EaeDashboardItemDto>>();
-		List<EaeDashboardItemDto> returnedResult = deserializer.deserialize(result.getBody().toString());
-		assertEquals(1, returnedResult.size());
+		assertEquals(1, result.size());
 	}
 
 	@Test
-	public void testGetFinalizationInformation_EaeExistsAndServiceReturnsData_Return200()
-			throws SirhWSConsumerException {
+	public void testGetFinalizationInformation_EaeExistsAndServiceReturnsData_Return200() throws SirhWSConsumerException {
 		// Given
 		FinalizationInformationDto resultOfService = new FinalizationInformationDto();
 
@@ -358,67 +386,62 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.getFinalizationInformation(1, 0);
+		// When
+		FinalizationInformationDto result = null;
+		try {
+			result = controller.getFinalizationInformation(1, 0);
+		} catch (NoContentException e) {
+			fail("Shoud have not thrown an exception");
+		}
 
 		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertTrue(result.hasBody());
+		assertNotNull(result);
 	}
 
 	@Test
 	public void testGetFinalizationInformation_AgentDoesNotHaveRight_Return403() {
 		// Given
-		when(eaeSecurityProvider.checkEaeAndWriteRight(1, 900)).thenReturn(
-				new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				throw new ForbiddenException("");
+			}
+		}).when(eaeSecurityProvider).checkEaeAndWriteRight(1, 0);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.getFinalizationInformation(1, 900);
+		try {
+			controller.getFinalizationInformation(1, 0);
+		} catch (ForbiddenException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
-		assertEquals("message", result.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
 	public void testFinalizeEae_AgentDoesNotHaveRight_Return403() {
 		// Given
-		when(eaeSecurityProvider.checkEaeAndWriteRight(1, 900)).thenReturn(
-				new ResponseEntity<String>("message", HttpStatus.FORBIDDEN));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				throw new ForbiddenException("");
+			}
+		}).when(eaeSecurityProvider).checkEaeAndWriteRight(1, 900);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.finalizeEae(1, 900, null);
+		try {
+			controller.finalizeEae(1, 900, new EaeFinalizationDto());
+		} catch (ForbiddenException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
-		assertEquals("message", result.getBody());
-	}
-
-	@Test
-	public void testFinalizeEae_EaeCantBeFinalized_Return409() throws EaeServiceException {
-		// Given		
-		ReturnMessageDto resultMsg = new ReturnMessageDto();
-		resultMsg.getErrors().add("L'EAE n'a pu être trouvé, merci de contacter la DRH.");
-
-		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
-		when(eaeServiceMock.finalizEae(Mockito.anyInt(), Mockito.eq(1), Mockito.any(EaeFinalizationDto.class))).thenReturn(resultMsg);
-
-		EaeController controller = new EaeController();
-		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
-		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
-		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
-
-		// When
-		ResponseEntity<String> result = controller.finalizeEae(1, 1, "{}");
-
-		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertEquals("{\"errors\":[\"L'EAE n'a pu être trouvé, merci de contacter la DRH.\"],\"infos\":[]}", result.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -426,34 +449,50 @@ public class EaeControllerTest {
 		// Given
 		IEaeService eaeServiceMock = Mockito.mock(IEaeService.class);
 
+		ReturnMessageDto rmd = new ReturnMessageDto();
+		rmd.getInfos().add("L'eae a été finalisé avec succès");
+
+		when(eaeServiceMock.finalizeEae(Mockito.anyInt(), Mockito.anyInt(), Mockito.any(EaeFinalizationDto.class))).thenReturn(rmd);
+		
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "agentMatriculeConverterService", agentMatriculeMock);
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
-		ReflectionTestUtils.setField(controller, "messageSource", messageSourceMock);
-
+		
 		// When
-		ResponseEntity<String> result = controller.finalizeEae(1, 1, "{}");
+		ReturnMessageDto result = null;
+		try {
+			result = controller.finalizeEae(1, 1, new EaeFinalizationDto());
+		} catch (Exception e) {
+			fail("Shoud have not thrown an exception");
+		}
 
 		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertEquals("L'eae a été finalisé avec succès", result.getInfos().get(0));
 	}
 
 	@Test
 	public void testCanFinalizeEae_AgentDoesNotHaveRight_Return403() {
 		// Given
-		when(eaeSecurityProvider.checkEaeAndWriteRight(1, 1)).thenReturn(
-				new ResponseEntity<String>("message", HttpStatus.CONFLICT));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				throw new ForbiddenException("message conflict");
+			}
+		}).when(eaeSecurityProvider).checkEaeAndWriteRight(1, 1);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
-		// When
-		ResponseEntity<String> result = controller.canFinalizeEae(1, 1);
+		// When*
+		try {
+			controller.canFinalizeEae(1, 1);
+		} catch (ForbiddenException e) {
+			assertEquals(e.getMessage(), "message conflict");
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-		assertEquals("message", result.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -471,11 +510,15 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 
 		// When
-		ResponseEntity<String> result = controller.canFinalizeEae(1, 1);
+		try {
+			controller.canFinalizeEae(1, 1);
+		} catch (ConflictException e) {
+			assertEquals(e.getMessage(), "message");
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-		assertEquals("message", result.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -493,55 +536,67 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeService", eaeServiceMock);
 
 		// When
-		ResponseEntity<String> result = controller.canFinalizeEae(1, 1);
-
-		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertFalse(result.hasBody());
+		try {
+			controller.canFinalizeEae(1, 1);
+		} catch (Exception e) {
+			fail("Shoud have not thrown an exception");
+		}
 	}
 
 	@Test
 	public void getEvalueFullname_EaeDoesNotExists_ReturnHttp404() {
 		// Given
-		when(eaeSecurityProvider.checkEaeAndReadRight(1, 1)).thenReturn(
-				new ResponseEntity<String>(HttpStatus.NOT_FOUND));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				throw new NotFoundException();
+			}
+		}).when(eaeSecurityProvider).checkEaeAndReadRight(1, 1);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.getEvalueFullname(1, 1);
+		try {
+			controller.getEvalueFullname(1, 1);
+		} catch (NotFoundException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
 	public void getEvalueFullname_AgentDoesNotHaveRight_Return403() {
 		// Given
-		when(eaeSecurityProvider.checkEaeAndReadRight(1, 1)).thenReturn(
-				new ResponseEntity<String>("message", HttpStatus.CONFLICT));
+		Mockito.doAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) {
+				throw new ConflictException("message");
+			}
+		}).when(eaeSecurityProvider).checkEaeAndReadRight(1, 1);
 
 		EaeController controller = new EaeController();
 		ReflectionTestUtils.setField(controller, "eaeSecurityProvider", eaeSecurityProvider);
 
 		// When
-		ResponseEntity<String> result = controller.getEvalueFullname(1, 1);
+		try {
+			controller.getEvalueFullname(1, 1);
+		} catch (ConflictException e) {
+			assertEquals("message", e.getMessage());
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-		assertEquals("message", result.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
 	public void getEvalueFullname_EaeExists_ReturnJsonResult() {
 		// Given
-		when(eaeSecurityProvider.checkEaeAndReadRight(1, 1)).thenReturn(null);
-
 		EaeEvalueNameDto dto = new EaeEvalueNameDto();
-			dto.setPrenom("NICOLAS");
-			dto.setNom("RAYNAUD");
-		
+		dto.setPrenom("NICOLAS");
+		dto.setNom("RAYNAUD");
+
 		IEaeService service = mock(IEaeService.class);
 		when(service.getEvalueName(1)).thenReturn(dto);
 
@@ -550,10 +605,17 @@ public class EaeControllerTest {
 		ReflectionTestUtils.setField(controller, "eaeService", service);
 
 		// When
-		ResponseEntity<String> result = controller.getEvalueFullname(1, 1);
+		EaeEvalueNameDto result = null;
+		try {
+			result = controller.getEvalueFullname(1, 1);
+		} catch (ConflictException e) {
+			fail("Shoud have not thrown an exception");
+		}
 
 		// Then
-		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertNotNull(result);
+		assertEquals("NICOLAS", result.getPrenom());
+		assertEquals("RAYNAUD", result.getNom());
 	}
 
 }

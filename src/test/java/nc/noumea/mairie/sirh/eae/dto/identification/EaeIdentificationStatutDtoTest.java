@@ -39,7 +39,7 @@ public class EaeIdentificationStatutDtoTest {
 		assertEquals(eval.getNouvGrade(), dto.getNouvGrade());
 		assertEquals(eval.getDateEffetAvancement(), dto.getDateEffet());
 		assertEquals(eval.getStatutPrecision(), dto.getStatutPrecision());
-		assertEquals(eval.getStatut(), dto.getStatut());
+		assertEquals(eval.getStatut().name(), dto.getStatut());
 	}
 
 }

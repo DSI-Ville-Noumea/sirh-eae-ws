@@ -30,6 +30,9 @@
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeFinalisation</class>
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask</class>
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagne</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeDocument</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneActeurs</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
@@ -40,7 +43,7 @@
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
 			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy" />
 			<property name="hibernate.connection.charSet" value="UTF-8" />
-			<!-- <property name="hibernate.show_sql" value="true" /> -->
+			<property name="hibernate.show_sql" value="false" />
 			<!-- Uncomment the following two properties for JBoss only -->
 			<!-- property name="hibernate.validator.apply_to_ddl" value="false" / -->
 			<!-- property name="hibernate.validator.autoregister_listeners" value="false" 

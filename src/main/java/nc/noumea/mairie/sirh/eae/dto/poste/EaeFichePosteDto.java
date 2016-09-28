@@ -6,16 +6,15 @@ import java.util.List;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
-import nc.noumea.mairie.sirh.eae.dto.IJSONSerialize;
-import flexjson.JSONSerializer;
 
-public class EaeFichePosteDto implements IJSONSerialize {
+public class EaeFichePosteDto {
 
 	private int idEae;
 	private String intitule;
 	private String grade;
 	private String emploi;
 	private String directionService;
+	private String sectionService;
 	private String service;
 	private String localisation;
 	private String missions;
@@ -26,6 +25,8 @@ public class EaeFichePosteDto implements IJSONSerialize {
 	private List<String> competencesSavoir;
 	private List<String> competencesSavoirFaire;
 	private List<String> competencesComportementProfessionnel;
+	
+	private Integer idAgentShd;
 
 	public EaeFichePosteDto() {
 		activites = new ArrayList<String>();
@@ -45,6 +46,8 @@ public class EaeFichePosteDto implements IJSONSerialize {
 		localisation = fdp.getLocalisation();
 		missions = fdp.getMissions();
 		responsableFonction = fdp.getFonctionResponsable();
+		sectionService = fdp.getSectionService();
+		idAgentShd = fdp.getIdAgentShd();
 		
 		if (fdp.getAgentShd() != null) {
 			responsableNom = fdp.getAgentShd().getDisplayNom();
@@ -68,32 +71,6 @@ public class EaeFichePosteDto implements IJSONSerialize {
 		for (EaeFdpActivite act : fdp.getEaeFdpActivites()) {
 			activites.add(act.getLibelle());
 		}
-	}
-
-	public static JSONSerializer getSerializerForEaeFichePosteDto() {
-		
-		return new JSONSerializer()
-			.include("idEae")
-			.include("intitule")
-			.include("grade")
-			.include("emploi")
-			.include("service")
-			.include("directionService")
-			.include("localisation")
-			.include("missions")
-			.include("responsableNom")
-			.include("responsablePrenom")
-			.include("responsableFonction")
-			.include("activites.*")
-			.include("competencesSavoir.*")
-			.include("competencesSavoirFaire.*")
-			.include("competencesComportementProfessionnel.*")
-			.exclude("*");
-	}
-	
-	@Override
-	public String serializeInJSON() {
-		return getSerializerForEaeFichePosteDto().serialize(this);
 	}
 	
 	public int getIdEae() {
@@ -216,4 +193,21 @@ public class EaeFichePosteDto implements IJSONSerialize {
 			List<String> competencesComportementProfessionnel) {
 		this.competencesComportementProfessionnel = competencesComportementProfessionnel;
 	}
+
+	public String getSectionService() {
+		return sectionService;
+	}
+
+	public void setSectionService(String sectionService) {
+		this.sectionService = sectionService;
+	}
+
+	public Integer getIdAgentShd() {
+		return idAgentShd;
+	}
+
+	public void setIdAgentShd(Integer idAgentShd) {
+		this.idAgentShd = idAgentShd;
+	}
+	
 }

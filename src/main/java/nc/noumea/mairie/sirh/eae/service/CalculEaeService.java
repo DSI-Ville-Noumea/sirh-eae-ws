@@ -766,4 +766,64 @@ public class CalculEaeService implements ICalculEaeService {
 			}
 		}
 	}
+	
+	@Override
+	@Transactional(value = "eaeTransactionManager")
+	public void updateEae(Integer idEae) throws SirhWSConsumerException, ParseException {
+		
+		Eae eae = eaeRepository.findEae(idEae);
+		
+		if(null == eae) {
+			logger.info("EAE inexistant pour l'id : " + idEae);
+		}
+		
+		EaeEvalue evalue = eae.getEaeEvalue();
+		// on cherche les FDP de l'agent
+		FichePosteDto fpPrincipale = null;
+		FichePosteDto fpSecondaire = null;
+		
+		Agent agent = agentService.getAgent(evalue.getIdAgent());
+		CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(evalue.getIdAgent(),
+				eae.getEaeCampagne().getAnnee() - 1);
+		FichePosteDto fpResponsable = null;
+		TitrePosteDto tpResp = null;
+		fpPrincipale = affAgent.getFichePostePrincipale();
+		// on recupere le superieur hierarchique
+		if (affAgent.getFichePosteResponsable() != null) {
+			fpResponsable = affAgent.getFichePosteResponsable();
+			tpResp = affAgent.getFichePosteResponsable().getTitrePoste();
+		}
+		if (affAgent.getFichePosteSecondaire() != null) {
+			fpSecondaire = affAgent.getFichePosteSecondaire();
+		}
+		
+		// on met les données dans EAE-evalué
+		creerEvalue(agent, eae, affAgent, false, eae.getEaeEvalue().isEstDetache());
+		// on met les données dans EAE-FichePoste
+		creerFichePoste(fpPrincipale, eae, fpResponsable, tpResp, false, false);
+		creerFichePoste(fpSecondaire, eae, fpResponsable, tpResp, false, false);
+
+		creerDiplome(eae, affAgent.getListDiplome());
+		// on met les données dans EAE-Parcours-Pro
+		creerParcoursPro(agent, eae, affAgent.getListParcoursPro());
+		// on met les données dans EAE-Formation
+		creerFormation(eae, affAgent.getListFormation());
+
+		// pour le CAP
+		// on cherche si il y a une ligne dans les avancements
+		AvancementEaeDto avct = sirhWsConsumer.getAvancement(evalue.getIdAgent(), eae.getEaeCampagne().getAnnee(), true);
+		if (null != avct && null != avct.getEtat() && avct.getEtat().equals(AvancementEaeDto.SGC)) {
+			// on a trouvé une ligne dans avancement
+			// on regarde l'etat de la ligne
+			// si 'valid DRH' alors on met CAP à true;
+			// si l'avancement est de type TITU alors on met false #11510
+			if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
+				eae.setCap(false);
+			} else {
+				eae.setCap(true);
+			}
+		} else {
+			eae.setCap(false);
+		}
+	}
 }

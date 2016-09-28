@@ -51,20 +51,36 @@ public class MinutesToHoursAndMinutesTransformerTest {
 		assertNull(c.getDureeEntretien());
 	}
 	
-	@Test
-	public void testInstantiateWithActualValue() {
-		// Given
-		String json = "{\"dureeEntretien\":{\"heures\":1,\"minutes\":7}}";
-		
-		// When
-		HoldingClass c = new HoldingClass();
-		new JSONDeserializer<HoldingClass>()
-				.use("dureeEntretien", new MinutesToHoursAndMinutesTransformer())
-				.deserializeInto(json, c);
-		
-		// Then
-		assertEquals(new Integer(67), c.getDureeEntretien());
-	}
+//	@Test
+//	public void testInstantiateWithActualValue() {
+//		// Given
+//		String json = "{\"dureeEntretien\":{\"heures\":1,\"minutes\":7}}";
+//		
+//		// When
+//		HoldingClass c = new HoldingClass();
+//		new JSONDeserializer<HoldingClass>()
+//				.use("dureeEntretien", new MinutesToHoursAndMinutesTransformer())
+//				.deserializeInto(json, c);
+//		
+//		// Then
+//		assertEquals(new Integer(67), c.getDureeEntretien());
+//		
+//		
+//		
+//		// Given
+//		String json = "\"/DATE(1355270400000)/\"";
+//		MSDateTransformer tr = new MSDateTransformer();
+//		JSONDeserializer<Date> deserializer = new JSONDeserializer<Date>();
+//
+//		// When
+//		Date d = deserializer.use(Date.class, tr).deserialize(json, Date.class);
+//
+//		// Then
+//		Calendar c = new GregorianCalendar();
+//		c.clear();
+//		c.setTime(d);
+//		assertEquals(1355270400000l, d.getTime());
+//	}
 	
 	
 	private class HoldingClass {

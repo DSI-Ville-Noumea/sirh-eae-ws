@@ -1,19 +1,12 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
-import flexjson.JSONSerializer;
-
-public class CanFinalizeEaeDto implements IJSONSerialize {
+public class CanFinalizeEaeDto {
 
 	private boolean canFinalize;
 	private String message;
 	
 	public CanFinalizeEaeDto() {
 		
-	}
-	
-	@Override
-	public String serializeInJSON() {
-		return new JSONSerializer().exclude("*.class").serialize(this);
 	}
 
 	public boolean isCanFinalize() {

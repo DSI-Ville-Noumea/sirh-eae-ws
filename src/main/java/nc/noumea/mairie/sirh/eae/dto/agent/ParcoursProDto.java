@@ -2,9 +2,20 @@ package nc.noumea.mairie.sirh.eae.dto.agent;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
+
+
 public class ParcoursProDto {
 
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateDebut;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateFin;
 	private String service;
 	private String direction;

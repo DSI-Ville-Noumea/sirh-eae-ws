@@ -28,7 +28,11 @@
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement</class>
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement</class>
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeFinalisation</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneTask</class>
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagne</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeDocument</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneActeurs</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />

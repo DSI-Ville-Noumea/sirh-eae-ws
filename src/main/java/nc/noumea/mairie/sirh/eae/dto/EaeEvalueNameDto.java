@@ -1,8 +1,7 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
-import flexjson.JSONSerializer;
 
-public class EaeEvalueNameDto implements IJSONSerialize {
+public class EaeEvalueNameDto {
 
 	private String prenom;
 	private String nom;
@@ -22,10 +21,4 @@ public class EaeEvalueNameDto implements IJSONSerialize {
 	public void setNom(String _nom) {
 		nom = _nom;
 	}
-
-	@Override
-	public String serializeInJSON() {
-		return new JSONSerializer().exclude("*.class").serialize(this);
-	}
-
 }

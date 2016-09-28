@@ -12,6 +12,8 @@ import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import nc.noumea.mairie.sirh.eae.dto.EaeResultatDto;
+
 @Entity
 @Table(name = "EAE_RESULTAT")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
@@ -42,6 +44,19 @@ public class EaeResultat {
 	@NotNull
 	private Eae eae;
 
+	public EaeResultat() {
+	}
+	
+	public EaeResultat(EaeResultatDto dto) {
+		this.idEaeResultat = dto.getIdEaeResultat();
+		this.objectif = dto.getObjectif();
+		this.resultat = dto.getResultat();
+		
+		if(null != dto.getCommentaire()) {
+			this.commentaire = new EaeCommentaire(dto.getCommentaire());
+		}
+	}
+	
 	public Integer getIdEaeResultat() {
 		return idEaeResultat;
 	}

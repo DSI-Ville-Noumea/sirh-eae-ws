@@ -2,11 +2,22 @@ package nc.noumea.mairie.sirh.eae.dto.agent;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
+
+
 public class AutreAdministrationAgentDto {
 
 	private Integer idAutreAdmin;
 	private Integer idAgent;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateEntree;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateSortie;
 	private Integer fonctionnaire;
 	private String libelleAdministration;

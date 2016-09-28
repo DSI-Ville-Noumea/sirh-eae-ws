@@ -1,6 +1,8 @@
 package nc.noumea.mairie.sirh.eae.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,25 +21,33 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nc.noumea.mairie.alfresco.cmis.IAlfrescoCMISService;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.AgentDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.ValeurListeDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
+import nc.noumea.mairie.sirh.eae.web.controller.NoContentException;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
@@ -69,13 +79,16 @@ public class EaeService implements IEaeService {
 	@Autowired
 	private IEaeRepository					eaeRepository;
 
+	@Autowired
+	private IAlfrescoCMISService			alfrescoCMISService;
+
 	/*
 	 * Interface implementation
 	 */
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<EaeListItemDto> listEaesByAgentId(int agentId, String etat) throws SirhWSConsumerException {
+	public List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException {
 
 		List<EaeListItemDto> result = new ArrayList<EaeListItemDto>();
 
@@ -83,7 +96,7 @@ public class EaeService implements IEaeService {
 		List<Integer> agentIds = sirhWsConsumer.getListOfSubAgentsForAgentId(agentId);
 
 		// Retrieve the EAEs
-		List<Eae> queryResult = findEaesForEaeListByAgentIds(agentIds, agentId, etat);
+		List<Eae> queryResult = findEaesForEaeListByAgentIds(agentIds, agentId);
 
 		// For each EAE result, retrieve extra information from SIRH
 		for (Eae eae : queryResult) {
@@ -160,9 +173,12 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public Eae startEae(Integer idEaeToStart) throws EaeServiceException {
+	public Eae startEae(Integer idEaeToStart, boolean isSirh) throws EaeServiceException {
 
 		Eae eaeToStart = findEae(idEaeToStart);
+
+		if (isSirh)
+			return eaeToStart;
 
 		if (eaeToStart.getEtat() != EaeEtatEnum.C && eaeToStart.getEtat() != EaeEtatEnum.EC)
 			throw new EaeServiceException(String.format("Impossible de démarrer l'EAE id '%d': le statut de cet Eae est '%s'.", eaeToStart.getIdEae(),
@@ -306,7 +322,7 @@ public class EaeService implements IEaeService {
 		List<Integer> agentsShdIds = sirhWsConsumer.getListOfShdAgentsForAgentId(eae.getEaeEvalue().getIdAgent());
 
 		for (Integer shdId : agentsShdIds) {
-			result.getAgentsShd().add(agentService.getAgent(shdId));
+			result.getAgentsShd().add(new AgentDto(agentService.getAgent(shdId)));
 		}
 
 		return result;
@@ -314,8 +330,10 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public ReturnMessageDto finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto) {
-		// #19138 : on cnage le mode de fonctionnement de ce WS afin que
+	public ReturnMessageDto finalizeEae(Integer idEae, int idAgent, EaeFinalizationDto dto) {
+
+		// # ne fonctionne plus avec sharepoint, mais on garde le meme principe
+		// #19138 : on change le mode de fonctionnement de ce WS afin que
 		// Sharepoint affiche les messages ici du WS et qu'il arrete d'avoir les
 		// messages en dur dans le code sharepoint
 		ReturnMessageDto result = new ReturnMessageDto();
@@ -335,6 +353,16 @@ public class EaeService implements IEaeService {
 			}
 		}
 
+		// on upload vers alfresco avant de modifier les objets en BDD
+		// en cas d erreur
+		EaeFinalisation finalisation = new EaeFinalisation();
+		result = alfrescoCMISService.uploadDocument(idAgent, dto, finalisation, eae, result);
+
+		if (null != result && null != result.getErrors() && !result.getErrors().isEmpty()) {
+			return result;
+		}
+
+		// on sauvegarde la finalisation en BDD
 		Date finalisationDate = helper.getCurrentDate();
 
 		if (eae.getEtat() != EaeEtatEnum.CO) {
@@ -343,19 +371,17 @@ public class EaeService implements IEaeService {
 		eae.setDateFinalisation(finalisationDate);
 		eae.setDocAttache(true);
 
-		EaeFinalisation finalisation = new EaeFinalisation();
 		finalisation.setEae(eae);
 		eae.getEaeFinalisations().add(finalisation);
 		finalisation.setIdAgent(agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent));
 		finalisation.setDateFinalisation(finalisationDate);
-		finalisation.setIdGedDocument(dto.getIdDocument());
-		finalisation.setVersionGedDocument(dto.getVersionDocument());
 		finalisation.setCommentaire(dto.getCommentaire());
 
 		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		eaeEvaluation.setNoteAnnee(dto.getNoteAnnee());
+
 		// si ok alors on renvoi un message d'info
-		result.getInfos().add("EAE_FINALISE_OK");
+		result.getInfos().add(messageSource.getMessage("EAE_FINALISE_OK", null, null));
 		return result;
 	}
 
@@ -416,7 +442,7 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
-	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId, String etat) {
+	public List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId) {
 
 		// Query
 		StringBuilder sb = new StringBuilder();
@@ -429,18 +455,10 @@ public class EaeService implements IEaeService {
 		sb.append(
 				"and e.eaeCampagne.dateOuvertureKiosque is not null and e.eaeCampagne.dateFermetureKiosque is null and  e.eaeCampagne.dateOuvertureKiosque < :date");
 
-		if (etat != null) {
-			sb.append("and e.etat = :etat");
-		}
-
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sb.toString(), Eae.class);
 		eaeQuery.setParameter("agentIds", agentIds.size() == 0 ? null : agentIds);
 		eaeQuery.setParameter("agentId", agentId);
 		eaeQuery.setParameter("date", helper.getCurrentDate());
-
-		if (etat != null) {
-			eaeQuery.setParameter("etat", EaeEtatEnum.getEaeEtatEnum(etat));
-		}
 
 		List<Eae> queryResult = eaeQuery.getResultList();
 
@@ -578,7 +596,7 @@ public class EaeService implements IEaeService {
 	public List<String> getEaesGedIdsForAgents(List<Integer> agentIds, int annee) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT DISTINCT fin.idGedDocument ");
+		sb.append("SELECT DISTINCT fin.nodeRefAlfresco ");
 		sb.append("FROM EaeFinalisation fin ");
 		sb.append("INNER JOIN fin.eae AS e ");
 		sb.append("INNER JOIN e.eaeCampagne AS c ");
@@ -597,6 +615,116 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public List<EaeDto> findEaesByIdAgentOnly(Integer agentId) {
+
+		// Query
+		List<EaeEvalue> listEvalue = eaeRepository.findEaeEvalueWithEaesByIdAgentOnly(agentId);
+
+		List<EaeDto> listEaeDto = new ArrayList<EaeDto>();
+
+		if (null != listEvalue) {
+			for (EaeEvalue evalue : listEvalue) {
+
+				for (EaeEvaluateur evaluateur : evalue.getEae().getEaeEvaluateurs()) {
+					agentService.fillEaeEvaluateurWithAgent(evaluateur);
+				}
+
+				EaeDto eaeDto = new EaeDto(evalue.getEae(), true);
+				listEaeDto.add(eaeDto);
+			}
+		}
+
+		return listEaeDto;
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public EaeDto findEaeDto(Integer idEae) {
+
+		// Query
+		Eae eae = eaeRepository.findEae(idEae);
+
+		EaeDto eaeDto = null;
+		if (null != eae) {
+			agentService.fillEaeWithAgents(eae);
+			eaeDto = new EaeDto(eae, true);
+		}
+
+		return eaeDto;
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public Integer chercherEaeNumIncrement() {
+		return eaeRepository.chercherEaeNumIncrement();
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public List<ValeurListeDto> getListeTypeDeveloppement() {
+
+		List<EaeTypeDeveloppement> listTypeDvlpt = eaeRepository.getListeTypeDeveloppement();
+
+		List<ValeurListeDto> result = new ArrayList<ValeurListeDto>();
+
+		if (null != listTypeDvlpt) {
+			for (EaeTypeDeveloppement type : listTypeDvlpt) {
+				result.add(new ValeurListeDto(type.getIdEaeTypeDeveloppement().toString(), type.getLibelle()));
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager")
+	public void setEae(EaeDto eaeDto) throws EaeServiceException {
+
+		Eae eae = findEae(eaeDto.getIdEae());
+
+		if (null != eaeDto.getIdAgentDelegataire()) {
+			Agent agentDelegataire = agentService.getAgent(eaeDto.getIdAgentDelegataire());
+
+			if (agentDelegataire == null)
+				throw new EaeServiceException(String.format("Impossible d'affecter l'agent '%d' en tant que délégataire: cet Agent n'existe pas.",
+						eaeDto.getIdAgentDelegataire()));
+		}
+
+		eae.setIdAgentDelegataire(eaeDto.getIdAgentDelegataire());
+		eae.setEtat(EaeEtatEnum.valueOf(eaeDto.getEtat()));
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public List<EaeDto> getListeEaeDto(FormRehercheGestionEae form) throws EaeServiceException {
+
+		if (null == form.getIdCampagneEae() || form.getIdCampagneEae() == 0) {
+			throw new EaeServiceException("Le choix de la campagne EAE est obligatoire.");
+		}
+
+		List<EaeDto> listEaeDto = new ArrayList<EaeDto>();
+
+		List<Eae> listEae = eaeRepository.getListeEae(form);
+
+		if (null != listEae) {
+			for (Eae eae : listEae) {
+				agentService.fillEaeWithAgents(eae);
+				EaeDto eaeDto = new EaeDto(eae, true);
+				listEaeDto.add(eaeDto);
+			}
+		}
+
+		return listEaeDto;
+	}
+
+	@Override
+	public String getLastDocumentEaeFinalise(Integer idEae) {
+
+		return eaeRepository.getLastDocumentEaeFinalise(idEae);
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
 	public List<EaeFinalizationDto> listEeaControleByAgent(Integer idAgent) {
 
 		StringBuilder sb = new StringBuilder();
@@ -606,6 +734,7 @@ public class EaeService implements IEaeService {
 		sb.append("INNER JOIN e.eaeCampagne AS c ");
 		sb.append("INNER JOIN e.eaeEvalue AS ev ");
 		sb.append("WHERE ev.idAgent = :idAgent ");
+		sb.append("and fin.idEaeFinalisation in(select max(fin2.idEaeFinalisation) from EaeFinalisation fin2 inner join fin2.eae e2 group by fin2.eae ) ");
 		sb.append("and e.etat = :etat ");
 		sb.append("order by  c.annee desc ");
 
@@ -620,6 +749,135 @@ public class EaeService implements IEaeService {
 			result.add(dto);
 		}
 
+		return result;
+	}
+
+	@Override
+	public ReturnMessageDto updateCapEae(Integer idEae, boolean cap) {
+
+		ReturnMessageDto result = new ReturnMessageDto();
+
+		Eae eae = eaeRepository.findEae(idEae);
+
+		if (null == eae) {
+			result.getErrors().add("Eae non trouvé");
+			return result;
+		}
+
+		eae.setCap(cap);
+
+		eaeRepository.persistEntity(eae);
+
+		result.getInfos().add("CAP de l'EAE mis à jour.");
+		return result;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<EaeDashboardItemDto> getEaesDashboardForSIRH(Integer anneeCampagne) throws SirhWSConsumerException {
+
+		List<EaeDashboardItemDto> result = new ArrayList<EaeDashboardItemDto>();
+
+		// on recupere la campagne EAE
+		EaeCampagne eaeCampagne = eaeRepository.findEaeCampagneByAnnee(anneeCampagne);
+
+		if (null == eaeCampagne) {
+			throw new NoContentException();
+		}
+
+		// listerEaeFichePosteGrouperParDirectionSection
+		Map<String, List<String>> mapDirectionSection = eaeRepository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae());
+
+		if (null != mapDirectionSection) {
+			for (Map.Entry<String, List<String>> entry : mapDirectionSection.entrySet()) {
+				String direction = entry.getKey();
+				List<String> listSection = entry.getValue();
+
+				if (null != listSection) {
+					for (String section : listSection) {
+
+						// on cherche la liste des EAE pour cette direction et
+						// section
+						// et par etat
+						Integer nbEaeNonAffecte = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+								direction, section, EaeEtatEnum.NA.name(), false);
+
+						Integer nbEaeNonDebute = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+								direction, section, EaeEtatEnum.ND.name(), false);
+
+						Integer nbEaeCree = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(), direction,
+								section, EaeEtatEnum.C.name(), false);
+
+						Integer nbEaeEnCours = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+								direction, section, EaeEtatEnum.EC.name(), false);
+
+						Integer nbEaeFinalise = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+								direction, section, EaeEtatEnum.F.name(), false);
+
+						Integer nbEaeControle = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+								direction, section, EaeEtatEnum.CO.name(), false);
+
+						Integer nbEaeCAP = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(), direction,
+								section, null, true);
+
+						Integer totalEAE = nbEaeNonAffecte + nbEaeNonDebute + nbEaeCree + nbEaeEnCours + nbEaeFinalise + nbEaeControle;
+
+						// on cherche les propositions d'avancement
+						Integer nbAvctNonDefini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, null, false);
+
+						Integer nbAvctMini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MINI", false);
+
+						Integer nbAvctMoy = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MOY", false);
+
+						Integer nbAvctMAxi = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MAXI", false);
+
+						Integer nbAvctChangementClasse = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, null,
+								true);
+
+						EaeDashboardItemDto dto = new EaeDashboardItemDto();
+
+						dto.setDirection(direction);
+						dto.setSection(section);
+
+						dto.setNonAffecte(nbEaeNonAffecte);
+						dto.setNonDebute(nbEaeNonDebute);
+						dto.setCree(nbEaeCree);
+						dto.setEnCours(nbEaeEnCours);
+						dto.setFinalise(nbEaeFinalise);
+
+						dto.setNbEaeControle(nbEaeControle);
+						dto.setNbEaeCAP(nbEaeCAP);
+						dto.setTotalEAE(totalEAE);
+						dto.setNonDefini(nbAvctNonDefini);
+						dto.setMini(nbAvctMini);
+						dto.setMoy(nbAvctMoy);
+						dto.setMaxi(nbAvctMAxi);
+						dto.setChangClasse(nbAvctChangementClasse);
+
+						result.add(dto);
+					}
+				}
+			}
+		}
+
+		Collections.sort(result, new Comparator<EaeDashboardItemDto>() {
+
+			@Override
+			public int compare(EaeDashboardItemDto o1, EaeDashboardItemDto o2) {
+
+				if (o1 == o2) {
+					return 0;
+				}
+				if (null == o2 || o2.getDirection() == null) {
+					return 1;
+				}
+				if (null == o1 || o1.getDirection() == null) {
+					return -1;
+				}
+				return o1.getDirection().compareTo(o2.getDirection());
+			}
+
+		});
 		return result;
 	}
 }

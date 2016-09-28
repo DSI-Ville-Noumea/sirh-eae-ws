@@ -1,9 +1,6 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite;
@@ -13,8 +10,6 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeCompetenceEnum;
 import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
 
 import org.junit.Test;
-
-import flexjson.PathExpression;
 
 public class EaeFichePosteDtoTest {
 
@@ -111,80 +106,5 @@ public class EaeFichePosteDtoTest {
 		assertEquals(null, result.getResponsableNom());
 		assertEquals(null, result.getResponsablePrenom());
 		assertEquals(f.getFonctionResponsable(), result.getResponsableFonction());
-	}
-	
-	@Test
-	public void testGetSerializerForEaeFichePosteDto_includes_excludes() {
-		
-		// When
-		List<PathExpression> includes = EaeFichePosteDto.getSerializerForEaeFichePosteDto().getIncludes();
-		List<PathExpression> excludes = EaeFichePosteDto.getSerializerForEaeFichePosteDto().getExcludes();
-		
-		// Then
-		assertEquals(15, includes.size());
-		assertEquals("[idEae]", includes.get(0).toString());
-		assertEquals("[intitule]", includes.get(1).toString());
-		assertEquals("[grade]", includes.get(2).toString());
-		assertEquals("[emploi]", includes.get(3).toString());
-		assertEquals("[service]", includes.get(4).toString());
-		assertEquals("[directionService]", includes.get(5).toString());
-		assertEquals("[localisation]", includes.get(6).toString());
-		assertEquals("[missions]", includes.get(7).toString());
-		assertEquals("[responsableNom]", includes.get(8).toString());
-		assertEquals("[responsablePrenom]", includes.get(9).toString());
-		assertEquals("[responsableFonction]", includes.get(10).toString());
-		assertEquals("[activites,*]", includes.get(11).toString());
-		assertEquals("[competencesSavoir,*]", includes.get(12).toString());
-		assertEquals("[competencesSavoirFaire,*]", includes.get(13).toString());
-		assertEquals("[competencesComportementProfessionnel,*]", includes.get(14).toString());
-		
-		assertEquals(1, excludes.size());
-		assertEquals("[*]", excludes.get(0).toString());
-	}
-	
-	@Test
-	public void testSerializeInJSON_SerializeEmptyObject() {
-		
-		// Given
-		EaeFichePosteDto dto = new EaeFichePosteDto();
-		
-		String expectedResult = "{\"activites\":[],\"competencesComportementProfessionnel\":[],\"competencesSavoir\":[],\"competencesSavoirFaire\":[],\"directionService\":null,\"emploi\":null,\"grade\":null,\"idEae\":0,\"intitule\":null,\"localisation\":null,\"missions\":null,\"responsableFonction\":null,\"responsableNom\":null,\"responsablePrenom\":null,\"service\":null}";
-		
-		// When
-		String result = dto.serializeInJSON();
-		
-		// Then
-		assertEquals(expectedResult, result);
-	}
-	
-	@Test
-	public void testSerializeInJSON_SerializeFullObject() {
-		
-		// Given
-		EaeFichePosteDto dto = new EaeFichePosteDto();
-		dto.setIdEae(123);
-		dto.setIntitule("intitule");
-		dto.setGrade("grade");
-		dto.setEmploi("emploi");
-		dto.setDirectionService("directionService");
-		dto.setService("service");
-		dto.setMissions("missions");
-		dto.setResponsableFonction("responsableFonction");
-		dto.setResponsableNom("responsableNom");
-		dto.setResponsablePrenom("responsablePrenom");
-		dto.setLocalisation("localisation");
-		dto.getActivites().add("act1");
-		dto.getActivites().add("act2");
-		dto.getCompetencesSavoir().add("comp1");
-		dto.getCompetencesSavoirFaire().add("comp2");
-		dto.getCompetencesComportementProfessionnel().add("comp3");
-		
-		String expectedResult = "{\"activites\":[\"act1\",\"act2\"],\"competencesComportementProfessionnel\":[\"comp3\"],\"competencesSavoir\":[\"comp1\"],\"competencesSavoirFaire\":[\"comp2\"],\"directionService\":\"directionService\",\"emploi\":\"emploi\",\"grade\":\"grade\",\"idEae\":123,\"intitule\":\"intitule\",\"localisation\":\"localisation\",\"missions\":\"missions\",\"responsableFonction\":\"responsableFonction\",\"responsableNom\":\"responsableNom\",\"responsablePrenom\":\"responsablePrenom\",\"service\":\"service\"}";
-		
-		// When
-		String result = dto.serializeInJSON();
-		
-		// Then
-		assertEquals(expectedResult, result);
 	}
 }

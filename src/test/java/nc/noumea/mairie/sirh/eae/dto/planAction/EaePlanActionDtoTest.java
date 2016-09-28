@@ -1,17 +1,12 @@
 package nc.noumea.mairie.sirh.eae.dto.planAction;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import flexjson.PathExpression;
 
 public class EaePlanActionDtoTest {
 
@@ -90,106 +85,13 @@ public class EaePlanActionDtoTest {
 		assertEquals(1, dto.getObjectifsProfessionnels().size());
 		assertEquals("obj1", dto.getObjectifsProfessionnels().get(0).getObjectif());
 		assertEquals("mes1", dto.getObjectifsProfessionnels().get(0).getIndicateur());
-		assertEquals(1, dto.getObjectifsIndividuels().size());
-		assertEquals("obj2", dto.getObjectifsIndividuels().get(0));
-		assertEquals(1, dto.getMoyensMateriels().size());
-		assertEquals("bes1", dto.getMoyensMateriels().get(0));
-		assertEquals(1, dto.getMoyensFinanciers().size());
-		assertEquals("bes2", dto.getMoyensFinanciers().get(0));
-		assertEquals(1, dto.getMoyensAutres().size());
-		assertEquals("bes3", dto.getMoyensAutres().get(0));
-	}
-	
-	@Test
-	public void testGetJSONSerializerForEaePlanActionDto_inlude_excludes() {
-		// When
-		List<PathExpression> includes = EaePlanActionDto.getJSONSerializerForEaePlanActionDto().getIncludes();
-		List<PathExpression> excludes = EaePlanActionDto.getJSONSerializerForEaePlanActionDto().getExcludes();
-		
-		// Then
-		assertEquals(1, includes.size());
-		assertEquals("[*]", includes.get(0).toString());
-		
-		assertEquals(1, excludes.size());
-		assertEquals("[*,class]", excludes.get(0).toString());
-	}
-	
-	@Test
-	public void testSerializeInJson_EmptyObject() {
-		// Given
-		EaePlanActionDto dto = new EaePlanActionDto();
-		
-		String expectedJson = "{\"idEae\":0,\"moyensAutres\":[],\"moyensFinanciers\":[],\"moyensMateriels\":[],\"objectifsIndividuels\":[],\"objectifsProfessionnels\":[]}";
-		
-		// When
-		String json = dto.serializeInJSON();
-		
-		// Then
-		assertEquals(expectedJson, json);
-	}
-	
-	@Test
-	public void testSerializeInJson_FilledInDto() {
-		// Given
-		EaePlanActionDto dto = new EaePlanActionDto();
-		dto.setIdEae(113);
-		
-		PlanActionItemDto item = new PlanActionItemDto();
-		item.setObjectif("obj1");
-		item.setIndicateur("mes1");
-		dto.getObjectifsProfessionnels().add(item);
-		
-		dto.getObjectifsIndividuels().add("obj2");
-		dto.getMoyensMateriels().add("moy1");
-		dto.getMoyensFinanciers().add("moy2");
-		dto.getMoyensAutres().add("moy3");
-		
-		String expectedJson = "{\"idEae\":113,\"moyensAutres\":[\"moy3\"],\"moyensFinanciers\":[\"moy2\"],\"moyensMateriels\":[\"moy1\"],\"objectifsIndividuels\":[\"obj2\"],\"objectifsProfessionnels\":[{\"indicateur\":\"mes1\",\"objectif\":\"obj1\"}]}";
-		
-		// When
-		String json = dto.serializeInJSON();
-		
-		// Then
-		assertEquals(expectedJson, json);
-	}
-	
-	@Test
-	public void testDeserializeFromJson_emptyObject() {
-		// Given
-		String json = "{\"idEae\":113,\"moyensAutres\":[],\"moyensFinanciers\":[],\"moyensMateriels\":[],\"objectifsIndividuels\":[],\"objectifsProfessionnels\":[]}";
-		
-		// When
-		EaePlanActionDto dto = new EaePlanActionDto().deserializeFromJSON(json);
-		
-		// Then
-		assertEquals(113, dto.getIdEae());
-		assertEquals(0, dto.getObjectifsProfessionnels().size());
-		assertEquals(0, dto.getObjectifsIndividuels().size());
-		assertEquals(0, dto.getMoyensFinanciers().size());
-		assertEquals(0, dto.getMoyensMateriels().size());
-		assertEquals(0, dto.getMoyensAutres().size());
-	}
-	
-	@Test
-	public void testDeserializeFromJson_filledInObject() {
-		// Given
-		String json = "{\"idEae\":113,\"moyensAutres\":[\"moy3\"],\"moyensFinanciers\":[\"moy2\"],\"moyensMateriels\":[\"moy1\"],\"objectifsIndividuels\":[\"obj2\"],\"objectifsProfessionnels\":[{\"indicateur\":\"mes1\",\"objectif\":\"obj1\"}]}";
-		
-		// When
-		EaePlanActionDto dto = new EaePlanActionDto().deserializeFromJSON(json);
-		
-		// Then
-		assertEquals(113, dto.getIdEae());
-		assertEquals(1, dto.getObjectifsProfessionnels().size());
-		assertEquals("obj1", dto.getObjectifsProfessionnels().get(0).getObjectif());
-		assertEquals("mes1", dto.getObjectifsProfessionnels().get(0).getIndicateur());
-		assertEquals(1, dto.getObjectifsIndividuels().size());
-		assertEquals("obj2", dto.getObjectifsIndividuels().get(0));
-		assertEquals(1, dto.getMoyensFinanciers().size());
-		assertEquals("moy2", dto.getMoyensFinanciers().get(0));
-		assertEquals(1, dto.getMoyensMateriels().size());
-		assertEquals("moy1", dto.getMoyensMateriels().get(0));
-		assertEquals(1, dto.getMoyensAutres().size());
-		assertEquals("moy3", dto.getMoyensAutres().get(0));
+		assertEquals(1, dto.getListeObjectifsIndividuels().size());
+		assertEquals("obj2", dto.getListeObjectifsIndividuels().get(0).getLibelle());
+		assertEquals(1, dto.getListeMoyensMateriels().size());
+		assertEquals("bes1", dto.getListeMoyensMateriels().get(0).getLibelle());
+		assertEquals(1, dto.getListeMoyensFinanciers().size());
+		assertEquals("bes2", dto.getListeMoyensFinanciers().get(0).getLibelle());
+		assertEquals(1, dto.getListeMoyensAutres().size());
+		assertEquals("bes3", dto.getListeMoyensAutres().get(0).getLibelle());
 	}
 }

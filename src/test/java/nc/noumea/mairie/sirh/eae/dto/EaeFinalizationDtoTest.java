@@ -1,36 +1,30 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import java.util.Date;
 
 import org.junit.Test;
+
+import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 
 public class EaeFinalizationDtoTest {
 
 	@Test
-	public void testDeserializeFromJson_EmptyJson_ReturnNewObject() {
-		// Given
-		String json = "{}";
-		
-		// When
-		EaeFinalizationDto dto = new EaeFinalizationDto().deserializeFromJSON(json);
-		
-		// Then
-		assertNotNull(dto);
-	}
-	
-	@Test
-	public void testDeserializeFromJson_FilledInJson_ReturnNewObject() {
-		// Given
-		String json = "{\"idDocument\": \"theSharepointId\", \"versionDocument\" : \"sharepointVersion\", \"commentaire\" : \"The most important comment.\" }";
-		
-		// When
-		EaeFinalizationDto dto = new EaeFinalizationDto().deserializeFromJSON(json);
-		
-		// Then
-		assertNotNull(dto);
-		assertEquals("theSharepointId", dto.getIdDocument());
-		assertEquals("sharepointVersion", dto.getVersionDocument());
-		assertEquals("The most important comment.", dto.getCommentaire());
+	public void testConstructor() {
+
+		Date dateFinalisation = new Date();
+
+		EaeFinalisation finalisation = new EaeFinalisation();
+		finalisation.setNodeRefAlfresco("1");
+		finalisation.setCommentaire("commentaire");
+		finalisation.setDateFinalisation(dateFinalisation);
+
+		EaeFinalizationDto dto = new EaeFinalizationDto(finalisation);
+
+		assertEquals(dto.getCommentaire(), finalisation.getCommentaire());
+		assertEquals(dto.getDateFinalisation(), dateFinalisation);
+		assertEquals(dto.getVersionDocument(), "");
+		assertEquals(dto.getIdDocument(), finalisation.getNodeRefAlfresco());
 	}
 }

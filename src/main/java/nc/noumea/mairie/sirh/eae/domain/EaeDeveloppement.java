@@ -18,6 +18,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
+import nc.noumea.mairie.sirh.eae.dto.EaeDeveloppementDto;
 
 @Entity
 @Table(name = "EAE_DEVELOPPEMENT")
@@ -48,6 +49,17 @@ public class EaeDeveloppement {
 	@JoinColumn(name = "ID_EAE_EVOLUTION")
 	private EaeEvolution eaeEvolution;
 
+	public EaeDeveloppement() {
+		
+	}
+	
+	public EaeDeveloppement(EaeDeveloppementDto dto) {
+		this.idEaeDeveloppement = dto.getIdEaeDeveloppement();
+		this.libelle = dto.getLibelle();
+		this.echeance = dto.getEcheance();
+		this.priorisation = dto.getPriorisation();
+	}
+	
 	public Integer getIdEaeDeveloppement() {
 		return idEaeDeveloppement;
 	}

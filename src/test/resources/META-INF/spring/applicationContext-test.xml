@@ -76,5 +76,13 @@
 	<bean class="java.lang.String" id="reportingBaseUrl" />
 	
 	<bean class="java.lang.String" id="reportServerPath" />
+
+	<!-- ALFRESCO -->
+	<bean class="java.lang.String" id="alfrescoUrl" />
+
+	<bean class="java.lang.String" id="alfrescoLogin" />
+
+	<bean class="java.lang.String" id="alfrescoPassword" />
+	<!-- ALFRESCO -->
 	
 </beans>

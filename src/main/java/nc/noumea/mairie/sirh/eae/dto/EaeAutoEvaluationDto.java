@@ -4,11 +4,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAutoEvaluation;
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
 
 @XmlRootElement
-public class EaeAutoEvaluationDto implements IJSONSerialize, IJSONDeserialize<EaeAutoEvaluationDto> {
+public class EaeAutoEvaluationDto {
 
 	private int idEae;
 	private String particularites;
@@ -29,18 +27,6 @@ public class EaeAutoEvaluationDto implements IJSONSerialize, IJSONDeserialize<Ea
 			acquis = autoEval.getAcquis();
 			succesDifficultes = autoEval.getSuccesDifficultes();
 		}
-	}
-	
-	@Override
-	public EaeAutoEvaluationDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<EaeAutoEvaluationDto>().deserializeInto(json, this);
-	}
-
-	@Override
-	public String serializeInJSON() {
-		return new JSONSerializer()
-			.exclude("*.class")
-			.serialize(this);
 	}
 
 	public int getIdEae() {

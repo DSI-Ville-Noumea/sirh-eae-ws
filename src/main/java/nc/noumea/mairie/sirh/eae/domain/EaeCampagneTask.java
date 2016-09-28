@@ -20,7 +20,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "EAE_CAMPAGNE_TASK")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
-@NamedQueries({ @NamedQuery(name = "EaeCampagneTask.getEaeCampagneTask", query = "select e from EaeCampagneTask e where e.idEaeCampagneTask = :idEaeCampagneTask") })
+@NamedQueries({
+		 @NamedQuery(name = "EaeCampagneTask.getEaeCampagneTask", query = "select e from EaeCampagneTask e where e.idEaeCampagneTask = :idEaeCampagneTask") ,
+		 @NamedQuery(name = "EaeCampagneTask.getEaeCampagneTaskByIdCampagne", query = "select e from EaeCampagneTask e where e.eaeCampagne.idCampagneEae = :idEaeCampagne order by e.dateCalculEae desc") 
+})
 public class EaeCampagneTask {
 
 	@Id

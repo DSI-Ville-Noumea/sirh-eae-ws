@@ -4,30 +4,35 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nc.noumea.mairie.sirh.domain.Agent;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
-import nc.noumea.mairie.sirh.tools.transformer.EaeEvaluateurToAgentFlatTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.SimpleAgentTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.ValueEnumTransformer;
-import flexjson.JSONSerializer;
+import nc.noumea.mairie.sirh.eae.dto.agent.AgentDto;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
 
 public class EaeListItemDto {
 
 	private Integer idEae;
-	private Agent agentEvalue;
-	private List<EaeEvaluateur> eaeEvaluateurs;
-	private Agent agentDelegataire;
-	private EaeEtatEnum etat;
+	private AgentDto agentEvalue;
+	private List<EaeEvaluateurDto> eaeEvaluateurs;
+	private AgentDto agentDelegataire;
+	private String etat;
 	private boolean cap;
 	private String avisShd;
 	private boolean docAttache;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateCreation;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateFinalisation;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateControle;
 	private boolean droitInitialiser;
 	private boolean droitAcceder;
@@ -41,18 +46,23 @@ public class EaeListItemDto {
 	private String directionService;
 	private String sectionService;
 	private String service;
-	private Agent agentShd;
+	
+	private AgentDto agentShd;
 	
 	public EaeListItemDto() {
-		
+		this.eaeEvaluateurs = new ArrayList<EaeEvaluateurDto>();
 	}
 	
 	public EaeListItemDto(Eae eaeItem) {
-
+		this();
 		this.setIdEae(eaeItem.getIdEae());
-		this.setAgentDelegataire(eaeItem.getAgentDelegataire());
-		this.setEaeEvaluateurs(new ArrayList<EaeEvaluateur>(eaeItem.getEaeEvaluateurs()));
-		this.setEtat(eaeItem.getEtat());
+		this.setAgentDelegataire(null == eaeItem.getAgentDelegataire() ? null : new AgentDto(eaeItem.getAgentDelegataire()));
+		if(null != eaeItem.getEaeEvaluateurs()) {
+			for(EaeEvaluateur eaeEval : eaeItem.getEaeEvaluateurs()) {
+				this.eaeEvaluateurs.add(new EaeEvaluateurDto(eaeEval));
+			}
+		}
+		this.setEtat(eaeItem.getEtat().name());
 		this.setCap(eaeItem.isCap());
 		this.setDocAttache(eaeItem.isDocAttache());
 		this.setDateCreation(eaeItem.getDateCreation());
@@ -64,11 +74,11 @@ public class EaeListItemDto {
 			this.directionService = fp.getDirectionService();
 			this.sectionService = fp.getSectionService();
 			this.service = fp.getService();
-			this.agentShd = fp.getAgentShd();
+			this.agentShd = null == fp.getAgentShd() ? null : new AgentDto(fp.getAgentShd());
 		}
 		
 		if (eaeItem.getEaeEvalue() != null) {
-			this.setAgentEvalue(eaeItem.getEaeEvalue().getAgent());
+			this.setAgentEvalue(null == eaeItem.getEaeEvalue().getAgent() ? null : new AgentDto(eaeItem.getEaeEvalue().getAgent()));
 			estDetache = eaeItem.getEaeEvalue().isEstDetache();
 		}
 		
@@ -77,7 +87,7 @@ public class EaeListItemDto {
 		
 		if (eaeItem.getEtat() == EaeEtatEnum.F || eaeItem.getEtat() == EaeEtatEnum.CO ) {
 			this.setDroitImprimerGed(true);
-			this.setIdDocumentGed(eaeItem.getLatestFinalisation().getIdGedDocument());
+			this.setIdDocumentGed(eaeItem.getLatestFinalisation().getNodeRefAlfresco());
 		}
 		
 		this.setDroitImprimerBirt(eaeItem.getEtat() == EaeEtatEnum.C || eaeItem.getEtat() == EaeEtatEnum.EC);
@@ -88,7 +98,7 @@ public class EaeListItemDto {
 		boolean isEvaluateurOrDelegataire = eae.isEvaluateurOrDelegataire(idAgent);
 		boolean isEvaluateur = eae.isEvaluateur(idAgent);
 		
-		switch (getEtat()) {
+		switch (EaeEtatEnum.valueOf(getEtat())) {
 			case ND:
 				setDroitInitialiser(isEvaluateurOrDelegataire);
 				setDroitAffecterDelegataire(isEvaluateur);
@@ -110,41 +120,6 @@ public class EaeListItemDto {
 		}
 	}
 
-	public static JSONSerializer getSerializerForEaeListItemDto() {
-
-		JSONSerializer serializer = new JSONSerializer()
-				.include("agentEvalue")
-				.include("etat")
-				.include("cap")
-				.include("docAttache")
-				.include("dateCreation")
-				.include("dateFinalisation")
-				.include("dateControle")
-				.include("agentDelegataire")
-				.include("avisShd")
-				.include("idEae")
-				.include("eaeEvaluateurs")
-				.include("droitInitialiser")
-				.include("droitAcceder")
-				.include("droitDemarrer")
-				.include("droitAffecterDelegataire")
-				.include("droitImprimerBirt")
-				.include("droitImprimerGed")
-				.include("idDocumentGed")
-				.include("estDetache")
-				.include("directionService")
-				.include("sectionService")
-				.include("service")
-				.include("agentShd")
-				.transform(new MSDateTransformer(), Date.class)
-				.transform(new NullableIntegerTransformer(), Integer.class)
-				.transform(new SimpleAgentTransformer(false), Agent.class)
-				.transform(new EaeEvaluateurToAgentFlatTransformer(), EaeEvaluateur.class)
-				.transform(new ValueEnumTransformer(), Enum.class).exclude("*");
-
-		return serializer;
-	}
-
 	public Integer getIdEae() {
 		return idEae;
 	}
@@ -153,35 +128,19 @@ public class EaeListItemDto {
 		this.idEae = idEae;
 	}
 
-	public Agent getAgentEvalue() {
-		return agentEvalue;
-	}
-
-	public void setAgentEvalue(Agent agentEvalue) {
-		this.agentEvalue = agentEvalue;
-	}
-	
-	public List<EaeEvaluateur> getEaeEvaluateurs() {
+	public List<EaeEvaluateurDto> getEaeEvaluateurs() {
 		return eaeEvaluateurs;
 	}
 
-	public void setEaeEvaluateurs(List<EaeEvaluateur> eaeEvaluateurs) {
+	public void setEaeEvaluateurs(List<EaeEvaluateurDto> eaeEvaluateurs) {
 		this.eaeEvaluateurs = eaeEvaluateurs;
 	}
 
-	public Agent getAgentDelegataire() {
-		return agentDelegataire;
-	}
-
-	public void setAgentDelegataire(Agent agentDelegataire) {
-		this.agentDelegataire = agentDelegataire;
-	}
-
-	public EaeEtatEnum getEtat() {
+	public String getEtat() {
 		return etat;
 	}
 
-	public void setEtat(EaeEtatEnum etat) {
+	public void setEtat(String etat) {
 		this.etat = etat;
 	}
 
@@ -321,11 +280,28 @@ public class EaeListItemDto {
 		this.service = service;
 	}
 
-	public Agent getAgentShd() {
+	public AgentDto getAgentEvalue() {
+		return agentEvalue;
+	}
+
+	public void setAgentEvalue(AgentDto agentEvalue) {
+		this.agentEvalue = agentEvalue;
+	}
+
+	public AgentDto getAgentDelegataire() {
+		return agentDelegataire;
+	}
+
+	public void setAgentDelegataire(AgentDto agentDelegataire) {
+		this.agentDelegataire = agentDelegataire;
+	}
+
+	public AgentDto getAgentShd() {
 		return agentShd;
 	}
 
-	public void setAgentShd(Agent agentShd) {
+	public void setAgentShd(AgentDto agentShd) {
 		this.agentShd = agentShd;
 	}
+	
 }

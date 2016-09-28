@@ -2,24 +2,23 @@ package nc.noumea.mairie.sirh.eae.web.controller.xml;
 
 import javax.jws.WebParam;
 
-import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
-import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
-import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
-import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
-import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
-import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDtoList;
-import nc.noumea.mairie.sirh.eae.service.IEaeService;
-import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.BirtDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDtoList;
+import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
 
 @Controller
 @RequestMapping("/xml/evaluation")
@@ -27,9 +26,6 @@ public class EvaluationXmlController {
 
 	@Autowired
 	private IEvaluationService evaluationService;
-	
-	@Autowired
-	private IEaeService eaeService;
 
 	@Autowired
 	private DtoSessionRemoverService dtoSessionRemoverService;
@@ -41,7 +37,7 @@ public class EvaluationXmlController {
 
 		// For Birt reporting purposes (in order to have the fields displayed)
 		if (dto.getEvaluateurs().size() == 0)
-			dto.getEvaluateurs().add(new EaeEvaluateur());
+			dto.getEvaluateurs().add(new BirtDto());
 
 		return new ModelAndView("xmlView", "object", dtoSessionRemoverService.removeSessionOf(dto));
 	}

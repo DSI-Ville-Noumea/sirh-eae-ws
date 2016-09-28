@@ -105,4 +105,11 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 		return null;
 	}
 
+	@Override
+	public boolean isUtilisateurSirh(Integer idAgent)
+			throws SirhWSConsumerException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

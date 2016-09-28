@@ -7,81 +7,84 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeListeDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
-import nc.noumea.mairie.sirh.eae.dto.util.ValueWithListDto;
-import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
-import nc.noumea.mairie.sirh.tools.transformer.ObjectToPropertyTransformer;
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
 
 @XmlRootElement
-public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSONSerialize {
+public class EaeEvolutionDto {
 
-	private int idEae;
-	private boolean mobiliteGeo;
-	private boolean mobiliteFonctionnelle;
-	private boolean changementMetier;
-	private ValueWithListDto delaiEnvisage;
-	private boolean mobiliteService;
-	private boolean mobiliteDirection;
-	private boolean mobiliteCollectivite;
-	private String nomCollectivite;
-	private boolean mobiliteAutre;
-	private boolean concours;
-	private String nomConcours;
-	private boolean vae;
-	private String nomVae;
-	private boolean tempsPartiel;
-	private ValueWithListDto pourcentageTempsPartiel;
-	private boolean retraite;
-	private Date dateRetraite;
-	private boolean autrePerspective;
-	private String libelleAutrePerspective;
-	private EaeCommentaire commentaireEvolution;
-	private EaeCommentaire commentaireEvaluateur;
-	private EaeCommentaire commentaireEvalue;
-	
-	private List<EaeEvolutionSouhait> souhaitsSuggestions;
-	private List<EaeDeveloppement> developpementConnaissances;
-	private List<EaeDeveloppement> developpementCompetences;
-	private List<EaeDeveloppement> developpementExamensConcours;
-	private List<EaeDeveloppement> developpementPersonnel;
-	private List<EaeDeveloppement> developpementComportement;
-	private List<EaeDeveloppement> developpementFormateur;
-	
+	private Integer								idEae;
+	private boolean							mobiliteGeo;
+	private boolean							mobiliteFonctionnelle;
+	private boolean							changementMetier;
+	private EaeListeDto						delaiEnvisage;
+	private boolean							mobiliteService;
+	private boolean							mobiliteDirection;
+	private boolean							mobiliteCollectivite;
+	private String							nomCollectivite;
+	private boolean							mobiliteAutre;
+	private boolean							concours;
+	private String							nomConcours;
+	private boolean							vae;
+	private String							nomVae;
+	private boolean							tempsPartiel;
+	private EaeListeDto						pourcentageTempsPartiel;
+	private boolean							retraite;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	private Date							dateRetraite;
+	private boolean							autrePerspective;
+	private String							libelleAutrePerspective;
+
+	private EaeCommentaireDto				commentaireEvolution;
+	private EaeCommentaireDto				commentaireEvaluateur;
+	private EaeCommentaireDto				commentaireEvalue;
+
+	private List<EaeEvolutionSouhaitDto>	souhaitsSuggestions;
+	private List<EaeDeveloppementDto>		developpementConnaissances;
+	private List<EaeDeveloppementDto>		developpementCompetences;
+	private List<EaeDeveloppementDto>		developpementExamensConcours;
+	private List<EaeDeveloppementDto>		developpementPersonnel;
+	private List<EaeDeveloppementDto>		developpementComportement;
+	private List<EaeDeveloppementDto>		developpementFormateur;
+
 	public EaeEvolutionDto() {
-		souhaitsSuggestions = new ArrayList<EaeEvolutionSouhait>();
-		developpementConnaissances = new ArrayList<EaeDeveloppement>();
-		developpementCompetences = new ArrayList<EaeDeveloppement>();
-		developpementExamensConcours = new ArrayList<EaeDeveloppement>();
-		developpementPersonnel = new ArrayList<EaeDeveloppement>();
-		developpementComportement = new ArrayList<EaeDeveloppement>();
-		developpementFormateur = new ArrayList<EaeDeveloppement>();
-		delaiEnvisage = new ValueWithListDto(null, EaeDelaiEnum.class);
+		souhaitsSuggestions = new ArrayList<EaeEvolutionSouhaitDto>();
+		developpementConnaissances = new ArrayList<EaeDeveloppementDto>();
+		developpementCompetences = new ArrayList<EaeDeveloppementDto>();
+		developpementExamensConcours = new ArrayList<EaeDeveloppementDto>();
+		developpementPersonnel = new ArrayList<EaeDeveloppementDto>();
+		developpementComportement = new ArrayList<EaeDeveloppementDto>();
+		developpementFormateur = new ArrayList<EaeDeveloppementDto>();
+		delaiEnvisage = new EaeListeDto(null, EaeDelaiEnum.class);
 	}
 
 	public EaeEvolutionDto(Eae eae, List<SpbhorDto> tempsPartiels) {
 		this();
 		idEae = eae.getIdEae();
-		
+
 		EaeEvolution evolution = eae.getEaeEvolution();
-		
+
 		if (evolution == null) {
-			pourcentageTempsPartiel = new ValueWithListDto(null, tempsPartiels);
+			pourcentageTempsPartiel = new EaeListeDto(null, tempsPartiels);
 			return;
 		}
-		
-		pourcentageTempsPartiel = new ValueWithListDto(evolution.getTempsPartielIdSpbhor(), tempsPartiels);
+
+		pourcentageTempsPartiel = new EaeListeDto(evolution.getTempsPartielIdSpbhor(), tempsPartiels);
 		mobiliteGeo = evolution.isMobiliteGeo();
 		mobiliteFonctionnelle = evolution.isMobiliteFonctionnelle();
 		changementMetier = evolution.isChangementMetier();
-		delaiEnvisage = new ValueWithListDto(evolution.getDelaiEnvisage(), EaeDelaiEnum.class);
+		delaiEnvisage = new EaeListeDto(evolution.getDelaiEnvisage(), EaeDelaiEnum.class);
 		mobiliteService = evolution.isMobiliteService();
 		mobiliteDirection = evolution.isMobiliteDirection();
 		mobiliteCollectivite = evolution.isMobiliteCollectivite();
@@ -96,112 +99,41 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		dateRetraite = evolution.getDateRetraite();
 		autrePerspective = evolution.isAutrePerspective();
 		libelleAutrePerspective = evolution.getLibelleAutrePerspective();
-		commentaireEvolution = evolution.getCommentaireEvolution();
-		commentaireEvaluateur = evolution.getCommentaireEvaluateur();
-		commentaireEvalue = evolution.getCommentaireEvalue();
-		
+		commentaireEvolution =  new EaeCommentaireDto(evolution.getCommentaireEvolution());
+		commentaireEvaluateur =  new EaeCommentaireDto(evolution.getCommentaireEvaluateur());
+		commentaireEvalue =  new EaeCommentaireDto(evolution.getCommentaireEvalue());
+
 		for (EaeEvolutionSouhait souhait : evolution.getEaeEvolutionSouhaits()) {
-			souhaitsSuggestions.add(souhait);
+			souhaitsSuggestions.add(new EaeEvolutionSouhaitDto(souhait));
 		}
-		
+
 		fillInDeveloppements(evolution.getEaeDeveloppements());
 	}
-	
+
 	private void fillInDeveloppements(Set<EaeDeveloppement> developpements) {
-		
+
 		for (EaeDeveloppement dev : developpements) {
-			switch(dev.getTypeDeveloppement()) {
+			switch (dev.getTypeDeveloppement()) {
 				case CONNAISSANCE:
-					developpementConnaissances.add(dev);
+					developpementConnaissances.add(new EaeDeveloppementDto(dev));
 					break;
 				case COMPETENCE:
-					developpementCompetences.add(dev);
+					developpementCompetences.add(new EaeDeveloppementDto(dev));
 					break;
 				case CONCOURS:
-					developpementExamensConcours.add(dev);
+					developpementExamensConcours.add(new EaeDeveloppementDto(dev));
 					break;
 				case PERSONNEL:
-					developpementPersonnel.add(dev);
+					developpementPersonnel.add(new EaeDeveloppementDto(dev));
 					break;
 				case COMPORTEMENT:
-					developpementComportement.add(dev);
+					developpementComportement.add(new EaeDeveloppementDto(dev));
 					break;
 				case FORMATEUR:
-					developpementFormateur.add(dev);
+					developpementFormateur.add(new EaeDeveloppementDto(dev));
 					break;
 			}
 		}
-	}
-
-	public static JSONSerializer getSerializerForEaeEvolutionDto() {
-		return new JSONSerializer()
-			.exclude("*.class")
-			.include("idEae")
-			.include("mobiliteGeo")
-			.include("mobiliteFonctionnelle")
-			.include("changementMetier")
-			.include("delaiEnvisage.*")
-			.include("mobiliteService")
-			.include("mobiliteDirection")
-			.include("mobiliteCollectivite")
-			.include("nomCollectivite")
-			.include("mobiliteAutre")
-			.include("concours")
-			.include("nomConcours")
-			.include("vae")
-			.include("nomVae")
-			.include("tempsPartiel")
-			.include("pourcentageTempsPartiel.*")
-			.include("retraite")
-			.include("dateRetraite")
-			.include("autrePerspective")
-			.include("libelleAutrePerspective")
-			.include("souhaitsSuggestions.idEaeEvolutionSouhait")
-			.include("souhaitsSuggestions.souhait")
-			.include("souhaitsSuggestions.suggestion")
-			.include("developpementConnaissances.idEaeDeveloppement")
-			.include("developpementConnaissances.libelle")
-			.include("developpementConnaissances.echeance")
-			.include("developpementConnaissances.priorisation")
-			.include("developpementCompetences.idEaeDeveloppement")
-			.include("developpementCompetences.libelle")
-			.include("developpementCompetences.echeance")
-			.include("developpementCompetences.priorisation")
-			.include("developpementExamensConcours.idEaeDeveloppement")
-			.include("developpementExamensConcours.libelle")
-			.include("developpementExamensConcours.echeance")
-			.include("developpementExamensConcours.priorisation")
-			.include("developpementPersonnel.idEaeDeveloppement")
-			.include("developpementPersonnel.libelle")
-			.include("developpementPersonnel.echeance")
-			.include("developpementPersonnel.priorisation")
-			.include("developpementComportement.idEaeDeveloppement")
-			.include("developpementComportement.libelle")
-			.include("developpementComportement.echeance")
-			.include("developpementComportement.priorisation")
-			.include("developpementFormateur.idEaeDeveloppement")
-			.include("developpementFormateur.libelle")
-			.include("developpementFormateur.echeance")
-			.include("developpementFormateur.priorisation")
-			.include("commentaireEvolution")
-			.include("commentaireEvaluateur")
-			.include("commentaireEvalue")
-			.exclude("*")
-			.transform(new MSDateTransformer(), Date.class)
-			.transform(new ObjectToPropertyTransformer("text", EaeCommentaire.class), EaeCommentaire.class);
-	}
-	
-	@Override
-	public String serializeInJSON() {
-		return getSerializerForEaeEvolutionDto().serialize(this);
-	}
-
-	@Override
-	public EaeEvolutionDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<EaeEvolutionDto>()
-				.use(EaeCommentaire.class, new ObjectToPropertyTransformer("text", EaeCommentaire.class))
-				.use(Date.class, new MSDateTransformer())
-				.deserializeInto(json, this);
 	}
 
 	public int getIdEae() {
@@ -210,15 +142,6 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 
 	public void setIdEae(int idEae) {
 		this.idEae = idEae;
-	}
-
-	public List<EaeEvolutionSouhait> getSouhaitsSuggestions() {
-		return souhaitsSuggestions;
-	}
-
-	public void setSouhaitsSuggestions(
-			List<EaeEvolutionSouhait> souhaitsSuggestions) {
-		this.souhaitsSuggestions = souhaitsSuggestions;
 	}
 
 	public boolean isMobiliteGeo() {
@@ -245,11 +168,11 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		this.changementMetier = changementMetier;
 	}
 
-	public ValueWithListDto getDelaiEnvisage() {
+	public EaeListeDto getDelaiEnvisage() {
 		return delaiEnvisage;
 	}
 
-	public void setDelaiEnvisage(ValueWithListDto delaiEnvisage) {
+	public void setDelaiEnvisage(EaeListeDto delaiEnvisage) {
 		this.delaiEnvisage = delaiEnvisage;
 	}
 
@@ -333,12 +256,11 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		this.tempsPartiel = tempsPartiel;
 	}
 
-	public ValueWithListDto getPourcentageTempsPartiel() {
+	public EaeListeDto getPourcentageTempsPartiel() {
 		return pourcentageTempsPartiel;
 	}
 
-	public void setPourcentageTempsPartiel(
-			ValueWithListDto tpsPartiel) {
+	public void setPourcentageTempsPartiel(EaeListeDto tpsPartiel) {
 		this.pourcentageTempsPartiel = tpsPartiel;
 	}
 
@@ -374,81 +296,98 @@ public class EaeEvolutionDto implements IJSONDeserialize<EaeEvolutionDto>, IJSON
 		this.libelleAutrePerspective = libelleAutrePerspective;
 	}
 
-	public List<EaeDeveloppement> getDeveloppementConnaissances() {
-		return developpementConnaissances;
-	}
-
-	public void setDeveloppementConnaissances(
-			List<EaeDeveloppement> developpementConnaissances) {
-		this.developpementConnaissances = developpementConnaissances;
-	}
-
-	public List<EaeDeveloppement> getDeveloppementCompetences() {
-		return developpementCompetences;
-	}
-
-	public void setDeveloppementCompetences(
-			List<EaeDeveloppement> developpementCompetences) {
-		this.developpementCompetences = developpementCompetences;
-	}
-
-	public List<EaeDeveloppement> getDeveloppementExamensConcours() {
-		return developpementExamensConcours;
-	}
-
-	public void setDeveloppementExamensConcours(
-			List<EaeDeveloppement> developpementExamensConcours) {
-		this.developpementExamensConcours = developpementExamensConcours;
-	}
-
-	public List<EaeDeveloppement> getDeveloppementPersonnel() {
-		return developpementPersonnel;
-	}
-
-	public void setDeveloppementPersonnel(
-			List<EaeDeveloppement> developpementPersonnel) {
-		this.developpementPersonnel = developpementPersonnel;
-	}
-
-	public List<EaeDeveloppement> getDeveloppementComportement() {
-		return developpementComportement;
-	}
-
-	public void setDeveloppementComportement(
-			List<EaeDeveloppement> developpementComportement) {
-		this.developpementComportement = developpementComportement;
-	}
-
-	public List<EaeDeveloppement> getDeveloppementFormateur() {
-		return developpementFormateur;
-	}
-
-	public void setDeveloppementFormateur(
-			List<EaeDeveloppement> developpementFormateur) {
-		this.developpementFormateur = developpementFormateur;
-	}
-
-	public EaeCommentaire getCommentaireEvaluateur() {
-		return commentaireEvaluateur;
-	}
-
-	public void setCommentaireEvaluateur(EaeCommentaire commentaireEvaluateur) {
-		this.commentaireEvaluateur = commentaireEvaluateur;
-	}
-
-	public EaeCommentaire getCommentaireEvalue() {
-		return commentaireEvalue;
-	}
-
-	public void setCommentaireEvalue(EaeCommentaire commentaireEvalue) {
-		this.commentaireEvalue = commentaireEvalue;
-	}
-
-	public EaeCommentaire getCommentaireEvolution() {
+	public EaeCommentaireDto getCommentaireEvolution() {
 		return commentaireEvolution;
 	}
 
-	public void setCommentaireEvolution(EaeCommentaire commentaireEvolution) {
+	public void setCommentaireEvolution(EaeCommentaireDto commentaireEvolution) {
 		this.commentaireEvolution = commentaireEvolution;
+	}
+
+	public EaeCommentaireDto getCommentaireEvaluateur() {
+		return commentaireEvaluateur;
+	}
+
+	public void setCommentaireEvaluateur(EaeCommentaireDto commentaireEvaluateur) {
+		this.commentaireEvaluateur = commentaireEvaluateur;
+	}
+
+	public EaeCommentaireDto getCommentaireEvalue() {
+		return commentaireEvalue;
+	}
+
+	public void setCommentaireEvalue(EaeCommentaireDto commentaireEvalue) {
+		this.commentaireEvalue = commentaireEvalue;
+	}
+
+	public List<EaeEvolutionSouhaitDto> getSouhaitsSuggestions() {
+		return souhaitsSuggestions;
+	}
+
+	public void setSouhaitsSuggestions(List<EaeEvolutionSouhaitDto> souhaitsSuggestions) {
+		this.souhaitsSuggestions = souhaitsSuggestions;
+	}
+
+	public List<EaeDeveloppementDto> getDeveloppementConnaissances() {
+		return developpementConnaissances;
+	}
+
+	public void setDeveloppementConnaissances(List<EaeDeveloppementDto> developpementConnaissances) {
+		this.developpementConnaissances = developpementConnaissances;
+	}
+
+	public List<EaeDeveloppementDto> getDeveloppementCompetences() {
+		return developpementCompetences;
+	}
+
+	public void setDeveloppementCompetences(List<EaeDeveloppementDto> developpementCompetences) {
+		this.developpementCompetences = developpementCompetences;
+	}
+
+	public List<EaeDeveloppementDto> getDeveloppementExamensConcours() {
+		return developpementExamensConcours;
+	}
+
+	public void setDeveloppementExamensConcours(List<EaeDeveloppementDto> developpementExamensConcours) {
+		this.developpementExamensConcours = developpementExamensConcours;
+	}
+
+	public List<EaeDeveloppementDto> getDeveloppementPersonnel() {
+		return developpementPersonnel;
+	}
+
+	public void setDeveloppementPersonnel(List<EaeDeveloppementDto> developpementPersonnel) {
+		this.developpementPersonnel = developpementPersonnel;
+	}
+
+	public List<EaeDeveloppementDto> getDeveloppementComportement() {
+		return developpementComportement;
+	}
+
+	public void setDeveloppementComportement(List<EaeDeveloppementDto> developpementComportement) {
+		this.developpementComportement = developpementComportement;
+	}
+
+	public List<EaeDeveloppementDto> getDeveloppementFormateur() {
+		return developpementFormateur;
+	}
+
+	public void setDeveloppementFormateur(List<EaeDeveloppementDto> developpementFormateur) {
+		this.developpementFormateur = developpementFormateur;
+	}
+
+	@Override
+	public String toString() {
+		return "EaeEvolutionDto [idEae=" + idEae + ", mobiliteGeo=" + mobiliteGeo + ", mobiliteFonctionnelle=" + mobiliteFonctionnelle
+				+ ", changementMetier=" + changementMetier + ", delaiEnvisage=" + delaiEnvisage + ", mobiliteService=" + mobiliteService
+				+ ", mobiliteDirection=" + mobiliteDirection + ", mobiliteCollectivite=" + mobiliteCollectivite + ", nomCollectivite="
+				+ nomCollectivite + ", mobiliteAutre=" + mobiliteAutre + ", concours=" + concours + ", nomConcours=" + nomConcours + ", vae=" + vae
+				+ ", nomVae=" + nomVae + ", tempsPartiel=" + tempsPartiel + ", pourcentageTempsPartiel=" + pourcentageTempsPartiel + ", retraite="
+				+ retraite + ", dateRetraite=" + dateRetraite + ", autrePerspective=" + autrePerspective + ", libelleAutrePerspective="
+				+ libelleAutrePerspective + ", commentaireEvolution=" + commentaireEvolution + ", commentaireEvaluateur=" + commentaireEvaluateur
+				+ ", commentaireEvalue=" + commentaireEvalue + ", souhaitsSuggestions=" + souhaitsSuggestions + ", developpementConnaissances="
+				+ developpementConnaissances + ", developpementCompetences=" + developpementCompetences + ", developpementExamensConcours="
+				+ developpementExamensConcours + ", developpementPersonnel=" + developpementPersonnel + ", developpementComportement="
+				+ developpementComportement + ", developpementFormateur=" + developpementFormateur + "]";
 	}
 }

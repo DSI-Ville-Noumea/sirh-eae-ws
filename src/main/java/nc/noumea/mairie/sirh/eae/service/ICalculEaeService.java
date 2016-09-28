@@ -9,5 +9,7 @@ public interface ICalculEaeService {
 	void creerEaeSansAffecte(Integer idCampagneEae, Integer idAgent) throws SirhWSConsumerException, ParseException;
 
 	void creerEaeAffecte(Integer idCampagneEae, Integer idAgent) throws SirhWSConsumerException, ParseException;
+
+	void updateEae(Integer idEae) throws SirhWSConsumerException, ParseException;
 	
 }

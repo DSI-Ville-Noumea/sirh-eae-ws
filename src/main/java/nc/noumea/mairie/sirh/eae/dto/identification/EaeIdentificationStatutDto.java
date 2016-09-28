@@ -2,27 +2,34 @@ package nc.noumea.mairie.sirh.eae.dto.identification;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
 
 public class EaeIdentificationStatutDto {
-	
-	private EaeAgentStatutEnum statut;
-	private String cadre;
-	private String grade;
-	private String echelon;
-	private String categorie;
-	private String classification;
-	private Integer ancienneteEchelonJours;
-	private String nouvGrade;
-	private String nouvEchelon;
-	private Date dateEffet;
-	private String statutPrecision;
-	
+
+	private Integer	ancienneteEchelonJours;
+	private String	cadre;
+	private String	categorie;
+	private String	classification;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	private Date	dateEffet;
+	private String	echelon;
+	private String	grade;
+	private String	nouvGrade;
+	private String	nouvEchelon;
+	private String	statutPrecision;
+
+	private String	statut;
+
 	public EaeIdentificationStatutDto() {
-		
+
 	}
-	
+
 	public EaeIdentificationStatutDto(EaeEvalue eaeEvalue) {
 		this.cadre = eaeEvalue.getCadre();
 		this.grade = eaeEvalue.getGrade();
@@ -34,14 +41,15 @@ public class EaeIdentificationStatutDto {
 		this.nouvEchelon = eaeEvalue.getNouvEchelon();
 		this.dateEffet = eaeEvalue.getDateEffetAvancement();
 		this.statutPrecision = eaeEvalue.getStatutPrecision();
-		this.statut = eaeEvalue.getStatut();
-	}	
-	
-	public EaeAgentStatutEnum getStatut() {
+		if (null != eaeEvalue.getStatut())
+			this.statut = eaeEvalue.getStatut().name();
+	}
+
+	public String getStatut() {
 		return statut;
 	}
 
-	public void setStatut(EaeAgentStatutEnum statut) {
+	public void setStatut(String statut) {
 		this.statut = statut;
 	}
 
@@ -124,4 +132,5 @@ public class EaeIdentificationStatutDto {
 	public void setDateEffet(Date dateEffet) {
 		this.dateEffet = dateEffet;
 	}
+
 }

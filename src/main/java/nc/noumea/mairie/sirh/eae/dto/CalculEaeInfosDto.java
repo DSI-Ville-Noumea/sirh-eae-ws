@@ -1,7 +1,11 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import nc.noumea.mairie.sirh.eae.dto.agent.CarriereDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DiplomeDto;
@@ -9,11 +13,22 @@ import nc.noumea.mairie.sirh.eae.dto.agent.FormationDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.ParcoursProDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.PositionAdmAgentDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.FichePosteDto;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
 
-public class CalculEaeInfosDto {
+public class CalculEaeInfosDto implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3823300192029066929L;
+
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateDebut;
-	
+
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date dateFin;
 
 	private FichePosteDto fichePostePrincipale;

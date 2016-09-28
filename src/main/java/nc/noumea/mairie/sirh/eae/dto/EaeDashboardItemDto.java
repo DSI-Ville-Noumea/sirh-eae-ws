@@ -20,6 +20,12 @@ public class EaeDashboardItemDto {
 	private int maxi;
 	private int moy;
 	private int changClasse;
+	
+	private String direction;
+	private String section;
+	private int nbEaeControle;
+	private int nbEaeCAP;
+	private int totalEAE;
 
 	public EaeDashboardItemDto() {
 
@@ -190,4 +196,45 @@ public class EaeDashboardItemDto {
 	public void setChangClasse(int changClasse) {
 		this.changClasse = changClasse;
 	}
+
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
+	}
+
+	public int getNbEaeControle() {
+		return nbEaeControle;
+	}
+
+	public void setNbEaeControle(int nbEaeControle) {
+		this.nbEaeControle = nbEaeControle;
+	}
+
+	public int getNbEaeCAP() {
+		return nbEaeCAP;
+	}
+
+	public void setNbEaeCAP(int nbEaeCAP) {
+		this.nbEaeCAP = nbEaeCAP;
+	}
+
+	public int getTotalEAE() {
+		return totalEAE;
+	}
+
+	public void setTotalEAE(int totalEAE) {
+		this.totalEAE = totalEAE;
+	}
+	
 }

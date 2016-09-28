@@ -17,13 +17,16 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import nc.noumea.mairie.alfresco.cmis.IAlfrescoCMISService;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
@@ -34,16 +37,20 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.ValeurListeDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
+import nc.noumea.mairie.sirh.eae.web.controller.NoContentException;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
@@ -100,7 +107,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 
 		// When
-		List<EaeListItemDto> result = service.listEaesByAgentId(9, null);
+		List<EaeListItemDto> result = service.listEaesByAgentId(9);
 
 		// Then
 		assertNotNull(result);
@@ -141,7 +148,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 
 		// When
-		List<EaeListItemDto> result = service.listEaesByAgentId(9, null);
+		List<EaeListItemDto> result = service.listEaesByAgentId(9);
 
 		// Then
 		assertNotNull(result);
@@ -189,7 +196,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 
 		// When
-		List<EaeListItemDto> result = service.listEaesByAgentId(2, "EC");
+		List<EaeListItemDto> result = service.listEaesByAgentId(2);
 
 		// Then
 		assertNotNull(result);
@@ -236,7 +243,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 
 		// When
-		List<EaeListItemDto> result = service.listEaesByAgentId(2, null);
+		List<EaeListItemDto> result = service.listEaesByAgentId(2);
 
 		// Then
 		assertNotNull(result);
@@ -281,7 +288,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 
 		// When
-		List<EaeListItemDto> result = service.listEaesByAgentId(2, null);
+		List<EaeListItemDto> result = service.listEaesByAgentId(2);
 
 		// Then
 		assertNotNull(result);
@@ -525,7 +532,7 @@ public class EaeServiceTest {
 
 		try {
 			// When
-			service.startEae(987);
+			service.startEae(987, false);
 		} catch (EaeServiceException ex) {
 			// Then
 			assertEquals("Impossible de démarrer l'EAE id '987': le statut de cet Eae est 'Non débuté'.", ex.getMessage());
@@ -547,10 +554,31 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.startEae(987);
+		service.startEae(987, false);
 
 		// Then
 		assertEquals(EaeEtatEnum.EC, eaeToStart.getEtat());
+	}
+	
+	@Test
+	public void testStartEae_eaeCO_isSirh() throws EaeServiceException {
+
+		// Given
+		Eae eaeToStart = new Eae();
+		eaeToStart.setIdEae(987);
+		eaeToStart.setEtat(EaeEtatEnum.CO);
+
+		EntityManager entManagerMock = mock(EntityManager.class);
+		when(entManagerMock.find(Eae.class, 987)).thenReturn(eaeToStart);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+
+		// When
+		Eae result = service.startEae(987, true);
+
+		// Then
+		assertEquals(EaeEtatEnum.CO, result.getEtat());
 	}
 
 	@Test
@@ -568,7 +596,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
 		// When
-		service.startEae(987);
+		service.startEae(987, false);
 
 		// Then
 		assertEquals(EaeEtatEnum.EC, eaeToStart.getEtat());
@@ -1171,8 +1199,8 @@ public class EaeServiceTest {
 
 		// Then
 		assertNotNull(dto);
-		assertEquals(shd1, dto.getAgentsShd().get(0));
-		assertEquals(shd2, dto.getAgentsShd().get(1));
+		assertEquals(shd1.getIdAgent(), dto.getAgentsShd().get(0).getIdAgent());
+		assertEquals(shd2.getIdAgent(), dto.getAgentsShd().get(1).getIdAgent());
 		assertEquals(7896, dto.getIdEae());
 		assertEquals(eval.getNoteAnnee(), dto.getNoteAnnee());
 
@@ -1203,13 +1231,21 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
 
+		MessageSource messageSource = mock(MessageSource.class);
+		IAlfrescoCMISService alfrescoCMISService = mock(IAlfrescoCMISService.class);
+		when(alfrescoCMISService.uploadDocument(Mockito.anyInt(), Mockito.any(EaeFinalizationDto.class), 
+				Mockito.any(EaeFinalisation.class), Mockito.any(Eae.class), Mockito.any(ReturnMessageDto.class)))
+			.thenReturn(new ReturnMessageDto());
+
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "agentMatriculeConverterService", converterMock);
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "messageSource", messageSource);
+		ReflectionTestUtils.setField(service, "alfrescoCMISService", alfrescoCMISService);
 
 		// When
-		ReturnMessageDto result = service.finalizEae(987, idAgent, dto);
+		ReturnMessageDto result = service.finalizeEae(987, idAgent, dto);
 
 		// Then
 		assertEquals(result.getErrors().size(), 0);
@@ -1223,8 +1259,6 @@ public class EaeServiceTest {
 		EaeEvaluation evaluation = eae.getEaeEvaluation();
 		assertEquals(helperMock.getCurrentDate(), finalisation.getDateFinalisation());
 		assertEquals(900899, finalisation.getIdAgent());
-		assertEquals("çççdikjnvekusvb", finalisation.getIdGedDocument());
-		assertEquals("10.1", finalisation.getVersionGedDocument());
 		assertEquals("le commentaire", finalisation.getCommentaire());
 		assertEquals(dto.getNoteAnnee(), evaluation.getNoteAnnee());
 		assertEquals(eae, finalisation.getEae());
@@ -1255,13 +1289,21 @@ public class EaeServiceTest {
 		EntityManager entManagerMock = mock(EntityManager.class);
 		when(entManagerMock.find(Eae.class, 987)).thenReturn(eae);
 
+		MessageSource messageSource = mock(MessageSource.class);
+		IAlfrescoCMISService alfrescoCMISService = mock(IAlfrescoCMISService.class);
+		when(alfrescoCMISService.uploadDocument(Mockito.anyInt(), Mockito.any(EaeFinalizationDto.class), 
+				Mockito.any(EaeFinalisation.class), Mockito.any(Eae.class), Mockito.any(ReturnMessageDto.class)))
+			.thenReturn(new ReturnMessageDto());
+		
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "agentMatriculeConverterService", converterMock);
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
+		ReflectionTestUtils.setField(service, "messageSource", messageSource);
+		ReflectionTestUtils.setField(service, "alfrescoCMISService", alfrescoCMISService);
 
 		// When
-		ReturnMessageDto result = service.finalizEae(987, idAgent, dto);
+		ReturnMessageDto result = service.finalizeEae(987, idAgent, dto);
 
 		// Then
 		assertEquals(result.getErrors().size(), 0);
@@ -1273,8 +1315,6 @@ public class EaeServiceTest {
 		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		assertEquals(helperMock.getCurrentDate(), finalisation.getDateFinalisation());
 		assertEquals(900899, finalisation.getIdAgent());
-		assertEquals("çççdikjnvekusvb", finalisation.getIdGedDocument());
-		assertEquals("10.1", finalisation.getVersionGedDocument());
 		assertEquals("le commentaire", finalisation.getCommentaire());
 		assertEquals(dto.getNoteAnnee(), eaeEvaluation.getNoteAnnee());
 		assertEquals(eae, finalisation.getEae());
@@ -1305,7 +1345,7 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "messageSource", mSource);
 		ReflectionTestUtils.setField(service, "eaeEntityManager", entManagerMock);
 
-		ReturnMessageDto result = service.finalizEae(987, idAgent, dto);
+		ReturnMessageDto result = service.finalizeEae(987, idAgent, dto);
 
 		// Then
 		assertEquals(result.getErrors().size(), 1);
@@ -1420,6 +1460,129 @@ public class EaeServiceTest {
 		// Then
 		assertEquals(eae1.getEtat(), result.getEtat());
 	}
+	
+	@Test 
+	public void findEaesByIdAgentOnly_noResult(){
+		
+		Integer agentId = 9005138;
+
+		IEaeRepository eaeRepository = mock(IEaeRepository.class);
+		when(eaeRepository.findEaeEvalueWithEaesByIdAgentOnly(agentId)).thenReturn(null);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		List<EaeDto> result = service.findEaesByIdAgentOnly(agentId);
+		
+		assertEquals(0, result.size());
+	}
+	
+	@Test 
+	public void findEaesByIdAgentOnly_1Result(){
+		
+		Integer agentId = 9005138;
+		
+		EaeEvaluateur evaluateur = new EaeEvaluateur();
+		
+		Eae eae = new Eae();
+		eae.setEtat(EaeEtatEnum.C);
+		eae.getEaeEvaluateurs().add(evaluateur);
+		
+		EaeEvalue evalue = new EaeEvalue();
+			evalue.setEae(eae);
+			
+		List<EaeEvalue> listEvalue = new ArrayList<EaeEvalue>();
+		listEvalue.add(evalue);
+
+		IEaeRepository eaeRepository = mock(IEaeRepository.class);
+		when(eaeRepository.findEaeEvalueWithEaesByIdAgentOnly(agentId)).thenReturn(listEvalue);
+		
+		IAgentService agentService = mock(IAgentService.class);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		ReflectionTestUtils.setField(service, "agentService", agentService);
+		
+		List<EaeDto> result = service.findEaesByIdAgentOnly(agentId);
+		
+		assertEquals(1, result.size());
+	}
+	
+	@Test 
+	public void findEaeDto_noResult(){
+		
+		Integer idEae = 1;
+
+		IEaeRepository eaeRepository = mock(IEaeRepository.class);
+		when(eaeRepository.findEae(idEae)).thenReturn(null);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		EaeDto result = service.findEaeDto(idEae);
+		
+		assertNull(result);
+	}
+	
+	@Test 
+	public void findEaeDto_1Result(){
+		
+		Integer idEae = 1;
+		
+		EaeEvaluateur evaluateur = new EaeEvaluateur();
+		
+		Eae eae = new Eae();
+			eae.setIdEae(idEae);
+			eae.setEtat(EaeEtatEnum.C);
+			eae.getEaeEvaluateurs().add(evaluateur);
+
+		IEaeRepository eaeRepository = mock(IEaeRepository.class);
+		when(eaeRepository.findEae(idEae)).thenReturn(eae);
+		
+		IAgentService agentService = mock(IAgentService.class);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		ReflectionTestUtils.setField(service, "agentService", agentService);
+		
+		EaeDto result = service.findEaeDto(idEae);
+		
+		assertNotNull(result);
+	}
+	
+	@Test 
+	public void getListeTypeDeveloppement_noResult() {
+		
+		IEaeRepository eaeRepository = mock(IEaeRepository.class);
+		when(eaeRepository.getListeTypeDeveloppement()).thenReturn(null);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		List<ValeurListeDto> result = service.getListeTypeDeveloppement();
+		
+		assertEquals(0, result.size());
+	}
+	
+	@Test 
+	public void getListeTypeDeveloppement_1Result() {
+		
+		EaeTypeDeveloppement dev = new EaeTypeDeveloppement();
+		dev.setIdEaeTypeDeveloppement(1);
+		
+		List<EaeTypeDeveloppement> listTypeDvlpt = new ArrayList<EaeTypeDeveloppement>();
+		listTypeDvlpt.add(dev);
+		
+		IEaeRepository eaeRepository = mock(IEaeRepository.class);
+		when(eaeRepository.getListeTypeDeveloppement()).thenReturn(listTypeDvlpt);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		List<ValeurListeDto> result = service.getListeTypeDeveloppement();
+		
+		assertEquals(1, result.size());
+	}
 
 	@Test
 	public void countListEaesByAgentId() throws SirhWSConsumerException {
@@ -1461,5 +1624,246 @@ public class EaeServiceTest {
 		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
 
 		assertEquals(0, service.countListEaesByAgentId(idAgent).intValue());
+	}
+	
+	@Test(expected = NoContentException.class)
+	public void getEaesDashboardForSIRH_NoContentException() throws SirhWSConsumerException {
+		
+		Integer anneeCampagne = 2015;
+		
+		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
+		Mockito.when(eaeRepository.findEaeCampagneByAnnee(anneeCampagne)).thenReturn(null);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		service.getEaesDashboardForSIRH(anneeCampagne);
+	}
+	
+	@Test
+	public void getEaesDashboardForSIRH_noResult() throws SirhWSConsumerException {
+		
+		Integer anneeCampagne = 2015;
+		
+		EaeCampagne eaeCampagne = new EaeCampagne();
+		eaeCampagne.setIdCampagneEae(1);
+		
+		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
+		Mockito.when(eaeRepository.findEaeCampagneByAnnee(anneeCampagne)).thenReturn(eaeCampagne);
+		
+
+		Map<String, List<String>> mapDirectionSection = new HashMap<String, List<String>>();
+		
+		
+		Mockito.when(eaeRepository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae())).thenReturn(mapDirectionSection);
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		List<EaeDashboardItemDto> result = service.getEaesDashboardForSIRH(anneeCampagne);
+		
+		assertEquals(0, result.size());
+	}
+	
+	@Test
+	public void getEaesDashboardForSIRH_3Results() throws SirhWSConsumerException {
+		
+		Integer anneeCampagne = 2015;
+		
+		EaeCampagne eaeCampagne = new EaeCampagne();
+		eaeCampagne.setIdCampagneEae(1);
+		
+		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
+		Mockito.when(eaeRepository.findEaeCampagneByAnnee(anneeCampagne)).thenReturn(eaeCampagne);
+		
+		List<String> listSectionDsi = new ArrayList<>();
+		listSectionDsi.add("SED");
+		listSectionDsi.add("SIE");
+
+		List<String> listSectionDrh = new ArrayList<>();
+		listSectionDrh.add("formation");
+		listSectionDrh.add("recrutement");
+		
+		Map<String, List<String>> mapDirectionSection = new HashMap<String, List<String>>();
+		mapDirectionSection.put("direction DSI", listSectionDsi);
+		mapDirectionSection.put("direction DRH", listSectionDrh);
+		
+		Mockito.when(eaeRepository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae())).thenReturn(mapDirectionSection);
+		
+		///////////////// SED ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.NA.name(), false)).thenReturn(1);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.ND.name(), false)).thenReturn(2);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.C.name(), false)).thenReturn(3);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.EC.name(), false)).thenReturn(4);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.F.name(), false)).thenReturn(5);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.CO.name(), false)).thenReturn(6);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", null, true)).thenReturn(7);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, null, false)).thenReturn(8);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, "MINI", false)).thenReturn(9);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, "MOY", false)).thenReturn(10);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, "MAXI", false)).thenReturn(11);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, null, true)).thenReturn(12);
+		
+		///////////////// SIE ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.NA.name(), false)).thenReturn(13);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.ND.name(), false)).thenReturn(14);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.C.name(), false)).thenReturn(15);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.EC.name(), false)).thenReturn(16);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.F.name(), false)).thenReturn(17);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.CO.name(), false)).thenReturn(18);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", null, true)).thenReturn(19);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, null, false)).thenReturn(20);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, "MINI", false)).thenReturn(21);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, "MOY", false)).thenReturn(22);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, "MAXI", false)).thenReturn(23);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, null, true)).thenReturn(24);
+		
+		///////////////// formation ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.NA.name(), false)).thenReturn(25);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.ND.name(), false)).thenReturn(26);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.C.name(), false)).thenReturn(27);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.EC.name(), false)).thenReturn(28);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.F.name(), false)).thenReturn(29);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.CO.name(), false)).thenReturn(30);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", null, true)).thenReturn(31);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, null, false)).thenReturn(32);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, "MINI", false)).thenReturn(33);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, "MOY", false)).thenReturn(34);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, "MAXI", false)).thenReturn(35);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, null, true)).thenReturn(36);
+		
+		///////////////// recrutement ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.NA.name(), false)).thenReturn(37);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.ND.name(), false)).thenReturn(38);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.C.name(), false)).thenReturn(39);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.EC.name(), false)).thenReturn(40);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.F.name(), false)).thenReturn(41);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.CO.name(), false)).thenReturn(42);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", null, true)).thenReturn(43);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, null, false)).thenReturn(44);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, "MINI", false)).thenReturn(45);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, "MOY", false)).thenReturn(46);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, "MAXI", false)).thenReturn(47);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, null, true)).thenReturn(48);
+		
+		
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+		
+		List<EaeDashboardItemDto> result = service.getEaesDashboardForSIRH(anneeCampagne);
+		
+		assertEquals(4, result.size());
+		
+		// formation
+		assertEquals("direction DRH", result.get(0).getDirection());
+		assertEquals("formation", result.get(0).getSection());
+		assertEquals(25, result.get(0).getNonAffecte());
+		assertEquals(26, result.get(0).getNonDebute());
+		assertEquals(27, result.get(0).getCree());
+		assertEquals(28, result.get(0).getEnCours());
+		assertEquals(29, result.get(0).getFinalise());
+		assertEquals(30, result.get(0).getNbEaeControle());
+		assertEquals(31, result.get(0).getNbEaeCAP());
+		assertEquals(32, result.get(0).getNonDefini());
+		assertEquals(33, result.get(0).getMini());
+		assertEquals(34, result.get(0).getMoy());
+		assertEquals(35, result.get(0).getMaxi());
+		assertEquals(36, result.get(0).getChangClasse());
+		
+		// recrutement
+		assertEquals("direction DRH", result.get(1).getDirection());
+		assertEquals("recrutement", result.get(1).getSection());
+		assertEquals(37, result.get(1).getNonAffecte());
+		assertEquals(38, result.get(1).getNonDebute());
+		assertEquals(39, result.get(1).getCree());
+		assertEquals(40, result.get(1).getEnCours());
+		assertEquals(41, result.get(1).getFinalise());
+		assertEquals(42, result.get(1).getNbEaeControle());
+		assertEquals(43, result.get(1).getNbEaeCAP());
+		assertEquals(44, result.get(1).getNonDefini());
+		assertEquals(45, result.get(1).getMini());
+		assertEquals(46, result.get(1).getMoy());
+		assertEquals(47, result.get(1).getMaxi());
+		assertEquals(48, result.get(1).getChangClasse());
+		
+		// SED
+		assertEquals("direction DSI", result.get(2).getDirection());
+		assertEquals("SED", result.get(2).getSection());
+		assertEquals(1, result.get(2).getNonAffecte());
+		assertEquals(2, result.get(2).getNonDebute());
+		assertEquals(3, result.get(2).getCree());
+		assertEquals(4, result.get(2).getEnCours());
+		assertEquals(5, result.get(2).getFinalise());
+		assertEquals(6, result.get(2).getNbEaeControle());
+		assertEquals(7, result.get(2).getNbEaeCAP());
+		assertEquals(8, result.get(2).getNonDefini());
+		assertEquals(9, result.get(2).getMini());
+		assertEquals(10, result.get(2).getMoy());
+		assertEquals(11, result.get(2).getMaxi());
+		assertEquals(12, result.get(2).getChangClasse());
+		
+		// SIE
+		assertEquals("direction DSI", result.get(3).getDirection());
+		assertEquals("SIE", result.get(3).getSection());
+		assertEquals(13, result.get(3).getNonAffecte());
+		assertEquals(14, result.get(3).getNonDebute());
+		assertEquals(15, result.get(3).getCree());
+		assertEquals(16, result.get(3).getEnCours());
+		assertEquals(17, result.get(3).getFinalise());
+		assertEquals(18, result.get(3).getNbEaeControle());
+		assertEquals(19, result.get(3).getNbEaeCAP());
+		assertEquals(20, result.get(3).getNonDefini());
+		assertEquals(21, result.get(3).getMini());
+		assertEquals(22, result.get(3).getMoy());
+		assertEquals(23, result.get(3).getMaxi());
+		assertEquals(24, result.get(3).getChangClasse());
 	}
 }

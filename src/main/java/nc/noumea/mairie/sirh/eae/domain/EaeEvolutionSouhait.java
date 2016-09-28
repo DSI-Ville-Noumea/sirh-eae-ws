@@ -10,6 +10,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionSouhaitDto;
+
 @Entity
 @Table(name = "EAE_EVOL_SOUHAIT")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
@@ -30,6 +32,16 @@ public class EaeEvolutionSouhait {
 	@JoinColumn(name = "ID_EAE_EVOLUTION")
 	private EaeEvolution eaeEvolution;
 
+	public EaeEvolutionSouhait() {
+		
+	}
+	
+	public EaeEvolutionSouhait(EaeEvolutionSouhaitDto dto) {
+		this.idEaeEvolutionSouhait = dto.getIdEaeEvolutionSouhait();
+		this.souhait = dto.getSouhait();
+		this.suggestion = dto.getSuggestion();
+	}
+	
 	public Integer getIdEaeEvolutionSouhait() {
 		return idEaeEvolutionSouhait;
 	}

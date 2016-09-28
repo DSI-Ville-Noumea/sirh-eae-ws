@@ -1,14 +1,14 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
-import flexjson.JSONDeserializer;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
 import flexjson.JSONSerializer;
 
 @XmlRootElement
-public class EaeAppreciationsDto implements IJSONSerialize, IJSONDeserialize<EaeAppreciationsDto> {
+public class EaeAppreciationsDto {
 
 	private int idEae;
 	private boolean estEncadrant;
@@ -65,16 +65,6 @@ public class EaeAppreciationsDto implements IJSONSerialize, IJSONDeserialize<Eae
 		return new JSONSerializer()
 			.exclude("*.class")
 			.include("*");
-	}
-	
-	@Override
-	public String serializeInJSON() {
-		return getSerializerForEaeAppreciationsDto().serialize(this);
-	}
-	
-	@Override
-	public EaeAppreciationsDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<EaeAppreciationsDto>().deserializeInto(json, this);
 	}
 	
 	public boolean isEstEncadrant() {

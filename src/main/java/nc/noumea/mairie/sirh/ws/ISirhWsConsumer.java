@@ -41,4 +41,6 @@ public interface ISirhWsConsumer {
 	Agent getAgent(Integer idAgent) throws SirhWSConsumerException;
 
 	DateAvctDto getCalculDateAvct(Integer idAgent) throws SirhWSConsumerException;
+
+	boolean isUtilisateurSirh(Integer idAgent) throws SirhWSConsumerException;
 }

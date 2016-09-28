@@ -2,17 +2,27 @@ package nc.noumea.mairie.sirh.eae.dto.identification;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
 
 public class EaeIdentificationSituationDto {
-
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	private Date dateEntreeAdministration;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	private Date dateEntreeFonction;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	private Date dateEntreeFonctionnaire;
 	private String directionService;
 	private String fonction;
 	private String emploi;
-	private Date dateEntreeAdministration;
-	private Date dateEntreeFonction;
-	private Date dateEntreeFonctionnaire;
 
 	public EaeIdentificationSituationDto() {
 		

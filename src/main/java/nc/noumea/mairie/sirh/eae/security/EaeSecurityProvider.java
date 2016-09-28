@@ -6,6 +6,9 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
+import nc.noumea.mairie.sirh.eae.web.controller.ForbiddenException;
+import nc.noumea.mairie.sirh.eae.web.controller.NotFoundException;
+import nc.noumea.mairie.sirh.eae.web.controller.UnavailableException;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
@@ -13,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,35 +79,31 @@ public class EaeSecurityProvider implements IEaeSecurityProvider {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> checkEaeAndReadRight(int idEae, int idAgent) {
+	public void checkEaeAndReadRight(int idEae, int idAgent) {
 		
 		Eae eae = eaeService.findEae(idEae);
 		
 		if (eae == null)
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			throw new NotFoundException();
 		
 		try {
 			if (!isAgentAuthorizedToViewEae(idAgent, eae))
-				return new ResponseEntity<String>(messageSource.getMessage("EAE_CANNOT_READ", new Object[] { idAgent }, null), HttpStatus.FORBIDDEN);
+				throw new ForbiddenException(messageSource.getMessage("EAE_CANNOT_READ", new Object[] { idAgent }, null));
 		} catch (SirhWSConsumerException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+			throw new UnavailableException(e.getMessage());
 		}
-		
-		return null;
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public ResponseEntity<String> checkEaeAndWriteRight(int idEae, int idEvaluateur) {
+	public void checkEaeAndWriteRight(int idEae, int idEvaluateur) {
 		
 		Eae eae = eaeService.findEae(idEae);
 		
 		if (eae == null)
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			throw new NotFoundException();
 		
 		if (!isAgentAuthorizedToEditEae(idEvaluateur, eae))
-			return new ResponseEntity<String>(messageSource.getMessage("EAE_CANNOT_WRITE", new Object[] { idEvaluateur }, null), HttpStatus.FORBIDDEN);
-		
-		return null;
+			throw new ForbiddenException(messageSource.getMessage("EAE_CANNOT_WRITE", new Object[] { idEvaluateur }, null));
 	}
 }

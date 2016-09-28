@@ -1,40 +1,40 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
-import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
-import nc.noumea.mairie.sirh.tools.transformer.NullableIntegerTransformer;
+import java.util.Date;
 
-public class EaeFinalizationDto implements IJSONDeserialize<EaeFinalizationDto> {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
+import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
+
+public class EaeFinalizationDto {
 
 	private String	idDocument;
 	private String	versionDocument;
 	private String	commentaire;
 	private Float	noteAnnee;
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
+	private Date	dateFinalisation;
 	private String	annee;
+	
+	byte[] bFile;
+	private String typeFile;
 
 	public EaeFinalizationDto() {
-
 	}
 
 	public EaeFinalizationDto(EaeFinalisation finalisation) {
-		this.idDocument = finalisation.getIdGedDocument();
-		this.versionDocument = finalisation.getVersionGedDocument();
+		this.idDocument = finalisation.getNodeRefAlfresco();
 		this.commentaire = finalisation.getCommentaire();
-		this.annee = "" + finalisation.getEae().getEaeCampagne().getAnnee();
-	}
+		this.versionDocument = "";
+		this.dateFinalisation = finalisation.getDateFinalisation();
 
-	public static JSONSerializer getSerializerForEaeFinalizationDto() {
-
-		JSONSerializer serializer = new JSONSerializer().include("idDocument").include("versionDocument").include("commentaire").include("noteAnnee")
-				.include("annee").transform(new NullableIntegerTransformer(), Integer.class).exclude("*");
-
-		return serializer;
-	}
-
-	@Override
-	public EaeFinalizationDto deserializeFromJSON(String json) {
-		return new JSONDeserializer<EaeFinalizationDto>().deserializeInto(json, this);
+		if (null != finalisation.getEae() && null != finalisation.getEae().getEaeCampagne()) {
+			this.annee = "" + finalisation.getEae().getEaeCampagne().getAnnee();
+		}
 	}
 
 	public String getIdDocument() {
@@ -69,6 +69,14 @@ public class EaeFinalizationDto implements IJSONDeserialize<EaeFinalizationDto> 
 		this.noteAnnee = noteAnnee;
 	}
 
+	public Date getDateFinalisation() {
+		return dateFinalisation;
+	}
+
+	public void setDateFinalisation(Date dateFinalisation) {
+		this.dateFinalisation = dateFinalisation;
+	}
+
 	public String getAnnee() {
 		return annee;
 	}
@@ -76,4 +84,27 @@ public class EaeFinalizationDto implements IJSONDeserialize<EaeFinalizationDto> 
 	public void setAnnee(String annee) {
 		this.annee = annee;
 	}
+	
+	public byte[] getbFile() {
+		return bFile;
+	}
+
+	public void setbFile(byte[] bFile) {
+		this.bFile = bFile;
+	}
+	
+	public String getTypeFile() {
+		return typeFile;
+	}
+
+	public void setTypeFile(String typeFile) {
+		this.typeFile = typeFile;
+	}
+
+	@Override
+	public String toString() {
+		return "EaeFinalizationDto [idDocument=" + idDocument + ", versionDocument=" + versionDocument + ", commentaire=" + commentaire
+				+ ", noteAnnee=" + noteAnnee + ", dateFinalisation=" + dateFinalisation + ", annee=" + annee + "]";
+	}
+
 }

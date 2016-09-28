@@ -2,26 +2,10 @@ package nc.noumea.mairie.sirh.eae.web.controller;
 
 import java.util.List;
 
-import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
-import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
-import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
-import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
-import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
-import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
-import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
-import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
-import nc.noumea.mairie.sirh.eae.service.IEaeService;
-import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,371 +13,305 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import nc.noumea.mairie.sirh.eae.dto.EaeAppreciationsDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeAutoEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeResultatsDto;
+import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.EaeIdentificationDto;
+import nc.noumea.mairie.sirh.eae.dto.planAction.EaePlanActionDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.EaeFichePosteDto;
+import nc.noumea.mairie.sirh.eae.security.IEaeSecurityProvider;
+import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
+import nc.noumea.mairie.sirh.eae.service.EvaluationServiceException;
+import nc.noumea.mairie.sirh.eae.service.IEvaluationService;
+
 @Controller
 @RequestMapping("/evaluation")
 public class EvaluationController {
 
-	private Logger logger = LoggerFactory.getLogger(EvaluationController.class);
+	private Logger					logger	= LoggerFactory.getLogger(EvaluationController.class);
 
 	@Autowired
-	private MessageSource messageSource;
+	private MessageSource			messageSource;
 
 	@Autowired
-	private IEvaluationService evaluationService;
+	private IEvaluationService		evaluationService;
 
 	@Autowired
-	private IEaeService eaeService;
-
-	@Autowired
-	private IEaeSecurityProvider eaeSecurityProvider;
+	private IEaeSecurityProvider	eaeSecurityProvider;
 
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaeIdentifitcation(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent) {
+	public EaeIdentificationDto getEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug(
-				"entered GET [evaluation/eaeIdentification] => getEaeIdentifitcation with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaeIdentification] => getEaeIdentifitcation with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
-		EaeIdentificationDto dto = evaluationService.getEaeIdentification(idEae);
-
-		String result = dto.serializeInJSON();
-
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return evaluationService.getEaeIdentification(idEae);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeIdentification", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> setEaeIdentifitcation(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestBody String eaeIdentificationDtoJson) {
+	public ReturnMessageDto setEaeIdentifitcation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaeIdentificationDto eaeIdentificationDto) {
 
-		logger.debug(
-				"entered POST [evaluation/eaeIdentification] => setEaeIdentifitcation with parameter idAgent = {} , idEae = {}, json = {}",
-				idAgent, idEae, eaeIdentificationDtoJson);
+		logger.debug("entered POST [evaluation/eaeIdentification] => setEaeIdentifitcation with parameter idAgent = {} , idEae = {}, json = {}",
+				idAgent, idEae, eaeIdentificationDto == null ? "" : eaeIdentificationDto.toString());
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
+		ReturnMessageDto result = new ReturnMessageDto();
 		try {
-			EaeIdentificationDto dto = new EaeIdentificationDto().deserializeFromJSON(eaeIdentificationDtoJson);
-			evaluationService.setEaeIdentification(idEae, dto);
+			evaluationService.setEaeIdentification(idEae, eaeIdentificationDto, false);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		} catch (EvaluationServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		}
 
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_IDENTIFICATION_OK", null, null), HttpStatus.OK);
+		result.getInfos().add(messageSource.getMessage("EAE_IDENTIFICATION_OK", null, null));
+		return result;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeFichePoste", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaeFichePoste(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent) {
+	public List<EaeFichePosteDto> getEaeFichePoste(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug(
-				"entered GET [evaluation/eaeFichePoste] => getEaeFichePoste with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaeFichePoste] => getEaeFichePoste with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
-		List<EaeFichePosteDto> dtos = evaluationService.getEaeFichePoste(idEae);
-
-		String result = EaeFichePosteDto.getSerializerForEaeFichePosteDto().serialize(dtos);
-
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return evaluationService.getEaeFichePoste(idEae);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeResultats", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+	public EaeResultatsDto getEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug(
-				"entered GET [evaluation/eaeResultats] => getEaeResultats with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaeResultats] => getEaeResultats with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
-		EaeResultatsDto dto = evaluationService.getEaeResultats(idEae);
-
-		String result = dto.serializeInJSON();
-
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return evaluationService.getEaeResultats(idEae);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeResultats", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> setEaeResultats(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestBody String eaeResultatsDtoJson) {
+	public ReturnMessageDto setEaeResultats(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaeResultatsDto eaeResultatsDto) {
 
-		logger.debug(
-				"entered POST [evaluation/eaeResultats] => setEaeResultats with parameter idAgent = {} , idEae = {}, json = {}",
-				idAgent, idEae, eaeResultatsDtoJson);
+		logger.debug("entered POST [evaluation/eaeResultats] => setEaeResultats with parameter idAgent = {} , idEae = {}, json = {}", idAgent, idEae,
+				eaeResultatsDto.toString());
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
+		ReturnMessageDto result = new ReturnMessageDto();
 		try {
-			EaeResultatsDto dto = new EaeResultatsDto().deserializeFromJSON(eaeResultatsDtoJson);
-			evaluationService.setEaeResultats(idEae, dto);
+			evaluationService.setEaeResultats(idEae, eaeResultatsDto, false);
 		} catch (EaeServiceException e) {
-			eaeService.clear();
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		} catch (EvaluationServiceException e) {
-			eaeService.clear();
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		}
 
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_RESULTATS_OK", null, null), HttpStatus.OK);
+		result.getInfos().add(messageSource.getMessage("EAE_RESULTATS_OK", null, null));
+		return result;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAppreciations", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaeAppreciations(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestParam(value = "annee", required = false) String annee) {
+	public EaeAppreciationsDto getEaeAppreciations(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestParam(value = "annee", required = false) String annee) {
 
-		logger.debug(
-				"entered GET [evaluation/eaeAppreciations] => getEaeAppreciations with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaeAppreciations] => getEaeAppreciations with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		if(null == annee) {
-			ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
-			if (response != null)
-				return response;
+		if (null == annee) {
+			eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 		}
 		// si l'année est renseignée, alors il faut trouver l'EAE de l'annee
 		// precedente de la personne
 		EaeAppreciationsDto dto = evaluationService.getEaeAppreciations(idEae, annee);
 
-		if(null == dto) {
-			return new ResponseEntity<String>("AUCUN EAE TROUVE", HttpStatus.CONFLICT);
+		if (null == dto) {
+			throw new ConflictException("AUCUN EAE TROUVE");
 		}
-		
-		String result = dto.serializeInJSON();
 
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return dto;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAppreciations", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> setEaeAppreciations(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAppreciationsDtoJson) {
+	public ReturnMessageDto setEaeAppreciations(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaeAppreciationsDto eaeAppreciationsDto) {
 
-		logger.debug(
-				"entered POST [evaluation/eaeAppreciations] => setEaeAppreciations with parameter idAgent = {} , idEae = {}, json = {}",
-				idAgent, idEae, eaeAppreciationsDtoJson);
+		logger.debug("entered POST [evaluation/eaeAppreciations] => setEaeAppreciations with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
+		ReturnMessageDto result = new ReturnMessageDto();
 		try {
-			EaeAppreciationsDto dto = new EaeAppreciationsDto().deserializeFromJSON(eaeAppreciationsDtoJson);
-			evaluationService.setEaeAppreciations(idEae, dto);
+			evaluationService.setEaeAppreciations(idEae, eaeAppreciationsDto, false);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		}
 
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_APPRECIATIONS_OK", null, null), HttpStatus.OK);
+		result.getInfos().add(messageSource.getMessage("EAE_APPRECIATIONS_OK", null, null));
+		return result;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaeEvaluation(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent) {
+	public EaeEvaluationDto getEaeEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug(
-				"entered GET [evaluation/eaeEvaluation] => getEaeEvaluation with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaeEvaluation] => getEaeEvaluation with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
-		EaeEvaluationDto dto = evaluationService.getEaeEvaluation(idEae);
-
-		String result = dto.serializeInJSON();
-
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return evaluationService.getEaeEvaluation(idEae);
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "eaeEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> setEaeEvaluation(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvaluationDtoJson) {
+	@RequestMapping(value = "eaeEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	public ReturnMessageDto setEaeEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaeEvaluationDto eaeEvaluationDto) {
 
-		logger.debug(
-				"entered POST [evaluation/eaeEvaluation] => setEaeEvaluation with parameter idAgent = {} , idEae = {}, json = {}",
-				idAgent, idEae, eaeEvaluationDtoJson);
+		logger.debug("entered POST [evaluation/eaeEvaluation] => setEaeEvaluation with parameter idAgent = {} , idEae = {}, json = {}", idAgent,
+				idEae, eaeEvaluationDto.toString());
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
+		ReturnMessageDto result = new ReturnMessageDto();
 		try {
-			EaeEvaluationDto dto = new EaeEvaluationDto().deserializeFromJSON(eaeEvaluationDtoJson);
-			evaluationService.setEaeEvaluation(idEae, dto);
+			evaluationService.setEaeEvaluation(idEae, eaeEvaluationDto, false);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		} catch (EvaluationServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		}
 
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_EVALUATION_OK", null, null), HttpStatus.OK);
+		result.getInfos().add(messageSource.getMessage("EAE_EVALUATION_OK", null, null));
+		return result;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaeAutoEvaluation(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent) {
+	public EaeAutoEvaluationDto getEaeAutoEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug(
-				"entered GET [evaluation/eaeAutoEvaluation] => getEaeAutoEvaluation with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaeAutoEvaluation] => getEaeAutoEvaluation with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
-		EaeAutoEvaluationDto dto = evaluationService.getEaeAutoEvaluation(idEae);
-
-		String result = dto.serializeInJSON();
-
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return evaluationService.getEaeAutoEvaluation(idEae);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeAutoEvaluation", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> setEaeAutoEvaluation(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestBody String eaeAutoEvaluationDtoJson) {
+	public ReturnMessageDto setEaeAutoEvaluation(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaeAutoEvaluationDto eaeAutoEvaluationDto) {
+		logger.debug("entered POST [evaluation/eaeAutoEvaluation] => setEaeAutoEvaluation with parameter idAgent = {} , idEae = {}", idAgent, idEae,
+				eaeAutoEvaluationDto == null ? "" : eaeAutoEvaluationDto.toString());
 
-		logger.debug(
-				"entered POST [evaluation/eaeAutoEvaluation] => setEaeAutoEvaluation with parameter idAgent = {} , idEae = {}, json = {}",
-				idAgent, idEae, eaeAutoEvaluationDtoJson);
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
-
-		if (response != null)
-			return response;
-
+		ReturnMessageDto result = new ReturnMessageDto();
 		try {
-			EaeAutoEvaluationDto dto = new EaeAutoEvaluationDto().deserializeFromJSON(eaeAutoEvaluationDtoJson);
-			evaluationService.setEaeAutoEvaluation(idEae, dto);
+			evaluationService.setEaeAutoEvaluation(idEae, eaeAutoEvaluationDto, false);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		}
 
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_AUTO_EVALUATION_OK", null, null), HttpStatus.OK);
+		result.getInfos().add(messageSource.getMessage("EAE_AUTO_EVALUATION_OK", null, null));
+		return result;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaePlanAction(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent) {
+	public EaePlanActionDto getEaePlanAction(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug(
-				"entered GET [evaluation/eaePlanAction] => getEaePlanAction with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaePlanAction] => getEaePlanAction with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
-		EaePlanActionDto dto = evaluationService.getEaePlanAction(idEae);
-
-		String result = dto.serializeInJSON();
-
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return evaluationService.getEaePlanAction(idEae);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaePlanAction", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> setEaePlanAction(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestBody String eaePlanActionDtoJson) {
+	public ReturnMessageDto setEaePlanAction(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaePlanActionDto eaePlanActionDto) {
 
-		logger.debug(
-				"entered POST [evaluation/eaePlanAction] => setEaePlanAction with parameter idAgent = {} , idEae = {}, json = {}",
-				idAgent, idEae, eaePlanActionDtoJson);
+		logger.debug("entered POST [evaluation/eaePlanAction] => setEaePlanAction with parameter idAgent = {} , idEae = {}, json = {}", idAgent,
+				idEae, eaePlanActionDto == null ? "" : eaePlanActionDto.toString());
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
+		ReturnMessageDto result = new ReturnMessageDto();
 		try {
-			EaePlanActionDto dto = new EaePlanActionDto().deserializeFromJSON(eaePlanActionDtoJson);
-			evaluationService.setEaePlanAction(idEae, dto);
+			evaluationService.setEaePlanAction(idEae, eaePlanActionDto, false);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		}
 
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_PLAN_ACTION_OK", null, null), HttpStatus.OK);
+		result.getInfos().add(messageSource.getMessage("EAE_PLAN_ACTION_OK", null, null));
+		return result;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeEvolution", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ResponseEntity<String> getEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
+	public EaeEvolutionDto getEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent) {
 
-		logger.debug(
-				"entered GET [evaluation/eaeEvolution] => getEaeEvolution with parameter idAgent = {} , idEae = {}",
-				idAgent, idEae);
+		logger.debug("entered GET [evaluation/eaeEvolution] => getEaeEvolution with parameter idAgent = {} , idEae = {}", idAgent, idEae);
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndReadRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
-		EaeEvolutionDto dto = evaluationService.getEaeEvolution(idEae);
-
-		String result = dto.serializeInJSON();
-
-		return new ResponseEntity<String>(result, HttpStatus.OK);
+		return evaluationService.getEaeEvolution(idEae);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "eaeEvolution", produces = "application/json;charset=utf-8", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<String> setEaeEvolution(@RequestParam("idEae") int idEae,
-			@RequestParam("idAgent") int idAgent, @RequestBody String eaeEvolutionDtoJson) {
+	public ReturnMessageDto setEaeEvolution(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaeEvolutionDto eaeEvolutioDto) {
 
-		logger.debug(
-				"entered POST [evaluation/eaeEvolution] => setEaeEvolution with parameter idAgent = {} , idEae = {}, json = {}",
-				idAgent, idEae, eaeEvolutionDtoJson);
+		logger.debug("entered POST [evaluation/eaeEvolution] => setEaeEvolution with parameter idAgent = {} , idEae = {}, json = {}", idAgent, idEae,
+				eaeEvolutioDto == null ? "" : eaeEvolutioDto.toString());
 
-		ResponseEntity<String> response = eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
-		if (response != null)
-			return response;
-
+		ReturnMessageDto result = new ReturnMessageDto();
 		try {
-			EaeEvolutionDto dto = new EaeEvolutionDto().deserializeFromJSON(eaeEvolutionDtoJson);
-			evaluationService.setEaeEvolution(idEae, dto);
+			evaluationService.setEaeEvolution(idEae, eaeEvolutioDto, false);
 		} catch (EaeServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		} catch (EvaluationServiceException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+			logger.debug(e.getMessage(), e);
+			result.getErrors().add(e.getMessage());
+			return result;
 		}
 
-		return new ResponseEntity<String>(messageSource.getMessage("EAE_EVOLUTION_OK", null, null), HttpStatus.OK);
+		result.getInfos().add(messageSource.getMessage("EAE_EVOLUTION_OK", null, null));
+		return result;
 	}
 }

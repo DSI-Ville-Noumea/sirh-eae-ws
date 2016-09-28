@@ -6,11 +6,14 @@ import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
+import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
+import nc.noumea.mairie.sirh.eae.dto.identification.ValeurListeDto;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public interface IEaeService {
@@ -22,7 +25,7 @@ public interface IEaeService {
 	 *            the agentId of the user
 	 * @return the list of EAEs
 	 */
-	List<EaeListItemDto> listEaesByAgentId(int agentId,String idRefEtat) throws SirhWSConsumerException;
+	List<EaeListItemDto> listEaesByAgentId(int agentId) throws SirhWSConsumerException;
 
 	/**
 	 * Initializes an EAE based on the previous year's EAE (if existing)
@@ -39,7 +42,7 @@ public interface IEaeService {
 	 * @param eaeToStart
 	 * @throws EaeServiceException
 	 */
-	Eae startEae(Integer idEaeToStart) throws EaeServiceException;
+	Eae startEae(Integer idEaeToStart, boolean isSirh) throws EaeServiceException;
 
 	/**
 	 * Resets the EAE by changing its Etat and reinitializing the list of
@@ -80,7 +83,7 @@ public interface IEaeService {
 	 * @param dto
 	 * @throws EaeServiceException
 	 */
-	ReturnMessageDto finalizEae(Integer idEae, int idAgent, EaeFinalizationDto dto);
+	ReturnMessageDto finalizeEae(Integer idEae, int idAgent, EaeFinalizationDto dto);
 
 	/**
 	 * Sets the Delegataire of an Eae if existing in SIRH Agents
@@ -132,7 +135,7 @@ public interface IEaeService {
 	 *            : the list of Ids
 	 * @return the list of EAEs corresponding to the Ids
 	 */
-	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId,String etat);
+	List<Eae> findEaesForEaeListByAgentIds(List<Integer> agentIds, Integer agentId);
 
 	/**
 	 * Returns an EAE evalue's first and lastnames
@@ -183,13 +186,54 @@ public interface IEaeService {
 	List<String> getEaesGedIdsForAgents(List<Integer> list, int annee);
 
 	/**
+	 * for SIRH
+	 * 
+	 * @param agentId
+	 * @return
+	 */
+	List<EaeDto> findEaesByIdAgentOnly(Integer agentId);
+
+	Integer chercherEaeNumIncrement();
+
+	List<ValeurListeDto> getListeTypeDeveloppement();
+
+	EaeDto findEaeDto(Integer idEae);
+
+	void setEae(EaeDto eaeDto) throws EaeServiceException;
+
+	List<EaeDto> getListeEaeDto(FormRehercheGestionEae form) throws EaeServiceException;
+
+	String getLastDocumentEaeFinalise(Integer idEae);
+
+	/**
 	 * for KiosqueRH : page accueil nombre EAE a realiser
 	 * 
-	 * @param agentId int
+	 * @param agentId
+	 *            int
 	 * @return Integer
 	 * @throws SirhWSConsumerException
 	 */
 	Integer countListEaesByAgentId(int agentId) throws SirhWSConsumerException;
 
 	List<EaeFinalizationDto> listEeaControleByAgent(Integer convertedId);
+
+	/**
+	 * Mise a jour du CAP de l EAE
+	 * 
+	 * @param idEae
+	 *            Integer
+	 * @param cap
+	 *            boolean
+	 * @return ReturnMessageDto
+	 */
+	ReturnMessageDto updateCapEae(Integer idEae, boolean cap);
+
+	/**
+	 * Retrieves the dashboard of current ongoing EAEs for DRH
+	 * 
+	 * @param anneeCampagne
+	 *            Integer Annee de la campagne a retourner
+	 * @return a list of Evaluateurs with their respective list of EAEs statuses
+	 */
+	List<EaeDashboardItemDto> getEaesDashboardForSIRH(Integer anneeCampagne) throws SirhWSConsumerException;
 }

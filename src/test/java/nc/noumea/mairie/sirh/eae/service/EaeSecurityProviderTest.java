@@ -2,8 +2,8 @@ package nc.noumea.mairie.sirh.eae.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +15,9 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.security.EaeSecurityProvider;
+import nc.noumea.mairie.sirh.eae.web.controller.ForbiddenException;
+import nc.noumea.mairie.sirh.eae.web.controller.NotFoundException;
+import nc.noumea.mairie.sirh.eae.web.controller.UnavailableException;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
@@ -22,8 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -305,10 +306,13 @@ public class EaeSecurityProviderTest {
 		EaeSecurityProvider provider = new EaeSecurityProvider();
 		ReflectionTestUtils.setField(provider, "eaeService", eaeService);
 		// When
-		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
-
-		// Then
-		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+		try {
+			provider.checkEaeAndReadRight(idEae, idAgent);
+		} catch(NotFoundException e) {
+			return;
+		}
+		
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -341,11 +345,15 @@ public class EaeSecurityProviderTest {
 		ReflectionTestUtils.setField(provider, "messageSource", messageSource);
 
 		// When
-		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
+		try {
+			provider.checkEaeAndReadRight(idEae, idAgent);
+		} catch(ForbiddenException e) {
+			assertEquals("L'agent '1890' n'est pas autorisé à consulter cet Eae", e.getMessage());
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-		assertEquals("L'agent '1890' n'est pas autorisé à consulter cet Eae", response.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -372,11 +380,15 @@ public class EaeSecurityProviderTest {
 		ReflectionTestUtils.setField(provider, "sirhWsConsumer", sirhsConsumerMock);
 
 		// When
-		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
+		try {
+			provider.checkEaeAndReadRight(idEae, idAgent);
+		} catch(UnavailableException e) {
+			assertEquals("message", e.getMessage());
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
-		assertEquals("message", response.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -403,10 +415,11 @@ public class EaeSecurityProviderTest {
 		ReflectionTestUtils.setField(provider, "sirhWsConsumer", sirhsConsumerMock);
 
 		// When
-		ResponseEntity<String> response = provider.checkEaeAndReadRight(idEae, idAgent);
-
-		// Then
-		assertNull(response);
+		try {
+			provider.checkEaeAndReadRight(idEae, idAgent);
+		} catch(UnavailableException e) {
+			fail("Shoud have not thrown an exception");
+		}
 	}
 
 	@Test
@@ -423,10 +436,14 @@ public class EaeSecurityProviderTest {
 		ReflectionTestUtils.setField(provider, "eaeService", eaeService);
 
 		// When
-		ResponseEntity<String> response = provider.checkEaeAndWriteRight(idEae, idAgent);
+		try {
+			provider.checkEaeAndWriteRight(idEae, idAgent);
+		} catch(NotFoundException e) {
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -454,11 +471,15 @@ public class EaeSecurityProviderTest {
 		ReflectionTestUtils.setField(provider, "messageSource", messageSource);
 
 		// When
-		ResponseEntity<String> response = provider.checkEaeAndWriteRight(idEae, idAgent);
+		try {
+			provider.checkEaeAndWriteRight(idEae, idAgent);
+		} catch(ForbiddenException e) {
+			assertEquals("L'agent '1890' n'est pas autorisé à modifier cet Eae", e.getMessage());
+			return;
+		}
 
 		// Then
-		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-		assertEquals("L'agent '1890' n'est pas autorisé à modifier cet Eae", response.getBody());
+		fail("Shoud have thrown an exception");
 	}
 
 	@Test
@@ -481,9 +502,10 @@ public class EaeSecurityProviderTest {
 		ReflectionTestUtils.setField(provider, "agentMatriculeConverterService", idConverterMock);
 
 		// When
-		ResponseEntity<String> response = provider.checkEaeAndWriteRight(idEae, idAgent);
-
-		// Then
-		assertNull(response);
+		try {
+			provider.checkEaeAndWriteRight(idEae, idAgent);
+		} catch(ForbiddenException e) {
+			fail("Shoud have not thrown an exception");
+		}
 	}
 }

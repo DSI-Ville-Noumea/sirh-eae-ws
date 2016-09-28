@@ -18,8 +18,14 @@
 	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource"
 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
 		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh"
+		driverClassName="org.postgresql.Driver" url="***REMOVED***"
 		poolPreparedStatements="true" />
+		
+<!-- 	<Resource name="jdbc/EAE_WS_DS1" auth="Container" type="javax.sql.DataSource" -->
+<!-- 		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1" -->
+<!-- 		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***" -->
+<!-- 		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/sirh" -->
+<!-- 		poolPreparedStatements="true" /> -->
 		
 
 	<!--  -->
@@ -38,4 +44,19 @@
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String" description="BIRT report viewer base URL for EAEs reporting" 
 		value="http://***REMOVED***:8085/birt/" override="false" />
 
+	<!--  -->
+	<!-- ALFRESCO -->
+	<!--  -->
+	<!-- ATTENTION : bien mettre le "/" apres le port -->
+	<!-- 	<Environment name="ALFRESCO_URL" type="java.lang.String" description="Alfresco endpoint url"  -->
+	<!-- 		value="http://***REMOVED***:8080/" override="false" /> -->
+	<Environment name="ALFRESCO_URL" type="java.lang.String" description="Alfresco endpoint url" 
+		value="http://localhost:8080/" override="false" />
+		
+	<Environment name="ALFRESCO_LOGIN" type="java.lang.String" description="Login to Alfresco" 
+		value="***REMOVED***" override="false" />
+		
+	<Environment name="ALFRESCO_PASSWORD" type="java.lang.String" description="Password to Alfresco" 
+		value="***REMOVED***" override="false" />
+		
 </Context>

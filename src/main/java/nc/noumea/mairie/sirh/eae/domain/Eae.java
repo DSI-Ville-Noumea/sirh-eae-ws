@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -30,6 +32,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 @Entity
 @Table(name = "EAE")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
+@NamedQueries({ @NamedQuery(name = "findEaeByIdAgent", query = "select e from Eae e where e.idEae = :idEae " ) })
 public class Eae {
 
 	@Id
@@ -133,6 +136,7 @@ public class Eae {
 	private EaeCampagne eaeCampagne;
 
 	@OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy(value = "idEaeFinalisation desc")
 	private Set<EaeFinalisation> eaeFinalisations = new HashSet<EaeFinalisation>();
 
 	/*

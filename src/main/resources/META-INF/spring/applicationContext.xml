@@ -70,5 +70,13 @@
 	<jee:jndi-lookup id="reportServerPath" jndi-name="REPORTING_SERVER_REPORT_PATH" expected-type="java.lang.String"/>
 	
 	<jee:jndi-lookup id="reportingBaseUrl" jndi-name="REPORTING_BASE_URL" expected-type="java.lang.String"/>
+
+	<!-- ALFRESCO -->
+	<jee:jndi-lookup id="alfrescoUrl" jndi-name="ALFRESCO_URL" expected-type="java.lang.String"/>
+
+	<jee:jndi-lookup id="alfrescoLogin" jndi-name="ALFRESCO_LOGIN" expected-type="java.lang.String"/>
+
+	<jee:jndi-lookup id="alfrescoPassword" jndi-name="ALFRESCO_PASSWORD" expected-type="java.lang.String"/>
+	<!-- FIN ALFRESCO -->
 		
 </beans>
