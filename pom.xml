@@ -12,7 +12,7 @@
 		<java.version>7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.7</slf4j.version>
-		<spring.version>4.1.4.RELEASE</spring.version>
+		<spring.version>4.1.7.RELEASE</spring.version>
 	</properties>
 	<issueManagement>
 		<system>REDMINE</system>
