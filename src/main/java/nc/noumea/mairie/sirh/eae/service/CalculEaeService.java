@@ -6,6 +6,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
@@ -39,31 +45,25 @@ import nc.noumea.mairie.sirh.tools.CalculEaeHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 public class CalculEaeService implements ICalculEaeService {
 
-	private Logger logger = LoggerFactory.getLogger(EaeService.class);
+	private Logger				logger		= LoggerFactory.getLogger(EaeService.class);
 
 	@Autowired
-	IEaeRepository eaeRepository;
+	IEaeRepository				eaeRepository;
 
 	@Autowired
-	ISirhWsConsumer sirhWsConsumer;
+	ISirhWsConsumer				sirhWsConsumer;
 
 	@Autowired
-	IAgentService agentService;
+	IAgentService				agentService;
 
-	public static final String CHAINE_VIDE = "";
-	public static final String ZERO = "0";
-	public static final String DATE_NULL = "01/01/0001";
+	public static final String	CHAINE_VIDE	= "";
+	public static final String	ZERO		= "0";
+	public static final String	DATE_NULL	= "01/01/0001";
 
-	SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+	SimpleDateFormat			sdfYear		= new SimpleDateFormat("yyyy");
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
@@ -103,19 +103,17 @@ public class CalculEaeService implements ICalculEaeService {
 			eae.setEtat(EaeEtatEnum.NA);
 
 			Agent agent = agentService.getAgent(idAgent);
-			CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(idAgent,
-					eaeCampagne.getAnnee() - 1);
+			CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(idAgent, eaeCampagne.getAnnee() - 1);
 
 			// #15578 : on recupere le delegataire de l'année précédente
 			EaeCampagne campagnePrec = eaeRepository.findEaeCampagneByAnnee(eae.getEaeCampagne().getAnnee() - 1);
 			Eae eaeAnneePrec = eaeRepository.findEaeAgent(agent.getIdAgent(), campagnePrec.getIdCampagneEae());
-			if (eaeAnneePrec != null && eaeAnneePrec.getAgentDelegataire() != null
-					&& eaeAnneePrec.getAgentDelegataire().getIdAgent() != null) {
+			if (eaeAnneePrec != null && eaeAnneePrec.getAgentDelegataire() != null && eaeAnneePrec.getAgentDelegataire().getIdAgent() != null) {
 				eae.setAgentDelegataire(eaeAnneePrec.getAgentDelegataire());
 			}
 
 			// on met les données dans EAE-evalue
-			creerEvalue(agent, eae, affAgent, true, true);
+			creerEvalue(agent, eae, affAgent, true, true, null);
 			// on met les données dans EAE-Diplome
 			creerDiplome(eae, affAgent.getListDiplome());
 			// on met les données dans EAE-Parcours-Pro
@@ -131,8 +129,7 @@ public class CalculEaeService implements ICalculEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void creerEaeSansAffecte(Integer idCampagneEae, Integer idAgent) throws SirhWSConsumerException,
-			ParseException {
+	public void creerEaeSansAffecte(Integer idCampagneEae, Integer idAgent) throws SirhWSConsumerException, ParseException {
 
 		// si on trouve un EAE dejà existant alors on ne fait rien
 		Eae eae = eaeRepository.findEaeAgent(idAgent, idCampagneEae);
@@ -171,8 +168,7 @@ public class CalculEaeService implements ICalculEaeService {
 		eae.setEtat(EaeEtatEnum.ND);
 
 		// on recupere le poste
-		CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(idAgent,
-				eaeCampagne.getAnnee() - 1);
+		CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(idAgent, eaeCampagne.getAnnee() - 1);
 		FichePosteDto fpPrincipale = null;
 		FichePosteDto fpSecondaire = null;
 		FichePosteDto fpResponsable = null;
@@ -194,13 +190,12 @@ public class CalculEaeService implements ICalculEaeService {
 		// #15578 : on recupere le delegataire de l'année précédente
 		EaeCampagne campagnePrec = eaeRepository.findEaeCampagneByAnnee(eae.getEaeCampagne().getAnnee() - 1);
 		Eae eaeAnneePrec = eaeRepository.findEaeAgent(agent.getIdAgent(), campagnePrec.getIdCampagneEae());
-		if (eaeAnneePrec != null && eaeAnneePrec.getAgentDelegataire() != null
-				&& eaeAnneePrec.getAgentDelegataire().getIdAgent() != null) {
+		if (eaeAnneePrec != null && eaeAnneePrec.getAgentDelegataire() != null && eaeAnneePrec.getAgentDelegataire().getIdAgent() != null) {
 			eae.setAgentDelegataire(eaeAnneePrec.getAgentDelegataire());
 		}
 
 		// on met les données dans EAE-evalué
-		creerEvalue(agent, eae, affAgent, true, false);
+		creerEvalue(agent, eae, affAgent, true, false, null);
 		// on met les données dans EAE-FichePoste, EAE-FDP-Activites et
 		// EAE_FDP_COMPETENCE
 		// on cree la fiche de poste primaire
@@ -225,19 +220,20 @@ public class CalculEaeService implements ICalculEaeService {
 		eaeRepository.persistEntity(eae);
 	}
 
-	public void creerEvalue(Agent agent, Eae eae, CalculEaeInfosDto eaeInfosDto, boolean miseAjourDateAdministration,
-			boolean agentAffecte) throws SirhWSConsumerException, ParseException {
+	public void creerEvalue(Agent agent, Eae eae, CalculEaeInfosDto eaeInfosDto, boolean miseAjourDateAdministration, boolean agentAffecte,
+			EaeEvalue evalue) throws SirhWSConsumerException, ParseException {
 
 		// cas de la modif
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		EaeEvalue evalAModif = new EaeEvalue();
+		EaeEvalue evalAModif = evalue;
+		if (evalAModif == null)
+			evalAModif = new EaeEvalue();
 
 		evalAModif.setEae(eae);
 		evalAModif.setIdAgent(agent.getIdAgent());
 
 		if (eaeInfosDto != null && eaeInfosDto.getFichePostePrincipale() != null) {
-			evalAModif.setDateEntreeService(getDateEntreeService(agent.getIdAgent(), eaeInfosDto
-					.getFichePostePrincipale().getIdServiceADS()));
+			evalAModif.setDateEntreeService(getDateEntreeService(agent.getIdAgent(), eaeInfosDto.getFichePostePrincipale().getIdServiceADS()));
 		}
 
 		evalAModif.setDateEntreeCollectivite(agent.getDateDerniereEmbauche());
@@ -248,8 +244,7 @@ public class CalculEaeService implements ICalculEaeService {
 			dateCarriere = eaeInfosDto.getCarriereFonctionnaireAncienne().getDateDebut();
 		}
 		// idem dans la liste des autres administration
-		AutreAdministrationAgentDto autreAdmin = sirhWsConsumer.chercherAutreAdministrationAgentAncienne(
-				agent.getIdAgent(), true);
+		AutreAdministrationAgentDto autreAdmin = sirhWsConsumer.chercherAutreAdministrationAgentAncienne(agent.getIdAgent(), true);
 		Date dateAutreAdmin = null;
 		if (autreAdmin != null) {
 			dateAutreAdmin = autreAdmin.getDateEntree();
@@ -267,8 +262,7 @@ public class CalculEaeService implements ICalculEaeService {
 			ancienneValeur = eaeAnneePrec.getEaeEvalue();
 			if (evalAModif.getDateEntreeFonctionnaire() != null) {
 				if (ancienneValeur.getDateEntreeFonctionnaire() != null
-						&& (evalAModif.getDateEntreeFonctionnaire().compareTo(
-								ancienneValeur.getDateEntreeFonctionnaire()) != 0)) {
+						&& (evalAModif.getDateEntreeFonctionnaire().compareTo(ancienneValeur.getDateEntreeFonctionnaire()) != 0)) {
 					evalAModif.setDateEntreeFonctionnaire(ancienneValeur.getDateEntreeFonctionnaire());
 				}
 			} else {
@@ -282,20 +276,17 @@ public class CalculEaeService implements ICalculEaeService {
 			// on cherche la date la plus ancienne dans les PA de
 			// mairie.SPADMN
 			Date dateSpadmnAncienne = null;
-			if (eaeInfosDto.getPositionAdmAgentAncienne() != null
-					&& eaeInfosDto.getPositionAdmAgentAncienne().getDatdeb() != null) {
+			if (eaeInfosDto.getPositionAdmAgentAncienne() != null && eaeInfosDto.getPositionAdmAgentAncienne().getDatdeb() != null) {
 				dateSpadmnAncienne = sdf.parse(eaeInfosDto.getPositionAdmAgentAncienne().getDatdeb().toString());
 			}
 			// idem dans la liste des autres administration
-			AutreAdministrationAgentDto autreAdminAncienne = sirhWsConsumer.chercherAutreAdministrationAgentAncienne(
-					agent.getIdAgent(), false);
+			AutreAdministrationAgentDto autreAdminAncienne = sirhWsConsumer.chercherAutreAdministrationAgentAncienne(agent.getIdAgent(), false);
 			Date dateAutreAdminAncienne = null;
 			if (autreAdminAncienne != null) {
 				dateAutreAdminAncienne = autreAdminAncienne.getDateEntree();
 			}
 
-			evalAModif.setDateEntreeAdministration(CalculEaeHelper.getDateAnterieure(dateAutreAdminAncienne,
-					dateSpadmnAncienne));
+			evalAModif.setDateEntreeAdministration(CalculEaeHelper.getDateAnterieure(dateAutreAdminAncienne, dateSpadmnAncienne));
 		}
 
 		// on regarde si la date de l'EAE precedent est différente alors on
@@ -303,8 +294,7 @@ public class CalculEaeService implements ICalculEaeService {
 		if (ancienneValeur != null) {
 			if (evalAModif.getDateEntreeAdministration() != null) {
 				if (ancienneValeur.getDateEntreeAdministration() != null
-						&& (evalAModif.getDateEntreeAdministration().compareTo(
-								ancienneValeur.getDateEntreeAdministration()) != 0)) {
+						&& (evalAModif.getDateEntreeAdministration().compareTo(ancienneValeur.getDateEntreeAdministration()) != 0)) {
 					evalAModif.setDateEntreeAdministration(ancienneValeur.getDateEntreeAdministration());
 				}
 			} else {
@@ -318,12 +308,10 @@ public class CalculEaeService implements ICalculEaeService {
 
 		// on regarde dans l'avancement pour le nouveau grade, le nouvel echelon
 		// et la date d'avancement
-		AvancementEaeDto avctFonct = sirhWsConsumer.getAvancement(agent.getIdAgent(), eae.getEaeCampagne().getAnnee(),
-				false);
+		AvancementEaeDto avctFonct = sirhWsConsumer.getAvancement(agent.getIdAgent(), eae.getEaeCampagne().getAnnee(), false);
 		if (null == avctFonct) {
 			// sinon, on cherche dans les détachés
-			AvancementEaeDto avctDetache = sirhWsConsumer.getAvancementDetache(agent.getIdAgent(), eae.getEaeCampagne()
-					.getAnnee());
+			AvancementEaeDto avctDetache = sirhWsConsumer.getAvancementDetache(agent.getIdAgent(), eae.getEaeCampagne().getAnnee());
 			if (null != avctDetache) {
 				setAvancementEvalue(evalAModif, avctDetache);
 			} else {
@@ -338,8 +326,8 @@ public class CalculEaeService implements ICalculEaeService {
 
 		// pour la PA
 		if (null != eaeInfosDto.getPositionAdmAgentEnCours()) {
-			evalAModif.setPosition(EaeAgentPositionAdministrativeEnum.valueOf(CalculEaeHelper
-					.getPositionAdmEAE(eaeInfosDto.getPositionAdmAgentEnCours().getCdpadm())));
+			evalAModif.setPosition(EaeAgentPositionAdministrativeEnum
+					.valueOf(CalculEaeHelper.getPositionAdmEAE(eaeInfosDto.getPositionAdmAgentEnCours().getCdpadm())));
 		}
 
 		evalAModif.setEstDetache(agentAffecte);
@@ -351,8 +339,8 @@ public class CalculEaeService implements ICalculEaeService {
 	public void setCarriereActive(CalculEaeInfosDto eaeInfosDto, EaeEvalue evalAModif, Eae eae) {
 
 		if (null != eaeInfosDto.getCarriereActive()) {
-			evalAModif.setStatut(EaeAgentStatutEnum.valueOf(CalculEaeHelper.getStatutCarriereEAE(eaeInfosDto
-					.getCarriereActive().getCodeCategorie().toString())));
+			evalAModif.setStatut(
+					EaeAgentStatutEnum.valueOf(CalculEaeHelper.getStatutCarriereEAE(eaeInfosDto.getCarriereActive().getCodeCategorie().toString())));
 			if (EaeAgentStatutEnum.A.equals(evalAModif.getStatut())) {
 				evalAModif.setStatutPrecision(eaeInfosDto.getCarriereActive().getLibelleCategorie());
 			}
@@ -393,20 +381,17 @@ public class CalculEaeService implements ICalculEaeService {
 
 			// pour l'anciennete on met le resultat en nb de jours
 			// redmine #13153
-			if (null != eaeInfosDto.getCarriereAncienneDansGrade()
-					&& null != eaeInfosDto.getCarriereAncienneDansGrade().getDateDebut()) {
+			if (null != eaeInfosDto.getCarriereAncienneDansGrade() && null != eaeInfosDto.getCarriereAncienneDansGrade().getDateDebut()) {
 				Calendar cal = Calendar.getInstance();
 				cal.set(eae.getEaeCampagne().getAnnee() - 1, 11, 31);
 
-				int nbJours = CalculEaeHelper.compteJoursEntreDates(eaeInfosDto.getCarriereAncienneDansGrade()
-						.getDateDebut(), cal.getTime());
+				int nbJours = CalculEaeHelper.compteJoursEntreDates(eaeInfosDto.getCarriereAncienneDansGrade().getDateDebut(), cal.getTime());
 				evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
 			} else if (null != eaeInfosDto.getCarriereActive().getDateDebut()) {
 				Calendar cal = Calendar.getInstance();
 				cal.set(eae.getEaeCampagne().getAnnee() - 1, 11, 31);
 
-				int nbJours = CalculEaeHelper.compteJoursEntreDates(eaeInfosDto.getCarriereActive().getDateDebut(),
-						cal.getTime());
+				int nbJours = CalculEaeHelper.compteJoursEntreDates(eaeInfosDto.getCarriereActive().getDateDebut(), cal.getTime());
 				evalAModif.setAncienneteEchelonJours(nbJours > 0 ? nbJours - 1 : 0);
 			}
 		}
@@ -440,8 +425,7 @@ public class CalculEaeService implements ICalculEaeService {
 		// on cherche toutes les affectations sur le meme service et on prend la
 		// date la plus ancienne
 		// NB : pour les affectations successives
-		List<CalculEaeInfosDto> listeAffectationService = sirhWsConsumer.getListeAffectationsAgentAvecService(idAgent,
-				idServiceADS);
+		List<CalculEaeInfosDto> listeAffectationService = sirhWsConsumer.getListeAffectationsAgentAvecService(idAgent, idServiceADS);
 
 		Date dateDebutService = null;
 		if (null != listeAffectationService) {
@@ -471,8 +455,7 @@ public class CalculEaeService implements ICalculEaeService {
 		return dateDebutService;
 	}
 
-	public void creerEvaluateur(EaeFichePoste eaeFDP, Eae eae, TitrePosteDto tpResp, FichePosteDto fpResponsable)
-			throws SirhWSConsumerException {
+	public void creerEvaluateur(EaeFichePoste eaeFDP, Eae eae, TitrePosteDto tpResp, FichePosteDto fpResponsable) throws SirhWSConsumerException {
 
 		eae.getEaeEvaluateurs().clear();
 		// on créer les evaluateurs
@@ -487,8 +470,7 @@ public class CalculEaeService implements ICalculEaeService {
 			// on cherche toutes les affectations sur la FDP du responsable
 			// on prend la date la plus ancienne
 			if (fpResponsable != null && fpResponsable.getIdServiceADS() != null) {
-				eval.setDateEntreeFonction(getDateEntreeAffectation(fpResponsable.getIdFichePoste(),
-						agentResp.getIdAgent()));
+				eval.setDateEntreeFonction(getDateEntreeAffectation(fpResponsable.getIdFichePoste(), agentResp.getIdAgent()));
 				eval.setDateEntreeService(getDateEntreeService(agentResp.getIdAgent(), fpResponsable.getIdServiceADS()));
 			}
 			eae.getEaeEvaluateurs().add(eval);
@@ -498,8 +480,7 @@ public class CalculEaeService implements ICalculEaeService {
 
 	public Date getDateEntreeAffectation(Integer idFichePoste, Integer idAgent) throws SirhWSConsumerException {
 
-		List<CalculEaeInfosDto> listeAffectationSurMemeFDP = sirhWsConsumer.getListeAffectationsAgentAvecFP(idAgent,
-				idFichePoste);
+		List<CalculEaeInfosDto> listeAffectationSurMemeFDP = sirhWsConsumer.getListeAffectationsAgentAvecFP(idAgent, idFichePoste);
 
 		if (null != listeAffectationSurMemeFDP && !listeAffectationSurMemeFDP.isEmpty()) {
 			return listeAffectationSurMemeFDP.get(0).getDateDebut();
@@ -507,8 +488,8 @@ public class CalculEaeService implements ICalculEaeService {
 		return null;
 	}
 
-	public void creerFichePoste(FichePosteDto fichePoste, Eae eae, FichePosteDto fpResp, TitrePosteDto tpResp,
-			boolean modifDateFonction, boolean isFPPrimaire) throws SirhWSConsumerException {
+	public void creerFichePoste(FichePosteDto fichePoste, Eae eae, FichePosteDto fpResp, TitrePosteDto tpResp, boolean modifDateFonction,
+			boolean isFPPrimaire) throws SirhWSConsumerException {
 
 		// on traite la fiche de poste
 		if (fichePoste != null) {
@@ -544,8 +525,7 @@ public class CalculEaeService implements ICalculEaeService {
 				eaeFichePoste.setFonction(fichePoste.getTitrePoste().getLibTitrePoste());
 			}
 			if (modifDateFonction && null != eae.getEaeEvalue()) {
-				eaeFichePoste.setDateEntreeFonction(getDateEntreeAffectation(fichePoste.getIdFichePoste(), eae
-						.getEaeEvalue().getIdAgent()));
+				eaeFichePoste.setDateEntreeFonction(getDateEntreeAffectation(fichePoste.getIdFichePoste(), eae.getEaeEvalue().getIdAgent()));
 			}
 			// grade du poste
 			eaeFichePoste.setGradePoste(fichePoste.getGradePoste());
@@ -566,10 +546,8 @@ public class CalculEaeService implements ICalculEaeService {
 				// on cherche toutes les affectations sur la FDP du responsable
 				// on prend la date la plus ancienne
 				if (null != fpResp && null != agentResp) {
-					eaeFichePoste.setDateEntreeFonctionResponsable(getDateEntreeAffectation(fpResp.getIdFichePoste(),
-							agentResp.getIdAgent()));
-					eaeFichePoste.setDateEntreeServiceResponsable(getDateEntreeService(agentResp.getIdAgent(),
-							fpResp.getIdServiceADS()));
+					eaeFichePoste.setDateEntreeFonctionResponsable(getDateEntreeAffectation(fpResp.getIdFichePoste(), agentResp.getIdAgent()));
+					eaeFichePoste.setDateEntreeServiceResponsable(getDateEntreeService(agentResp.getIdAgent(), fpResp.getIdServiceADS()));
 				}
 			}
 
@@ -600,14 +578,12 @@ public class CalculEaeService implements ICalculEaeService {
 
 		eaeFichePoste.getEaeFdpCompetences().clear();
 
-		creerCompetencesSpecifiquesFichePoste(fichePoste.getComportementsProfessionnels(), eaeFichePoste,
-				EaeTypeCompetenceEnum.CP);
+		creerCompetencesSpecifiquesFichePoste(fichePoste.getComportementsProfessionnels(), eaeFichePoste, EaeTypeCompetenceEnum.CP);
 		creerCompetencesSpecifiquesFichePoste(fichePoste.getSavoirs(), eaeFichePoste, EaeTypeCompetenceEnum.SA);
 		creerCompetencesSpecifiquesFichePoste(fichePoste.getSavoirsFaire(), eaeFichePoste, EaeTypeCompetenceEnum.SF);
 	}
 
-	public void creerCompetencesSpecifiquesFichePoste(List<String> listCompetence, EaeFichePoste eaeFichePoste,
-			EaeTypeCompetenceEnum type) {
+	public void creerCompetencesSpecifiquesFichePoste(List<String> listCompetence, EaeFichePoste eaeFichePoste, EaeTypeCompetenceEnum type) {
 
 		if (null != listCompetence) {
 			for (String libelleCompetence : listCompetence) {
@@ -632,9 +608,8 @@ public class CalculEaeService implements ICalculEaeService {
 				if (null != diplomeDto.getDateObtention()) {
 					anneeObtention = sdfYear.format(diplomeDto.getDateObtention()).toString();
 				}
-				eaeDiplome
-						.setLibelleDiplome((anneeObtention.equals(CHAINE_VIDE) ? CHAINE_VIDE : anneeObtention + " : ")
-								+ diplomeDto.getLibTitreDiplome() + " " + diplomeDto.getLibSpeDiplome());
+				eaeDiplome.setLibelleDiplome((anneeObtention.equals(CHAINE_VIDE) ? CHAINE_VIDE : anneeObtention + " : ")
+						+ diplomeDto.getLibTitreDiplome() + " " + diplomeDto.getLibSpeDiplome());
 
 				// eaeRepository.persistEntity(eaeDiplome);
 				eae.getEaeDiplomes().add(eaeDiplome);
@@ -642,8 +617,7 @@ public class CalculEaeService implements ICalculEaeService {
 		}
 	}
 
-	public void creerParcoursPro(Agent agent, Eae eae, List<ParcoursProDto> listParcoursPro)
-			throws SirhWSConsumerException {
+	public void creerParcoursPro(Agent agent, Eae eae, List<ParcoursProDto> listParcoursPro) throws SirhWSConsumerException {
 
 		// on nettoie la liste des parcours pro
 		eae.getEaeParcoursPros().clear();
@@ -692,8 +666,7 @@ public class CalculEaeService implements ICalculEaeService {
 
 	public void creerParcoursProAvecAutreAdministration(Agent agent, Eae eae) throws SirhWSConsumerException {
 		// sur autre administration
-		List<AutreAdministrationAgentDto> listAutreAdmin = sirhWsConsumer.getListeAutreAdministrationAgent(agent
-				.getIdAgent());
+		List<AutreAdministrationAgentDto> listAutreAdmin = sirhWsConsumer.getListeAutreAdministrationAgent(agent.getIdAgent());
 
 		if (null != listAutreAdmin) {
 			for (int i = 0; i < listAutreAdmin.size(); i++) {
@@ -719,11 +692,9 @@ public class CalculEaeService implements ICalculEaeService {
 						for (int j = i; j < listAutreAdmin.size(); j++) {
 							// la liste de parcours pro est trie par date de
 							// debut croissante du cote de SIRH-WS
-							if (j + 1 < listAutreAdmin.size()
-									&& null != listAutreAdmin.get(j + 1).getDateEntree()
+							if (j + 1 < listAutreAdmin.size() && null != listAutreAdmin.get(j + 1).getDateEntree()
 									&& null != listAutreAdmin.get(j).getDateSortie()
-									&& admAgent.getLibelleAdministration().equals(
-											listAutreAdmin.get(j + 1).getLibelleAdministration())) {
+									&& admAgent.getLibelleAdministration().equals(listAutreAdmin.get(j + 1).getLibelleAdministration())) {
 
 								Calendar cal = Calendar.getInstance();
 								cal.setTime(listAutreAdmin.get(j).getDateSortie());
@@ -766,25 +737,24 @@ public class CalculEaeService implements ICalculEaeService {
 			}
 		}
 	}
-	
+
 	@Override
 	@Transactional(value = "eaeTransactionManager")
 	public void updateEae(Integer idEae) throws SirhWSConsumerException, ParseException {
-		
+
 		Eae eae = eaeRepository.findEae(idEae);
-		
-		if(null == eae) {
+
+		if (null == eae) {
 			logger.info("EAE inexistant pour l'id : " + idEae);
 		}
-		
+
 		EaeEvalue evalue = eae.getEaeEvalue();
 		// on cherche les FDP de l'agent
 		FichePosteDto fpPrincipale = null;
 		FichePosteDto fpSecondaire = null;
-		
+
 		Agent agent = agentService.getAgent(evalue.getIdAgent());
-		CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(evalue.getIdAgent(),
-				eae.getEaeCampagne().getAnnee() - 1);
+		CalculEaeInfosDto affAgent = sirhWsConsumer.getDetailAffectationActiveByAgent(evalue.getIdAgent(), eae.getEaeCampagne().getAnnee() - 1);
 		FichePosteDto fpResponsable = null;
 		TitrePosteDto tpResp = null;
 		fpPrincipale = affAgent.getFichePostePrincipale();
@@ -796,11 +766,11 @@ public class CalculEaeService implements ICalculEaeService {
 		if (affAgent.getFichePosteSecondaire() != null) {
 			fpSecondaire = affAgent.getFichePosteSecondaire();
 		}
-		
+
 		// on met les données dans EAE-evalué
-		creerEvalue(agent, eae, affAgent, false, eae.getEaeEvalue().isEstDetache());
+		creerEvalue(agent, eae, affAgent, false, eae.getEaeEvalue().isEstDetache(), evalue);
 		// on met les données dans EAE-FichePoste
-		creerFichePoste(fpPrincipale, eae, fpResponsable, tpResp, false, false);
+		creerFichePoste(fpPrincipale, eae, fpResponsable, tpResp, false, true);
 		creerFichePoste(fpSecondaire, eae, fpResponsable, tpResp, false, false);
 
 		creerDiplome(eae, affAgent.getListDiplome());

@@ -95,8 +95,7 @@ public class CalculEaeServiceTest {
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
 		Mockito.when(sirhWsConsumer.getAvancement(9005138, 2014, true)).thenReturn(avancement);
 		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, true)).thenReturn(autreAdmin);
-		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, false)).thenReturn(
-				autreAdminAncienne);
+		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, false)).thenReturn(autreAdminAncienne);
 		Mockito.when(sirhWsConsumer.getAvancementDetache(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 		Mockito.when(sirhWsConsumer.getDetailAffectationActiveByAgent(9005138, 2013)).thenReturn(eaeInfosDto);
 		Mockito.when(sirhWsConsumer.getCalculDateAvct(9005138)).thenReturn(dateAvct);
@@ -180,8 +179,7 @@ public class CalculEaeServiceTest {
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
 		Mockito.when(sirhWsConsumer.getAvancement(9005138, 2014, true)).thenReturn(avancement);
 		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, true)).thenReturn(autreAdmin);
-		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, false)).thenReturn(
-				autreAdminAncienne);
+		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, false)).thenReturn(autreAdminAncienne);
 		Mockito.when(sirhWsConsumer.getAvancementDetache(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 		Mockito.when(sirhWsConsumer.getDetailAffectationActiveByAgent(9005138, 2013)).thenReturn(eaeInfosDto);
 		Mockito.when(sirhWsConsumer.getCalculDateAvct(9005138)).thenReturn(dateAvct);
@@ -257,10 +255,8 @@ public class CalculEaeServiceTest {
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
 		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, true)).thenReturn(autreAdmin);
-		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, false)).thenReturn(
-				autreAdminAncienne);
-		Mockito.when(sirhWsConsumer.getAvancement(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyBoolean()))
-				.thenReturn(null);
+		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, false)).thenReturn(autreAdminAncienne);
+		Mockito.when(sirhWsConsumer.getAvancement(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyBoolean())).thenReturn(null);
 		Mockito.when(sirhWsConsumer.getAvancementDetache(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 		Mockito.when(sirhWsConsumer.getCalculDateAvct(9005138)).thenReturn(new DateAvctDto());
 
@@ -286,7 +282,7 @@ public class CalculEaeServiceTest {
 		Eae eae = new Eae();
 		eae.setEaeCampagne(new EaeCampagne());
 
-		service.creerEvalue(agent, eae, eaeInfosDto, true, true);
+		service.creerEvalue(agent, eae, eaeInfosDto, true, true, null);
 
 		assertEquals(eae.getEaeEvalue().getIdAgent(), agent.getIdAgent().intValue());
 		assertNull(eae.getEaeEvalue().getDateEntreeService());
@@ -481,8 +477,7 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
-	public void getDateEntreeService_returnDateServiceAnterieur_MultipleAffectation() throws ParseException,
-			SirhWSConsumerException {
+	public void getDateEntreeService_returnDateServiceAnterieur_MultipleAffectation() throws ParseException, SirhWSConsumerException {
 
 		CalculEaeInfosDto dto = new CalculEaeInfosDto();
 		dto.setDateDebut(sdf.parse("01/01/2010"));
@@ -503,8 +498,7 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
-				.thenReturn(listeAffectationService);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt())).thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
@@ -530,8 +524,7 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
-				.thenReturn(listeAffectationService);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt())).thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
@@ -542,8 +535,7 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
-	public void getDateEntreeService_returnDateServiceActuel_ecartEntreService() throws ParseException,
-			SirhWSConsumerException {
+	public void getDateEntreeService_returnDateServiceActuel_ecartEntreService() throws ParseException, SirhWSConsumerException {
 
 		CalculEaeInfosDto dto = new CalculEaeInfosDto();
 		dto.setDateDebut(sdf.parse("01/01/2010"));
@@ -558,8 +550,7 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
-				.thenReturn(listeAffectationService);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt())).thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
@@ -585,8 +576,7 @@ public class CalculEaeServiceTest {
 		listeAffectationService.add(dto2);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
-				.thenReturn(listeAffectationService);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt())).thenReturn(listeAffectationService);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
@@ -600,8 +590,7 @@ public class CalculEaeServiceTest {
 	public void getDateEntreeService_returnNull() throws SirhWSConsumerException {
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
-				.thenReturn(null);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
@@ -676,8 +665,7 @@ public class CalculEaeServiceTest {
 		listeAffectationSurMemeFDP.add(dto);
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecFP(Mockito.anyInt(), Mockito.anyInt())).thenReturn(
-				listeAffectationSurMemeFDP);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecFP(Mockito.anyInt(), Mockito.anyInt())).thenReturn(listeAffectationSurMemeFDP);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
@@ -691,8 +679,7 @@ public class CalculEaeServiceTest {
 	public void getDateEntreeAffectation_resultNull() throws SirhWSConsumerException {
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecFP(Mockito.anyInt(), Mockito.anyInt())).thenReturn(
-				null);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecFP(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 
 		CalculEaeService service = new CalculEaeService();
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
@@ -729,10 +716,8 @@ public class CalculEaeServiceTest {
 		tpResp.setLibTitrePoste("libTitrePosteResponsable");
 
 		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecFP(Mockito.anyInt(), Mockito.anyInt())).thenReturn(
-				null);
-		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt()))
-				.thenReturn(null);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecFP(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
+		Mockito.when(sirhWsConsumer.getListeAffectationsAgentAvecService(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
 
 		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
 
@@ -1127,8 +1112,7 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
-	public void creerParcoursProAvecAutreAdministration_memeAdmin4foisQuiSuient() throws SirhWSConsumerException,
-			ParseException {
+	public void creerParcoursProAvecAutreAdministration_memeAdmin4foisQuiSuient() throws SirhWSConsumerException, ParseException {
 
 		AutreAdministrationAgentDto aaa1 = new AutreAdministrationAgentDto();
 		aaa1.setDateEntree(sdf.parse("10/10/2010"));
@@ -1172,8 +1156,7 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
-	public void creerParcoursProAvecAutreAdministration_memeAdmin3fois_1adminDifferenteQuiSuit()
-			throws SirhWSConsumerException, ParseException {
+	public void creerParcoursProAvecAutreAdministration_memeAdmin3fois_1adminDifferenteQuiSuit() throws SirhWSConsumerException, ParseException {
 
 		AutreAdministrationAgentDto aaa1 = new AutreAdministrationAgentDto();
 		aaa1.setDateEntree(sdf.parse("10/10/2010"));
@@ -1217,8 +1200,7 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
-	public void creerParcoursProAvecAutreAdministration_adminsDifferentes() throws SirhWSConsumerException,
-			ParseException {
+	public void creerParcoursProAvecAutreAdministration_adminsDifferentes() throws SirhWSConsumerException, ParseException {
 
 		AutreAdministrationAgentDto aaa1 = new AutreAdministrationAgentDto();
 		aaa1.setDateEntree(sdf.parse("10/10/2010"));
@@ -1262,8 +1244,7 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
-	public void creerParcoursProAvecAutreAdministration_memeAdmin3fois_maisSansSeSuivre()
-			throws SirhWSConsumerException, ParseException {
+	public void creerParcoursProAvecAutreAdministration_memeAdmin3fois_maisSansSeSuivre() throws SirhWSConsumerException, ParseException {
 
 		AutreAdministrationAgentDto aaa1 = new AutreAdministrationAgentDto();
 		aaa1.setDateEntree(sdf.parse("10/10/2010"));
