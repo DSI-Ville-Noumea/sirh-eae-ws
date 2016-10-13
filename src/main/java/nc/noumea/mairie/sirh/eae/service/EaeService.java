@@ -692,6 +692,31 @@ public class EaeService implements IEaeService {
 
 		eae.setIdAgentDelegataire(eaeDto.getIdAgentDelegataire());
 		eae.setEtat(EaeEtatEnum.valueOf(eaeDto.getEtat()));
+
+		if (EaeEtatEnum.CO.equals(eae.getEtat())) {
+			logger.debug(String.format("EAE de l annee %d Controle pour l agent %d ", eae.getEaeCampagne().getAnnee(), eae.getEaeEvalue()
+					.getIdAgent()));
+			String nodeRef = null;
+			if (null != eae.getEaeFinalisations() && !eae.getEaeFinalisations().isEmpty()) {
+				nodeRef = eae.getEaeFinalisations().iterator().next().getNodeRefAlfresco();
+			}
+			if (null != nodeRef) {
+				alfrescoCMISService.setPermissionsEaeControle(nodeRef);
+			}
+		}
+		if (EaeEtatEnum.F.equals(eae.getEtat())) {
+			logger.debug(String.format("EAE de l annee %d Finalise pour l agent %d ", eae.getEaeCampagne().getAnnee(), eae.getEaeEvalue()
+					.getIdAgent()));
+			String nodeRef = null;
+			if (null != eae.getEaeFinalisations() && !eae.getEaeFinalisations().isEmpty()) {
+				nodeRef = eae.getEaeFinalisations().iterator().next().getNodeRefAlfresco();
+			}
+			if (null != nodeRef) {
+				Agent agentEvalue = agentService.getAgent(eae.getEaeEvalue().getIdAgent());
+				alfrescoCMISService.setPermissionsEaeNonControle(nodeRef, agentEvalue.getIdAgent(), agentEvalue
+						.getDisplayNom(), agentEvalue.getDisplayPrenom());
+			}
+		}
 	}
 
 	@Override
