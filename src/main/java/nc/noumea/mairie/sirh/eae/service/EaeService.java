@@ -694,27 +694,39 @@ public class EaeService implements IEaeService {
 		eae.setEtat(EaeEtatEnum.valueOf(eaeDto.getEtat()));
 
 		if (EaeEtatEnum.CO.equals(eae.getEtat())) {
-			logger.debug(String.format("EAE de l annee %d Controle pour l agent %d ", eae.getEaeCampagne().getAnnee(), eae.getEaeEvalue()
-					.getIdAgent()));
+			logger.debug(
+					String.format("EAE de l'année %d contrôlé pour l'agent %d ", eae.getEaeCampagne().getAnnee(), eae.getEaeEvalue().getIdAgent()));
 			String nodeRef = null;
 			if (null != eae.getEaeFinalisations() && !eae.getEaeFinalisations().isEmpty()) {
 				nodeRef = eae.getEaeFinalisations().iterator().next().getNodeRefAlfresco();
 			}
 			if (null != nodeRef) {
-				alfrescoCMISService.setPermissionsEaeControle(nodeRef);
+				try {
+					alfrescoCMISService.setPermissionsEaeControle(nodeRef);
+				} catch (Exception e) {
+					throw new EaeServiceException(
+							String.format("Impossible d'appliquer les droits Alfresco sur le document. Merci de contacter le responsable du projet.",
+									eaeDto.getIdAgentDelegataire()));
+				}
 			}
 		}
 		if (EaeEtatEnum.F.equals(eae.getEtat())) {
-			logger.debug(String.format("EAE de l annee %d Finalise pour l agent %d ", eae.getEaeCampagne().getAnnee(), eae.getEaeEvalue()
-					.getIdAgent()));
+			logger.debug(
+					String.format("EAE de l'année %d finalisé pour l'agent %d ", eae.getEaeCampagne().getAnnee(), eae.getEaeEvalue().getIdAgent()));
 			String nodeRef = null;
 			if (null != eae.getEaeFinalisations() && !eae.getEaeFinalisations().isEmpty()) {
 				nodeRef = eae.getEaeFinalisations().iterator().next().getNodeRefAlfresco();
 			}
 			if (null != nodeRef) {
 				Agent agentEvalue = agentService.getAgent(eae.getEaeEvalue().getIdAgent());
-				alfrescoCMISService.setPermissionsEaeNonControle(nodeRef, agentEvalue.getIdAgent(), agentEvalue
-						.getDisplayNom(), agentEvalue.getDisplayPrenom());
+				try {
+					alfrescoCMISService.setPermissionsEaeNonControle(nodeRef, agentEvalue.getIdAgent(), agentEvalue.getDisplayNom(),
+							agentEvalue.getDisplayPrenom());
+				} catch (Exception e) {
+					throw new EaeServiceException(
+							String.format("Impossible d'appliquer les droits Alfresco sur le document. Merci de contacter le responsable du projet.",
+									eaeDto.getIdAgentDelegataire()));
+				}
 			}
 		}
 	}
@@ -759,7 +771,8 @@ public class EaeService implements IEaeService {
 		sb.append("INNER JOIN e.eaeCampagne AS c ");
 		sb.append("INNER JOIN e.eaeEvalue AS ev ");
 		sb.append("WHERE ev.idAgent = :idAgent ");
-		sb.append("and fin.idEaeFinalisation in(select max(fin2.idEaeFinalisation) from EaeFinalisation fin2 inner join fin2.eae e2 group by fin2.eae ) ");
+		sb.append(
+				"and fin.idEaeFinalisation in(select max(fin2.idEaeFinalisation) from EaeFinalisation fin2 inner join fin2.eae e2 group by fin2.eae ) ");
 		sb.append("and e.etat = :etat ");
 		sb.append("order by  c.annee desc ");
 
