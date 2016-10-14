@@ -24,7 +24,8 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo(
+        @SuppressWarnings("deprecation")
+		ApiInfo apiInfo = new ApiInfo(
             "Project SIRH-EAE-WS REST API",
             "Descritpion des WS Rest de SIRH-EAE-WS.",
             "",

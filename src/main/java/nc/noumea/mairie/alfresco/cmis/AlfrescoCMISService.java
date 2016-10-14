@@ -9,17 +9,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import nc.noumea.mairie.alfresco.dto.GlobalPermissionDto;
-import nc.noumea.mairie.alfresco.dto.PermissionDto;
-import nc.noumea.mairie.alfresco.ws.AlfrescoWsConsumer;
-import nc.noumea.mairie.sirh.domain.Agent;
-import nc.noumea.mairie.sirh.eae.domain.Eae;
-import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
-import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
-import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
-import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
-import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
-
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -38,6 +27,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import nc.noumea.mairie.alfresco.dto.GlobalPermissionDto;
+import nc.noumea.mairie.alfresco.dto.PermissionDto;
+import nc.noumea.mairie.alfresco.ws.AlfrescoWsConsumer;
+import nc.noumea.mairie.sirh.domain.Agent;
+import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
+import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
+import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
+import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 @Service
 public class AlfrescoCMISService implements IAlfrescoCMISService {
@@ -63,9 +63,6 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 
 	@Autowired
 	private CreateSession		createSession;
-
-	@Autowired
-	private CmisService			cmisService;
 
 	@Autowired
 	private AlfrescoWsConsumer	alfrescoWsConsumer;
@@ -224,9 +221,12 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 	 * 
 	 * @param nodeRef
 	 *            NodeRef du document EAE
-	 * @param idAgent Id de l agent
-	 * @param nom Nom de l agent
-	 * @param prenom Prenom de l agent
+	 * @param idAgent
+	 *            Id de l agent
+	 * @param nom
+	 *            Nom de l agent
+	 * @param prenom
+	 *            Prenom de l agent
 	 */
 	public void setPermissionsEaeNonControle(String nodeRef, Integer idAgent, String nom, String prenom) {
 
