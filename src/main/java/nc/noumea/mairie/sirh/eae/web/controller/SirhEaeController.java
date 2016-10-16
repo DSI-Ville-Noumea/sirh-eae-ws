@@ -21,6 +21,7 @@ import nc.noumea.mairie.sirh.eae.dto.EaeDocumentDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvolutionDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.BirtDto;
@@ -452,5 +453,20 @@ public class SirhEaeController {
 
 		result.getInfos().add(messageSource.getMessage("EAE_OK", null, null));
 		return result;
+	}
+	
+
+
+	@ResponseBody
+	@RequestMapping(value = "finalizeEaeFromSIRH", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	public ReturnMessageDto finalizeEaeFromSIRH(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestBody EaeFinalizationDto eaeFinalizationDto) throws SirhWSConsumerException {
+
+		logger.debug("entered POST [sirhEaes/finalizeEaeFromSIRH] => finalizeEaeFromSIRH with parameter idAgent = {} , idEae = {}, eaeFinalizationDto ", idAgent, idEae,
+				eaeFinalizationDto.toString());
+
+		isUtilisateurSirh(idAgent);
+
+		return eaeService.finalizeEae(idEae, agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent), eaeFinalizationDto);
 	}
 }
