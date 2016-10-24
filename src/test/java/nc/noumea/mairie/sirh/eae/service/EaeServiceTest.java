@@ -1487,6 +1487,7 @@ public class EaeServiceTest {
 		Eae eae = new Eae();
 		eae.setEtat(EaeEtatEnum.C);
 		eae.getEaeEvaluateurs().add(evaluateur);
+		eae.setIdEae(12);
 		
 		EaeEvalue evalue = new EaeEvalue();
 			evalue.setEae(eae);

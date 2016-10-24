@@ -23,7 +23,7 @@ import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
 @XmlRootElement
 public class EaeEvolutionDto {
 
-	private Integer								idEae;
+	private int								idEae;
 	private boolean							mobiliteGeo;
 	private boolean							mobiliteFonctionnelle;
 	private boolean							changementMetier;

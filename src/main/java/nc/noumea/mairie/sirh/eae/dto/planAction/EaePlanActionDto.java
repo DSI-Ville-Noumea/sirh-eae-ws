@@ -11,7 +11,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 @XmlRootElement
 public class EaePlanActionDto {
 
-	private Integer							idEae;
+	private int							idEae;
 	private List<String>				moyensAutres;
 	private List<String>				moyensFinanciers;
 	private List<String>				moyensMateriels;
