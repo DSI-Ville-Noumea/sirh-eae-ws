@@ -2,6 +2,7 @@ package nc.noumea.mairie.sirh.eae.domain.enums;
 
 public enum EaeReportFormatEnum {
 
+	ODT("ODT"),
 	DOCX("DOCX"),
 	PDF("PDF");
 	
