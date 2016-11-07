@@ -199,7 +199,7 @@ public interface IEaeService {
 
 	EaeDto findEaeDto(Integer idEae);
 
-	void setEae(EaeDto eaeDto) throws EaeServiceException;
+	void setEae(EaeDto eaeDto) throws EaeServiceException, SirhWSConsumerException;
 
 	List<EaeDto> getListeEaeDto(FormRehercheGestionEae form) throws EaeServiceException;
 

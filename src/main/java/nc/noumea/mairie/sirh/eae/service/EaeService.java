@@ -82,6 +82,9 @@ public class EaeService implements IEaeService {
 	@Autowired
 	private IAlfrescoCMISService			alfrescoCMISService;
 
+	@Autowired
+	private ICalculEaeService				calculEaeService;
+
 	/*
 	 * Interface implementation
 	 */
@@ -678,7 +681,7 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void setEae(EaeDto eaeDto) throws EaeServiceException {
+	public void setEae(EaeDto eaeDto) throws EaeServiceException, SirhWSConsumerException {
 
 		Eae eae = findEae(eaeDto.getIdEae());
 
@@ -692,6 +695,9 @@ public class EaeService implements IEaeService {
 
 		eae.setIdAgentDelegataire(eaeDto.getIdAgentDelegataire());
 		eae.setEtat(EaeEtatEnum.valueOf(eaeDto.getEtat()));
+
+		// 34151 : cas des evaluateurs
+		calculEaeService.resetEvaluateurFromSIRH(eae, eaeDto.getEvaluateurs());
 
 		if (EaeEtatEnum.CO.equals(eae.getEtat())) {
 			logger.debug(

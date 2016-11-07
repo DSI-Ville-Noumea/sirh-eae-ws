@@ -13,6 +13,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
@@ -28,7 +32,9 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeCompetenceEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EtatAvancementEnum;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.BirtDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.CarriereDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DiplomeDto;
@@ -43,10 +49,6 @@ import nc.noumea.mairie.sirh.service.AgentService;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
-
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
 
 public class CalculEaeServiceTest {
 
@@ -601,7 +603,7 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
-	public void creerEvaluateur_1persist() throws SirhWSConsumerException, ParseException {
+	public void creerEvaluateurInitialisationEAE_1persist() throws SirhWSConsumerException, ParseException {
 
 		EaeFichePoste eaeFDP = new EaeFichePoste();
 		eaeFDP.setIdAgentShd(9005138);
@@ -624,13 +626,13 @@ public class CalculEaeServiceTest {
 
 		Eae eae = new Eae();
 
-		service.creerEvaluateur(eaeFDP, eae, tpResp, null);
+		service.creerEvaluateurInitialisationEAE(eaeFDP, eae, tpResp, null);
 
 		assertEquals(1, eae.getEaeEvaluateurs().size());
 	}
 
 	@Test
-	public void creerEvaluateur_noPersist() throws SirhWSConsumerException, ParseException {
+	public void creerEvaluateurInitialisationEAE_noPersist() throws SirhWSConsumerException, ParseException {
 
 		EaeFichePoste eaeFDP = new EaeFichePoste();
 		eaeFDP.setIdAgentShd(null);
@@ -649,7 +651,7 @@ public class CalculEaeServiceTest {
 
 		Eae eae = new Eae();
 
-		service.creerEvaluateur(eaeFDP, eae, tpResp, null);
+		service.creerEvaluateurInitialisationEAE(eaeFDP, eae, tpResp, null);
 
 		assertEquals(0, eae.getEaeEvaluateurs().size());
 	}
@@ -1337,5 +1339,76 @@ public class CalculEaeServiceTest {
 
 		Mockito.verify(eaeRepository, Mockito.times(0)).persistEntity(Mockito.isA(EaeFormation.class));
 		assertEquals(eae.getEaeFormations().size(), 0);
+	}
+
+	@Test
+	public void resetEvaluateurFromSIRH_1persist() throws SirhWSConsumerException, ParseException {
+
+		CarriereDto carriereFonctionnaireAncienne = new CarriereDto();
+		carriereFonctionnaireAncienne.setDateDebut(new Date());
+
+		PositionAdmAgentDto positionAdmAgentAncienne = new PositionAdmAgentDto();
+		positionAdmAgentAncienne.setDatdeb(20101213);
+
+		PositionAdmAgentDto positionAdmAgentEnCours = new PositionAdmAgentDto();
+		positionAdmAgentEnCours.setCdpadm("54");
+
+		FichePosteDto fdp = new FichePosteDto();
+		fdp.setTitrePoste(new TitrePosteDto());
+		
+		CalculEaeInfosDto eaeInfosDto = new CalculEaeInfosDto();
+		eaeInfosDto.setFichePostePrincipale(fdp);
+		eaeInfosDto.setCarriereFonctionnaireAncienne(carriereFonctionnaireAncienne);
+		eaeInfosDto.setPositionAdmAgentAncienne(positionAdmAgentAncienne);
+		eaeInfosDto.setPositionAdmAgentEnCours(positionAdmAgentEnCours);
+
+		Agent agentResp2 = new Agent();
+		agentResp2.setIdAgent(9002990);
+		agentResp2.setDateDerniereEmbauche(sdf.parse("01/01/2000"));
+
+		Agent agentResp = new Agent();
+		agentResp.setIdAgent(9005138);
+		agentResp.setDateDerniereEmbauche(sdf.parse("01/01/2010"));
+
+		BirtDto eval1 = new BirtDto();
+		eval1.setIdAgent(9005138);
+		BirtDto eval2 = new BirtDto();
+		eval2.setIdAgent(9002990);
+
+		EaeCampagne eaeCampagne = new EaeCampagne();
+		eaeCampagne.setAnnee(2016);
+		Eae eae = new Eae();
+		eae.setEaeCampagne(eaeCampagne);
+		EaeDto eaeDto = new EaeDto();
+		eaeDto.getEvaluateurs().add(eval1);
+		eaeDto.getEvaluateurs().add(eval2);
+
+		IAgentService agentService = Mockito.mock(IAgentService.class);
+		Mockito.when(agentService.getAgent(9005138)).thenReturn(agentResp);
+		Mockito.when(agentService.getAgent(9002990)).thenReturn(agentResp2);
+
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.getDetailAffectationActiveByAgent(9005138, 2015)).thenReturn(eaeInfosDto);
+
+		CalculEaeService service = new CalculEaeService();
+		ReflectionTestUtils.setField(service, "agentService", agentService);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+
+		service.resetEvaluateurFromSIRH(eae, eaeDto.getEvaluateurs());
+
+		assertEquals(1, eae.getEaeEvaluateurs().size());
+	}
+
+	@Test
+	public void resetEvaluateurFromSIRH_noPersist() throws SirhWSConsumerException, ParseException {
+
+		Eae eae = new Eae();
+		EaeDto eaeDto = new EaeDto();
+
+		CalculEaeService service = new CalculEaeService();
+
+		service.resetEvaluateurFromSIRH(eae, eaeDto.getEvaluateurs());
+
+		assertEquals(0, eae.getEaeEvaluateurs().size());
 	}
 }

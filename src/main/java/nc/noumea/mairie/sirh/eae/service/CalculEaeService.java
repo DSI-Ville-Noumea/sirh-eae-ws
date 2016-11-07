@@ -32,6 +32,7 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EtatAvancementEnum;
 import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.BirtDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DiplomeDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.FormationDto;
@@ -215,7 +216,7 @@ public class CalculEaeService implements ICalculEaeService {
 			eae.setEtat(EaeEtatEnum.NA);
 		}
 
-		creerEvaluateur(eaeFDP, eae, tpResp, fpResponsable);
+		creerEvaluateurInitialisationEAE(eaeFDP, eae, tpResp, fpResponsable);
 
 		eaeRepository.persistEntity(eae);
 	}
@@ -455,13 +456,35 @@ public class CalculEaeService implements ICalculEaeService {
 		return dateDebutService;
 	}
 
-	public void creerEvaluateur(EaeFichePoste eaeFDP, Eae eae, TitrePosteDto tpResp, FichePosteDto fpResponsable) throws SirhWSConsumerException {
+	protected void creerEvaluateurInitialisationEAE(EaeFichePoste eaeFDP, Eae eae, TitrePosteDto tpResp, FichePosteDto fpResponsable)
+			throws SirhWSConsumerException {
 
 		eae.getEaeEvaluateurs().clear();
+		creerEvaluateur(eaeFDP == null || eaeFDP.getIdAgentShd() == null || eaeFDP.getIdAgentShd() == 0 ? null : eaeFDP.getIdAgentShd(), eae, tpResp,
+				fpResponsable);
+
+	}
+
+	@Override
+	public void resetEvaluateurFromSIRH(Eae eae, List<BirtDto> evaluateurs) throws SirhWSConsumerException {
+		eae.getEaeEvaluateurs().clear();
+		if (evaluateurs != null) {
+			for (BirtDto eva : evaluateurs) {
+				CalculEaeInfosDto affEvaluateur = sirhWsConsumer.getDetailAffectationActiveByAgent(eva.getIdAgent(),
+						eae.getEaeCampagne().getAnnee() - 1);
+				creerEvaluateur(eva.getIdAgent(), eae,
+						affEvaluateur == null || affEvaluateur.getFichePostePrincipale() == null ? null
+								: affEvaluateur.getFichePostePrincipale().getTitrePoste(),
+						affEvaluateur == null ? null : affEvaluateur.getFichePostePrincipale());
+			}
+		}
+	}
+
+	public void creerEvaluateur(Integer idAgentSHD, Eae eae, TitrePosteDto tpResp, FichePosteDto fpResponsable) throws SirhWSConsumerException {
+
 		// on créer les evaluateurs
-		if (null != eaeFDP && eaeFDP.getIdAgentShd() != null && eaeFDP.getIdAgentShd() != 0 && tpResp != null) {
-			// logger.info("Req AS400 : chercherAgent (evaluateur)");
-			Agent agentResp = agentService.getAgent(eaeFDP.getIdAgentShd());
+		if (null != idAgentSHD && tpResp != null) {
+			Agent agentResp = agentService.getAgent(idAgentSHD);
 			EaeEvaluateur eval = new EaeEvaluateur();
 			eval.setEae(eae);
 			eval.setIdAgent(Integer.valueOf(agentResp.getIdAgent()));
@@ -476,6 +499,7 @@ public class CalculEaeService implements ICalculEaeService {
 			eae.getEaeEvaluateurs().add(eval);
 			// eaeRepository.persistEntity(eval);
 		}
+
 	}
 
 	public Date getDateEntreeAffectation(Integer idFichePoste, Integer idAgent) throws SirhWSConsumerException {
