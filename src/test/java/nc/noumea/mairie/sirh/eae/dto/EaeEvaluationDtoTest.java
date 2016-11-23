@@ -55,9 +55,9 @@ public class EaeEvaluationDtoTest {
 		// Then
 		assertEquals(123, dto.getIdEae());
 		assertEquals(new Integer(127), dto.getDureeEntretien());
-		assertEquals(new Double(13), dto.getNoteAnneeN1());
-		assertEquals(new Double(14), dto.getNoteAnneeN2());
-		assertEquals(new Double(15), dto.getNoteAnneeN3());
+		assertEquals(new Float(13), dto.getNoteAnneeN1());
+		assertEquals(new Float(14), dto.getNoteAnneeN2());
+		assertEquals(new Float(15), dto.getNoteAnneeN3());
 		assertTrue(dto.getAvisRevalorisation());
 		assertFalse(dto.getAvisChangementClasse());
 		assertEquals(EaeNiveauEnum.INSUFFISANT.toString(), dto.getNiveau().getCourant());

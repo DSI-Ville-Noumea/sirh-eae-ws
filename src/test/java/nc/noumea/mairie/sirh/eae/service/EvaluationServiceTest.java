@@ -674,9 +674,9 @@ public class EvaluationServiceTest {
 		EaeEvaluationDto dto = new EaeEvaluationDto();
 		dto.setIdEae(13);
 		dto.setDureeEntretien(duree);
-		dto.setNoteAnneeN1(13.0);
-		dto.setNoteAnneeN2(14.0);
-		dto.setNoteAnneeN3(15.0);
+		dto.setNoteAnneeN1(13.0f);
+		dto.setNoteAnneeN2(14.0f);
+		dto.setNoteAnneeN3(15.0f);
 		dto.setAvisRevalorisation(true);
 		dto.setAvisChangementClasse(false);
 		EaeListeDto subDto = new EaeListeDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
@@ -737,9 +737,9 @@ public class EvaluationServiceTest {
 		EaeEvaluationDto dto = new EaeEvaluationDto();
 		dto.setIdEae(13);
 		dto.setDureeEntretien(duree);
-		dto.setNoteAnneeN1(13.0);
-		dto.setNoteAnneeN2(14.0);
-		dto.setNoteAnneeN3(15.0);
+		dto.setNoteAnneeN1(13.0f);
+		dto.setNoteAnneeN2(14.0f);
+		dto.setNoteAnneeN3(15.0f);
 		dto.setAvisRevalorisation(true);
 		dto.setAvisChangementClasse(false);
 		EaeListeDto subDto = new EaeListeDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
@@ -821,14 +821,14 @@ public class EvaluationServiceTest {
 		EaeEvaluationDto dto = new EaeEvaluationDto();
 		dto.setIdEae(13);
 		dto.setDureeEntretien(duree);
-		dto.setNoteAnneeN1(13.0);
-		dto.setNoteAnneeN2(14.0);
-		dto.setNoteAnneeN3(15.0);
+		dto.setNoteAnneeN1(13.0f);
+		dto.setNoteAnneeN2(14.0f);
+		dto.setNoteAnneeN3(15.0f);
 		dto.setAvisRevalorisation(true);
 		dto.setAvisChangementClasse(false);
 		EaeListeDto subDto = new EaeListeDto(EaeAvancementEnum.MAXI, EaeAvancementEnum.class);
 		dto.setPropositionAvancement(subDto);
-		dto.setNoteAnnee(20.0);
+		dto.setNoteAnnee(20.0f);
 		dto.setAvisShd("avisShd");
 
 		EaeListeDto subDto2 = new EaeListeDto(EaeNiveauEnum.SATISFAISANT, EaeNiveauEnum.class);

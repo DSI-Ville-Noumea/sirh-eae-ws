@@ -16,10 +16,10 @@ public class EaeEvaluationDto {
 	private EaeCommentaireDto	commentaireEvaluateur;
 	private EaeCommentaireDto	commentaireEvalue;
 	private EaeListeDto			niveau;
-	private Double				noteAnnee;
-	private Double				noteAnneeN1;
-	private Double				noteAnneeN2;
-	private Double				noteAnneeN3;
+	private Float				noteAnnee;
+	private Float				noteAnneeN1;
+	private Float				noteAnneeN2;
+	private Float				noteAnneeN3;
 	private Boolean				avisRevalorisation;
 	private Boolean				avisChangementClasse;
 	private EaeListeDto			propositionAvancement;
@@ -49,10 +49,10 @@ public class EaeEvaluationDto {
 
 		idEae = eaeEvaluation.getEae().getIdEae();
 		dureeEntretien = eaeEvaluation.getEae().getDureeEntretienMinutes();
-		noteAnnee = eaeEvaluation.getNoteAnnee() == null ? null : new Double(eaeEvaluation.getNoteAnnee());
-		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1() == null ? null : new Double(eaeEvaluation.getNoteAnneeN1());
-		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2() == null ? null : new Double(eaeEvaluation.getNoteAnneeN2());
-		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3() == null ? null : new Double(eaeEvaluation.getNoteAnneeN3());
+		noteAnnee = eaeEvaluation.getNoteAnnee();
+		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1();
+		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
+		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
 		avisRevalorisation = eaeEvaluation.getAvisRevalorisation() == null ? true : eaeEvaluation.getAvisRevalorisation() == 0 ? false : true;
 		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation.getAvisChangementClasse() == 0 ? false : true;
 		commentaireEvaluateur = new EaeCommentaireDto(eaeEvaluation.getCommentaireEvaluateur());
@@ -91,27 +91,27 @@ public class EaeEvaluationDto {
 		this.idEae = idEae;
 	}
 
-	public Double getNoteAnneeN1() {
+	public Float getNoteAnneeN1() {
 		return noteAnneeN1;
 	}
 
-	public void setNoteAnneeN1(Double noteAnneeN1) {
+	public void setNoteAnneeN1(Float noteAnneeN1) {
 		this.noteAnneeN1 = noteAnneeN1;
 	}
 
-	public Double getNoteAnneeN2() {
+	public Float getNoteAnneeN2() {
 		return noteAnneeN2;
 	}
 
-	public void setNoteAnneeN2(Double noteAnneeN2) {
+	public void setNoteAnneeN2(Float noteAnneeN2) {
 		this.noteAnneeN2 = noteAnneeN2;
 	}
 
-	public Double getNoteAnneeN3() {
+	public Float getNoteAnneeN3() {
 		return noteAnneeN3;
 	}
 
-	public void setNoteAnneeN3(Double noteAnneeN3) {
+	public void setNoteAnneeN3(Float noteAnneeN3) {
 		this.noteAnneeN3 = noteAnneeN3;
 	}
 
@@ -139,11 +139,11 @@ public class EaeEvaluationDto {
 		this.typeAvct = typeAvct;
 	}
 
-	public Double getNoteAnnee() {
+	public Float getNoteAnnee() {
 		return noteAnnee;
 	}
 
-	public void setNoteAnnee(Double noteAnnee) {
+	public void setNoteAnnee(Float noteAnnee) {
 		this.noteAnnee = noteAnnee;
 	}
 

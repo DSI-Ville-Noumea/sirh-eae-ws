@@ -29,7 +29,7 @@ public class FinalizationInformationDto {
 		idEae = eae.getIdEae();
 		annee = eae.getEaeCampagne().getAnnee();
 		agentEvalue = null == eae.getEaeEvalue().getAgent() ? null : new AgentDto(eae.getEaeEvalue().getAgent());
-		agentDelegataire = null == eae.getEaeEvalue().getAgent() ? null : new AgentDto(eae.getAgentDelegataire());
+		agentDelegataire = null == eae.getAgentDelegataire() ? null : new AgentDto(eae.getAgentDelegataire());
 
 		for (EaeEvaluateur eval : eae.getEaeEvaluateurs()) {
 			agentsEvaluateurs.add(new AgentDto(eval.getAgent()));
