@@ -12,7 +12,7 @@
 		<java.version>7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.21</slf4j.version>
-		<spring.version>4.1.7.RELEASE</spring.version>
+		<spring.version>4.3.4.RELEASE</spring.version>
 		<coveralls-maven-plugin.version>4.1.0</coveralls-maven-plugin.version>
 		<coveralls-maven-plugin.repoToken>${env.COVERALLS_REPOTOKEN}</coveralls-maven-plugin.repoToken>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -206,7 +206,7 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
+			<version>3.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
