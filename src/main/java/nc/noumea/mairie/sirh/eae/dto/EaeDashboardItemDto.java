@@ -81,7 +81,7 @@ public class EaeDashboardItemDto {
 		}
 
 		if (eae.getEaeEvaluation().getAvisChangementClasse() != null
-				&& eae.getEaeEvaluation().getAvisChangementClasse() == 1) {
+				&& eae.getEaeEvaluation().getAvisChangementClasse()) {
 			changClasse++;
 			return;
 		}

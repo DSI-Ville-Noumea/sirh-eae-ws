@@ -53,8 +53,8 @@ public class EaeEvaluationDto {
 		noteAnneeN1 = eaeEvaluation.getNoteAnneeN1();
 		noteAnneeN2 = eaeEvaluation.getNoteAnneeN2();
 		noteAnneeN3 = eaeEvaluation.getNoteAnneeN3();
-		avisRevalorisation = eaeEvaluation.getAvisRevalorisation() == null ? true : eaeEvaluation.getAvisRevalorisation() == 0 ? false : true;
-		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation.getAvisChangementClasse() == 0 ? false : true;
+		avisRevalorisation = eaeEvaluation.getAvisRevalorisation() == null ? true : eaeEvaluation.getAvisRevalorisation();
+		avisChangementClasse = eaeEvaluation.getAvisChangementClasse() == null ? true : eaeEvaluation.getAvisChangementClasse();
 		commentaireEvaluateur = new EaeCommentaireDto(eaeEvaluation.getCommentaireEvaluateur());
 		commentaireEvalue = new EaeCommentaireDto(eaeEvaluation.getCommentaireEvalue());
 		commentaireAvctEvaluateur = new EaeCommentaireDto(eaeEvaluation.getCommentaireAvctEvaluateur());

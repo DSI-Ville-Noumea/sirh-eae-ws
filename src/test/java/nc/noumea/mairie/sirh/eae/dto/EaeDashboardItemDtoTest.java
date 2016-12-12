@@ -70,7 +70,7 @@ public class EaeDashboardItemDtoTest {
 		eae.setEtat(EaeEtatEnum.C);
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setPropositionAvancement(EaeAvancementEnum.MAXI);
-		eval.setAvisChangementClasse(0);
+		eval.setAvisChangementClasse(false);
 		eae.setEaeEvaluation(eval);
 
 		// When
@@ -99,7 +99,7 @@ public class EaeDashboardItemDtoTest {
 		eae.setEtat(EaeEtatEnum.EC);
 		EaeEvaluation eval = new EaeEvaluation();
 		eval.setPropositionAvancement(EaeAvancementEnum.MOY);
-		eval.setAvisChangementClasse(1);
+		eval.setAvisChangementClasse(true);
 		eae.setEaeEvaluation(eval);
 
 		// When

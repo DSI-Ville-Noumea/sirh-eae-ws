@@ -720,8 +720,8 @@ public class EvaluationServiceTest {
 		assertEquals("com4", eval.getCommentaireEvalue().getText());
 		assertEquals("com1", eval.getCommentaireAvctEvaluateur().getText());
 		assertEquals("com2", eval.getCommentaireAvctEvalue().getText());
-		assertEquals(0, (int) eval.getAvisChangementClasse());
-		assertEquals(1, (int) eval.getAvisRevalorisation());
+		assertEquals(false, eval.getAvisChangementClasse());
+		assertEquals(true, eval.getAvisRevalorisation());
 		assertEquals(new Integer(127), eval.getEae().getDureeEntretienMinutes());
 		assertEquals(EaeNiveauEnum.NECESSITANT_DES_PROGRES, eval.getNiveauEae());
 		assertEquals(EaeAvancementEnum.MAXI, eval.getPropositionAvancement());
@@ -804,8 +804,8 @@ public class EvaluationServiceTest {
 		assertEquals("com3", eval.getCommentaireEvaluateur().getText());
 		assertEquals(comBefore4.getIdEaeCommentaire(), eval.getCommentaireAvctEvalue().getIdEaeCommentaire());
 		assertEquals("com4", eval.getCommentaireEvalue().getText());
-		assertEquals(0, (int) eval.getAvisChangementClasse());
-		assertEquals(1, (int) eval.getAvisRevalorisation());
+		assertEquals(false, eval.getAvisChangementClasse());
+		assertEquals(true, eval.getAvisRevalorisation());
 		assertEquals(new Integer(127), eval.getEae().getDureeEntretienMinutes());
 		assertEquals(EaeNiveauEnum.SATISFAISANT, eval.getNiveauEae());
 		assertEquals(EaeAvancementEnum.MAXI, eval.getPropositionAvancement());
@@ -890,8 +890,8 @@ public class EvaluationServiceTest {
 		assertEquals("com3", eval.getCommentaireEvaluateur().getText());
 		assertEquals(comBefore4.getIdEaeCommentaire(), eval.getCommentaireAvctEvalue().getIdEaeCommentaire());
 		assertEquals("com4", eval.getCommentaireEvalue().getText());
-		assertEquals(0, (int) eval.getAvisChangementClasse());
-		assertEquals(1, (int) eval.getAvisRevalorisation());
+		assertEquals(false, eval.getAvisChangementClasse());
+		assertEquals(true, eval.getAvisRevalorisation());
 		assertEquals(new Integer(127), eval.getEae().getDureeEntretienMinutes());
 		assertEquals(EaeNiveauEnum.SATISFAISANT, eval.getNiveauEae());
 		assertEquals(EaeAvancementEnum.MAXI, eval.getPropositionAvancement());
@@ -913,7 +913,7 @@ public class EvaluationServiceTest {
 		EaeEvaluation eval = new EaeEvaluation();
 		eae.setEaeEvaluation(eval);
 		eval.setEae(eae);
-		eval.setAvisChangementClasse(0);
+		eval.setAvisChangementClasse(false);
 
 		IEaeService eaeService = Mockito.mock(IEaeService.class);
 		when(eaeService.startEae(789, false)).thenReturn(eae);
@@ -1047,7 +1047,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.REVA);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisRevalorisation(0);
+		evaluation.setAvisRevalorisation(false);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();
@@ -1068,7 +1068,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.REVA);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisRevalorisation(1);
+		evaluation.setAvisRevalorisation(true);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();
@@ -1089,7 +1089,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisChangementClasse(0);
+		evaluation.setAvisChangementClasse(false);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();
@@ -1110,7 +1110,7 @@ public class EvaluationServiceTest {
 		evalue.setTypeAvancement(EaeTypeAvctEnum.PROMO);
 		eae.setEaeEvalue(evalue);
 		EaeEvaluation evaluation = new EaeEvaluation();
-		evaluation.setAvisChangementClasse(1);
+		evaluation.setAvisChangementClasse(true);
 		eae.setEaeEvaluation(evaluation);
 
 		EvaluationService service = new EvaluationService();

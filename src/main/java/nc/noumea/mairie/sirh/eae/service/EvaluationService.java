@@ -307,8 +307,8 @@ public class EvaluationService implements IEvaluationService {
 
 		eae.setDureeEntretienMinutes(dto.getDureeEntretien() != null ? dto.getDureeEntretien() : 0);
 		EaeEvaluation evaluation = eae.getEaeEvaluation();
-		evaluation.setAvisChangementClasse(null == dto.getAvisChangementClasse() || !dto.getAvisChangementClasse() ? 0 : 1);
-		evaluation.setAvisRevalorisation(null == dto.getAvisRevalorisation() || !dto.getAvisRevalorisation() ? 0 : 1);
+		evaluation.setAvisChangementClasse(null == dto.getAvisChangementClasse() || !dto.getAvisChangementClasse() ? false : true);
+		evaluation.setAvisRevalorisation(null == dto.getAvisRevalorisation() || !dto.getAvisRevalorisation() ? false : true);
 
 		// Check the Niveau if it's valid and/or not set
 		if (dto.getNiveau() == null || dto.getNiveau().getCourant() == null)
@@ -371,12 +371,12 @@ public class EvaluationService implements IEvaluationService {
 			case "PROMO":
 				if (eae.getEaeEvaluation().getAvisChangementClasse() != null)
 					eae.getEaeEvaluation().setAvisShd(
-							EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisChangementClasse() == 0 ? false : true).toString());
+							EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisChangementClasse()).toString());
 				break;
 			case "REVA":
 				if (eae.getEaeEvaluation().getAvisRevalorisation() != null)
 					eae.getEaeEvaluation().setAvisShd(
-							EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisRevalorisation() == 0 ? false : true).toString());
+							EaeAvisEnum.fromBooleanToAvisEnum(eae.getEaeEvaluation().getAvisRevalorisation()).toString());
 				break;
 			case "AD":
 				if (eae.getEaeEvaluation().getPropositionAvancement() != null)

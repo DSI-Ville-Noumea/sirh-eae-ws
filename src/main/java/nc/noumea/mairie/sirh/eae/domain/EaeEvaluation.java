@@ -40,7 +40,7 @@ public class EaeEvaluation {
 	private Float noteAnneeN3;
 
 	@Column(name = "AVIS_REVALORISATION")
-	private Integer avisRevalorisation;
+	private Boolean avisRevalorisation;
 
 	@Column(name = "AVIS_SHD")
 	private String avisShd;
@@ -50,7 +50,7 @@ public class EaeEvaluation {
 	private EaeAvancementEnum propositionAvancement;
 
 	@Column(name = "AVIS_CHANGEMENT_CLASSE")
-	private Integer avisChangementClasse;
+	private Boolean avisChangementClasse;
 
 	@Column(name = "NIVEAU")
 	@Enumerated(EnumType.STRING)
@@ -116,11 +116,11 @@ public class EaeEvaluation {
 		this.noteAnneeN3 = noteAnneeN3;
 	}
 
-	public Integer getAvisRevalorisation() {
+	public Boolean getAvisRevalorisation() {
 		return avisRevalorisation;
 	}
 
-	public void setAvisRevalorisation(Integer avisRevalorisation) {
+	public void setAvisRevalorisation(Boolean avisRevalorisation) {
 		this.avisRevalorisation = avisRevalorisation;
 	}
 
@@ -140,11 +140,11 @@ public class EaeEvaluation {
 		this.propositionAvancement = propositionAvancement;
 	}
 
-	public Integer getAvisChangementClasse() {
+	public Boolean getAvisChangementClasse() {
 		return avisChangementClasse;
 	}
 
-	public void setAvisChangementClasse(Integer avisChangementClasse) {
+	public void setAvisChangementClasse(Boolean avisChangementClasse) {
 		this.avisChangementClasse = avisChangementClasse;
 	}
 

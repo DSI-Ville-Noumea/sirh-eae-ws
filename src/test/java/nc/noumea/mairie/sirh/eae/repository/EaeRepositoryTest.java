@@ -631,8 +631,8 @@ public class EaeRepositoryTest {
 		/////// 1er fiche de poste ///////
 		EaeEvaluation evaluation = new EaeEvaluation();
 		evaluation.setPropositionAvancement(EaeAvancementEnum.MINI);
-		evaluation.setAvisChangementClasse(1);
-		evaluation.setAvisRevalorisation(1);
+		evaluation.setAvisChangementClasse(true);
+		evaluation.setAvisRevalorisation(true);
 		
 		EaeEvalue eaeEvalue = new EaeEvalue();
 		eaeEvalue.setIdAgent(9005142);
@@ -670,8 +670,8 @@ public class EaeRepositoryTest {
 		
 		EaeEvaluation evaluationBis = new EaeEvaluation();
 		evaluationBis.setPropositionAvancement(EaeAvancementEnum.MOY);
-		evaluationBis.setAvisChangementClasse(0);
-		evaluationBis.setAvisRevalorisation(0);
+		evaluationBis.setAvisChangementClasse(false);
+		evaluationBis.setAvisRevalorisation(false);
 		
 		Eae eaeEnCoursBis = new Eae();
 		eaeEnCoursBis.setCap(false);
@@ -706,8 +706,8 @@ public class EaeRepositoryTest {
 		
 		EaeEvaluation evaluation2 = new EaeEvaluation();
 		evaluation2.setPropositionAvancement(EaeAvancementEnum.MAXI);
-		evaluation2.setAvisChangementClasse(1);
-		evaluation2.setAvisRevalorisation(0);
+		evaluation2.setAvisChangementClasse(true);
+		evaluation2.setAvisRevalorisation(false);
 		
 		Eae eaeNonDebute = new Eae();
 		eaeNonDebute.setCap(true);
@@ -742,8 +742,8 @@ public class EaeRepositoryTest {
 		
 		EaeEvaluation evaluation3 = new EaeEvaluation();
 		evaluation3.setPropositionAvancement(EaeAvancementEnum.MAXI);
-		evaluation3.setAvisChangementClasse(0);
-		evaluation3.setAvisRevalorisation(1);
+		evaluation3.setAvisChangementClasse(false);
+		evaluation3.setAvisRevalorisation(true);
 		
 		Eae eaeFinalise = new Eae();
 		eaeFinalise.setCap(true);
