@@ -79,9 +79,6 @@ public class Eae {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateControle;
 
-	@Column(name = "HEURE_CONTROLE")
-	private String heureControle;
-
 	@Column(name = "USER_CONTROLE")
 	private String userControle;
 
@@ -280,14 +277,6 @@ public class Eae {
 
 	public void setDateControle(Date dateControle) {
 		this.dateControle = dateControle;
-	}
-
-	public String getHeureControle() {
-		return heureControle;
-	}
-
-	public void setHeureControle(String heureControle) {
-		this.heureControle = heureControle;
 	}
 
 	public String getUserControle() {

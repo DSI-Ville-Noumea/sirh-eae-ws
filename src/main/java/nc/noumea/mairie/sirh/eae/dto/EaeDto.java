@@ -44,7 +44,6 @@ public class EaeDto {
 	@JsonSerialize(using = JsonDateSerializer.class)
 	@JsonDeserialize(using = JsonDateDeserializer.class)
 	private Date						dateControle;
-	private String						heureControle;
 
 	private String						userControle;
 	private Integer						idAgentDelegataire;
@@ -74,7 +73,6 @@ public class EaeDto {
 		}
 		this.dateCreation = eae.getDateCreation();
 		this.dateControle = eae.getDateControle();
-		this.heureControle = eae.getHeureControle();
 		this.dateFinalisation = eae.getDateFinalisation();
 		this.userControle = eae.getUserControle();
 		this.idAgentDelegataire = eae.getIdAgentDelegataire();
@@ -228,14 +226,6 @@ public class EaeDto {
 		this.idAgentDelegataire = idAgentDelegataire;
 	}
 
-	public String getHeureControle() {
-		return heureControle;
-	}
-
-	public void setHeureControle(String heureControle) {
-		this.heureControle = heureControle;
-	}
-
 	public boolean isCap() {
 		return cap;
 	}
@@ -257,7 +247,7 @@ public class EaeDto {
 		return "EaeDto [idEae=" + idEae + ", etat=" + etat + ", dateEntretien=" + dateEntretien + ", campagne=" + campagne + ", evalue=" + evalue
 				+ ", fichePoste=" + fichePoste + ", evaluateurs=" + evaluateurs + ", evaluation=" + evaluation + ", planAction=" + planAction
 				+ ", evolution=" + evolution + ", finalisation=" + finalisation + ", dateCreation=" + dateCreation + ", dateFinalisation="
-				+ dateFinalisation + ", dateControle=" + dateControle + ", heureControle=" + heureControle + ", userControle=" + userControle
+				+ dateFinalisation + ", dateControle=" + dateControle + ", userControle=" + userControle
 				+ ", idAgentDelegataire=" + idAgentDelegataire + ", cap=" + cap + ", docAttache=" + docAttache + "]";
 	}
 
