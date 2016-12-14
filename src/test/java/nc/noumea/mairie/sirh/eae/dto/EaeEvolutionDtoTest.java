@@ -1,6 +1,7 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,15 +12,17 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
+import nc.noumea.mairie.sirh.eae.service.EaeService;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 public class EaeEvolutionDtoTest {
-
+	
 	@Test
 	public void testConstructor() {
 		// Given
@@ -109,37 +112,37 @@ public class EaeEvolutionDtoTest {
 		EaeDeveloppement dev1 = new EaeDeveloppement();
 		dev1.setIdEaeDeveloppement(10);
 		dev1.setLibelle("libelle CONNAISSANCE");
-		dev1.setTypeDeveloppement(EaeTypeDeveloppementEnum.CONNAISSANCE);
+		dev1.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.CONNAISSANCE));
 		evolution.getEaeDeveloppements().add(dev1);
 
 		EaeDeveloppement dev2 = new EaeDeveloppement();
 		dev2.setIdEaeDeveloppement(20);
 		dev2.setLibelle("libelle COMPETENCE");
-		dev2.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE);
+		dev2.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE));
 		evolution.getEaeDeveloppements().add(dev2);
 
 		EaeDeveloppement dev3 = new EaeDeveloppement();
 		dev3.setIdEaeDeveloppement(30);
 		dev3.setLibelle("libelle CONCOURS");
-		dev3.setTypeDeveloppement(EaeTypeDeveloppementEnum.CONCOURS);
+		dev3.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.CONCOURS));
 		evolution.getEaeDeveloppements().add(dev3);
 
 		EaeDeveloppement dev4 = new EaeDeveloppement();
 		dev4.setIdEaeDeveloppement(40);
 		dev4.setLibelle("libelle PERSONNEL");
-		dev4.setTypeDeveloppement(EaeTypeDeveloppementEnum.PERSONNEL);
+		dev4.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.PERSONNEL));
 		evolution.getEaeDeveloppements().add(dev4);
 
 		EaeDeveloppement dev5 = new EaeDeveloppement();
 		dev5.setIdEaeDeveloppement(50);
 		dev5.setLibelle("libelle COMPORTEMENT");
-		dev5.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dev5.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		evolution.getEaeDeveloppements().add(dev5);
 
 		EaeDeveloppement dev6 = new EaeDeveloppement();
 		dev6.setIdEaeDeveloppement(60);
 		dev6.setLibelle("libelle FORMATEUR");
-		dev6.setTypeDeveloppement(EaeTypeDeveloppementEnum.FORMATEUR);
+		dev6.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.FORMATEUR));
 		evolution.getEaeDeveloppements().add(dev6);
 		
 		// When
@@ -156,42 +159,42 @@ public class EaeEvolutionDtoTest {
 		assertEquals(dev1.getEcheance(), dto.getDeveloppementConnaissances().get(0).getEcheance());
 		assertEquals(dev1.getLibelle(), dto.getDeveloppementConnaissances().get(0).getLibelle());
 		assertEquals(dev1.getPriorisation(), dto.getDeveloppementConnaissances().get(0).getPriorisation());
-		assertEquals(dev1.getTypeDeveloppement().name(), dto.getDeveloppementConnaissances().get(0).getTypeDeveloppement());
+		assertEquals(dev1.getTypeDeveloppement().getLibelle(), dto.getDeveloppementConnaissances().get(0).getTypeDeveloppement());
 		
 		assertEquals(1, dto.getDeveloppementCompetences().size());
 		assertEquals(dev2.getIdEaeDeveloppement(), dto.getDeveloppementCompetences().get(0).getIdEaeDeveloppement());
 		assertEquals(dev2.getEcheance(), dto.getDeveloppementCompetences().get(0).getEcheance());
 		assertEquals(dev2.getLibelle(), dto.getDeveloppementCompetences().get(0).getLibelle());
 		assertEquals(dev2.getPriorisation(), dto.getDeveloppementCompetences().get(0).getPriorisation());
-		assertEquals(dev2.getTypeDeveloppement().name(), dto.getDeveloppementCompetences().get(0).getTypeDeveloppement());
+		assertEquals(dev2.getTypeDeveloppement().getLibelle(), dto.getDeveloppementCompetences().get(0).getTypeDeveloppement());
 		
 		assertEquals(1, dto.getDeveloppementExamensConcours().size());
 		assertEquals(dev3.getIdEaeDeveloppement(), dto.getDeveloppementExamensConcours().get(0).getIdEaeDeveloppement());
 		assertEquals(dev3.getEcheance(), dto.getDeveloppementExamensConcours().get(0).getEcheance());
 		assertEquals(dev3.getLibelle(), dto.getDeveloppementExamensConcours().get(0).getLibelle());
 		assertEquals(dev3.getPriorisation(), dto.getDeveloppementExamensConcours().get(0).getPriorisation());
-		assertEquals(dev3.getTypeDeveloppement().name(), dto.getDeveloppementExamensConcours().get(0).getTypeDeveloppement());
+		assertEquals(dev3.getTypeDeveloppement().getLibelle(), dto.getDeveloppementExamensConcours().get(0).getTypeDeveloppement());
 		
 		assertEquals(1, dto.getDeveloppementPersonnel().size());
 		assertEquals(dev4.getIdEaeDeveloppement(), dto.getDeveloppementPersonnel().get(0).getIdEaeDeveloppement());
 		assertEquals(dev4.getEcheance(), dto.getDeveloppementPersonnel().get(0).getEcheance());
 		assertEquals(dev4.getLibelle(), dto.getDeveloppementPersonnel().get(0).getLibelle());
 		assertEquals(dev4.getPriorisation(), dto.getDeveloppementPersonnel().get(0).getPriorisation());
-		assertEquals(dev4.getTypeDeveloppement().name(), dto.getDeveloppementPersonnel().get(0).getTypeDeveloppement());
+		assertEquals(dev4.getTypeDeveloppement().getLibelle(), dto.getDeveloppementPersonnel().get(0).getTypeDeveloppement());
 		
 		assertEquals(1, dto.getDeveloppementComportement().size());
 		assertEquals(dev5.getIdEaeDeveloppement(), dto.getDeveloppementComportement().get(0).getIdEaeDeveloppement());
 		assertEquals(dev5.getEcheance(), dto.getDeveloppementComportement().get(0).getEcheance());
 		assertEquals(dev5.getLibelle(), dto.getDeveloppementComportement().get(0).getLibelle());
 		assertEquals(dev5.getPriorisation(), dto.getDeveloppementComportement().get(0).getPriorisation());
-		assertEquals(dev5.getTypeDeveloppement().name(), dto.getDeveloppementComportement().get(0).getTypeDeveloppement());
+		assertEquals(dev5.getTypeDeveloppement().getLibelle(), dto.getDeveloppementComportement().get(0).getTypeDeveloppement());
 		
 		assertEquals(1, dto.getDeveloppementFormateur().size());
 		assertEquals(dev6.getIdEaeDeveloppement(), dto.getDeveloppementFormateur().get(0).getIdEaeDeveloppement());
 		assertEquals(dev6.getEcheance(), dto.getDeveloppementFormateur().get(0).getEcheance());
 		assertEquals(dev6.getLibelle(), dto.getDeveloppementFormateur().get(0).getLibelle());
 		assertEquals(dev6.getPriorisation(), dto.getDeveloppementFormateur().get(0).getPriorisation());
-		assertEquals(dev6.getTypeDeveloppement().name(), dto.getDeveloppementFormateur().get(0).getTypeDeveloppement());
+		assertEquals(dev6.getTypeDeveloppement().getLibelle(), dto.getDeveloppementFormateur().get(0).getTypeDeveloppement());
 	}
 	
 //	@Test

@@ -21,6 +21,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvisEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
@@ -607,7 +608,7 @@ public class EvaluationService implements IEvaluationService {
 				EaeDeveloppement newDev = new EaeDeveloppement(devDto);
 				newDev.setIdEaeDeveloppement(null);
 				newDev.setEaeEvolution(evolution);
-				newDev.setTypeDeveloppement(typeDeveloppement);
+				newDev.setTypeDeveloppement(new EaeTypeDeveloppement(typeDeveloppement));
 				evolution.getEaeDeveloppements().add(newDev);
 			} else {
 				for (EaeDeveloppement existingDev : evolution.getEaeDeveloppements()) {

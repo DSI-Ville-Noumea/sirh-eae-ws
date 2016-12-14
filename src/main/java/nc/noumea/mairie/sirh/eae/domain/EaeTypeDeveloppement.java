@@ -10,6 +10,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
+
 @Entity
 @Table(name = "EAE_TYPE_DEVELOPPEMENT")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
@@ -23,6 +25,20 @@ public class EaeTypeDeveloppement {
 
 	@Column(name = "LIBELLE_TYPE_DEVELOPPEMENT")
 	private String libelle;
+	
+	public EaeTypeDeveloppement(Integer id, String libelle) {
+		this.idEaeTypeDeveloppement = id;
+		this.libelle = libelle;
+	}
+	
+	public EaeTypeDeveloppement(EaeTypeDeveloppementEnum type) {
+		this.idEaeTypeDeveloppement = type.getId();
+		this.libelle = type.getType();
+	}
+	
+	public EaeTypeDeveloppement() {
+		super();
+	}
 
 	public Integer getIdEaeTypeDeveloppement() {
 		return idEaeTypeDeveloppement;

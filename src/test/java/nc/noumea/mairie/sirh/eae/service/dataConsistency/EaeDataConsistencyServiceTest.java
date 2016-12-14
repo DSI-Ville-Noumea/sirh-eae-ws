@@ -7,6 +7,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 
@@ -117,12 +118,12 @@ public class EaeDataConsistencyServiceTest {
 		EaeEvolution evolution = new EaeEvolution();
 		EaeDeveloppement dev1 = new EaeDeveloppement();
 		dev1.setPriorisation(1);
-		dev1.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE);
+		dev1.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE));
 		evolution.getEaeDeveloppements().add(dev1);
 		
 		EaeDeveloppement dev2 = new EaeDeveloppement();
 		dev2.setPriorisation(2);
-		dev2.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dev2.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		evolution.getEaeDeveloppements().add(dev2);
 
 		eae.setEaeEvolution(evolution);
@@ -144,12 +145,12 @@ public class EaeDataConsistencyServiceTest {
 		EaeEvolution evolution = new EaeEvolution();
 		EaeDeveloppement dev1 = new EaeDeveloppement();
 		dev1.setPriorisation(1);
-		dev1.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dev1.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		evolution.getEaeDeveloppements().add(dev1);
 		
 		EaeDeveloppement dev2 = new EaeDeveloppement();
 		dev2.setPriorisation(0);
-		dev2.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dev2.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		evolution.getEaeDeveloppements().add(dev2);
 
 		eae.setEaeEvolution(evolution);
@@ -175,13 +176,13 @@ public class EaeDataConsistencyServiceTest {
 		Eae eae = new Eae();
 		EaeEvolution evolution = new EaeEvolution();
 		EaeDeveloppement dev1 = new EaeDeveloppement();
-		dev1.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE);
+		dev1.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPETENCE));
 		dev1.setPriorisation(1);
 		evolution.getEaeDeveloppements().add(dev1);
 		
 		EaeDeveloppement dev2 = new EaeDeveloppement();
 		dev2.setPriorisation(1);
-		dev2.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dev2.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		evolution.getEaeDeveloppements().add(dev2);
 		
 		eae.setEaeEvolution(evolution);
@@ -209,13 +210,13 @@ public class EaeDataConsistencyServiceTest {
 		EaeEvolution evolution = new EaeEvolution();
 		EaeDeveloppement dev1 = new EaeDeveloppement();
 		dev1.setPriorisation(3);
-		dev1.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dev1.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		evolution.getEaeDeveloppements().add(dev1);
 		
 		EaeDeveloppement dev2 = new EaeDeveloppement();
 		dev2.setPriorisation(1);
 		evolution.getEaeDeveloppements().add(dev2);
-		dev2.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		dev2.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 
 		eae.setEaeEvolution(evolution);
 		

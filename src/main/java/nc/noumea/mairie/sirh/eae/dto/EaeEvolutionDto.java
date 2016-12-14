@@ -15,6 +15,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.dto.identification.EaeListeDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.tools.transformer.JsonDateDeserializer;
@@ -111,28 +112,23 @@ public class EaeEvolutionDto {
 	}
 
 	private void fillInDeveloppements(Set<EaeDeveloppement> developpements) {
-
+		
 		for (EaeDeveloppement dev : developpements) {
-			switch (dev.getTypeDeveloppement()) {
-				case CONNAISSANCE:
-					developpementConnaissances.add(new EaeDeveloppementDto(dev));
-					break;
-				case COMPETENCE:
-					developpementCompetences.add(new EaeDeveloppementDto(dev));
-					break;
-				case CONCOURS:
-					developpementExamensConcours.add(new EaeDeveloppementDto(dev));
-					break;
-				case PERSONNEL:
-					developpementPersonnel.add(new EaeDeveloppementDto(dev));
-					break;
-				case COMPORTEMENT:
-					developpementComportement.add(new EaeDeveloppementDto(dev));
-					break;
-				case FORMATEUR:
-					developpementFormateur.add(new EaeDeveloppementDto(dev));
-					break;
-			}
+			/* 'if' plutôt que 'switch', car les variables ne sont pas acceptés dans les switch (pour l'id de l'enum) */
+			Integer typeDevId = dev.getTypeDeveloppement().getIdEaeTypeDeveloppement();
+			
+			if (typeDevId == EaeTypeDeveloppementEnum.CONNAISSANCE.getId())
+				developpementConnaissances.add(new EaeDeveloppementDto(dev));
+			else if (typeDevId == EaeTypeDeveloppementEnum.COMPETENCE.getId())
+				developpementCompetences.add(new EaeDeveloppementDto(dev));
+			else if (typeDevId == EaeTypeDeveloppementEnum.CONCOURS.getId())
+				developpementExamensConcours.add(new EaeDeveloppementDto(dev));
+			else if (typeDevId == EaeTypeDeveloppementEnum.PERSONNEL.getId())
+				developpementPersonnel.add(new EaeDeveloppementDto(dev));
+			else if (typeDevId == EaeTypeDeveloppementEnum.COMPORTEMENT.getId())
+				developpementComportement.add(new EaeDeveloppementDto(dev));
+			else if (typeDevId == EaeTypeDeveloppementEnum.FORMATEUR.getId())
+				developpementFormateur.add(new EaeDeveloppementDto(dev));
 		}
 	}
 

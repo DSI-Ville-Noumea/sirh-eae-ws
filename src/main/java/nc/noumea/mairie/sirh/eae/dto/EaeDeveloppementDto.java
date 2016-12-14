@@ -28,7 +28,7 @@ public class EaeDeveloppementDto {
 		this.libelle = eaeDev.getLibelle();
 		this.echeance = eaeDev.getEcheance();
 		this.priorisation = eaeDev.getPriorisation();
-		this.typeDeveloppement = eaeDev.getTypeDeveloppement().name();
+		this.typeDeveloppement = eaeDev.getTypeDeveloppement().getLibelle();
 	}
 	
 	public Integer getIdEaeDeveloppement() {

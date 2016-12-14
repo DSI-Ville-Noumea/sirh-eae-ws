@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
@@ -40,9 +41,9 @@ public class EaeDeveloppement {
 	@Column(name = "PRIORISATION")
 	private int priorisation;
 
-	@Column(name = "TYPE_DEVELOPPEMENT")
-	@Enumerated(EnumType.STRING)
-	private EaeTypeDeveloppementEnum typeDeveloppement;
+	@ManyToOne
+	@JoinColumn(name = "ID_TYPE_DEVELOPPEMENT")
+	private EaeTypeDeveloppement typeDeveloppement;
 
 	@NotNull
 	@OneToOne
@@ -92,11 +93,11 @@ public class EaeDeveloppement {
 		this.priorisation = priorisation;
 	}
 
-	public EaeTypeDeveloppementEnum getTypeDeveloppement() {
+	public EaeTypeDeveloppement getTypeDeveloppement() {
 		return typeDeveloppement;
 	}
 
-	public void setTypeDeveloppement(EaeTypeDeveloppementEnum typeDeveloppement) {
+	public void setTypeDeveloppement(EaeTypeDeveloppement typeDeveloppement) {
 		this.typeDeveloppement = typeDeveloppement;
 	}
 

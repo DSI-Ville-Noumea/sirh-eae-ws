@@ -35,6 +35,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
@@ -1542,17 +1543,19 @@ public class EvaluationServiceTest {
 
 		for (EaeDeveloppement dev : evo.getEaeDeveloppements()) {
 			assertEquals(evo, dev.getEaeEvolution());
-			if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.CONNAISSANCE)
+			Integer typeDevId = dev.getTypeDeveloppement().getIdEaeTypeDeveloppement();
+			
+			if (typeDevId == EaeTypeDeveloppementEnum.CONNAISSANCE.getId())
 				assertEquals("libelle CONNAISSANCE", dev.getLibelle());
-			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.COMPETENCE)
+			else if (typeDevId == EaeTypeDeveloppementEnum.COMPETENCE.getId())
 				assertEquals("libelle COMPETENCE", dev.getLibelle());
-			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.CONCOURS)
+			else if (typeDevId == EaeTypeDeveloppementEnum.CONCOURS.getId())
 				assertEquals("libelle CONCOURS", dev.getLibelle());
-			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.PERSONNEL)
+			else if (typeDevId == EaeTypeDeveloppementEnum.PERSONNEL.getId())
 				assertEquals("libelle PERSONNEL", dev.getLibelle());
-			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.COMPORTEMENT)
+			else if (typeDevId == EaeTypeDeveloppementEnum.COMPORTEMENT.getId())
 				assertEquals("libelle COMPORTEMENT", dev.getLibelle());
-			else if (dev.getTypeDeveloppement() == EaeTypeDeveloppementEnum.FORMATEUR)
+			else if (typeDevId == EaeTypeDeveloppementEnum.FORMATEUR.getId())
 				assertEquals("libelle FORMATEUR", dev.getLibelle());
 			else
 				fail("test failed");
@@ -1679,7 +1682,7 @@ public class EvaluationServiceTest {
 		existingDeveloppement.setIdEaeDeveloppement(89);
 		existingDeveloppement.setLibelle("comportement existant");
 		existingDeveloppement.setEcheance(new DateTime(2009, 12, 12, 13, 57, 0, 0).toDate());
-		existingDeveloppement.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		existingDeveloppement.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		evol.getEaeDeveloppements().add(existingDeveloppement);
 
 		EaeEvolutionDto dto = new EaeEvolutionDto();
@@ -1728,7 +1731,7 @@ public class EvaluationServiceTest {
 		existingDeveloppement.setIdEaeDeveloppement(89);
 		existingDeveloppement.setLibelle("comportement existant");
 		existingDeveloppement.setEcheance(new DateTime(2009, 12, 12, 13, 57, 0, 0).toDate());
-		existingDeveloppement.setTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT);
+		existingDeveloppement.setTypeDeveloppement(new EaeTypeDeveloppement(EaeTypeDeveloppementEnum.COMPORTEMENT));
 		existingDeveloppement.setEaeEvolution(evol);
 		evol.getEaeDeveloppements().add(existingDeveloppement);
 
