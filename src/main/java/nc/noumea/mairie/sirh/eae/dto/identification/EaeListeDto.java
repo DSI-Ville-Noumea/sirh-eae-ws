@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import nc.noumea.mairie.sirh.eae.domain.EaeRefDelai;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 
 public class EaeListeDto {
@@ -28,6 +30,24 @@ public class EaeListeDto {
 		}
 
 		courant = value != null ? value.name() : null;
+	}
+
+	/**
+	 * Ce constructeur est utilisé uniquement pour les ref. délai
+	 * @param value
+	 */
+	@SuppressWarnings("rawtypes")
+	public EaeListeDto(EaeRefDelai value) {
+
+		this();
+
+		for (Object o : EaeDelaiEnum.class.getEnumConstants()) {
+			Enum e = (Enum) o;
+			ValeurListeDto item = new ValeurListeDto(e.name(), e.toString());
+			liste.add(item);
+		}
+
+		courant = value != null ? value.getCode() : null;
 	}
 
 	public EaeListeDto(Integer valueId, List<SpbhorDto> choices) {

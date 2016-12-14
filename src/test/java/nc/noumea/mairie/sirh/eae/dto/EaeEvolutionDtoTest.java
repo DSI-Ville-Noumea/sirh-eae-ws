@@ -1,25 +1,24 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.joda.time.DateTime;
+import org.junit.Test;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCommentaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
+import nc.noumea.mairie.sirh.eae.domain.EaeRefDelai;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
-import nc.noumea.mairie.sirh.eae.service.EaeService;
-
-import org.joda.time.DateTime;
-import org.junit.Test;
 
 public class EaeEvolutionDtoTest {
 	
@@ -34,7 +33,7 @@ public class EaeEvolutionDtoTest {
 		evolution.setMobiliteGeo(true);
 		evolution.setMobiliteFonctionnelle(true);
 		evolution.setChangementMetier(true);
-		evolution.setDelaiEnvisage(EaeDelaiEnum.ENTRE1ET2ANS);
+		evolution.setDelaiEnvisage(new EaeRefDelai(EaeDelaiEnum.ENTRE1ET2ANS));
 		evolution.setMobiliteService(true);
 		evolution.setMobiliteDirection(true);
 		evolution.setMobiliteCollectivite(true);
@@ -69,7 +68,7 @@ public class EaeEvolutionDtoTest {
 		assertEquals(evolution.isMobiliteGeo(), dto.isMobiliteGeo());
 		assertEquals(evolution.isMobiliteFonctionnelle(), dto.isMobiliteFonctionnelle());
 		assertEquals(evolution.isChangementMetier(), dto.isChangementMetier());
-		assertEquals(evolution.getDelaiEnvisage().name(), dto.getDelaiEnvisage().getCourant());
+		assertEquals(evolution.getDelaiEnvisage().getCode(), dto.getDelaiEnvisage().getCourant());
 		assertEquals(evolution.isMobiliteService(), dto.isMobiliteService());
 		assertEquals(evolution.isMobiliteDirection(), dto.isMobiliteDirection());
 		assertEquals(evolution.isMobiliteCollectivite(), dto.isMobiliteCollectivite());

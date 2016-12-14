@@ -20,6 +20,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
+import nc.noumea.mairie.sirh.eae.domain.EaeRefDelai;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
@@ -512,7 +513,7 @@ public class EvaluationService implements IEvaluationService {
 				throw new EvaluationServiceException("La propriété 'delaiEnvisage' de l'évolution est incorrecte.");
 			}
 		}
-		evolution.setDelaiEnvisage(delai);
+		evolution.setDelaiEnvisage(new EaeRefDelai(delai));
 
 		Integer selectedId = null;
 		if (dto.getPourcentageTempsPartiel() != null && dto.getPourcentageTempsPartiel().getCourant() != null) {
