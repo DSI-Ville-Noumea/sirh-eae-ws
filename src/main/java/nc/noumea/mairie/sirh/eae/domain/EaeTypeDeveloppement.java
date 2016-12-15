@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.eae.domain;
 
+import java.text.Normalizer;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 
@@ -32,6 +36,11 @@ public class EaeTypeDeveloppement {
 	public EaeTypeDeveloppement(Integer id, String libelle) {
 		this.idEaeTypeDeveloppement = id;
 		this.libelle = libelle;
+		
+		/* On met le code par default : libellé sans les accents, en majuscule */
+		libelle = Normalizer.normalize(libelle, Normalizer.Form.NFD);
+		libelle = libelle.replaceAll("[^\\p{ASCII}]", "");
+		this.code = StringUtils.upperCase(libelle);
 	}
 	
 	public EaeTypeDeveloppement(EaeTypeDeveloppementEnum type) {
