@@ -7,8 +7,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,8 +20,6 @@ import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeDelaiEnum;
 
 import org.hibernate.annotations.Type;
 
@@ -49,9 +45,9 @@ public class EaeEvolution {
 	@Type(type = "boolean")
 	private boolean changementMetier;
 
-	@Column(name = "DELAI_ENVISAGE")
-	@Enumerated(EnumType.STRING)
-	private EaeDelaiEnum delaiEnvisage;
+	@ManyToOne
+	@JoinColumn(name = "ID_DELAI_ENVISAGE")
+	private EaeRefDelai delaiEnvisage;
 
 	@Column(name = "MOBILITE_SERVICE", nullable = false)
 	@Type(type = "boolean")
@@ -164,11 +160,11 @@ public class EaeEvolution {
 		this.changementMetier = changementMetier;
 	}
 
-	public EaeDelaiEnum getDelaiEnvisage() {
+	public EaeRefDelai getDelaiEnvisage() {
 		return delaiEnvisage;
 	}
 
-	public void setDelaiEnvisage(EaeDelaiEnum delaiEnvisage) {
+	public void setDelaiEnvisage(EaeRefDelai delaiEnvisage) {
 		this.delaiEnvisage = delaiEnvisage;
 	}
 

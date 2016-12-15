@@ -85,7 +85,7 @@ public class EaeEvolutionDto {
 		mobiliteGeo = evolution.isMobiliteGeo();
 		mobiliteFonctionnelle = evolution.isMobiliteFonctionnelle();
 		changementMetier = evolution.isChangementMetier();
-		delaiEnvisage = new EaeListeDto(evolution.getDelaiEnvisage(), EaeDelaiEnum.class);
+		delaiEnvisage = new EaeListeDto(evolution.getDelaiEnvisage());
 		mobiliteService = evolution.isMobiliteService();
 		mobiliteDirection = evolution.isMobiliteDirection();
 		mobiliteCollectivite = evolution.isMobiliteCollectivite();

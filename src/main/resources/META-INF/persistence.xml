@@ -33,6 +33,7 @@
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneAction</class>
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeDocument</class>
 		<class>nc.noumea.mairie.sirh.eae.domain.EaeCampagneActeurs</class>
+		<class>nc.noumea.mairie.sirh.eae.domain.EaeRefDelai</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />

@@ -1450,7 +1450,7 @@ public class EvaluationServiceTest {
 		assertTrue(evo.isMobiliteGeo());
 		assertTrue(evo.isMobiliteFonctionnelle());
 		assertTrue(evo.isChangementMetier());
-		assertEquals("ENTRE1ET2ANS", evo.getDelaiEnvisage().name());
+		assertEquals("ENTRE1ET2ANS", evo.getDelaiEnvisage().getCode());
 		assertTrue(evo.isMobiliteService());
 		assertTrue(evo.isMobiliteDirection());
 		assertTrue(evo.isMobiliteCollectivite());
