@@ -3,14 +3,14 @@ package nc.noumea.mairie.sirh.eae.service.dataConsistency;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluation;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class EaeDataConsistencyService implements IEaeDataConsistencyService {
@@ -51,7 +51,7 @@ public class EaeDataConsistencyService implements IEaeDataConsistencyService {
 			// formateurs
 			List<EaeDeveloppement> listeSansFormation = new ArrayList<EaeDeveloppement>();
 			for (EaeDeveloppement developpement : evolution.getEaeDeveloppements()) {
-				if (!developpement.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.FORMATEUR)) {
+				if (!developpement.getTypeDeveloppement().getLibelle().equals(EaeTypeDeveloppementEnum.FORMATEUR.getLibelle())) {
 					listeSansFormation.add(developpement);
 				}
 			}

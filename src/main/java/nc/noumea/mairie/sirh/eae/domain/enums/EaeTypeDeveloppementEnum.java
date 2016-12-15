@@ -13,16 +13,16 @@ public enum EaeTypeDeveloppementEnum {
 	FORMATEUR(6, "Formateur");
 
 	private Integer id;
-	private String type;
+	private String libelle;
 	
 	private EaeTypeDeveloppementEnum(Integer id, String _type) {
 		this.id = id;
-		this.type = _type;
+		this.libelle = _type;
 	}
 	
 	@Override
 	public String toString() {
-		return id + " - " + type;
+		return libelle;
 	}
 
 	public Integer getId() {
@@ -33,11 +33,11 @@ public enum EaeTypeDeveloppementEnum {
 		this.id = id;
 	}
 
-	public String getType() {
-		return type;
+	public String getLibelle() {
+		return libelle;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
 	}
 }

@@ -23,6 +23,9 @@ public class EaeTypeDeveloppement {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idEaeTypeDeveloppement;
 
+	@Column(name = "CODE_TYPE_DEVELOPPEMENT")
+	private String code;
+	
 	@Column(name = "LIBELLE_TYPE_DEVELOPPEMENT")
 	private String libelle;
 	
@@ -33,7 +36,8 @@ public class EaeTypeDeveloppement {
 	
 	public EaeTypeDeveloppement(EaeTypeDeveloppementEnum type) {
 		this.idEaeTypeDeveloppement = type.getId();
-		this.libelle = type.getType();
+		this.libelle = type.getLibelle();
+		this.code = type.name();
 	}
 	
 	public EaeTypeDeveloppement() {
@@ -48,6 +52,14 @@ public class EaeTypeDeveloppement {
 		this.idEaeTypeDeveloppement = idEaeTypeDeveloppement;
 	}
 
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public String getLibelle() {
 		return libelle;
 	}
@@ -55,5 +67,13 @@ public class EaeTypeDeveloppement {
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
 	}
-
+	
+	 @Override
+	 public boolean equals(Object obj) {
+		 EaeTypeDeveloppement e = (EaeTypeDeveloppement) obj;
+	                
+         return (e.getLibelle().equals(this.libelle) 
+                        && e.getIdEaeTypeDeveloppement().equals(this.idEaeTypeDeveloppement)
+                        && e.getCode().equals(this.code));
+	 }
 }
