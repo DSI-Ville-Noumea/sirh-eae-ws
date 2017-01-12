@@ -38,6 +38,7 @@ import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
@@ -45,6 +46,7 @@ import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AgentDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.BirtDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.ValeurListeDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.eae.web.controller.NoContentException;
@@ -751,9 +753,19 @@ public class EaeService implements IEaeService {
 
 		if (null != listEae) {
 			for (Eae eae : listEae) {
-				agentService.fillEaeWithAgents(eae);
-				EaeDto eaeDto = new EaeDto(eae, true);
-				listEaeDto.add(eaeDto);
+				if (eae.getEaeEvalue() != null) {
+					// dto de l'agent
+					BirtDto dtoAg = new BirtDto();
+					dtoAg.setIdAgent(eae.getEaeEvalue().getIdAgent());
+					EaeDto eaeDto = new EaeDto();
+					eaeDto.setIdEae(eae.getIdEae());
+					eaeDto.setEtat(eae.getEtat().name());
+					eaeDto.setEvalue(dtoAg);
+					if (eae.getEaeEvaluation() != null) {
+						eaeDto.setEvaluation(new EaeEvaluationDto(eae));
+					}
+					listEaeDto.add(eaeDto);
+				}
 			}
 		}
 

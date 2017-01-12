@@ -209,8 +209,9 @@ public class CampagneEaeService implements ICampagneEaeService {
 		if (null == eaeCampagne) {
 			return null;
 		}
-
-		return new CampagneEaeDto(eaeCampagne);
+		CampagneEaeDto res = new CampagneEaeDto();
+		res.setIdCampagneEae(eaeCampagne.getIdCampagneEae());
+		return res;
 	}
 
 	@Override
