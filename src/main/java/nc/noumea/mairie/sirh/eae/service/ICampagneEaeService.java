@@ -22,4 +22,6 @@ public interface ICampagneEaeService {
 	EaeCampagneTaskDto findEaeCampagneTaskByIdCampagne(Integer idEaeCampagne);
 	
 	ReturnMessageDto createOrModifyEaeCampagneTask(EaeCampagneTaskDto campagneTaskDto);
+
+	CampagneEaeDto getCampagneAnneePrecedenteLight(Integer anneePrecedente);
 }
