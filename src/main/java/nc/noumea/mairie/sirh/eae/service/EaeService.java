@@ -753,6 +753,29 @@ public class EaeService implements IEaeService {
 
 		if (null != listEae) {
 			for (Eae eae : listEae) {
+				agentService.fillEaeWithAgents(eae);
+				EaeDto eaeDto = new EaeDto(eae, true);
+				listEaeDto.add(eaeDto);
+			}
+		}
+
+		return listEaeDto;
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public List<EaeDto> getListeEaeLightDto(FormRehercheGestionEae form) throws EaeServiceException {
+
+		if (null == form.getIdCampagneEae() || form.getIdCampagneEae() == 0) {
+			throw new EaeServiceException("Le choix de la campagne EAE est obligatoire.");
+		}
+
+		List<EaeDto> listEaeDto = new ArrayList<EaeDto>();
+
+		List<Eae> listEae = eaeRepository.getListeEae(form);
+
+		if (null != listEae) {
+			for (Eae eae : listEae) {
 				if (eae.getEaeEvalue() != null) {
 					// dto de l'agent
 					BirtDto dtoAg = new BirtDto();

@@ -244,6 +244,20 @@ public class SirhEaeController {
 	}
 
 	@ResponseBody
+	@RequestMapping(value = "campagneAnneePrecedenteLight", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	public CampagneEaeDto getCampagneAnneePrecedenteLight(@RequestParam("idAgentSirh") int idAgentSirh,
+			@RequestParam("anneePrecedente") Integer anneePrecedente) throws SirhWSConsumerException {
+
+		logger.debug(
+				"entered GET [sirhEaes/campagneAnneePrecedenteLight] => getCampagneAnneePrecedenteLight with parameter idAgentSirh = {}, anneePrecedente = {}",
+				idAgentSirh, anneePrecedente);
+
+		isUtilisateurSirh(idAgentSirh);
+
+		return campagneService.getCampagneAnneePrecedenteLight(anneePrecedente);
+	}
+
+	@ResponseBody
 	@RequestMapping(value = "documentEae", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
 	public EaeDocumentDto getDocumentEae(@RequestParam("idAgentSirh") int idAgentSirh, @RequestParam("idDocument") Integer idDocument)
 			throws SirhWSConsumerException {
@@ -302,6 +316,26 @@ public class SirhEaeController {
 
 		try {
 			result = eaeService.getListeEaeDto(form);
+		} catch (EaeServiceException e) {
+			logger.debug(e.getMessage(), e);
+			throw new ConflictException(e.getMessage());
+		}
+
+		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "listeEaeLight", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	public List<EaeDto> getListeEaeLight(@RequestParam("idAgent") int idAgent, @RequestBody FormRehercheGestionEae form) throws SirhWSConsumerException {
+
+		logger.debug("entered POST [sirhEaes/listeEaeLight] => getListeEaeLight with parameter idAgent = {}", idAgent);
+
+		isUtilisateurSirh(idAgent);
+
+		List<EaeDto> result = null;
+
+		try {
+			result = eaeService.getListeEaeLightDto(form);
 		} catch (EaeServiceException e) {
 			logger.debug(e.getMessage(), e);
 			throw new ConflictException(e.getMessage());
