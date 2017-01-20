@@ -904,11 +904,11 @@ public class EaeService implements IEaeService {
 						// on cherche les propositions d'avancement
 						Integer nbAvctNonDefini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, null, false);
 
-						Integer nbAvctMini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MINI", false);
+						Integer nbAvctMini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MINI", false);
 
-						Integer nbAvctMoy = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MOY", false);
+						Integer nbAvctMoy = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MOY", false);
 
-						Integer nbAvctMAxi = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MAXI", false);
+						Integer nbAvctMAxi = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MAXI", false);
 
 						Integer nbAvctChangementClasse = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, null,
 								true);
