@@ -78,7 +78,7 @@ public class EaeAppreciation {
 	}
 
 	public String getNoteEvaluateur() {
-		return noteEvaluateur == null ? "NA" : noteEvalue;
+		return noteEvaluateur == null ? "NA" : noteEvaluateur;
 	}
 
 	public void setNoteEvaluateur(String noteEvaluateur) {
