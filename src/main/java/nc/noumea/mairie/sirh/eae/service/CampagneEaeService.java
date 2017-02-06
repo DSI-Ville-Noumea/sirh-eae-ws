@@ -209,8 +209,21 @@ public class CampagneEaeService implements ICampagneEaeService {
 		if (null == eaeCampagne) {
 			return null;
 		}
-
 		return new CampagneEaeDto(eaeCampagne);
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager")
+	public CampagneEaeDto getCampagneAnneePrecedenteLight(Integer anneePrecedente) {
+
+		EaeCampagne eaeCampagne = eaeRepository.findEaeCampagneByAnnee(anneePrecedente);
+
+		if (null == eaeCampagne) {
+			return null;
+		}
+		CampagneEaeDto res = new CampagneEaeDto();
+		res.setIdCampagneEae(eaeCampagne.getIdCampagneEae());
+		return res;
 	}
 
 	@Override

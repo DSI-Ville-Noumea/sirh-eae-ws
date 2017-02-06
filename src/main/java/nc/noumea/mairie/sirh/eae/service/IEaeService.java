@@ -203,6 +203,8 @@ public interface IEaeService {
 
 	List<EaeDto> getListeEaeDto(FormRehercheGestionEae form) throws EaeServiceException;
 
+	List<EaeDto> getListeEaeLightDto(FormRehercheGestionEae form) throws EaeServiceException;
+
 	String getLastDocumentEaeFinalise(Integer idEae);
 
 	/**

@@ -38,6 +38,7 @@ import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDto;
+import nc.noumea.mairie.sirh.eae.dto.EaeEvaluationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeEvalueNameDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
@@ -45,6 +46,7 @@ import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AgentDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.BirtDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.ValeurListeDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.eae.web.controller.NoContentException;
@@ -761,6 +763,39 @@ public class EaeService implements IEaeService {
 	}
 
 	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public List<EaeDto> getListeEaeLightDto(FormRehercheGestionEae form) throws EaeServiceException {
+
+		if (null == form.getIdCampagneEae() || form.getIdCampagneEae() == 0) {
+			throw new EaeServiceException("Le choix de la campagne EAE est obligatoire.");
+		}
+
+		List<EaeDto> listEaeDto = new ArrayList<EaeDto>();
+
+		List<Eae> listEae = eaeRepository.getListeEae(form);
+
+		if (null != listEae) {
+			for (Eae eae : listEae) {
+				if (eae.getEaeEvalue() != null) {
+					// dto de l'agent
+					BirtDto dtoAg = new BirtDto();
+					dtoAg.setIdAgent(eae.getEaeEvalue().getIdAgent());
+					EaeDto eaeDto = new EaeDto();
+					eaeDto.setIdEae(eae.getIdEae());
+					eaeDto.setEtat(eae.getEtat().name());
+					eaeDto.setEvalue(dtoAg);
+					if (eae.getEaeEvaluation() != null) {
+						eaeDto.setEvaluation(new EaeEvaluationDto(eae));
+					}
+					listEaeDto.add(eaeDto);
+				}
+			}
+		}
+
+		return listEaeDto;
+	}
+
+	@Override
 	public String getLastDocumentEaeFinalise(Integer idEae) {
 
 		return eaeRepository.getLastDocumentEaeFinalise(idEae);
@@ -869,11 +904,11 @@ public class EaeService implements IEaeService {
 						// on cherche les propositions d'avancement
 						Integer nbAvctNonDefini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, null, false);
 
-						Integer nbAvctMini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MINI", false);
+						Integer nbAvctMini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MINI", false);
 
-						Integer nbAvctMoy = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MOY", false);
+						Integer nbAvctMoy = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MOY", false);
 
-						Integer nbAvctMAxi = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, "MAXI", false);
+						Integer nbAvctMAxi = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MAXI", false);
 
 						Integer nbAvctChangementClasse = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, null,
 								true);

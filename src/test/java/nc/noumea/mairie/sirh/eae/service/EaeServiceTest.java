@@ -26,6 +26,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.joda.time.DateTime;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
+import org.springframework.mock.staticmock.MockStaticEntityMethods;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import nc.noumea.mairie.alfresco.cmis.IAlfrescoCMISService;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
@@ -55,14 +63,6 @@ import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
-
-import org.joda.time.DateTime;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.context.MessageSource;
-import org.springframework.mock.staticmock.MockStaticEntityMethods;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @SuppressWarnings("unchecked")
 @MockStaticEntityMethods
@@ -1709,11 +1709,11 @@ public class EaeServiceTest {
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, null, false)).thenReturn(8);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, "MINI", false)).thenReturn(9);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, "MINI", false)).thenReturn(9);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, "MOY", false)).thenReturn(10);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, "MOY", false)).thenReturn(10);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, "MAXI", false)).thenReturn(11);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, "MAXI", false)).thenReturn(11);
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, null, true)).thenReturn(12);
 		
@@ -1735,11 +1735,11 @@ public class EaeServiceTest {
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, null, false)).thenReturn(20);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, "MINI", false)).thenReturn(21);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, "MINI", false)).thenReturn(21);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, "MOY", false)).thenReturn(22);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, "MOY", false)).thenReturn(22);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, "MAXI", false)).thenReturn(23);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, "MAXI", false)).thenReturn(23);
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, null, true)).thenReturn(24);
 		
@@ -1761,11 +1761,11 @@ public class EaeServiceTest {
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, null, false)).thenReturn(32);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, "MINI", false)).thenReturn(33);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, "MINI", false)).thenReturn(33);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, "MOY", false)).thenReturn(34);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, "MOY", false)).thenReturn(34);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, "MAXI", false)).thenReturn(35);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, "MAXI", false)).thenReturn(35);
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, null, true)).thenReturn(36);
 		
@@ -1787,11 +1787,11 @@ public class EaeServiceTest {
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, null, false)).thenReturn(44);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, "MINI", false)).thenReturn(45);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, "MINI", false)).thenReturn(45);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, "MOY", false)).thenReturn(46);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, "MOY", false)).thenReturn(46);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, "MAXI", false)).thenReturn(47);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, "MAXI", false)).thenReturn(47);
 		Mockito.when(eaeRepository.countAvisSHD(
 				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, null, true)).thenReturn(48);
 		
