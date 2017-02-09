@@ -5,7 +5,7 @@
 	<groupId>nc.noumea.mairie</groupId>
 	<artifactId>sirh-eae-ws</artifactId>
 	<packaging>war</packaging>
-	<version>6.06</version>
+	<version>6.07</version>
 	<name>sirh-eae-ws</name>
 	<properties>
 		<aspectj.version>1.8.9</aspectj.version>
@@ -124,6 +124,17 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>1.19.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-multipart</artifactId>
+			<version>1.19.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 		<!-- Spring dependencies -->
 		<dependency>

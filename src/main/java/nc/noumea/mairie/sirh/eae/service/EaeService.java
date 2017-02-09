@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -384,6 +385,65 @@ public class EaeService implements IEaeService {
 
 		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
 		eaeEvaluation.setNoteAnnee(dto.getNoteAnnee());
+
+		// si ok alors on renvoi un message d'info
+		result.getInfos().add(messageSource.getMessage("EAE_FINALISE_OK", null, null));
+		return result;
+	}
+
+
+	@Override
+	@Transactional(value = "eaeTransactionManager")
+	public ReturnMessageDto finalizeEaeWithBuffer(Integer idEae, int idAgent, String commentaire, Float noteAnnee, InputStream inputStream, String typeFile) {
+
+		// # ne fonctionne plus avec sharepoint, mais on garde le meme principe
+		// #19138 : on change le mode de fonctionnement de ce WS afin que
+		// Sharepoint affiche les messages ici du WS et qu'il arrete d'avoir les
+		// messages en dur dans le code sharepoint
+		ReturnMessageDto result = new ReturnMessageDto();
+
+		Eae eae = findEae(idEae);
+
+		if (eae == null) {
+			result.getErrors().add("L'EAE n'a pu être trouvé, merci de contacter la DRH.");
+			return result;
+		}
+
+		if (eae.getEtat() != EaeEtatEnum.EC) {
+			if (eae.getEtat() != EaeEtatEnum.CO) {
+				result.getErrors()
+						.add(String.format("Impossible de finaliser l'Eae car son état n'est pas 'En Cours' mais '%s'.", eae.getEtat().toString()));
+				return result;
+			}
+		}
+
+		// on upload vers alfresco avant de modifier les objets en BDD
+		// en cas d erreur
+		EaeFinalisation finalisation = new EaeFinalisation();
+		result = alfrescoCMISService.uploadDocumentWithBuffer(idAgent, inputStream, finalisation, eae, String.valueOf(eae.getEaeCampagne().getAnnee()), result,
+				typeFile);
+
+		if (null != result && null != result.getErrors() && !result.getErrors().isEmpty()) {
+			return result;
+		}
+
+		// on sauvegarde la finalisation en BDD
+		Date finalisationDate = helper.getCurrentDate();
+
+		if (eae.getEtat() != EaeEtatEnum.CO) {
+			eae.setEtat(EaeEtatEnum.F);
+		}
+		eae.setDateFinalisation(finalisationDate);
+		eae.setDocAttache(true);
+
+		finalisation.setEae(eae);
+		eae.getEaeFinalisations().add(finalisation);
+		finalisation.setIdAgent(agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent));
+		finalisation.setDateFinalisation(finalisationDate);
+		finalisation.setCommentaire(commentaire);
+
+		EaeEvaluation eaeEvaluation = eae.getEaeEvaluation();
+		eaeEvaluation.setNoteAnnee(noteAnnee);
 
 		// si ok alors on renvoi un message d'info
 		result.getInfos().add(messageSource.getMessage("EAE_FINALISE_OK", null, null));
