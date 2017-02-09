@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.service;
 
+import java.io.InputStream;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
@@ -84,6 +85,20 @@ public interface IEaeService {
 	 * @throws EaeServiceException
 	 */
 	ReturnMessageDto finalizeEae(Integer idEae, int idAgent, EaeFinalizationDto dto);
+
+	/**
+	 * Proceeds to the finalization of the given Eae (setting its Etat to F) as
+	 * well as logging for audit trail purposes
+	 * 
+	 * @param eae
+	 *            to finalize
+	 * @param idAgent
+	 *            finalizing the Eae
+	 * @param dto
+	 * @param inputStream
+	 * @throws EaeServiceException
+	 */
+	ReturnMessageDto finalizeEaeWithBuffer(Integer idEae, int idAgent, String commentaire, Float noteAnnee,InputStream inputStream, String typeFile);
 
 	/**
 	 * Sets the Delegataire of an Eae if existing in SIRH Agents

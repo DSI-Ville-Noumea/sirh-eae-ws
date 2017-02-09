@@ -1,6 +1,7 @@
 package nc.noumea.mairie.alfresco.cmis;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,6 +186,138 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 		// controle
 		setPermissionsEaeNonControle(doc.getProperty("alfcmis:nodeRef").getFirstValue().toString(), agentDto.getIdAgent(), agentDto.getDisplayNom(),
 				agentDto.getDisplayPrenom());
+
+		return returnDto;
+	}
+
+	@Override
+	public ReturnMessageDto uploadDocumentWithBuffer(Integer idAgent, InputStream inputStream, EaeFinalisation eaeFinalisation, Eae eae, String annee,
+			ReturnMessageDto returnDto, String typeFile) {
+		logger.debug("ENTREE : uploadDocumentWithBuffer with parameter idAgent={},annee={},typeFile={}", idAgent, annee, typeFile);
+
+		Session session = null;
+		try {
+			session = createSession.getSession(alfrescoUrl, alfrescoLogin, alfrescoPassword);
+		} catch (CmisConnectionException e) {
+			logger.error("Erreur de connexion a Alfresco CMIS : " + e.getMessage());
+			returnDto.getErrors().add("Erreur de connexion à Alfresco CMIS");
+			return returnDto;
+		}
+
+		Agent agentDto;
+		try {
+			agentDto = sirhWsConsumer.getAgent(eae.getEaeEvalue().getIdAgent());
+		} catch (SirhWSConsumerException e1) {
+			logger.error("L'application SIRH-WS ne répond pas.", e1.getMessage());
+			returnDto.getErrors().add("L'application SIRH-WS ne répond pas.");
+			return returnDto;
+		}
+
+		if (null == agentDto) {
+			logger.debug("Alfresco - Agent non trouvé : " + eae.getEaeEvalue().getIdAgent());
+			returnDto.getErrors().add("Alfresco - Agent non trouvé.");
+			return returnDto;
+		}
+
+		// on cherche le repertoire distant
+
+		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
+		CmisObject object = null;
+		try {
+			object = session.getObjectByPath(pathAgentEae);
+		} catch (CmisUnauthorizedException e) {
+			logger.error("Probleme d autorisation Alfresco CMIS : " + e.getMessage());
+			returnDto.getErrors().add("Erreur Alfresco CMIS : non autorisé");
+			return returnDto;
+		} catch (CmisObjectNotFoundException e) {
+			logger.debug("Le dossier agent n'existe pas sous Alfresco : " + e.getMessage());
+			returnDto.getErrors().add("Impossible d'ajouter un document : répertoire distant non trouvé.");
+			return returnDto;
+		}
+
+		if (null == object) {
+			returnDto.getErrors().add(CmisUtils.ERROR_PATH);
+			return returnDto;
+		}
+
+		Folder folder = (Folder) object;
+		int maxItemsPerPage = 5;
+		OperationContext operationContext = session.createOperationContext();
+		operationContext.setMaxItemsPerPage(maxItemsPerPage);
+
+		// on recup le fichier
+		logger.debug("UploadDocumentWithBuffer on commence le passage de InputStream vers ByteArrayOutputStream");
+
+		Document doc = null;
+		boolean isCreated = false;
+		int i = 0;
+		String name = null;
+		while (!isCreated) {
+			name = CmisUtils.getPatternEAE(agentDto.getIdAgent(), annee, i);
+			// on test si le document exist afin de trouver le bon nom du
+			// document
+			try {
+				session.getObjectByPath(folder.getPath() + "/" + name);
+				i++;
+			} catch (CmisObjectNotFoundException e) {
+				// l'objet n'existe pas
+				isCreated = true;
+			}
+		}
+
+		// properties
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(PropertyIds.NAME, name);
+		properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+		properties.put(PropertyIds.DESCRIPTION, getDescriptionEae(annee, agentDto));
+
+		ContentStream contentStream = new ContentStreamImpl(name, null, typeFile, inputStream);
+
+		// create a major version
+		try {
+			doc = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+			logger.debug("UploadDocumentWithBuffer document crée");
+
+		} catch (CmisContentAlreadyExistsException e) {
+			logger.error(e.getMessage());
+			returnDto.getErrors().add(CmisUtils.ERROR_UPLOAD);
+			return returnDto;
+		}
+
+		if (null == doc) {
+			returnDto.getErrors().add(CmisUtils.ERROR_UPLOAD);
+			return returnDto;
+		}
+
+		if (null != doc.getProperty("cmis:secondaryObjectTypeIds")) {
+			List<Object> aspects = doc.getProperty("cmis:secondaryObjectTypeIds").getValues();
+			if (!aspects.contains("P:mairie:customDocumentAspect")) {
+				aspects.add("P:mairie:customDocumentAspect");
+				HashMap<String, Object> props = new HashMap<String, Object>();
+				props.put("cmis:secondaryObjectTypeIds", aspects);
+				doc.updateProperties(props);
+				logger.debug("Added aspect");
+			} else {
+				logger.debug("Doc already had aspect");
+			}
+		}
+
+		logger.debug("UploadDocumentWithBuffer update properties document");
+		HashMap<String, Object> props = new HashMap<String, Object>();
+		props.put("mairie:idAgentOwner", eae.getEaeEvalue().getIdAgent());
+		props.put("mairie:idAgentCreateur", idAgent);
+		// props.put("mairie:commentaire", "");
+		doc.updateProperties(props);
+
+		eaeFinalisation.setNodeRefAlfresco(doc.getProperty("alfcmis:nodeRef").getFirstValue().toString());
+		logger.debug("UploadDocumentWithBuffer ajout nodeRefAlfresco " + eaeFinalisation.getNodeRefAlfresco());
+
+		// on met les bons droits
+		// car l agent n a pas le droit de voir son EAE tant qu il n est pas
+		// controle
+		setPermissionsEaeNonControle(doc.getProperty("alfcmis:nodeRef").getFirstValue().toString(), agentDto.getIdAgent(), agentDto.getDisplayNom(),
+				agentDto.getDisplayPrenom());
+		logger.debug("SORTIE : UploadDocumentWithBuffer");
 
 		return returnDto;
 	}

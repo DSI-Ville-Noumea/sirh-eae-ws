@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.dto;
 
+import java.io.InputStream;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -11,17 +12,20 @@ import nc.noumea.mairie.sirh.tools.transformer.JsonDateSerializer;
 
 public class EaeFinalizationDto {
 
-	private String	idDocument;
-	private String	versionDocument;
-	private String	commentaire;
-	private Float	noteAnnee;
+	private String		idDocument;
+	private String		versionDocument;
+	private String		commentaire;
+	private Float		noteAnnee;
 	@JsonSerialize(using = JsonDateSerializer.class)
 	@JsonDeserialize(using = JsonDateDeserializer.class)
-	private Date	dateFinalisation;
-	private String	annee;
-	
-	byte[] bFile;
-	private String typeFile;
+	private Date		dateFinalisation;
+	private String		annee;
+
+	// en stream pour le kiosque
+	private InputStream	fileInputStream;
+	// en byte pour SIRH car la correction n'est pas encore appliquée
+	byte[]				bFile;
+	private String		typeFile;
 
 	public EaeFinalizationDto() {
 	}
@@ -84,15 +88,7 @@ public class EaeFinalizationDto {
 	public void setAnnee(String annee) {
 		this.annee = annee;
 	}
-	
-	public byte[] getbFile() {
-		return bFile;
-	}
 
-	public void setbFile(byte[] bFile) {
-		this.bFile = bFile;
-	}
-	
 	public String getTypeFile() {
 		return typeFile;
 	}
@@ -105,6 +101,22 @@ public class EaeFinalizationDto {
 	public String toString() {
 		return "EaeFinalizationDto [idDocument=" + idDocument + ", versionDocument=" + versionDocument + ", commentaire=" + commentaire
 				+ ", noteAnnee=" + noteAnnee + ", dateFinalisation=" + dateFinalisation + ", annee=" + annee + "]";
+	}
+
+	public InputStream getFileInputStream() {
+		return fileInputStream;
+	}
+
+	public void setFileInputStream(InputStream fileInputStream) {
+		this.fileInputStream = fileInputStream;
+	}
+
+	public byte[] getbFile() {
+		return bFile;
+	}
+
+	public void setbFile(byte[] bFile) {
+		this.bFile = bFile;
 	}
 
 }

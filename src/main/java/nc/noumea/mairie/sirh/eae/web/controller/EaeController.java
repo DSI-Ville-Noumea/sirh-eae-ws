@@ -1,6 +1,10 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
+import java.io.InputStream;
 import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sun.jersey.multipart.FormDataParam;
 
 import flexjson.JSONSerializer;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
@@ -227,6 +233,22 @@ public class EaeController {
 		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
 
 		return eaeService.finalizeEae(idEae, agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent), eaeFinalizationDto);
+	}
+
+	@ResponseBody
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@RequestMapping(value = "finalizeEaeWithBuffer", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	public ReturnMessageDto finalizeEaeWithBuffer(@RequestParam("idEae") int idEae, @RequestParam("idAgent") int idAgent,
+			@RequestParam("commentaire") String commentaire, @RequestParam("noteAnnee") Float noteAnnee, @RequestParam("typeFile") String typeFile,
+			@FormDataParam("fileInputStream") InputStream inputStream) {
+
+		logger.debug("entered POST [eaes/finalizeEaeWithBuffer] => finalizeEaeWithBuffer with parameter idAgent = {} , idEae = {}, commentaire = {} , noteAnnee = {}",
+				idAgent, idEae, commentaire, noteAnnee);
+
+		eaeSecurityProvider.checkEaeAndWriteRight(idEae, idAgent);
+
+		return eaeService.finalizeEaeWithBuffer(idEae, agentMatriculeConverterService.tryConvertFromADIdAgentToEAEIdAgent(idAgent), commentaire, noteAnnee,
+				inputStream, typeFile);
 	}
 
 	@SuppressWarnings("rawtypes")
