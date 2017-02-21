@@ -102,8 +102,12 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 		}
 
 		// on cherche le repertoire distant
-
-		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
+		// #37092 : bug car on cherche sur nom usage alors que le dossier est
+		// crée avec nom patronymique
+		// String pathAgentEae =
+		// CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(),
+		// agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
+		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getNomPatronymique(), agentDto.getPrenom());
 		CmisObject object = null;
 		try {
 			object = session.getObjectByPath(pathAgentEae);
@@ -221,7 +225,10 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 
 		// on cherche le repertoire distant
 
-		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
+		// #37092 : bug car on cherche sur nom usage alors que le dossier est
+		// crée avec nom patronymique
+//		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
+		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getNomPatronymique(), agentDto.getPrenom());
 		CmisObject object = null;
 		try {
 			object = session.getObjectByPath(pathAgentEae);
