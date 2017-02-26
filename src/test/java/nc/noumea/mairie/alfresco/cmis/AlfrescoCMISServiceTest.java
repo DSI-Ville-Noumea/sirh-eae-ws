@@ -24,7 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class AlfrescoCMISServiceTest {
 
-	private AlfrescoCMISService	alfrescoCMISService	= new AlfrescoCMISService();
+	private AlfrescoCMISService alfrescoCMISService = new AlfrescoCMISService();
 
 	@Test
 	public void uploadDocument_CmisConnectionException() {
@@ -110,6 +110,7 @@ public class AlfrescoCMISServiceTest {
 
 		Agent agent = new Agent();
 		agent.setIdAgent(eaeEvalue.getIdAgent());
+		agent.setNomPatronymique("nomMarital");
 		agent.setNomMarital("nomMarital");
 		agent.setPrenom("prenom");
 
@@ -121,8 +122,8 @@ public class AlfrescoCMISServiceTest {
 		ReturnMessageDto returnDto = new ReturnMessageDto();
 
 		Session session = Mockito.mock(Session.class);
-		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getDisplayNom(), agent.getDisplayPrenom()))).thenThrow(
-				new CmisUnauthorizedException());
+		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getNomPatronymique(), agent.getPrenom())))
+				.thenThrow(new CmisUnauthorizedException());
 
 		CreateSession createSession = Mockito.mock(CreateSession.class);
 		Mockito.when(createSession.getSession(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(session);
@@ -147,6 +148,7 @@ public class AlfrescoCMISServiceTest {
 		Agent agent = new Agent();
 		agent.setIdAgent(eaeEvalue.getIdAgent());
 		agent.setNomMarital("nomMarital");
+		agent.setNomPatronymique("nomMarital");
 		agent.setPrenom("prenom");
 
 		Integer idAgent = 9005138;
@@ -157,8 +159,8 @@ public class AlfrescoCMISServiceTest {
 		ReturnMessageDto returnDto = new ReturnMessageDto();
 
 		Session session = Mockito.mock(Session.class);
-		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getDisplayNom(), agent.getDisplayPrenom()))).thenThrow(
-				new CmisObjectNotFoundException());
+		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getNomPatronymique(), agent.getPrenom())))
+				.thenThrow(new CmisObjectNotFoundException());
 
 		CreateSession createSession = Mockito.mock(CreateSession.class);
 		Mockito.when(createSession.getSession(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(session);
@@ -193,8 +195,8 @@ public class AlfrescoCMISServiceTest {
 		ReturnMessageDto returnDto = new ReturnMessageDto();
 
 		Session session = Mockito.mock(Session.class);
-		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getDisplayNom(), agent.getDisplayPrenom()))).thenReturn(
-				null);
+		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getDisplayNom(), agent.getDisplayPrenom())))
+				.thenReturn(null);
 
 		CreateSession createSession = Mockito.mock(CreateSession.class);
 		Mockito.when(createSession.getSession(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(session);
@@ -219,6 +221,7 @@ public class AlfrescoCMISServiceTest {
 		Agent agent = new Agent();
 		agent.setIdAgent(eaeEvalue.getIdAgent());
 		agent.setNomMarital("nomMarital");
+		agent.setNomPatronymique("nomMarital");
 		agent.setPrenom("prenom");
 
 		Integer idAgent = 9005138;
@@ -234,8 +237,8 @@ public class AlfrescoCMISServiceTest {
 		Folder object = Mockito.mock(Folder.class);
 
 		Session session = Mockito.mock(Session.class);
-		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getDisplayNom(), agent.getDisplayPrenom()))).thenReturn(
-				object);
+		Mockito.when(session.getObjectByPath(CmisUtils.getPathEAE(agent.getIdAgent(), agent.getNomPatronymique(), agent.getPrenom())))
+				.thenReturn(object);
 		Mockito.when(session.createOperationContext()).thenReturn(operationContext);
 
 		CreateSession createSession = Mockito.mock(CreateSession.class);

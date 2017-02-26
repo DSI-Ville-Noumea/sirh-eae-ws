@@ -102,8 +102,12 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 		}
 
 		// on cherche le repertoire distant
-
-		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
+		// #37092 : bug car on cherche sur nom usage alors que le dossier est
+		// crée avec nom patronymique
+		// String pathAgentEae =
+		// CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(),
+		// agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
+		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getNomPatronymique(), agentDto.getPrenom());
 		CmisObject object = null;
 		try {
 			object = session.getObjectByPath(pathAgentEae);
@@ -221,19 +225,10 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 
 		// on cherche le repertoire distant
 
-		String pathAgentEae = CmisUtils.getPathEAE(eae.getEaeEvalue().getIdAgent(), agentDto.getDisplayNom(), agentDto.getDisplayPrenom());
-		CmisObject object = null;
-		try {
-			object = session.getObjectByPath(pathAgentEae);
-		} catch (CmisUnauthorizedException e) {
-			logger.error("Probleme d autorisation Alfresco CMIS : " + e.getMessage());
-			returnDto.getErrors().add("Erreur Alfresco CMIS : non autorisé");
-			return returnDto;
-		} catch (CmisObjectNotFoundException e) {
-			logger.debug("Le dossier agent n'existe pas sous Alfresco : " + e.getMessage());
-			returnDto.getErrors().add("Impossible d'ajouter un document : répertoire distant non trouvé.");
-			return returnDto;
-		}
+		// #37092 : bug car on cherche sur nom usage alors que le dossier est
+		// crée avec nom patronymique
+		// du coup on test sur les 3
+		CmisObject object = getObjectCMIS(session, eae.getEaeEvalue().getIdAgent(), agentDto);
 
 		if (null == object) {
 			returnDto.getErrors().add(CmisUtils.ERROR_PATH);
@@ -320,6 +315,40 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 		logger.debug("SORTIE : UploadDocumentWithBuffer");
 
 		return returnDto;
+	}
+
+	private CmisObject getObjectCMIS(Session session, int idAgent, Agent agentDto) {
+		// 1er test sur le nom_patronymique
+		String pathAgentEae = CmisUtils.getPathEAE(idAgent, agentDto.getNomPatronymique(), agentDto.getDisplayPrenom());
+		CmisObject object = null;
+		try {
+			object = session.getObjectByPath(pathAgentEae);
+		} catch (CmisUnauthorizedException e) {
+			logger.error("Probleme d autorisation Alfresco CMIS : " + e.getMessage());
+			return null;
+		} catch (CmisObjectNotFoundException e) {
+			// 2eme test sur le nom d'usage
+			pathAgentEae = CmisUtils.getPathEAE(idAgent, agentDto.getNomUsage(), agentDto.getDisplayPrenom());
+			try {
+				object = session.getObjectByPath(pathAgentEae);
+			} catch (CmisUnauthorizedException e2) {
+				logger.error("Probleme d autorisation Alfresco CMIS : " + e2.getMessage());
+				return null;
+			} catch (CmisObjectNotFoundException e3) {
+				// 3eme test sur le nom marital
+				pathAgentEae = CmisUtils.getPathEAE(idAgent, agentDto.getNomMarital(), agentDto.getDisplayPrenom());
+				try {
+					object = session.getObjectByPath(pathAgentEae);
+				} catch (CmisUnauthorizedException e4) {
+					logger.error("Probleme d autorisation Alfresco CMIS : " + e4.getMessage());
+					return null;
+				} catch (CmisObjectNotFoundException e5) {
+					logger.debug("Le dossier agent n'existe pas sous Alfresco : " + e.getMessage());
+					return null;
+				}
+			}
+		}
+		return object;
 	}
 
 	private String getDescriptionEae(String annee, Agent agent) {
