@@ -92,7 +92,7 @@ public class CalculEaeService implements ICalculEaeService {
 				// la ligne
 				// si 'valid DRH' alors on met CAP à true;
 				// si l'avancement est de type TITU alors on met false #11510
-				if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
+				if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals("6")) {
 					eae.setCap(false);
 				} else {
 					eae.setCap(true);
@@ -157,7 +157,7 @@ public class CalculEaeService implements ICalculEaeService {
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
 			// si l'avancement est de type TITU alors on met false #11510
-			if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
+			if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals("6")) {
 				eae.setCap(false);
 			} else {
 				eae.setCap(true);
@@ -811,7 +811,7 @@ public class CalculEaeService implements ICalculEaeService {
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
 			// si l'avancement est de type TITU alors on met false #11510
-			if (avct.getIdMotifAvct() != null && avct.getIdMotifAvct().toString().equals("6")) {
+			if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals("6")) {
 				eae.setCap(false);
 			} else {
 				eae.setCap(true);
