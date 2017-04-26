@@ -25,6 +25,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 import nc.noumea.mairie.sirh.tools.IHelper;
 
@@ -290,9 +291,13 @@ public class EaeRepository implements IEaeRepository {
 		// (select N+1 issue)
 		// we remove the extra ones with this loop
 		List<Eae> disctinctEaes = new ArrayList<Eae>();
-		for (Eae eae : queryResult)
-			if (!disctinctEaes.contains(eae))
+		for (Eae eae : queryResult) {
+			// #38868 : Le compteur des EAE à réaliser ne se fait que sur les EAE pouvant être édités par l'agent.
+			EaeListItemDto dtoItem = new EaeListItemDto(eae);
+			dtoItem.setAccessRightsForAgentId(eae, agentId);
+			if (!disctinctEaes.contains(eae) && (dtoItem.isDroitDemarrer() || dtoItem.isDroitInitialiser()))
 				disctinctEaes.add(eae);
+		}
 
 		return disctinctEaes;
 	}

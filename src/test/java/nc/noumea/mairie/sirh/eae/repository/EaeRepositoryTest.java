@@ -303,7 +303,8 @@ public class EaeRepositoryTest {
 		eaeCampagne.setDateOuvertureKiosque(new DateTime(2015,1,1,0,0,0).toDate());
 		eaePersistenceUnit.persist(eaeCampagne);
 
-		// 1er EAE retourne par la requete par son EVALUE
+		// #38868 : Le compteur des EAE à réaliser ne se fait que sur les EAE pouvant être édités par l'agent.
+		// 1er EAE retourne par la requete par son EVALUE, mais non pris en compte car l'édition est impossible
 		EaeEvalue eaeEvalue = new EaeEvalue();
 		eaeEvalue.setIdAgent(9005131);
 
@@ -361,7 +362,7 @@ public class EaeRepositoryTest {
 		
 		List<Eae> result = repository.findEaesNonDebuteOuCreeOuEnCoursForEaeListByAgentIds(agentIds, agentId);
 		
-		assertEquals(2, result.size());
+		assertEquals(1, result.size());
 	}
 	
 	@Test
