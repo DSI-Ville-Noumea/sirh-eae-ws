@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeReportFormatEnum;
 
 import org.apache.commons.io.IOUtils;
@@ -34,11 +35,16 @@ public class EaeReportingService implements IEaeReportingService {
 	@Autowired
 	@Qualifier("reportServerPath")
 	private String reportServerPath;
+
+
 	
 	private static final String REPORT_PAGE = "frameset";
 	private static final String PARAM_REPORT = "__report";
 	private static final String PARAM_FORMAT = "__format";
-	
+
+	@Autowired
+	private IEaeService	eaeService;
+
 	public EaeReportingService() {
 		
 	}
@@ -118,11 +124,20 @@ public class EaeReportingService implements IEaeReportingService {
 		
 		Client client = Client.create();
 
+		Eae eae = eaeService.findEae(idEae);
+		Integer idFpPrimaire = eae.getPrimaryFichePoste().getIdSirhFichePoste();
+		Integer idFpSecondaire = 0;
+		if (eae.getSecondaryFichePoste() != null) {
+			idFpSecondaire = eae.getSecondaryFichePoste().getIdSirhFichePoste();
+		}
+
 		WebResource webResource = client
 				.resource(reportingBaseUrl + REPORT_PAGE)
 				.queryParam(PARAM_REPORT, reportServerPath + "eae.rptdesign")
 				.queryParam(PARAM_FORMAT, format.toString())
-				.queryParam("idEae", String.valueOf(idEae));
+				.queryParam("idEae", String.valueOf(idEae))
+				.queryParam("idFichePostePrimaire", String.valueOf(idFpPrimaire))
+				.queryParam("idFichePosteSecondaire", String.valueOf(idFpSecondaire));
 
 		ClientResponse response = webResource.get(ClientResponse.class);
 		
