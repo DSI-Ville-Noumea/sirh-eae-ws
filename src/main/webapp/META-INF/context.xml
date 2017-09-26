@@ -26,7 +26,7 @@
 	<!-- WS SIRH -->
 	<!--  -->
 	<Environment name="SIRH_WS_URL" type="java.lang.String" description="SIRH WS endpoint url for EAEs" 
-		value="http://***REMOVED***:8085/sirhws/" override="false" />
+		value="http://***REMOVED***:8210/sirhws/" override="false" />
 		
 
 	<!--  -->
@@ -36,7 +36,7 @@
 		value="report/sirh-eae-reports/" override="false" />
 
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String" description="BIRT report viewer base URL for EAEs reporting" 
-		value="http://***REMOVED***:8085/birt/" override="false" />
+		value="http://***REMOVED***:8210/birt/" override="false" />
 
 	<!--  -->
 	<!-- ALFRESCO -->
