@@ -101,7 +101,7 @@ public class Eae {
 	@OneToOne(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private EaeEvalue eaeEvalue;
 
-	@OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "eae", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<EaeFichePoste> eaeFichePostes = new HashSet<EaeFichePoste>();
 
 	@OneToMany(mappedBy = "eae", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
