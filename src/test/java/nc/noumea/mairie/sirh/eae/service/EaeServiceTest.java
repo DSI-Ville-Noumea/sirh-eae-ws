@@ -47,7 +47,9 @@ import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeObjectif;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDto;
@@ -300,7 +302,7 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testInitilizeEae_setCreationDateAndStatus() throws EaeServiceException {
+	public void testInitilizeEae_setCreationDateAndStatus() throws EaeServiceException, SirhWSConsumerException {
 		// Given
 		Date dateJour = new Date();
 		// Mock the EAE
@@ -327,7 +329,7 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testInitilizeEae_setCreationDateAndStatus_OldDateCreation() throws EaeServiceException {
+	public void testInitilizeEae_setCreationDateAndStatus_OldDateCreation() throws EaeServiceException, SirhWSConsumerException {
 		// Given
 		// #19139
 		// Mock the EAE
@@ -354,7 +356,7 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testInitilizeEae_noPreviousEaes_createNoEaeResultat() throws EaeServiceException {
+	public void testInitilizeEae_noPreviousEaes_createNoEaeResultat() throws EaeServiceException, SirhWSConsumerException {
 		// Given
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
@@ -375,7 +377,7 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testInitilizeEae_1PreviousEae_createEaeResultatFromPreviousPlanActionAndCopyNotes() throws EaeServiceException {
+	public void testInitilizeEae_1PreviousEae_createEaeResultatFromPreviousPlanActionAndCopyNotes() throws EaeServiceException, SirhWSConsumerException {
 		// Given
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
@@ -398,9 +400,13 @@ public class EaeServiceTest {
 		eval.setNoteAnneeN1(14.04f);
 		eval.setNoteAnneeN2(15.05f);
 		eval.setNoteAnneeN3(16.06f);
+		
+		EaeCampagne campagne = new EaeCampagne();
+		campagne.setAnnee(2017);
 
 		previousEae.setEaeEvaluation(eval);
 		previousEae.setIdEae(789);
+		previousEae.setEaeCampagne(campagne);
 
 		EntityManager eaeEntityManager = mock(EntityManager.class);
 		when(eaeEntityManager.find(Eae.class, 987)).thenReturn(eaeToInit);
@@ -432,7 +438,7 @@ public class EaeServiceTest {
 	}
 
 	@Test
-	public void testInitilizeEae_eaeNotInEtatND_throwException() {
+	public void testInitilizeEae_eaeNotInEtatND_throwException() throws SirhWSConsumerException {
 		// Given
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
@@ -579,6 +585,102 @@ public class EaeServiceTest {
 
 		// Then
 		assertEquals(EaeEtatEnum.CO, result.getEtat());
+	}
+	
+	@Test
+	public void setModeAcces_anciennete_OK() throws EaeServiceException, SirhWSConsumerException {
+
+		// Avancement maximum
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(9005456);
+		Eae eae = new Eae();
+		eae.setIdEae(987);
+		eae.setEaeEvalue(evalue);
+
+		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(1);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+		
+		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.PROMO);
+		
+		assertEquals(eae.getEaeEvalue().getModeAcces(), EaeAvancementEnum.ANCIENNETE);
+	}
+	
+	@Test
+	public void setModeAcces_min_max_OK() throws EaeServiceException, SirhWSConsumerException {
+
+		// Avancement miniumum
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(9005454);
+		Eae eae = new Eae();
+		eae.setIdEae(987);
+		eae.setEaeEvalue(evalue);
+
+		// Avancement maximum
+		EaeEvalue evalue2 = new EaeEvalue();
+		evalue2.setIdAgent(9005455);
+		Eae eae2 = new Eae();
+		eae2.setIdEae(987);
+		eae2.setEaeEvalue(evalue2);
+
+		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(1);
+		when(sirhWsConsumer.getModeAccesForAgent(9005455, 2017)).thenReturn(3);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+		
+		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.AD);
+		service.setModeAcces(eae2, 2017, EaeTypeAvctEnum.AD);
+		
+		assertEquals(eae.getEaeEvalue().getModeAcces(), EaeAvancementEnum.MINI);
+		assertEquals(eae2.getEaeEvalue().getModeAcces(), EaeAvancementEnum.MAXI);
+	}
+	
+	@Test
+	public void setModeAcces_moy_OK() throws EaeServiceException, SirhWSConsumerException {
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(9005454);
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(987);
+		eae.setEaeEvalue(evalue);
+
+		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(2);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+		
+		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.AD);
+		
+		assertEquals(eae.getEaeEvalue().getModeAcces(), EaeAvancementEnum.MOY);
+	}
+	
+	@Test
+	public void setModeAcces_null_OK() throws EaeServiceException, SirhWSConsumerException {
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(9005454);
+		// Given
+		Eae eae = new Eae();
+		eae.setIdEae(987);
+		eae.setEaeEvalue(evalue);
+
+		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(null);
+
+		EaeService service = new EaeService();
+		ReflectionTestUtils.setField(service, "helper", helperMock);
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+		
+		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.AD);
+		
+		assertNull(eae.getEaeEvalue().getModeAcces());
 	}
 
 	@Test
@@ -1653,7 +1755,7 @@ public class EaeServiceTest {
 		Mockito.when(eaeRepository.findEaeCampagneByAnnee(anneeCampagne)).thenReturn(eaeCampagne);
 		
 
-		Map<String, List<String>> mapDirectionSection = new HashMap<String, List<String>>();
+		Map<String, Map<String, List<String>>> mapDirectionSection = new HashMap<String, Map<String, List<String>>>();
 		
 		
 		Mockito.when(eaeRepository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae())).thenReturn(mapDirectionSection);
@@ -1685,115 +1787,224 @@ public class EaeServiceTest {
 		listSectionDrh.add("formation");
 		listSectionDrh.add("recrutement");
 		
-		Map<String, List<String>> mapDirectionSection = new HashMap<String, List<String>>();
-		mapDirectionSection.put("direction DSI", listSectionDsi);
-		mapDirectionSection.put("direction DRH", listSectionDrh);
+		Map<String, Map<String, List<String>>> mapDirectionSection = new HashMap<String, Map<String, List<String>>>();
+		Map<String, List<String>> mapservices = new HashMap<String, List<String>>();
+		
+		mapservices.put("s1", listSectionDsi);
+		mapservices.put("s2", listSectionDrh);
+		
+		mapDirectionSection.put("direction DSI", mapservices);
+		mapDirectionSection.put("direction DRH", mapservices);
 		
 		Mockito.when(eaeRepository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae())).thenReturn(mapDirectionSection);
 		
-		///////////////// SED ///////////////////
+		///////////////// DSI - s1 - SED ///////////////////
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.NA.name(), false)).thenReturn(1);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", EaeEtatEnum.NA.name(), false)).thenReturn(1);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.ND.name(), false)).thenReturn(2);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", EaeEtatEnum.ND.name(), false)).thenReturn(2);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.C.name(), false)).thenReturn(3);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", EaeEtatEnum.C.name(), false)).thenReturn(3);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.EC.name(), false)).thenReturn(4);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", EaeEtatEnum.EC.name(), false)).thenReturn(4);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.F.name(), false)).thenReturn(5);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", EaeEtatEnum.F.name(), false)).thenReturn(5);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", EaeEtatEnum.CO.name(), false)).thenReturn(6);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", EaeEtatEnum.CO.name(), false)).thenReturn(6);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", null, true)).thenReturn(7);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", null, true)).thenReturn(7);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", false, null, false)).thenReturn(8);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", false, null, false)).thenReturn(8);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, "MINI", false)).thenReturn(9);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", true, "MINI", false)).thenReturn(9);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, "MOY", false)).thenReturn(10);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", true, "MOY", false)).thenReturn(10);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, "MAXI", false)).thenReturn(11);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", true, "MAXI", false)).thenReturn(11);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SED", true, null, true)).thenReturn(12);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SED", true, null, true)).thenReturn(12);
 		
-		///////////////// SIE ///////////////////
+		///////////////// DSI - s1 - SIE ///////////////////
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.NA.name(), false)).thenReturn(13);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", EaeEtatEnum.NA.name(), false)).thenReturn(13);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.ND.name(), false)).thenReturn(14);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", EaeEtatEnum.ND.name(), false)).thenReturn(14);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.C.name(), false)).thenReturn(15);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", EaeEtatEnum.C.name(), false)).thenReturn(15);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.EC.name(), false)).thenReturn(16);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", EaeEtatEnum.EC.name(), false)).thenReturn(16);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.F.name(), false)).thenReturn(17);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", EaeEtatEnum.F.name(), false)).thenReturn(17);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", EaeEtatEnum.CO.name(), false)).thenReturn(18);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", EaeEtatEnum.CO.name(), false)).thenReturn(18);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", null, true)).thenReturn(19);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", null, true)).thenReturn(19);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", false, null, false)).thenReturn(20);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", false, null, false)).thenReturn(20);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, "MINI", false)).thenReturn(21);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", true, "MINI", false)).thenReturn(21);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, "MOY", false)).thenReturn(22);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", true, "MOY", false)).thenReturn(22);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, "MAXI", false)).thenReturn(23);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", true, "MAXI", false)).thenReturn(23);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DSI", "SIE", true, null, true)).thenReturn(24);
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s1", "SIE", true, null, true)).thenReturn(24);
+		
+		///////////////// DSI - s1 - SED ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", EaeEtatEnum.NA.name(), false)).thenReturn(1);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", EaeEtatEnum.ND.name(), false)).thenReturn(2);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", EaeEtatEnum.C.name(), false)).thenReturn(3);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", EaeEtatEnum.EC.name(), false)).thenReturn(4);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", EaeEtatEnum.F.name(), false)).thenReturn(5);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", EaeEtatEnum.CO.name(), false)).thenReturn(6);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", null, true)).thenReturn(7);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", false, null, false)).thenReturn(8);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", true, "MINI", false)).thenReturn(9);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", true, "MOY", false)).thenReturn(10);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", true, "MAXI", false)).thenReturn(11);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "formation", true, null, true)).thenReturn(12);
+		
+		///////////////// DSI - s2 - SIE ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", EaeEtatEnum.NA.name(), false)).thenReturn(13);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", EaeEtatEnum.ND.name(), false)).thenReturn(14);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", EaeEtatEnum.C.name(), false)).thenReturn(15);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", EaeEtatEnum.EC.name(), false)).thenReturn(16);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", EaeEtatEnum.F.name(), false)).thenReturn(17);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", EaeEtatEnum.CO.name(), false)).thenReturn(18);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", null, true)).thenReturn(19);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", false, null, false)).thenReturn(20);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", true, "MINI", false)).thenReturn(21);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", true, "MOY", false)).thenReturn(22);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", true, "MAXI", false)).thenReturn(23);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DSI", "s2", "recrutement", true, null, true)).thenReturn(24);
 		
 		///////////////// formation ///////////////////
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.NA.name(), false)).thenReturn(25);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", EaeEtatEnum.NA.name(), false)).thenReturn(25);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.ND.name(), false)).thenReturn(26);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", EaeEtatEnum.ND.name(), false)).thenReturn(26);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.C.name(), false)).thenReturn(27);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", EaeEtatEnum.C.name(), false)).thenReturn(27);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.EC.name(), false)).thenReturn(28);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", EaeEtatEnum.EC.name(), false)).thenReturn(28);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.F.name(), false)).thenReturn(29);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", EaeEtatEnum.F.name(), false)).thenReturn(29);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", EaeEtatEnum.CO.name(), false)).thenReturn(30);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", EaeEtatEnum.CO.name(), false)).thenReturn(30);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", null, true)).thenReturn(31);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", null, true)).thenReturn(31);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", false, null, false)).thenReturn(32);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", false, null, false)).thenReturn(32);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, "MINI", false)).thenReturn(33);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", true, "MINI", false)).thenReturn(33);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, "MOY", false)).thenReturn(34);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", true, "MOY", false)).thenReturn(34);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, "MAXI", false)).thenReturn(35);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", true, "MAXI", false)).thenReturn(35);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "formation", true, null, true)).thenReturn(36);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SED", true, null, true)).thenReturn(36);
 		
 		///////////////// recrutement ///////////////////
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.NA.name(), false)).thenReturn(37);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", EaeEtatEnum.NA.name(), false)).thenReturn(37);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.ND.name(), false)).thenReturn(38);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", EaeEtatEnum.ND.name(), false)).thenReturn(38);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.C.name(), false)).thenReturn(39);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", EaeEtatEnum.C.name(), false)).thenReturn(39);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.EC.name(), false)).thenReturn(40);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", EaeEtatEnum.EC.name(), false)).thenReturn(40);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.F.name(), false)).thenReturn(41);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", EaeEtatEnum.F.name(), false)).thenReturn(41);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", EaeEtatEnum.CO.name(), false)).thenReturn(42);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", EaeEtatEnum.CO.name(), false)).thenReturn(42);
 		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", null, true)).thenReturn(43);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", null, true)).thenReturn(43);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", false, null, false)).thenReturn(44);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", false, null, false)).thenReturn(44);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, "MINI", false)).thenReturn(45);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", true, "MINI", false)).thenReturn(45);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, "MOY", false)).thenReturn(46);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", true, "MOY", false)).thenReturn(46);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, "MAXI", false)).thenReturn(47);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", true, "MAXI", false)).thenReturn(47);
 		Mockito.when(eaeRepository.countAvisSHD(
-				eaeCampagne.getIdCampagneEae(), "direction DRH", "recrutement", true, null, true)).thenReturn(48);
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s1", "SIE", true, null, true)).thenReturn(48);
+		
+		///////////////// formation ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", EaeEtatEnum.NA.name(), false)).thenReturn(25);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", EaeEtatEnum.ND.name(), false)).thenReturn(26);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", EaeEtatEnum.C.name(), false)).thenReturn(27);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", EaeEtatEnum.EC.name(), false)).thenReturn(28);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", EaeEtatEnum.F.name(), false)).thenReturn(29);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", EaeEtatEnum.CO.name(), false)).thenReturn(30);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", null, true)).thenReturn(31);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", false, null, false)).thenReturn(32);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", true, "MINI", false)).thenReturn(33);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", true, "MOY", false)).thenReturn(34);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", true, "MAXI", false)).thenReturn(35);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "formation", true, null, true)).thenReturn(36);
+		
+		///////////////// recrutement ///////////////////
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", EaeEtatEnum.NA.name(), false)).thenReturn(37);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", EaeEtatEnum.ND.name(), false)).thenReturn(38);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", EaeEtatEnum.C.name(), false)).thenReturn(39);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", EaeEtatEnum.EC.name(), false)).thenReturn(40);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", EaeEtatEnum.F.name(), false)).thenReturn(41);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", EaeEtatEnum.CO.name(), false)).thenReturn(42);
+		Mockito.when(eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", null, true)).thenReturn(43);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", false, null, false)).thenReturn(44);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", true, "MINI", false)).thenReturn(45);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", true, "MOY", false)).thenReturn(46);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", true, "MAXI", false)).thenReturn(47);
+		Mockito.when(eaeRepository.countAvisSHD(
+				eaeCampagne.getIdCampagneEae(), "direction DRH", "s2", "recrutement", true, null, true)).thenReturn(48);
 		
 		
 		EaeService service = new EaeService();
@@ -1801,11 +2012,12 @@ public class EaeServiceTest {
 		
 		List<EaeDashboardItemDto> result = service.getEaesDashboardForSIRH(anneeCampagne);
 		
-		assertEquals(4, result.size());
+		assertEquals(8, result.size());
 		
-		// formation
+		// DRH - s1 - formation
 		assertEquals("direction DRH", result.get(0).getDirection());
-		assertEquals("formation", result.get(0).getSection());
+		assertEquals("s1", result.get(0).getService());
+		assertEquals("SED", result.get(0).getSection());
 		assertEquals(25, result.get(0).getNonAffecte());
 		assertEquals(26, result.get(0).getNonDebute());
 		assertEquals(27, result.get(0).getCree());
@@ -1819,9 +2031,10 @@ public class EaeServiceTest {
 		assertEquals(35, result.get(0).getMaxi());
 		assertEquals(36, result.get(0).getChangClasse());
 		
-		// recrutement
+		// DRH - s1 - recrutement
 		assertEquals("direction DRH", result.get(1).getDirection());
-		assertEquals("recrutement", result.get(1).getSection());
+		assertEquals("s1", result.get(1).getService());
+		assertEquals("SIE", result.get(1).getSection());
 		assertEquals(37, result.get(1).getNonAffecte());
 		assertEquals(38, result.get(1).getNonDebute());
 		assertEquals(39, result.get(1).getCree());
@@ -1835,36 +2048,106 @@ public class EaeServiceTest {
 		assertEquals(47, result.get(1).getMaxi());
 		assertEquals(48, result.get(1).getChangClasse());
 		
-		// SED
-		assertEquals("direction DSI", result.get(2).getDirection());
-		assertEquals("SED", result.get(2).getSection());
-		assertEquals(1, result.get(2).getNonAffecte());
-		assertEquals(2, result.get(2).getNonDebute());
-		assertEquals(3, result.get(2).getCree());
-		assertEquals(4, result.get(2).getEnCours());
-		assertEquals(5, result.get(2).getFinalise());
-		assertEquals(6, result.get(2).getNbEaeControle());
-		assertEquals(7, result.get(2).getNbEaeCAP());
-		assertEquals(8, result.get(2).getNonDefini());
-		assertEquals(9, result.get(2).getMini());
-		assertEquals(10, result.get(2).getMoy());
-		assertEquals(11, result.get(2).getMaxi());
-		assertEquals(12, result.get(2).getChangClasse());
+		// DRH - s2 - formation
+		assertEquals("direction DRH", result.get(2).getDirection());
+		assertEquals("s2", result.get(2).getService());
+		assertEquals("formation", result.get(2).getSection());
+		assertEquals(25, result.get(2).getNonAffecte());
+		assertEquals(26, result.get(2).getNonDebute());
+		assertEquals(27, result.get(2).getCree());
+		assertEquals(28, result.get(2).getEnCours());
+		assertEquals(29, result.get(2).getFinalise());
+		assertEquals(30, result.get(2).getNbEaeControle());
+		assertEquals(31, result.get(2).getNbEaeCAP());
+		assertEquals(32, result.get(2).getNonDefini());
+		assertEquals(33, result.get(2).getMini());
+		assertEquals(34, result.get(2).getMoy());
+		assertEquals(35, result.get(2).getMaxi());
+		assertEquals(36, result.get(2).getChangClasse());
 		
-		// SIE
-		assertEquals("direction DSI", result.get(3).getDirection());
-		assertEquals("SIE", result.get(3).getSection());
-		assertEquals(13, result.get(3).getNonAffecte());
-		assertEquals(14, result.get(3).getNonDebute());
-		assertEquals(15, result.get(3).getCree());
-		assertEquals(16, result.get(3).getEnCours());
-		assertEquals(17, result.get(3).getFinalise());
-		assertEquals(18, result.get(3).getNbEaeControle());
-		assertEquals(19, result.get(3).getNbEaeCAP());
-		assertEquals(20, result.get(3).getNonDefini());
-		assertEquals(21, result.get(3).getMini());
-		assertEquals(22, result.get(3).getMoy());
-		assertEquals(23, result.get(3).getMaxi());
-		assertEquals(24, result.get(3).getChangClasse());
+		// DRH - s2 - recrutement
+		assertEquals("direction DRH", result.get(3).getDirection());
+		assertEquals("s2", result.get(3).getService());
+		assertEquals("recrutement", result.get(3).getSection());
+		assertEquals(37, result.get(3).getNonAffecte());
+		assertEquals(38, result.get(3).getNonDebute());
+		assertEquals(39, result.get(3).getCree());
+		assertEquals(40, result.get(3).getEnCours());
+		assertEquals(41, result.get(3).getFinalise());
+		assertEquals(42, result.get(3).getNbEaeControle());
+		assertEquals(43, result.get(3).getNbEaeCAP());
+		assertEquals(44, result.get(3).getNonDefini());
+		assertEquals(45, result.get(3).getMini());
+		assertEquals(46, result.get(3).getMoy());
+		assertEquals(47, result.get(3).getMaxi());
+		assertEquals(48, result.get(3).getChangClasse());
+		
+		// DSI - s1 - SED
+		assertEquals("direction DSI", result.get(4).getDirection());
+		assertEquals("s1", result.get(4).getService());
+		assertEquals("SED", result.get(4).getSection());
+		assertEquals(1, result.get(4).getNonAffecte());
+		assertEquals(2, result.get(4).getNonDebute());
+		assertEquals(3, result.get(4).getCree());
+		assertEquals(4, result.get(4).getEnCours());
+		assertEquals(5, result.get(4).getFinalise());
+		assertEquals(6, result.get(4).getNbEaeControle());
+		assertEquals(7, result.get(4).getNbEaeCAP());
+		assertEquals(8, result.get(4).getNonDefini());
+		assertEquals(9, result.get(4).getMini());
+		assertEquals(10, result.get(4).getMoy());
+		assertEquals(11, result.get(4).getMaxi());
+		assertEquals(12, result.get(4).getChangClasse());
+		
+		// DSI - s1 - SIE
+		assertEquals("direction DSI", result.get(5).getDirection());
+		assertEquals("s1", result.get(5).getService());
+		assertEquals("SIE", result.get(5).getSection());
+		assertEquals(13, result.get(5).getNonAffecte());
+		assertEquals(14, result.get(5).getNonDebute());
+		assertEquals(15, result.get(5).getCree());
+		assertEquals(16, result.get(5).getEnCours());
+		assertEquals(17, result.get(5).getFinalise());
+		assertEquals(18, result.get(5).getNbEaeControle());
+		assertEquals(19, result.get(5).getNbEaeCAP());
+		assertEquals(20, result.get(5).getNonDefini());
+		assertEquals(21, result.get(5).getMini());
+		assertEquals(22, result.get(5).getMoy());
+		assertEquals(23, result.get(5).getMaxi());
+		assertEquals(24, result.get(5).getChangClasse());
+		
+		// DSI - s2 - SED
+		assertEquals("direction DSI", result.get(6).getDirection());
+		assertEquals("s2", result.get(6).getService());
+		assertEquals("formation", result.get(6).getSection());
+		assertEquals(1, result.get(6).getNonAffecte());
+		assertEquals(2, result.get(6).getNonDebute());
+		assertEquals(3, result.get(6).getCree());
+		assertEquals(4, result.get(6).getEnCours());
+		assertEquals(5, result.get(6).getFinalise());
+		assertEquals(6, result.get(6).getNbEaeControle());
+		assertEquals(7, result.get(6).getNbEaeCAP());
+		assertEquals(8, result.get(6).getNonDefini());
+		assertEquals(9, result.get(6).getMini());
+		assertEquals(10, result.get(6).getMoy());
+		assertEquals(11, result.get(6).getMaxi());
+		assertEquals(12, result.get(6).getChangClasse());
+		
+		// DSI - s2 - SIE
+		assertEquals("direction DSI", result.get(7).getDirection());
+		assertEquals("s2", result.get(7).getService());
+		assertEquals("recrutement", result.get(7).getSection());
+		assertEquals(13, result.get(7).getNonAffecte());
+		assertEquals(14, result.get(7).getNonDebute());
+		assertEquals(15, result.get(7).getCree());
+		assertEquals(16, result.get(7).getEnCours());
+		assertEquals(17, result.get(7).getFinalise());
+		assertEquals(18, result.get(7).getNbEaeControle());
+		assertEquals(19, result.get(7).getNbEaeCAP());
+		assertEquals(20, result.get(7).getNonDefini());
+		assertEquals(21, result.get(7).getMini());
+		assertEquals(22, result.get(7).getMoy());
+		assertEquals(23, result.get(7).getMaxi());
+		assertEquals(24, result.get(7).getChangClasse());
 	}
 }

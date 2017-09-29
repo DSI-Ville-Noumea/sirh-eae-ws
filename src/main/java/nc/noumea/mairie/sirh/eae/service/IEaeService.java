@@ -35,7 +35,7 @@ public interface IEaeService {
 	 * @param previousEae
 	 * @throws EaeServiceException
 	 */
-	void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException;
+	void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException, SirhWSConsumerException;
 
 	/**
 	 * Starts the EAE by changing its Etat
@@ -216,7 +216,9 @@ public interface IEaeService {
 
 	void setEae(EaeDto eaeDto) throws EaeServiceException, SirhWSConsumerException;
 
-	List<EaeDto> getListeEaeDto(FormRehercheGestionEae form) throws EaeServiceException;
+	List<EaeDto> getListeEaeDto(FormRehercheGestionEae form, Integer pageSize, Integer pageNumber) throws EaeServiceException;
+	
+	Integer countList(FormRehercheGestionEae form) throws EaeServiceException;
 
 	List<EaeDto> getListeEaeLightDto(FormRehercheGestionEae form) throws EaeServiceException;
 

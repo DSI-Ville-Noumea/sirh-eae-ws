@@ -305,21 +305,42 @@ public class SirhEaeController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "listeEae", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
-	public List<EaeDto> getListeEae(@RequestParam("idAgent") int idAgent, @RequestBody FormRehercheGestionEae form) throws SirhWSConsumerException {
+	@RequestMapping(value = "countAll", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	public Integer getListeEae(@RequestBody FormRehercheGestionEae form) throws SirhWSConsumerException {
 
-		logger.debug("entered POST [sirhEaes/listeEae] => getListeEae with parameter idAgent = {}", idAgent);
+		logger.debug("entered POST [sirhEaes/countAll]");
+
+		Integer result = null;
+
+		try {
+			result = eaeService.countList(form);
+		} catch (EaeServiceException e) {
+			logger.debug(e.getMessage(), e);
+			throw new ConflictException(e.getMessage());
+		}
+
+		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "listeEae", produces = "application/json;charset=utf-8", method = RequestMethod.POST)
+	public List<EaeDto> getListeEae(@RequestParam("idAgent") int idAgent, @RequestParam("pageSize") int pageSize,
+			@RequestParam("pageNumber") int pageNumber, @RequestBody FormRehercheGestionEae form) throws SirhWSConsumerException {
+
+		logger.debug("entered POST [sirhEaes/listeEae] => idAgent = {}, pageSize = {}, pageNumber = {}", idAgent, pageSize, pageNumber);
 
 		isUtilisateurSirh(idAgent);
 
 		List<EaeDto> result = null;
 
 		try {
-			result = eaeService.getListeEaeDto(form);
+			result = eaeService.getListeEaeDto(form, pageSize, pageNumber);
 		} catch (EaeServiceException e) {
 			logger.debug(e.getMessage(), e);
 			throw new ConflictException(e.getMessage());
 		}
+
+		logger.debug("POST [sirhEaes/listeEae] : returning {} results", result.size());
 
 		return result;
 	}

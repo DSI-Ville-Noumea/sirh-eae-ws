@@ -34,7 +34,10 @@ import nc.noumea.mairie.sirh.eae.domain.EaeFinalisation;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.EaeTypeDeveloppement;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAgentStatutEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAvctEnum;
 import nc.noumea.mairie.sirh.eae.dto.CampagneEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CanFinalizeEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeDashboardItemDto;
@@ -131,7 +134,7 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException {
+	public void initializeEae(Eae eaeToInitialize, Eae previousEae) throws EaeServiceException, SirhWSConsumerException {
 
 		eaeToInitialize = findEae(eaeToInitialize.getIdEae());
 		if (null != previousEae) {
@@ -162,6 +165,10 @@ public class EaeService implements IEaeService {
 		eaeToInitialize.getEaeEvaluation().setNoteAnneeN1(previousEae.getEaeEvaluation().getNoteAnnee());
 		eaeToInitialize.getEaeEvaluation().setNoteAnneeN2(previousEae.getEaeEvaluation().getNoteAnneeN1());
 		eaeToInitialize.getEaeEvaluation().setNoteAnneeN3(previousEae.getEaeEvaluation().getNoteAnneeN2());
+		
+		// On renseigne le précédent avancement
+		if (previousEae.getEaeEvalue() != null && previousEae.getEaeCampagne() != null && eaeToInitialize.getEaeEvalue() != null)
+			setModeAcces(eaeToInitialize, previousEae.getEaeCampagne().getAnnee(), previousEae.getEaeEvalue().getTypeAvancement());
 
 		// If this eae already has some eaeResultats, do nothing
 		if (eaeToInitialize.getEaeResultats().size() != 0)
@@ -176,6 +183,34 @@ public class EaeService implements IEaeService {
 			res.setTypeObjectif(pa.getTypeObjectif());
 			eaeToInitialize.getEaeResultats().add(res);
 		}
+	}
+	
+	protected void setModeAcces(Eae eaeToInitialize, Integer annee, EaeTypeAvctEnum typeAvancement) throws SirhWSConsumerException {
+		EaeAvancementEnum ancienAvancement = null;
+		
+		if (typeAvancement != null && typeAvancement.equals(EaeTypeAvctEnum.AD)) {
+			// On va chercher le dernier avancement, présent dans l'as400 : AVCT_FONCT
+			Integer idDernierAvct = sirhWsConsumer.getModeAccesForAgent(eaeToInitialize.getEaeEvalue().getIdAgent(), annee);
+			
+			if (idDernierAvct != null) {
+				switch (idDernierAvct) {
+					case 1 :
+						ancienAvancement = EaeAvancementEnum.MINI;
+						break;
+					case 2 : 
+						ancienAvancement = EaeAvancementEnum.MOY;
+						break;
+					case 3 : 
+						ancienAvancement = EaeAvancementEnum.MAXI;
+						break;
+					default : 
+						break;
+				}
+			}
+		} else {
+			ancienAvancement = EaeAvancementEnum.ANCIENNETE;
+		}
+		eaeToInitialize.getEaeEvalue().setModeAcces(ancienAvancement);
 	}
 
 	@Override
@@ -801,7 +836,18 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager", readOnly = true)
-	public List<EaeDto> getListeEaeDto(FormRehercheGestionEae form) throws EaeServiceException {
+	public Integer countList(FormRehercheGestionEae form) throws EaeServiceException {
+
+		if (null == form.getIdCampagneEae() || form.getIdCampagneEae() == 0) {
+			throw new EaeServiceException("Le choix de la campagne EAE est obligatoire.");
+		}
+
+		return eaeRepository.countList(form);
+	}
+
+	@Override
+	@Transactional(value = "eaeTransactionManager", readOnly = true)
+	public List<EaeDto> getListeEaeDto(FormRehercheGestionEae form, Integer pageSize, Integer pageNumber) throws EaeServiceException {
 
 		if (null == form.getIdCampagneEae() || form.getIdCampagneEae() == 0) {
 			throw new EaeServiceException("Le choix de la campagne EAE est obligatoire.");
@@ -809,7 +855,7 @@ public class EaeService implements IEaeService {
 
 		List<EaeDto> listEaeDto = new ArrayList<EaeDto>();
 
-		List<Eae> listEae = eaeRepository.getListeEae(form);
+		List<Eae> listEae = eaeRepository.getListeEae(form, pageSize, pageNumber);
 
 		if (null != listEae) {
 			for (Eae eae : listEae) {
@@ -832,7 +878,7 @@ public class EaeService implements IEaeService {
 
 		List<EaeDto> listEaeDto = new ArrayList<EaeDto>();
 
-		List<Eae> listEae = eaeRepository.getListeEae(form);
+		List<Eae> listEae = eaeRepository.getListeEae(form, null, null);
 
 		if (null != listEae) {
 			for (Eae eae : listEae) {
@@ -923,77 +969,81 @@ public class EaeService implements IEaeService {
 		if (null == eaeCampagne) {
 			throw new NoContentException();
 		}
-
+		
 		// listerEaeFichePosteGrouperParDirectionSection
-		Map<String, List<String>> mapDirectionSection = eaeRepository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae());
+		Map<String, Map<String, List<String>>> mapDirectionSection = eaeRepository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae());
 
 		if (null != mapDirectionSection) {
-			for (Map.Entry<String, List<String>> entry : mapDirectionSection.entrySet()) {
-				String direction = entry.getKey();
-				List<String> listSection = entry.getValue();
+			for (Map.Entry<String, Map<String, List<String>>> dir : mapDirectionSection.entrySet()) {
+				String direction = dir.getKey();
+				Map<String, List<String>> mapServices = dir.getValue();
 
-				if (null != listSection) {
-					for (String section : listSection) {
-
-						// on cherche la liste des EAE pour cette direction et
-						// section
-						// et par etat
-						Integer nbEaeNonAffecte = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
-								direction, section, EaeEtatEnum.NA.name(), false);
-
-						Integer nbEaeNonDebute = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
-								direction, section, EaeEtatEnum.ND.name(), false);
-
-						Integer nbEaeCree = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(), direction,
-								section, EaeEtatEnum.C.name(), false);
-
-						Integer nbEaeEnCours = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
-								direction, section, EaeEtatEnum.EC.name(), false);
-
-						Integer nbEaeFinalise = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
-								direction, section, EaeEtatEnum.F.name(), false);
-
-						Integer nbEaeControle = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
-								direction, section, EaeEtatEnum.CO.name(), false);
-
-						Integer nbEaeCAP = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(), direction,
-								section, null, true);
-
-						Integer totalEAE = nbEaeNonAffecte + nbEaeNonDebute + nbEaeCree + nbEaeEnCours + nbEaeFinalise + nbEaeControle;
-
-						// on cherche les propositions d'avancement
-						Integer nbAvctNonDefini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, false, null, false);
-
-						Integer nbAvctMini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MINI", false);
-
-						Integer nbAvctMoy = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MOY", false);
-
-						Integer nbAvctMAxi = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, "MAXI", false);
-
-						Integer nbAvctChangementClasse = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, section, true, null,
-								true);
-
-						EaeDashboardItemDto dto = new EaeDashboardItemDto();
-
-						dto.setDirection(direction);
-						dto.setSection(section);
-
-						dto.setNonAffecte(nbEaeNonAffecte);
-						dto.setNonDebute(nbEaeNonDebute);
-						dto.setCree(nbEaeCree);
-						dto.setEnCours(nbEaeEnCours);
-						dto.setFinalise(nbEaeFinalise);
-
-						dto.setNbEaeControle(nbEaeControle);
-						dto.setNbEaeCAP(nbEaeCAP);
-						dto.setTotalEAE(totalEAE);
-						dto.setNonDefini(nbAvctNonDefini);
-						dto.setMini(nbAvctMini);
-						dto.setMoy(nbAvctMoy);
-						dto.setMaxi(nbAvctMAxi);
-						dto.setChangClasse(nbAvctChangementClasse);
-
-						result.add(dto);
+				for (Map.Entry<String, List<String>> serv : mapServices.entrySet()) {
+					String service = serv.getKey();
+					List<String> listSection = serv.getValue();
+					
+					if (null != listSection) {
+						for (String section : listSection) {
+	
+							// on cherche la liste des EAE pour cette direction/service/section et par etat
+							Integer nbEaeNonAffecte = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+									direction, service, section, EaeEtatEnum.NA.name(), false);
+	
+							Integer nbEaeNonDebute = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+									direction, service, section, EaeEtatEnum.ND.name(), false);
+	
+							Integer nbEaeCree = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(), direction,
+									service, section, EaeEtatEnum.C.name(), false);
+	
+							Integer nbEaeEnCours = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+									direction, service, section, EaeEtatEnum.EC.name(), false);
+	
+							Integer nbEaeFinalise = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+									direction, service, section, EaeEtatEnum.F.name(), false);
+	
+							Integer nbEaeControle = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(),
+									direction, service, section, EaeEtatEnum.CO.name(), false);
+	
+							Integer nbEaeCAP = eaeRepository.countEaeByCampagneAndDirectionAndSectionAndStatut(eaeCampagne.getIdCampagneEae(), direction,
+									service, section, null, true);
+	
+							Integer totalEAE = nbEaeNonAffecte + nbEaeNonDebute + nbEaeCree + nbEaeEnCours + nbEaeFinalise + nbEaeControle;
+	
+							// on cherche les propositions d'avancement
+							Integer nbAvctNonDefini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, service, section, false, null, false);
+	
+							Integer nbAvctMini = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, service, section, true, "MINI", false);
+	
+							Integer nbAvctMoy = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, service, section, true, "MOY", false);
+	
+							Integer nbAvctMAxi = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, service, section, true, "MAXI", false);
+	
+							Integer nbAvctChangementClasse = eaeRepository.countAvisSHD(eaeCampagne.getIdCampagneEae(), direction, service, section, true, null,
+									true);
+	
+							EaeDashboardItemDto dto = new EaeDashboardItemDto();
+	
+							dto.setDirection(direction);
+							dto.setService(service);
+							dto.setSection(section);
+	
+							dto.setNonAffecte(nbEaeNonAffecte);
+							dto.setNonDebute(nbEaeNonDebute);
+							dto.setCree(nbEaeCree);
+							dto.setEnCours(nbEaeEnCours);
+							dto.setFinalise(nbEaeFinalise);
+	
+							dto.setNbEaeControle(nbEaeControle);
+							dto.setNbEaeCAP(nbEaeCAP);
+							dto.setTotalEAE(totalEAE);
+							dto.setNonDefini(nbAvctNonDefini);
+							dto.setMini(nbAvctMini);
+							dto.setMoy(nbAvctMoy);
+							dto.setMaxi(nbAvctMAxi);
+							dto.setChangClasse(nbAvctChangementClasse);
+	
+							result.add(dto);
+						}
 					}
 				}
 			}

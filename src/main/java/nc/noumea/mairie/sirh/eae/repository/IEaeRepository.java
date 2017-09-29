@@ -40,7 +40,9 @@ public interface IEaeRepository {
 
 	EaeDocument getEaeDocumentByIdDocument(Integer idDocument);
 
-	List<Eae> getListeEae(FormRehercheGestionEae form);
+	List<Eae> getListeEae(FormRehercheGestionEae form, Integer pageSize, Integer pageNumber);
+	
+	Integer countList(FormRehercheGestionEae form);
 
 	EaeCampagneTask findEaeCampagneTaskByIdCampagne(Integer idEaeCampagne);
 
@@ -48,11 +50,11 @@ public interface IEaeRepository {
 
 	List<Eae> findEaesNonDebuteOuCreeOuEnCoursForEaeListByAgentIds(List<Integer> agentIds, Integer agentId);
 
-	Map<String, List<String>> getListEaeFichePosteParDirectionEtSection(Integer idCampagneEAE);
+	Map<String, Map<String, List<String>>> getListEaeFichePosteParDirectionEtSection(Integer idCampagneEAE);
 
-	Integer countEaeByCampagneAndDirectionAndSectionAndStatut(Integer idCampagneEae, String direction, String section, String etat, boolean cap);
+	Integer countEaeByCampagneAndDirectionAndSectionAndStatut(Integer idCampagneEae, String direction, String service, String section, String etat, boolean cap);
 
-	Integer countAvisSHD(Integer idCampagneEae, String direction, String section, boolean avisRevalorisation, String dureeAvct,
+	Integer countAvisSHD(Integer idCampagneEae, String direction, String service, String section, boolean avisRevalorisation, String dureeAvct,
 			boolean avisChangementClasse);
 
 	EaeEvaluateur findEvaluateurByIdEaeEvaluateur(Integer idEaeEvaluateur);

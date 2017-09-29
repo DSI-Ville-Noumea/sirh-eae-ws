@@ -113,6 +113,10 @@ public class EaeEvalue {
 	@Column(name = "AVCT_DUR_MAX")
 	private Integer avctDureeMax;
 
+	@Column(name = "MODE_ACCES")
+	@Enumerated(EnumType.STRING)
+	private EaeAvancementEnum modeAcces;
+
 	@OneToOne
 	@JoinColumn(name = "ID_EAE")
 	private Eae eae;
@@ -355,5 +359,13 @@ public class EaeEvalue {
 
 	public void setAgent(Agent agent) {
 		this.agent = agent;
+	}
+
+	public EaeAvancementEnum getModeAcces() {
+		return modeAcces;
+	}
+
+	public void setModeAcces(EaeAvancementEnum modeAcces) {
+		this.modeAcces = modeAcces;
 	}
 }

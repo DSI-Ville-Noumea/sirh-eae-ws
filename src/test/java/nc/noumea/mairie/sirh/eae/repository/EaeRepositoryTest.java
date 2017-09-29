@@ -449,18 +449,20 @@ public class EaeRepositoryTest {
 		f3.setGradePoste("grade poste");
 		f3.setEmploi("emploi");
 		f3.setDirectionService("directionService 2");
-		f3.setService("service");
+		f3.setService("service 2");
 		f3.setSectionService("sectionService 3");
 		f3.setLocalisation("localisation");
 		f3.setMissions("missions");
 
 		eaePersistenceUnit.persist(f3);
 		
-		Map<String, List<String>> result = repository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae());
+		Map<String, Map<String, List<String>>> result = repository.getListEaeFichePosteParDirectionEtSection(eaeCampagne.getIdCampagneEae());
 		
-		assertEquals("sectionService", result.get("directionService").get(0));
-		assertEquals("sectionService 2", result.get("directionService").get(1));
-		assertEquals("sectionService 3", result.get("directionService 2").get(0));
+		assertEquals(2, result.size());
+		
+		assertEquals("sectionService", result.get("directionService").get("service").get(0));
+		assertEquals("sectionService 2", result.get("directionService").get("service").get(1));
+		assertEquals("sectionService 3", result.get("directionService 2").get("service 2").get(0));
 	}
 	
 	@Test
@@ -583,39 +585,39 @@ public class EaeRepositoryTest {
 		
 		// TEST OK
 		assertEquals(2, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "directionService", null, EaeEtatEnum.EC.name(), false).intValue());
+				eaeCampagne.getIdCampagneEae(), "directionService", null, null, EaeEtatEnum.EC.name(), false).intValue());
 		
 		// bad campagne
 		assertEquals(0, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae()+1, "directionService", null, EaeEtatEnum.EC.name(), false).intValue());
+				eaeCampagne.getIdCampagneEae()+1, "directionService", null, null, EaeEtatEnum.EC.name(), false).intValue());
 		
 		// bad direction
 		assertEquals(0, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "bad directionService", null, EaeEtatEnum.EC.name(), false).intValue());
+				eaeCampagne.getIdCampagneEae(), "bad directionService", null, null, EaeEtatEnum.EC.name(), false).intValue());
 		
 		// TEST OK section
 		assertEquals(1, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "directionService", "sectionService", EaeEtatEnum.EC.name(), false).intValue());
+				eaeCampagne.getIdCampagneEae(), "directionService", null, "sectionService", EaeEtatEnum.EC.name(), false).intValue());
 		
 		// TEST OK section
 		assertEquals(1, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "directionService", "sectionService 2", EaeEtatEnum.EC.name(), false).intValue());
+				eaeCampagne.getIdCampagneEae(), "directionService", null, "sectionService 2", EaeEtatEnum.EC.name(), false).intValue());
 		
 		// bad section
 		assertEquals(0, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "directionService", "sectionService 3", EaeEtatEnum.EC.name(), false).intValue());
+				eaeCampagne.getIdCampagneEae(), "directionService", null, "sectionService 3", EaeEtatEnum.EC.name(), false).intValue());
 		
 		// TEST OK cap true
 		assertEquals(1, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "directionService", null, EaeEtatEnum.EC.name(), true).intValue());
+				eaeCampagne.getIdCampagneEae(), "directionService", null, null, EaeEtatEnum.EC.name(), true).intValue());
 		
 		// Test 2e FP
 		assertEquals(1, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "directionService", "sectionService 2", EaeEtatEnum.ND.name(), true).intValue());
+				eaeCampagne.getIdCampagneEae(), "directionService", null, "sectionService 2", EaeEtatEnum.ND.name(), true).intValue());
 		
 		// Test 2e FP
 		assertEquals(1, repository.countEaeByCampagneAndDirectionAndSectionAndStatut(
-				eaeCampagne.getIdCampagneEae(), "directionService 2", "sectionService 3", EaeEtatEnum.F.name(), true).intValue());
+				eaeCampagne.getIdCampagneEae(), "directionService 2", null, "sectionService 3", EaeEtatEnum.F.name(), true).intValue());
 	}
 	
 
@@ -774,39 +776,39 @@ public class EaeRepositoryTest {
 		eaePersistenceUnit.persist(f3);
 		
 		// test  1er fiche de poste
-		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService", "sectionService",
+		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService", null, "sectionService",
 				true, EaeAvancementEnum.MINI.name(), true).intValue());
 		
 		// test bis
-		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService", "sectionService 2",
+		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService", null, "sectionService 2",
 				false, EaeAvancementEnum.MOY.name(), false).intValue());
 		
 		// test 2e fiche de poste
-		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService", "sectionService 2",
+		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService", null, "sectionService 2",
 				false, EaeAvancementEnum.MAXI.name(), true).intValue());
 		
 		// test 2e fiche de poste
-		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", "sectionService 3",
+		assertEquals(1, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", null, "sectionService 3",
 				true, EaeAvancementEnum.MAXI.name(), false).intValue());
 		
 		// bad direction 
-		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "bad directionService 2", "sectionService 3",
+		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "bad directionService 2", null, "sectionService 3",
 				true, EaeAvancementEnum.MAXI.name(), false).intValue());
 		
 		// bad section
-		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", "bad sectionService 3",
+		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", null, "bad sectionService 3",
 				true, EaeAvancementEnum.MAXI.name(), false).intValue());
 		
 		// bad avisRevalorisation
-		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", "sectionService 3",
+		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", null, "sectionService 3",
 				false, EaeAvancementEnum.MAXI.name(), false).intValue());
 		
 		// bad duree avancement
-		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", "sectionService 3",
+		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", null, "sectionService 3",
 				true, EaeAvancementEnum.MINI.name(), false).intValue());
 
 		// bad changement classe
-		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", "sectionService 3",
+		assertEquals(0, repository.countAvisSHD(eaeCampagne.getIdCampagneEae(), "directionService 2", null, "sectionService 3",
 				true, EaeAvancementEnum.MAXI.name(), true).intValue());
 	}
 }
