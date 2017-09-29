@@ -2,6 +2,7 @@ package nc.noumea.mairie.sirh.eae.domain.enums;
 
 public enum EaeEtatEnum {
 
+	// #41869 : Changement d'intitulé.
 	NA("Sans évaluateur"), ND("Non débuté"), C("Créé"), EC("En cours"), F("Finalisé"), CO("Contrôlé"), S("Supprimé");
 
 	private String statut;
