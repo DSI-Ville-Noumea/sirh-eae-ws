@@ -188,7 +188,7 @@ public class EaeRepository implements IEaeRepository {
 	}
 
 	@Override
-	public List<Eae> getListeEae(FormRehercheGestionEae form) {
+	public List<Eae> getListeEae(FormRehercheGestionEae form, Integer pageSize, Integer pageNumber) {
 
 		StringBuilder sbSelect = new StringBuilder();
 		sbSelect.append("select e from Eae e ");
@@ -219,6 +219,9 @@ public class EaeRepository implements IEaeRepository {
 		if (null != form.getIdAgentEvalue()) {
 			sbWhere.append(" and ev.idAgent = :idAgentEvalue ");
 		}
+		
+		// On tri automatiquement sur l'id des agents, afin de garder des résultats cohérents pour la pagination lors des changements de page.
+		sbWhere.append(" ORDER BY e.eaeEvalue.idAgent");
 
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createQuery(sbSelect.toString() + sbInner.toString() + sbWhere.toString(), Eae.class);
 		eaeQuery.setParameter("idCampagneEae", form.getIdCampagneEae());
@@ -242,6 +245,13 @@ public class EaeRepository implements IEaeRepository {
 		}
 		if (null != form.getIdAgentEvalue()) {
 			eaeQuery.setParameter("idAgentEvalue", form.getIdAgentEvalue());
+		}
+		
+		if (pageSize != null)
+			eaeQuery.setMaxResults(pageSize);
+		
+		if (pageNumber != null && pageSize != null) {
+			eaeQuery.setFirstResult(pageSize * (pageNumber - 1));
 		}
 
 		return eaeQuery.getResultList();
@@ -303,16 +313,16 @@ public class EaeRepository implements IEaeRepository {
 	}
 
 	@Override
-	public Map<String, List<String>> getListEaeFichePosteParDirectionEtSection(Integer idCampagneEAE) {
+	public Map<String, Map<String, List<String>>> getListEaeFichePosteParDirectionEtSection(Integer idCampagneEAE) {
 
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
+		Map<String, Map<String, List<String>>> result = new HashMap<String, Map<String, List<String>>>();
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select fp.DIRECTION_SERVICE, fp.SECTION_SERVICE from EAE_FICHE_POSTE fp ");
+		sb.append("select fp.DIRECTION_SERVICE, fp.SERVICE, fp.SECTION_SERVICE from EAE_FICHE_POSTE fp ");
 		sb.append("inner join EAE e on e.id_eae=fp.ID_EAE ");
 		sb.append("where e.ID_CAMPAGNE_EAE = :idCampagneEAE ");
-		sb.append("group by fp.DIRECTION_SERVICE, fp.SECTION_SERVICE ");
-		sb.append("order by fp.DIRECTION_SERVICE ");
+		sb.append("group by fp.DIRECTION_SERVICE, fp.SERVICE, fp.SECTION_SERVICE ");
+		sb.append("order by fp.DIRECTION_SERVICE, fp.SERVICE ");
 
 		Query q = eaeEntityManager.createNativeQuery(sb.toString());
 
@@ -321,22 +331,34 @@ public class EaeRepository implements IEaeRepository {
 		@SuppressWarnings("unchecked")
 		List<Object[]> resultQuery = q.getResultList();
 
+		// Construction de la Map
 		if (null != resultQuery) {
 			for (Object[] l : resultQuery) {
 
 				String direction = (String) l[0];
-				String section = (String) l[1];
+				String service = (String) l[1];
+				String section = (String) l[2];
 
+				Map<String, List<String>> mapServices = null;
 				List<String> listSection = null;
-				if (null != result.get(direction)) {
-					listSection = result.get(direction);
-					listSection.add(section);
+				if (result.get(direction) != null) {
+					mapServices = result.get(direction);
+					if (mapServices.get(service) != null) {
+						listSection = mapServices.get(service);
+						listSection.add(section);
+					} else {
+						listSection = new ArrayList<String>();
+						listSection.add(section);
+						mapServices.put(service, listSection);
+				}
 				} else {
+					mapServices =  new HashMap<String, List<String>>();
 					listSection = new ArrayList<String>();
 					listSection.add(section);
+					mapServices.put(service, listSection);
 				}
 
-				result.put(direction, listSection);
+				result.put(direction, mapServices);
 			}
 		}
 
@@ -344,7 +366,7 @@ public class EaeRepository implements IEaeRepository {
 	}
 
 	@Override
-	public Integer countEaeByCampagneAndDirectionAndSectionAndStatut(Integer idCampagneEae, String direction, String section, String etat,
+	public Integer countEaeByCampagneAndDirectionAndSectionAndStatut(Integer idCampagneEae, String direction, String service, String section, String etat,
 			boolean cap) {
 
 		StringBuilder sb = new StringBuilder();
@@ -354,6 +376,9 @@ public class EaeRepository implements IEaeRepository {
 
 		if (null != direction) {
 			sb.append(" and fp.DIRECTION_SERVICE = :direction ");
+		}
+		if (null != service) {
+			sb.append(" and fp.SERVICE = :service ");
 		}
 		if (null != section) {
 			sb.append(" and fp.SECTION_SERVICE = :section ");
@@ -372,6 +397,9 @@ public class EaeRepository implements IEaeRepository {
 		if (null != direction) {
 			q.setParameter("direction", direction);
 		}
+		if (null != service) {
+			q.setParameter("service", service);
+		}
 		if (null != section) {
 			q.setParameter("section", section);
 		}
@@ -385,7 +413,7 @@ public class EaeRepository implements IEaeRepository {
 	}
 
 	@Override
-	public Integer countAvisSHD(Integer idCampagneEae, String direction, String section, boolean avisRevalorisation, String dureeAvct,
+	public Integer countAvisSHD(Integer idCampagneEae, String direction, String service, String section, boolean avisRevalorisation, String dureeAvct,
 			boolean avisChangementClasse) {
 
 		StringBuilder sb = new StringBuilder();
@@ -396,6 +424,9 @@ public class EaeRepository implements IEaeRepository {
 
 		if (null != direction) {
 			sb.append(" and fp.DIRECTION_SERVICE = :direction ");
+		}
+		if (null != service) {
+			sb.append(" and fp.SERVICE = :service ");
 		}
 		if (null != section) {
 			sb.append(" and fp.SECTION_SERVICE = :section ");
@@ -417,6 +448,9 @@ public class EaeRepository implements IEaeRepository {
 		if (null != direction) {
 			q.setParameter("direction", direction);
 		}
+		if (null != service) {
+			q.setParameter("service", service);
+		}
 		if (null != section) {
 			q.setParameter("section", section);
 		}
@@ -432,5 +466,10 @@ public class EaeRepository implements IEaeRepository {
 	@Override
 	public EaeEvaluateur findEvaluateurByIdEaeEvaluateur(Integer idEaeEvaluateur) {
 		return eaeEntityManager.find(EaeEvaluateur.class, idEaeEvaluateur);
+	}
+	
+	@Override
+	public Integer countList(FormRehercheGestionEae form) {
+		return getListeEae(form, null, null).size();
 	}
 }

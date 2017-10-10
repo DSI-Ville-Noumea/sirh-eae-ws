@@ -6,14 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.noumea.mairie.sirh.domain.Agent;
-import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
-import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
-import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
-import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
-import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
-import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -26,6 +18,13 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import flexjson.JSONDeserializer;
+import nc.noumea.mairie.sirh.domain.Agent;
+import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
+import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
+import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
+import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 
 @Service
 public class SirhWSConsumer implements ISirhWsConsumer {
@@ -37,6 +36,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private static final String sirhAgentsUrl = "agents/sousAgents";
 	private static final String sirhShdAgentsUrl = "agents/agentsShd";
 	private static final String sirhAvancementUrl = "calculEae/avancement";
+	private static final String sirhGetDernierAvancementUrl = "calculEae/getDernierAvancement";
 	private static final String sirhAvancementDetacheUrl = "calculEae/avancementDetache";
 	private static final String sirhAffectationActiveByAgentUrl = "calculEae/affectationActiveByAgent";
 	private static final String sirhListeAffectationsAgentAvecServiceUrl = "calculEae/listeAffectationsAgentAvecService";
@@ -231,6 +231,23 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 		return result;
 	}
+	
+	protected Integer readResponseAsInteger(ClientResponse response, String url) throws SirhWSConsumerException {
+
+		Integer result = 0;
+
+		if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+			return null;
+		}
+
+		if (response.getStatus() != HttpStatus.OK.value()) {
+			throw new SirhWSConsumerException(String.format("An error occured when querying '%s'. Return code is : %s", url, response.getStatus()));
+		}
+
+		String output = response.getEntity(String.class);
+		result = new Integer(output);
+		return result;
+	}
 
 	private ClientResponse createAndFireRequestWithParameter(Map<String, String> parameters, String url)
 			throws SirhWSConsumerException {
@@ -418,5 +435,21 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 	private String getSirhIsUserSirhUrl() {
 		return sirhWsBaseUrl + sirhIsUserSirhUrl;
+	}
+
+	private String getSirhDernierAvancementUrl() {
+		return sirhWsBaseUrl + sirhGetDernierAvancementUrl;
+	}
+
+	@Override
+	public Integer getModeAccesForAgent(Integer idAgent, Integer anneeAvancement) throws SirhWSConsumerException {
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+		parameters.put("anneeAvancement", String.valueOf(anneeAvancement));
+
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhDernierAvancementUrl());
+
+		return readResponseAsInteger(res, getSirhAvancementUrl());
 	}
 }

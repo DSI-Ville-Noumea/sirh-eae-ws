@@ -59,7 +59,6 @@ public class EaeEvaluationDto {
 		commentaireEvalue = new EaeCommentaireDto(eaeEvaluation.getCommentaireEvalue());
 		commentaireAvctEvaluateur = new EaeCommentaireDto(eaeEvaluation.getCommentaireAvctEvaluateur());
 		commentaireAvctEvalue = new EaeCommentaireDto(eaeEvaluation.getCommentaireAvctEvalue());
-
 		if (eaeEvaluation.getNiveauEae() == null)
 			niveau = new EaeListeDto(EaeNiveauEnum.SATISFAISANT, EaeNiveauEnum.class);
 		else

@@ -4,7 +4,8 @@ public enum EaeAvancementEnum {
 	
 	MINI("Durée minimale"),
 	MOY("Durée moyenne"),
-	MAXI("Durée maximale");
+	MAXI("Durée maximale"),
+	ANCIENNETE("Ancienneté");
 	
 	private String typeAvancement;
 	

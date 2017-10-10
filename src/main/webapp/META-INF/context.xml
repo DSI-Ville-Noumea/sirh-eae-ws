@@ -38,6 +38,28 @@
 	<Environment name="REPORTING_BASE_URL" type="java.lang.String" description="BIRT report viewer base URL for EAEs reporting" 
 		value="http://***REMOVED***:8210/birt/" override="false" />
 
+
+	<!-- -->
+	<!-- WS RADI -->
+	<!-- -->
+	<Environment name="RADI_WS_URL" type="java.lang.String"
+		description="radi-ws base Url endpoint" value="http://***REMOVED***:8210/radi/" override="false" />
+
+	<!-- -->
+	<!-- AUTRE PARAM -->
+	<!-- -->
+	<Environment
+		description="parametre pour afficher dans le titre de l'appli si on est en prod ou en recette (DEV ou PROD)"
+		name="TYPE_ENV" override="false" value="DEV" type="java.lang.String" />
+		
+	<!-- -->
+	<!-- Mail Server conf -->
+	<!-- -->
+	<Resource name="mail/MailServer" auth="Container" type="javax.mail.Session"
+		mail.debug="false" mail.user="SIRH EAEs" mail.from="noreply@ville-noumea.nc"
+		mail.transport.protocol="smtp" mail.smtp.host="smtp" mail.smtp.auth="false"
+		mail.smtp.port="25" mail.smtp.starttls.enable="false" description="Global E-Mail Resource" />
+
 	<!--  -->
 	<!-- ALFRESCO -->
 	<!--  -->

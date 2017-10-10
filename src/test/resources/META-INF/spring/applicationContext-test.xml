@@ -69,6 +69,10 @@
 		<property name="persistenceUnitName" value="eaePersistenceUnit" />
 		<property name="dataSource" ref="eaePostgresDataSource" />
 	</bean>
+	
+    <bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="mailSender"/>
+	<bean class="java.lang.String" id="typeEnvironnement" />
+	<bean class="java.lang.String" id="RADI_WS_Base_URL" />
 
 	
 	<bean class="java.lang.String" id="sirhWsBaseUrl" />

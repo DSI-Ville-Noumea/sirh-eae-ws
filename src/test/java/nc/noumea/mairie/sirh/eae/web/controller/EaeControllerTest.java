@@ -104,7 +104,7 @@ public class EaeControllerTest {
 	}
 
 	@Test
-	public void testInitializeEae_initialisationOk_ReturnHttp200() throws EaeServiceException {
+	public void testInitializeEae_initialisationOk_ReturnHttp200() throws EaeServiceException, SirhWSConsumerException {
 
 		// Given
 		int agentId = 12;
@@ -141,7 +141,7 @@ public class EaeControllerTest {
 	}
 
 	@Test
-	public void testInitializeEae_noEaeForAgent_ReturnHttp404() throws EaeServiceException {
+	public void testInitializeEae_noEaeForAgent_ReturnHttp404() throws EaeServiceException, SirhWSConsumerException {
 
 		// Given
 		int agentId = 12;
@@ -168,7 +168,7 @@ public class EaeControllerTest {
 	}
 
 	@Test
-	public void testInitializeEae_EaeForAgentIsAlreadyInitialized_ReturnHttp409() throws EaeServiceException {
+	public void testInitializeEae_EaeForAgentIsAlreadyInitialized_ReturnHttp409() throws EaeServiceException, SirhWSConsumerException {
 
 		// Given
 		int agentId = 12;
@@ -200,7 +200,7 @@ public class EaeControllerTest {
 	}
 
 	@Test
-	public void testInitializeEae_AgentDoesNotHaveRight_ReturnHttp403() throws EaeServiceException {
+	public void testInitializeEae_AgentDoesNotHaveRight_ReturnHttp403() throws EaeServiceException, SirhWSConsumerException {
 
 		// Given
 		int agentId = 12;

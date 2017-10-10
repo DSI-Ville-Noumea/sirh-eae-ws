@@ -1,5 +1,6 @@
 package nc.noumea.mairie.alfresco.cmis;
 
+import java.io.File;
 import java.io.InputStream;
 
 import nc.noumea.mairie.sirh.eae.domain.Eae;
@@ -70,5 +71,7 @@ public interface IAlfrescoCMISService {
 	 *            NodeRef du document EAE
 	 */
 	public void setPermissionsEaeControle(String nodeRef);
+	
+	public File readDocument(String nodeRef);
 
 }

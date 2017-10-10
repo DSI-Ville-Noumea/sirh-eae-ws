@@ -107,7 +107,7 @@ public class EaeController {
 
 	@ResponseBody
 	@RequestMapping(value = "initialiserEae", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public ReturnMessageDto initializeEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) {
+	public ReturnMessageDto initializeEae(@RequestParam("idAgent") int idAgent, @RequestParam("idEvalue") int idEvalue) throws SirhWSConsumerException {
 
 		logger.debug("entered GET [eaes/initialiserEae] => initializeEae with parameter idAgent = {} , idEvalue = {}", idAgent, idEvalue);
 
@@ -121,9 +121,7 @@ public class EaeController {
 			throw new NotFoundException();
 
 		Eae lastEae = agentEaes.get(0);
-		Eae previousEae = null;
-		if (agentEaes.size() > 1)
-			previousEae = agentEaes.get(1);
+		Eae previousEae = (agentEaes.size() > 1) ? agentEaes.get(1) : null;
 
 		eaeSecurityProvider.checkEaeAndWriteRight(lastEae.getIdEae(), convertedIdAgentEvaluateur);
 

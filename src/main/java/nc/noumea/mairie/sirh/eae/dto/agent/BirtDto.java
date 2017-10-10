@@ -48,6 +48,7 @@ public class BirtDto {
 	private String		statut;
 	private String		fonction;
 	private Integer		idEaeEvaluateur;
+	private String		modeAcces;
 
 	public BirtDto() {
 
@@ -85,6 +86,7 @@ public class BirtDto {
 		this.idEaeEvalue = eaeEvalue.getIdEaeEvalue();
 		this.position = eaeEvalue.getPosition() == null ? null : eaeEvalue.getPosition().name();
 		this.statut = eaeEvalue.getStatut() == null ? null : eaeEvalue.getStatut().name();
+		this.modeAcces = eaeEvalue.getModeAcces() == null ? null : eaeEvalue.getModeAcces().name();
 	}
 
 	public AgentEaeDto getAgent() {
@@ -269,5 +271,13 @@ public class BirtDto {
 
 	public void setIdEaeEvaluateur(Integer idEaeEvaluateur) {
 		this.idEaeEvaluateur = idEaeEvaluateur;
+	}
+
+	public String getModeAcces() {
+		return modeAcces;
+	}
+
+	public void setModeAcces(String modeAcces) {
+		this.modeAcces = modeAcces;
 	}
 }

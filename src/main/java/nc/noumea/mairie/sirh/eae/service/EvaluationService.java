@@ -323,12 +323,10 @@ public class EvaluationService implements IEvaluationService {
 				throw new EvaluationServiceException("La propriété 'niveau' de l'évaluation est incorrecte.");
 			}
 		}
-
 		evaluation.setNiveauEae(selectedNiveau);
 
 		// Check the propositionAvancement validity
 		EaeAvancementEnum selectedAvancement = null;
-
 		if (dto.getPropositionAvancement() != null && dto.getPropositionAvancement().getCourant() != null) {
 			try {
 				selectedAvancement = EaeAvancementEnum.valueOf(dto.getPropositionAvancement().getCourant());
@@ -336,7 +334,6 @@ public class EvaluationService implements IEvaluationService {
 				throw new EvaluationServiceException("La propriété 'propositionAvancement' de l'évaluation est incorrecte.");
 			}
 		}
-
 		evaluation.setPropositionAvancement(selectedAvancement);
 
 		// Calculate Avis SHD based on what has been modified

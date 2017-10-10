@@ -23,6 +23,7 @@ public class EaeIdentificationStatutDto {
 	private String	nouvGrade;
 	private String	nouvEchelon;
 	private String	statutPrecision;
+	private String	modeAcces;
 
 	private String	statut;
 
@@ -41,6 +42,8 @@ public class EaeIdentificationStatutDto {
 		this.nouvEchelon = eaeEvalue.getNouvEchelon();
 		this.dateEffet = eaeEvalue.getDateEffetAvancement();
 		this.statutPrecision = eaeEvalue.getStatutPrecision();
+		if (null != eaeEvalue.getModeAcces())
+			this.statut = eaeEvalue.getModeAcces().name();
 		if (null != eaeEvalue.getStatut())
 			this.statut = eaeEvalue.getStatut().name();
 	}
@@ -131,6 +134,14 @@ public class EaeIdentificationStatutDto {
 
 	public void setDateEffet(Date dateEffet) {
 		this.dateEffet = dateEffet;
+	}
+
+	public String getModeAcces() {
+		return modeAcces;
+	}
+
+	public void setModeAcces(String modeAcces) {
+		this.modeAcces = modeAcces;
 	}
 
 }

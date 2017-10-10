@@ -1,6 +1,7 @@
 package nc.noumea.mairie.alfresco.cmis;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -67,6 +68,9 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 
 	@Autowired
 	private AlfrescoWsConsumer	alfrescoWsConsumer;
+
+	@Autowired
+	private CmisService			cmisService;
 
 	@PostConstruct
 	public void init() {
@@ -192,6 +196,19 @@ public class AlfrescoCMISService implements IAlfrescoCMISService {
 				agentDto.getDisplayPrenom());
 
 		return returnDto;
+	}
+
+	@Override
+	public File readDocument(String nodeRef) {
+
+		Session session = createSession.getSession(alfrescoUrl, alfrescoLogin, alfrescoPassword);
+
+		try {
+			return cmisService.getFile(session, nodeRef);
+		} catch (CmisObjectNotFoundException e) {
+			logger.error(e.getMessage());
+			return null;
+		}
 	}
 
 	@Override
