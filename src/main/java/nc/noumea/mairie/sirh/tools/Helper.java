@@ -15,4 +15,16 @@ public class Helper implements IHelper {
 		return c.getTime();
 	}
 
+	/**
+	 * Converts a 900xxxx IdAgent into an employeeNumber readable one: 90xxxx
+	 * 
+	 * @param idAgent
+	 *            900xxxx
+	 * @return 90xxxx
+	 */
+	@Override
+	public String getEmployeeNumber(Integer idAgent) {
+		return "90" + String.valueOf(idAgent).substring(3, String.valueOf(idAgent).length());
+	}
+
 }

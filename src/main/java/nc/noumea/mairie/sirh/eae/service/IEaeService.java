@@ -15,6 +15,7 @@ import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.ValeurListeDto;
+import nc.noumea.mairie.sirh.exception.DaoException;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public interface IEaeService {
@@ -214,7 +215,7 @@ public interface IEaeService {
 
 	EaeDto findEaeDto(Integer idEae);
 
-	void setEae(EaeDto eaeDto) throws EaeServiceException, SirhWSConsumerException;
+	ReturnMessageDto setEae(EaeDto eaeDto, ReturnMessageDto result) throws EaeServiceException, SirhWSConsumerException, DaoException;
 
 	List<EaeDto> getListeEaeDto(FormRehercheGestionEae form, Integer pageSize, Integer pageNumber) throws EaeServiceException;
 	

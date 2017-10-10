@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.service;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,18 +11,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nc.noumea.mairie.alfresco.cmis.CmisService;
 import nc.noumea.mairie.alfresco.cmis.IAlfrescoCMISService;
 import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
@@ -48,14 +57,17 @@ import nc.noumea.mairie.sirh.eae.dto.EaeFinalizationDto;
 import nc.noumea.mairie.sirh.eae.dto.EaeListItemDto;
 import nc.noumea.mairie.sirh.eae.dto.FinalizationInformationDto;
 import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
+import nc.noumea.mairie.sirh.eae.dto.LightUser;
 import nc.noumea.mairie.sirh.eae.dto.ReturnMessageDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AgentDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.BirtDto;
 import nc.noumea.mairie.sirh.eae.dto.identification.ValeurListeDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.eae.web.controller.NoContentException;
+import nc.noumea.mairie.sirh.exception.DaoException;
 import nc.noumea.mairie.sirh.service.IAgentService;
 import nc.noumea.mairie.sirh.tools.IHelper;
+import nc.noumea.mairie.sirh.ws.IRadiWSConsumer;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
@@ -77,6 +89,9 @@ public class EaeService implements IEaeService {
 	private ISirhWsConsumer					sirhWsConsumer;
 
 	@Autowired
+	private IRadiWSConsumer 				radiWSConsumer;
+
+	@Autowired
 	private IAgentMatriculeConverterService	agentMatriculeConverterService;
 
 	@Autowired
@@ -90,6 +105,13 @@ public class EaeService implements IEaeService {
 
 	@Autowired
 	private ICalculEaeService				calculEaeService;
+
+	@Autowired
+	@Qualifier("typeEnvironnement")
+	private String typeEnvironnement;
+
+	@Autowired
+	private JavaMailSender mailSender;
 
 	/*
 	 * Interface implementation
@@ -778,7 +800,7 @@ public class EaeService implements IEaeService {
 
 	@Override
 	@Transactional(value = "eaeTransactionManager")
-	public void setEae(EaeDto eaeDto) throws EaeServiceException, SirhWSConsumerException {
+	public ReturnMessageDto setEae(EaeDto eaeDto, ReturnMessageDto result) throws EaeServiceException, SirhWSConsumerException, DaoException {
 
 		Eae eae = findEae(eaeDto.getIdEae());
 
@@ -812,6 +834,9 @@ public class EaeService implements IEaeService {
 									eaeDto.getIdAgentDelegataire()));
 				}
 			}
+			
+			// #42278 : On envoi un mail à l'agent pour lui dire que son EAE est bien contrôlé.
+			result = sendMailEaeControle(eaeDto, result);
 		}
 		if (EaeEtatEnum.F.equals(eae.getEtat())) {
 			logger.debug(
@@ -832,6 +857,66 @@ public class EaeService implements IEaeService {
 				}
 			}
 		}
+		return result;
+	}
+	
+	private ReturnMessageDto sendMailEaeControle(EaeDto eae, ReturnMessageDto result) throws DaoException {
+		
+		LightUser user = null;
+		try {
+			user = radiWSConsumer.retrieveAgentFromLdapFromMatricule(helper.getEmployeeNumber(eae.getEvalue().getIdAgent()));
+		} catch (DaoException e) {
+			logger.info("Le user id {} n'a pas été trouvé dans l'AD.", eae.getEvalue().getIdAgent());
+			result.getInfos().add("Cet agent n'a pas été trouvé dans l'AD. Il n'a donc pas été informé par mail du contrôle de son EAE.");
+			return result;
+		}
+		
+		final EaeDto finalEae = eae;
+		final LightUser finalUser = user;
+
+		// on envoie le mail
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+				// Set the To
+				message.setTo(finalUser.getMail());
+
+				StringBuilder text = new StringBuilder();
+				text.append("Bonjour, <br /><br /> ");
+				text.append("Votre EAE vient d'être contrôlé par la DRH.");
+				
+				if (finalEae.getFinalisation().get(0) != null) {
+					File file = alfrescoCMISService.readDocument(finalEae.getFinalisation().get(0).getIdDocument());
+					
+					if (file != null) {
+						String title = "EAE_CONTROLE_" + finalEae.getEvalue().getAgent().getNomUsage() + "_" + finalEae.getCampagne().getAnnee();
+						text.append(" Il a été ajouté à ce mail en pièce jointe.");
+						message.addAttachment(title, file);
+					}
+				}
+
+				// Set the subject
+				String sujetMail = "Votre EAE a été contrôlé par la DRH";
+				if (!typeEnvironnement.equals("PROD")) {
+					sujetMail = "[TEST] " + sujetMail;
+				}
+
+				text.append("<br /><br />Cordialement,");
+				text.append("<br />L'équipe SIRH");
+				
+				// Set the body
+				message.setText(text.toString(), true);
+				message.setSubject(sujetMail);
+			
+			}
+		};
+
+		// Actually send the email
+		mailSender.send(preparator);
+		
+		return result;
 	}
 
 	@Override

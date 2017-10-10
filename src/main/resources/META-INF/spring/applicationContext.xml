@@ -44,6 +44,9 @@
 
 	<jee:jndi-lookup id="eaePostgresDataSource" jndi-name="jdbc/EAE_WS_DS1"
 		resource-ref="true" />
+	
+	<!-- RADI -->
+	<jee:jndi-lookup id="RADI_WS_Base_URL" jndi-name="RADI_WS_URL" expected-type="java.lang.String" />
 
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
 		id="eaeTransactionManager">
@@ -64,6 +67,15 @@
 			<value>messages</value>
 		</property>
 	</bean>
+	
+	<!-- Spring mail -->
+	<jee:jndi-lookup id="mailSession" jndi-name="mail/MailServer" resource-ref="true" />
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="session" ref="mailSession" />
+	</bean>
+
+	<!-- Type environnement pour envoie de mail -->
+	<jee:jndi-lookup id="typeEnvironnement" jndi-name="TYPE_ENV" expected-type="java.lang.String" />
 	
 	<jee:jndi-lookup id="sirhWsBaseUrl" jndi-name="SIRH_WS_URL" expected-type="java.lang.String"/>
 	
