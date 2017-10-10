@@ -885,14 +885,14 @@ public class EaeService implements IEaeService {
 
 				StringBuilder text = new StringBuilder();
 				text.append("Bonjour, <br /><br /> ");
-				text.append("Votre EAE vient d'être contrôlé par la DRH.");
+				text.append("Votre EAE vient d'être contrôlé par la DRH. Il est désormais intégré au SIRH.");
 				
 				if (finalEae.getFinalisation().get(0) != null) {
 					File file = alfrescoCMISService.readDocument(finalEae.getFinalisation().get(0).getIdDocument());
 					
 					if (file != null) {
-						String title = "EAE_CONTROLE_" + finalEae.getEvalue().getAgent().getNomUsage() + "_" + finalEae.getCampagne().getAnnee();
-						text.append(" Il a été ajouté à ce mail en pièce jointe.");
+						String title = "EAE_" + finalEae.getCampagne().getAnnee() + "_" + finalEae.getEvalue().getAgent().getPrenom() + "_" + finalEae.getEvalue().getAgent().getNomUsage() + ".pdf";
+						text.append("<br />Vous le trouverez également en pièce jointe.");
 						message.addAttachment(title, file);
 					}
 				}
@@ -903,8 +903,8 @@ public class EaeService implements IEaeService {
 					sujetMail = "[TEST] " + sujetMail;
 				}
 
-				text.append("<br /><br />Cordialement,");
-				text.append("<br />L'équipe SIRH");
+				text.append("<br />La Section Emploi Formation se tient à votre disposition pour tout complément d'information.");
+				text.append("<br /><br />Cordialement.");
 				
 				// Set the body
 				message.setText(text.toString(), true);
