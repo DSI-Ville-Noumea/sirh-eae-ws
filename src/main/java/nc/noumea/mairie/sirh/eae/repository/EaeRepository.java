@@ -448,8 +448,8 @@ public class EaeRepository implements IEaeRepository {
 		if (null != direction) {
 			q.setParameter("direction", direction);
 		}
-		if (null != section) {
-			q.setParameter("section", section);
+		if (null != service) {
+			q.setParameter("service", service);
 		}
 		if (null != section) {
 			q.setParameter("section", section);
