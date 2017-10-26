@@ -44,5 +44,5 @@ public interface ISirhWsConsumer {
 
 	boolean isUtilisateurSirh(Integer idAgent) throws SirhWSConsumerException;
 	
-	Integer getModeAccesForAgent(Integer idAgent, Integer annee) throws SirhWSConsumerException;
+	Integer getModeAccesForAgent(Integer idAgent) throws SirhWSConsumerException;
 }

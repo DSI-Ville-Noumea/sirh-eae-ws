@@ -334,7 +334,6 @@ public class CalculEaeService implements ICalculEaeService {
 		evalAModif.setEstDetache(agentAffecte);
 
 		eae.setEaeEvalue(evalAModif);
-		// eaeRepository.persistEntity(evalAModif);
 	}
 
 	public void setCarriereActive(CalculEaeInfosDto eaeInfosDto, EaeEvalue evalAModif, Eae eae) {

@@ -442,11 +442,10 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	}
 
 	@Override
-	public Integer getModeAccesForAgent(Integer idAgent, Integer anneeAvancement) throws SirhWSConsumerException {
+	public Integer getModeAccesForAgent(Integer idAgent) throws SirhWSConsumerException {
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgent", String.valueOf(idAgent));
-		parameters.put("anneeAvancement", String.valueOf(anneeAvancement));
 
 		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhDernierAvancementUrl());
 

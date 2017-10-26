@@ -379,8 +379,12 @@ public class EaeServiceTest {
 	@Test
 	public void testInitilizeEae_1PreviousEae_createEaeResultatFromPreviousPlanActionAndCopyNotes() throws EaeServiceException, SirhWSConsumerException {
 		// Given
+		EaeEvalue evalue = new EaeEvalue();
+		evalue.setIdAgent(9005456);
+		
 		Eae eaeToInit = new Eae();
 		eaeToInit.setIdEae(987);
+		eaeToInit.setEaeEvalue(evalue);
 		eaeToInit.setEtat(EaeEtatEnum.ND);
 
 		// Mock EAEs list (current, previous)
@@ -598,13 +602,13 @@ public class EaeServiceTest {
 		eae.setEaeEvalue(evalue);
 
 		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
-		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(1);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454)).thenReturn(1);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 		
-		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.PROMO);
+		service.setModeAcces(eae, EaeTypeAvctEnum.PROMO);
 		
 		assertEquals(eae.getEaeEvalue().getModeAcces(), EaeAvancementEnum.ANCIENNETE);
 	}
@@ -627,15 +631,15 @@ public class EaeServiceTest {
 		eae2.setEaeEvalue(evalue2);
 
 		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
-		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(1);
-		when(sirhWsConsumer.getModeAccesForAgent(9005455, 2017)).thenReturn(3);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454)).thenReturn(1);
+		when(sirhWsConsumer.getModeAccesForAgent(9005455)).thenReturn(3);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 		
-		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.AD);
-		service.setModeAcces(eae2, 2017, EaeTypeAvctEnum.AD);
+		service.setModeAcces(eae, EaeTypeAvctEnum.AD);
+		service.setModeAcces(eae2, EaeTypeAvctEnum.AD);
 		
 		assertEquals(eae.getEaeEvalue().getModeAcces(), EaeAvancementEnum.MINI);
 		assertEquals(eae2.getEaeEvalue().getModeAcces(), EaeAvancementEnum.MAXI);
@@ -651,13 +655,13 @@ public class EaeServiceTest {
 		eae.setEaeEvalue(evalue);
 
 		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
-		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(2);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454)).thenReturn(2);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 		
-		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.AD);
+		service.setModeAcces(eae, EaeTypeAvctEnum.AD);
 		
 		assertEquals(eae.getEaeEvalue().getModeAcces(), EaeAvancementEnum.MOY);
 	}
@@ -672,13 +676,13 @@ public class EaeServiceTest {
 		eae.setEaeEvalue(evalue);
 
 		ISirhWsConsumer sirhWsConsumer = mock(ISirhWsConsumer.class);
-		when(sirhWsConsumer.getModeAccesForAgent(9005454, 2017)).thenReturn(null);
+		when(sirhWsConsumer.getModeAccesForAgent(9005454)).thenReturn(null);
 
 		EaeService service = new EaeService();
 		ReflectionTestUtils.setField(service, "helper", helperMock);
 		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
 		
-		service.setModeAcces(eae, 2017, EaeTypeAvctEnum.AD);
+		service.setModeAcces(eae, EaeTypeAvctEnum.AD);
 		
 		assertNull(eae.getEaeEvalue().getModeAcces());
 	}

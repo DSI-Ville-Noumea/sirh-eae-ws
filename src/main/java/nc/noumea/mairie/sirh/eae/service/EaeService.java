@@ -189,8 +189,12 @@ public class EaeService implements IEaeService {
 		eaeToInitialize.getEaeEvaluation().setNoteAnneeN3(previousEae.getEaeEvaluation().getNoteAnneeN2());
 		
 		// On renseigne le précédent avancement
-		if (previousEae.getEaeEvalue() != null && previousEae.getEaeCampagne() != null && eaeToInitialize.getEaeEvalue() != null)
-			setModeAcces(eaeToInitialize, previousEae.getEaeCampagne().getAnnee(), previousEae.getEaeEvalue().getTypeAvancement());
+		if (previousEae.getEaeEvalue() != null && eaeToInitialize.getEaeEvalue() != null)
+			setModeAcces(eaeToInitialize, previousEae.getEaeEvalue().getTypeAvancement());
+		else {
+			logger.debug("L'évalué de l'ancien ou du nouvel EAE est nul. Le mode d'accès n'a donc pas été généré.");
+		}
+		logger.debug("Mode d'accès pour cet agent " + eaeToInitialize.getEaeEvalue().getModeAcces());
 
 		// If this eae already has some eaeResultats, do nothing
 		if (eaeToInitialize.getEaeResultats().size() != 0)
@@ -207,31 +211,37 @@ public class EaeService implements IEaeService {
 		}
 	}
 	
-	protected void setModeAcces(Eae eaeToInitialize, Integer annee, EaeTypeAvctEnum typeAvancement) throws SirhWSConsumerException {
+	protected void setModeAcces(Eae eaeToInitialize, EaeTypeAvctEnum typeAvancement) throws SirhWSConsumerException {
+		logger.debug("Entrée dans la fonction d'attribution du mode d'accès");
 		EaeAvancementEnum ancienAvancement = null;
+		// On va chercher le dernier avancement pour les fonctionnaires, présent dans AVCT_FONCT
+		Integer idDernierAvct = sirhWsConsumer.getModeAccesForAgent(eaeToInitialize.getEaeEvalue().getIdAgent());
 		
-		if (typeAvancement != null && typeAvancement.equals(EaeTypeAvctEnum.AD)) {
-			// On va chercher le dernier avancement, présent dans l'as400 : AVCT_FONCT
-			Integer idDernierAvct = sirhWsConsumer.getModeAccesForAgent(eaeToInitialize.getEaeEvalue().getIdAgent(), annee);
-			
-			if (idDernierAvct != null) {
+		// S'il n'y a pas de dernier avancement ou que le type d'avancement du dernier EAE n'est pas renseigné, alors on ne renseigne pas le champ.
+		if (idDernierAvct != null && typeAvancement != null) {
+			if (typeAvancement.equals(EaeTypeAvctEnum.AD)) {
 				switch (idDernierAvct) {
 					case 1 :
 						ancienAvancement = EaeAvancementEnum.MINI;
 						break;
-					case 2 : 
+					case 2 :
 						ancienAvancement = EaeAvancementEnum.MOY;
 						break;
-					case 3 : 
+					case 3 :
 						ancienAvancement = EaeAvancementEnum.MAXI;
 						break;
-					default : 
+					case 4 :
+					case 5 :
+						ancienAvancement = EaeAvancementEnum.ANCIENNETE;
+						break;
+					default :
 						break;
 				}
+			} else {
+				ancienAvancement = EaeAvancementEnum.ANCIENNETE;
 			}
-		} else {
-			ancienAvancement = EaeAvancementEnum.ANCIENNETE;
 		}
+		logger.debug("Mode d'accès attribué à l'agent {} : {}", eaeToInitialize.getEaeEvalue().getIdAgent(), ancienAvancement);
 		eaeToInitialize.getEaeEvalue().setModeAcces(ancienAvancement);
 	}
 
