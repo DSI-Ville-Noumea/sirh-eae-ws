@@ -113,7 +113,7 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 	}
 	
 	@Override
-	public Integer getModeAccesForAgent(Integer idAgent, Integer annee) throws SirhWSConsumerException {
+	public Integer getModeAccesForAgent(Integer idAgent) throws SirhWSConsumerException {
 		// TODO Auto-generated method stub
 		return null;
 	}

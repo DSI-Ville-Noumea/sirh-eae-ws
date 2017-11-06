@@ -43,7 +43,7 @@ public class EaeIdentificationStatutDto {
 		this.dateEffet = eaeEvalue.getDateEffetAvancement();
 		this.statutPrecision = eaeEvalue.getStatutPrecision();
 		if (null != eaeEvalue.getModeAcces())
-			this.statut = eaeEvalue.getModeAcces().name();
+			this.modeAcces = eaeEvalue.getModeAcces().name();
 		if (null != eaeEvalue.getStatut())
 			this.statut = eaeEvalue.getStatut().name();
 	}
