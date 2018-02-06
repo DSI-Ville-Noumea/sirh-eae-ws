@@ -63,6 +63,7 @@ public class CalculEaeService implements ICalculEaeService {
 	public static final String	CHAINE_VIDE	= "";
 	public static final String	ZERO		= "0";
 	public static final String	DATE_NULL	= "01/01/0001";
+	public static final String 	TITU		= "6";
 
 	SimpleDateFormat			sdfYear		= new SimpleDateFormat("yyyy");
 
@@ -88,11 +89,10 @@ public class CalculEaeService implements ICalculEaeService {
 			// logger.info("Req AS400 : chercherAvancementAvecAnneeEtAgent");
 			AvancementEaeDto avct = sirhWsConsumer.getAvancement(idAgent, eaeCampagne.getAnnee(), true);
 			if (avct != null && null != avct.getEtat() && avct.getEtat().equals(AvancementEaeDto.SGC)) {
-				// on a trouvé une ligne dans avancement, on regarde l'etat de
-				// la ligne
+				// on a trouvé une ligne dans avancement, on regarde l'etat de la ligne
 				// si 'valid DRH' alors on met CAP à true;
 				// si l'avancement est de type TITU alors on met false #11510
-				if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals("6")) {
+				if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals(TITU)) {
 					eae.setCap(false);
 				} else {
 					eae.setCap(true);
@@ -157,7 +157,7 @@ public class CalculEaeService implements ICalculEaeService {
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
 			// si l'avancement est de type TITU alors on met false #11510
-			if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals("6")) {
+			if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals(TITU)) {
 				eae.setCap(false);
 			} else {
 				eae.setCap(true);
@@ -810,7 +810,7 @@ public class CalculEaeService implements ICalculEaeService {
 			// on regarde l'etat de la ligne
 			// si 'valid DRH' alors on met CAP à true;
 			// si l'avancement est de type TITU alors on met false #11510
-			if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals("6")) {
+			if (avct.getIdMotifAvct() != null && String.valueOf(avct.getIdMotifAvct()).equals(TITU)) {
 				eae.setCap(false);
 			} else {
 				eae.setCap(true);

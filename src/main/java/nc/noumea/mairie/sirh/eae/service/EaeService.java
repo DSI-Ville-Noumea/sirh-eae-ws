@@ -190,7 +190,7 @@ public class EaeService implements IEaeService {
 		
 		// On renseigne le précédent avancement
 		if (previousEae.getEaeEvalue() != null && eaeToInitialize.getEaeEvalue() != null)
-			setModeAcces(eaeToInitialize, previousEae.getEaeEvalue().getTypeAvancement());
+			setModeAcces(eaeToInitialize);
 		else {
 			logger.debug("L'évalué de l'ancien ou du nouvel EAE est nul. Le mode d'accès n'a donc pas été généré.");
 		}
@@ -211,35 +211,30 @@ public class EaeService implements IEaeService {
 		}
 	}
 	
-	protected void setModeAcces(Eae eaeToInitialize, EaeTypeAvctEnum typeAvancement) throws SirhWSConsumerException {
+	// #44452
+	protected void setModeAcces(Eae eaeToInitialize) throws SirhWSConsumerException {
 		logger.debug("Entrée dans la fonction d'attribution du mode d'accès");
 		EaeAvancementEnum ancienAvancement = null;
-		// On va chercher le dernier avancement pour les fonctionnaires, présent dans AVCT_FONCT
-		Integer idDernierAvct = sirhWsConsumer.getModeAccesForAgent(eaeToInitialize.getEaeEvalue().getIdAgent());
+		// On va chercher l'avancement de la carrière actuelle, présente dans SPCARR
+		Integer idAvctCarriere = sirhWsConsumer.getModeAccesForAgent(eaeToInitialize.getEaeEvalue().getIdAgent());
 		
-		// S'il n'y a pas de dernier avancement ou que le type d'avancement du dernier EAE n'est pas renseigné, alors on ne renseigne pas le champ.
-		if (idDernierAvct != null && typeAvancement != null) {
-			if (typeAvancement.equals(EaeTypeAvctEnum.AD)) {
-				switch (idDernierAvct) {
-					case 1 :
-						ancienAvancement = EaeAvancementEnum.MINI;
-						break;
-					case 2 :
-						ancienAvancement = EaeAvancementEnum.MOY;
-						break;
-					case 3 :
-						ancienAvancement = EaeAvancementEnum.MAXI;
-						break;
-					case 4 :
-					case 5 :
-						ancienAvancement = EaeAvancementEnum.ANCIENNETE;
-						break;
-					default :
-						break;
+		// S'il n'en a pas, d'avancement, on laisse le mode d'accès vide.
+		// Si ça ne correspond pas à 'mini', 'moyen' ou 'maxi', on lui met 'Ancienneté'
+		if (idAvctCarriere != null) {
+			switch (idAvctCarriere) {
+				case 1 :
+					ancienAvancement = EaeAvancementEnum.MINI;
+					break;
+				case 2 :
+					ancienAvancement = EaeAvancementEnum.MOY;
+					break;
+				case 3 :
+					ancienAvancement = EaeAvancementEnum.MAXI;
+					break;
+				default :
+					ancienAvancement = EaeAvancementEnum.ANCIENNETE;
+					break;
 				}
-			} else {
-				ancienAvancement = EaeAvancementEnum.ANCIENNETE;
-			}
 		}
 		logger.debug("Mode d'accès attribué à l'agent {} : {}", eaeToInitialize.getEaeEvalue().getIdAgent(), ancienAvancement);
 		eaeToInitialize.getEaeEvalue().setModeAcces(ancienAvancement);
