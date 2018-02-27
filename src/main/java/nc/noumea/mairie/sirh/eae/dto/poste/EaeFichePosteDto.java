@@ -26,6 +26,8 @@ public class EaeFichePosteDto {
 	private List<String> competencesSavoirFaire;
 	private List<String> competencesComportementProfessionnel;
 	
+	// TODO : Rajouter les activitesMetiers et les savoirsFaires
+	
 	private Integer idAgentShd;
 
 	public EaeFichePosteDto() {

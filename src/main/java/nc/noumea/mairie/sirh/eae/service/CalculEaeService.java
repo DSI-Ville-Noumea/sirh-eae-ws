@@ -4,7 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +17,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nc.noumea.mairie.sirh.domain.Agent;
+import nc.noumea.mairie.sirh.eae.domain.ActiviteMetierSavoirFaire;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeCampagne;
 import nc.noumea.mairie.sirh.eae.domain.EaeDiplome;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvalue;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpActivite;
+import nc.noumea.mairie.sirh.eae.domain.EaeFdpActiviteMetier;
 import nc.noumea.mairie.sirh.eae.domain.EaeFdpCompetence;
+import nc.noumea.mairie.sirh.eae.domain.EaeFdpSavoirFaire;
 import nc.noumea.mairie.sirh.eae.domain.EaeFichePoste;
 import nc.noumea.mairie.sirh.eae.domain.EaeFormation;
 import nc.noumea.mairie.sirh.eae.domain.EaeParcoursPro;
@@ -575,6 +582,7 @@ public class CalculEaeService implements ICalculEaeService {
 			}
 
 			creerActivitesFichePoste(fichePoste, eaeFichePoste);
+			creerActivitesMetierFichePoste(fichePoste, eaeFichePoste);
 			creerCompetencesFichePoste(fichePoste, eaeFichePoste);
 
 			// eaeRepository.persistEntity(eaeFichePoste);
@@ -593,6 +601,29 @@ public class CalculEaeService implements ICalculEaeService {
 				acti.setLibelle(activite);
 				// eaeRepository.persistEntity(acti);
 				eaeFichePoste.getEaeFdpActivites().add(acti);
+			}
+		}
+	}
+
+	
+	public void creerActivitesMetierFichePoste(FichePosteDto fichePoste, EaeFichePoste eaeFichePoste) {
+		eaeFichePoste.getEaeFdpActiviteMetier().clear();
+		// gere les activités métier et les savoir faire associés.
+		Map<EaeFdpActiviteMetier, Set<EaeFdpSavoirFaire>> map = new HashMap();
+		
+		if (null != fichePoste.getActiviteMetier()) {
+			for (ActiviteMetierSavoirFaire activite : fichePoste.getActiviteMetier()) {
+				EaeFdpActiviteMetier newActiviteMetier = new EaeFdpActiviteMetier();
+				newActiviteMetier.setEaeFichePoste(eaeFichePoste);
+				newActiviteMetier.setLibelle(activite.getActiviteMetier());
+				
+				if (map.containsKey(newActiviteMetier))
+					map.get(activite.getActiviteMetier()).add(new EaeFdpSavoirFaire(activite.getSavoirFaire()));
+				else {
+					Set<EaeFdpSavoirFaire> savoirFaires = new HashSet<>();
+					savoirFaires.add(new EaeFdpSavoirFaire(activite.getSavoirFaire()));
+					map.put(newActiviteMetier, savoirFaires);
+				}
 			}
 		}
 	}

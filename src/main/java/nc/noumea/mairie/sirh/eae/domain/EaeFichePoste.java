@@ -101,6 +101,10 @@ public class EaeFichePoste {
 	@OrderBy("libelle asc")
 	private Set<EaeFdpCompetence> eaeFdpCompetences = new HashSet<EaeFdpCompetence>();
 
+	@OneToMany(mappedBy = "eaeFichePoste", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy("libelle asc")
+	private Set<EaeFdpActiviteMetier> eaeFdpActiviteMetier = new HashSet<EaeFdpActiviteMetier>();
+
 	@Column(name = "CODE_SERVICE")
 	private String codeService;
 
@@ -293,5 +297,13 @@ public class EaeFichePoste {
 
 	public void setIdServiceADS(Integer idServiceADS) {
 		this.idServiceADS = idServiceADS;
+	}
+
+	public Set<EaeFdpActiviteMetier> getEaeFdpActiviteMetier() {
+		return eaeFdpActiviteMetier;
+	}
+
+	public void setEaeFdpActiviteMetier(Set<EaeFdpActiviteMetier> eaeFdpActiviteMetier) {
+		this.eaeFdpActiviteMetier = eaeFdpActiviteMetier;
 	}
 }
