@@ -307,8 +307,7 @@ public class CalculEaeService implements ICalculEaeService {
 
 		setCarriereActive(eaeInfosDto, evalAModif, eae);
 
-		// on regarde dans l'avancement pour le nouveau grade, le nouvel echelon
-		// et la date d'avancement
+		// on regarde dans l'avancement pour le nouveau grade, le nouvel echelon et la date d'avancement
 		AvancementEaeDto avctFonct = sirhWsConsumer.getAvancement(agent.getIdAgent(), eae.getEaeCampagne().getAnnee(), false);
 		if (null == avctFonct) {
 			// sinon, on cherche dans les détachés
@@ -316,10 +315,13 @@ public class CalculEaeService implements ICalculEaeService {
 			if (null != avctDetache) {
 				setAvancementEvalue(evalAModif, avctDetache);
 			} else {
-				// si il n'y a pas d'avancement alors on calcul la date
-				// d'avancement #11504
+				// #11504 : Si il n'y a pas d'avancement alors on calcul la date d'avancement 
 				DateAvctDto dateAvct = sirhWsConsumer.getCalculDateAvct(agent.getIdAgent());
 				evalAModif.setDateEffetAvancement(dateAvct.getDateAvct());
+				// #44999 : Il faut aussi mettre à blanc les informations sur le prochain avancement !
+				evalAModif.setNouvEchelon(null);
+				evalAModif.setNouvGrade(null);
+				evalAModif.setTypeAvancement(null);
 			}
 		} else {
 			setAvancementEvalue(evalAModif, avctFonct);
@@ -400,8 +402,7 @@ public class CalculEaeService implements ICalculEaeService {
 	public void setAvancementEvalue(EaeEvalue evalAModif, AvancementEaeDto avct) {
 
 		if (!EtatAvancementEnum.TRAVAIL.getValue().equals(avct.getEtat())) {
-			// attention dans le cas des categorie 4 on a pas de date moyenne
-			// avct
+			// attention dans le cas des categorie 4 on a pas de date moyenne avct
 			evalAModif.setDateEffetAvancement(avct.getDateAvctMoy());
 		}
 		GradeDto gradeAvct = avct.getGrade();

@@ -223,6 +223,76 @@ public class CalculEaeServiceTest {
 	}
 
 	@Test
+	public void creerEvalue_sansAvct() throws SirhWSConsumerException, ParseException {
+
+		Date dateDerniereEmbauche = new Date();
+
+		Agent agent = new Agent();
+		agent.setIdAgent(9005138);
+		agent.setDateDerniereEmbauche(dateDerniereEmbauche);
+
+		Date dateDebut = new Date();
+		CarriereDto carriereFonctionnaireAncienne = new CarriereDto();
+		carriereFonctionnaireAncienne.setDateDebut(dateDebut);
+
+		PositionAdmAgentDto positionAdmAgentAncienne = new PositionAdmAgentDto();
+		positionAdmAgentAncienne.setDatdeb(20101213);
+
+		PositionAdmAgentDto positionAdmAgentEnCours = new PositionAdmAgentDto();
+		positionAdmAgentEnCours.setCdpadm("54");
+
+		CalculEaeInfosDto eaeInfosDto = new CalculEaeInfosDto();
+		eaeInfosDto.setFichePostePrincipale(null);
+		eaeInfosDto.setCarriereFonctionnaireAncienne(carriereFonctionnaireAncienne);
+		eaeInfosDto.setPositionAdmAgentAncienne(positionAdmAgentAncienne);
+		eaeInfosDto.setPositionAdmAgentEnCours(positionAdmAgentEnCours);
+
+		Date dateEntreeAAA = new Date();
+		AutreAdministrationAgentDto autreAdminAncienne = new AutreAdministrationAgentDto();
+		autreAdminAncienne.setDateEntree(dateEntreeAAA);
+
+		Date dateEntree = new Date();
+		AutreAdministrationAgentDto autreAdmin = new AutreAdministrationAgentDto();
+		autreAdmin.setDateEntree(dateEntree);
+
+		ISirhWsConsumer sirhWsConsumer = Mockito.mock(ISirhWsConsumer.class);
+		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, true)).thenReturn(autreAdmin);
+		Mockito.when(sirhWsConsumer.chercherAutreAdministrationAgentAncienne(9005138, false)).thenReturn(autreAdminAncienne);
+		Mockito.when(sirhWsConsumer.getAvancement(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyBoolean())).thenReturn(null);
+		Mockito.when(sirhWsConsumer.getAvancementDetache(Mockito.anyInt(), Mockito.anyInt())).thenReturn(null);
+		Mockito.when(sirhWsConsumer.getCalculDateAvct(9005138)).thenReturn(new DateAvctDto());
+
+		EaeCampagne campagnePrec = new EaeCampagne();
+		campagnePrec.setIdCampagneEae(1);
+
+		Date dateEntreeFonctionnaire = new Date();
+		Date dateEntreeAdministration = new Date();
+		EaeEvalue eaeEvalue = new EaeEvalue();
+		eaeEvalue.setDateEntreeFonctionnaire(dateEntreeFonctionnaire);
+		eaeEvalue.setDateEntreeAdministration(dateEntreeAdministration);
+		Eae eaeAnneePrec = new Eae();
+		eaeAnneePrec.setEaeEvalue(eaeEvalue);
+
+		IEaeRepository eaeRepository = Mockito.mock(IEaeRepository.class);
+		Mockito.when(eaeRepository.findEaeCampagneByAnnee(Mockito.anyInt())).thenReturn(campagnePrec);
+		Mockito.when(eaeRepository.findEaeAgent(Mockito.anyInt(), Mockito.anyInt())).thenReturn(eaeAnneePrec);
+
+		CalculEaeService service = new CalculEaeService();
+		ReflectionTestUtils.setField(service, "sirhWsConsumer", sirhWsConsumer);
+		ReflectionTestUtils.setField(service, "eaeRepository", eaeRepository);
+
+		Eae eae = new Eae();
+		eae.setEaeCampagne(new EaeCampagne());
+
+		service.creerEvalue(agent, eae, eaeInfosDto, true, true, null);
+
+		assertEquals(eae.getEaeEvalue().getIdAgent(), agent.getIdAgent().intValue());
+		assertNull(eae.getEaeEvalue().getNouvEchelon());
+		assertNull(eae.getEaeEvalue().getNouvGrade());
+		assertNull(eae.getEaeEvalue().getTypeAvancement());
+	}
+
+	@Test
 	public void creerEvalue() throws SirhWSConsumerException, ParseException {
 
 		Date dateDerniereEmbauche = new Date();
