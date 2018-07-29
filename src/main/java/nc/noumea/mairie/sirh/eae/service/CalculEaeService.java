@@ -513,7 +513,7 @@ public class CalculEaeService implements ICalculEaeService {
 	}
 
 	public void creerFichePoste(FichePosteDto fichePoste, Eae eae, FichePosteDto fpResp, TitrePosteDto tpResp, boolean modifDateFonction,
-			boolean isFPPrimaire) throws SirhWSConsumerException {
+			boolean isFPPrimaire) throws SirhWSConsumerException, ParseException{
 
 		// on traite la fiche de poste
 		if (fichePoste != null) {
@@ -549,7 +549,7 @@ public class CalculEaeService implements ICalculEaeService {
 				eaeFichePoste.setFonction(fichePoste.getTitrePoste().getLibTitrePoste());
 			}
 			if (modifDateFonction && null != eae.getEaeEvalue()) {
-				eaeFichePoste.setDateEntreeFonction(getDateEntreeAffectation(fichePoste.getIdFichePoste(), eae.getEaeEvalue().getIdAgent()));
+				eaeFichePoste.setDateEntreeFonction(getDateEntreeFonction(eae.getEaeEvalue().getIdAgent(), fichePoste.getIdServiceADS()));
 			}
 			// grade du poste
 			eaeFichePoste.setGradePoste(fichePoste.getGradePoste());
@@ -581,6 +581,23 @@ public class CalculEaeService implements ICalculEaeService {
 			// eaeRepository.persistEntity(eaeFichePoste);
 			eae.addEaeFichePoste(eaeFichePoste);
 		}
+	}
+
+	// #44729 : Il faut se baser sur le service et l'intitulé du poste pour retrouver la date d'entrée dans la fonction.
+	public Date getDateEntreeFonction(Integer idAgent, Integer idService) throws SirhWSConsumerException, ParseException {
+
+		List<CalculEaeInfosDto> affectations = sirhWsConsumer.getListeAffectationsAgentAvecService(idAgent, idService);
+
+		CalculEaeInfosDto affectationBase = affectations.get(0);
+		
+		for (CalculEaeInfosDto dto : affectations) {
+			if (dto.getLibellePoste().equals(affectationBase.getLibellePoste()))
+				affectationBase = dto;
+			else
+				break;
+		}
+		
+		return affectationBase.getDateDebut();
 	}
 
 	public void creerActivitesFichePoste(FichePosteDto fichePoste, EaeFichePoste eaeFichePoste) {
@@ -794,8 +811,8 @@ public class CalculEaeService implements ICalculEaeService {
 		// on met les données dans EAE-evalué
 		creerEvalue(agent, eae, affAgent, false, eae.getEaeEvalue().isEstDetache(), evalue);
 		// on met les données dans EAE-FichePoste
-		creerFichePoste(fpPrincipale, eae, fpResponsable, tpResp, false, true);
-		creerFichePoste(fpSecondaire, eae, fpResponsable, tpResp, false, false);
+		creerFichePoste(fpPrincipale, eae, fpResponsable, tpResp, true, true);
+		creerFichePoste(fpSecondaire, eae, fpResponsable, tpResp, true, false);
 
 		creerDiplome(eae, affAgent.getListDiplome());
 		// on met les données dans EAE-Parcours-Pro

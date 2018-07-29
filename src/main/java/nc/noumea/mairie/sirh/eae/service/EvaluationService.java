@@ -361,8 +361,11 @@ public class EvaluationService implements IEvaluationService {
 
 	protected void calculateAvisShd(Eae eae) {
 
-		if (eae.getEaeEvalue().getTypeAvancement() == null)
+		// #44720 : Les EAE non prioritaires ne doivent pas avoir d'avis SHD
+		if (eae.getEaeEvalue().getTypeAvancement() == null) {
+			eae.getEaeEvaluation().setAvisShd(null);
 			return;
+		}
 
 		switch (eae.getEaeEvalue().getTypeAvancement().getTypeAvctCode()) {
 			case "PROMO":
