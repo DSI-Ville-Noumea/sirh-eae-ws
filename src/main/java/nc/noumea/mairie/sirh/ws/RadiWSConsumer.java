@@ -33,7 +33,7 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 		logger.info("SIIDMAJob : entrée getListeAgentMairie avec URL : " + url);
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("employeenumber", "90*");
+		parameters.put("employeeID", "90*");
 
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 
@@ -46,7 +46,7 @@ public class RadiWSConsumer extends BaseWsConsumer implements IRadiWSConsumer {
 		String url = String.format(RADI_WS_Base_URL + searchUserUrl);
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("employeenumber", employeeNumber);
+		parameters.put("employeeID", employeeNumber);
 
 		ClientResponse res = createAndFireGetRequest(parameters, url);
 
