@@ -57,6 +57,12 @@ public class EaeRepository implements IEaeRepository {
 	public void removeEntity(Object entity) {
 		eaeEntityManager.remove(entity);
 	}
+	
+	@Override
+	public List<Eae> findAllForMigration() {
+		TypedQuery<Eae> eaeQuery = eaeEntityManager.createNamedQuery("findEaeForMigration", Eae.class);
+		return eaeQuery.getResultList();
+	}
 
 	@Override
 	public EaeCampagne findEaeCampagneByAnnee(Integer annee) {

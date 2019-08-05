@@ -69,10 +69,10 @@
 	</bean>
 	
 	<!-- Spring mail -->
-	<jee:jndi-lookup id="mailSession" jndi-name="mail/MailServer" resource-ref="true" />
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="session" ref="mailSession" />
-	</bean>
+<!-- 	<jee:jndi-lookup id="mailSession" jndi-name="mail/MailServer" resource-ref="true" /> -->
+<!-- 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> -->
+<!-- 		<property name="session" ref="mailSession" /> -->
+<!-- 	</bean> -->
 
 	<!-- Type environnement pour envoie de mail -->
 	<jee:jndi-lookup id="typeEnvironnement" jndi-name="TYPE_ENV" expected-type="java.lang.String" />

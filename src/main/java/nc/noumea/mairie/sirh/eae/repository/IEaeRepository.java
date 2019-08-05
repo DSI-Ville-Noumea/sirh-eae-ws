@@ -21,6 +21,8 @@ public interface IEaeRepository {
 	void persistEntity(Object entity);
 
 	void removeEntity(Object entity);
+	
+	List<Eae> findAllForMigration();
 
 	EaeCampagne findEaeCampagneByAnnee(Integer annee);
 

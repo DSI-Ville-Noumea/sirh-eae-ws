@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.web.controller;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import nc.noumea.mairie.sirh.eae.service.EaeServiceException;
 import nc.noumea.mairie.sirh.eae.service.IAgentMatriculeConverterService;
 import nc.noumea.mairie.sirh.eae.service.IEaeReportingService;
 import nc.noumea.mairie.sirh.eae.service.IEaeService;
+import nc.noumea.mairie.sirh.eae.service.IMigrationEaeService;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 @Controller
@@ -52,6 +54,9 @@ public class EaeController {
 
 	@Autowired
 	private IEaeService						eaeService;
+
+	@Autowired
+	private IMigrationEaeService			migrationEaeService;
 
 	@Autowired
 	private IAgentMatriculeConverterService	agentMatriculeConverterService;
@@ -81,6 +86,15 @@ public class EaeController {
 		String jsonResult = new JSONSerializer().exclude("*.class").deepSerialize(result);
 
 		return new ResponseEntity<String>(jsonResult, HttpStatus.OK);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "exportEAEForMigration", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	public void test() throws IOException {
+
+		logger.debug("entered GET [exportEAEForMigration]");
+
+		migrationEaeService.exportEAEForMigration();
 	}
 
 	@ResponseBody

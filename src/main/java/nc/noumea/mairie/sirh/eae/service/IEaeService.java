@@ -1,5 +1,7 @@
 package nc.noumea.mairie.sirh.eae.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -19,7 +21,6 @@ import nc.noumea.mairie.sirh.exception.DaoException;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 public interface IEaeService {
-
 	/**
 	 * List the ongoing EAEs a user can see
 	 * 
