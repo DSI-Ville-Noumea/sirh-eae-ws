@@ -2,10 +2,13 @@ package nc.noumea.mairie.sirh.eae.service;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,13 +23,21 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
+import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
+import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
+import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
+import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumer;
+import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
 
 @Service
 public class MigrationEaeService implements IMigrationEaeService {
@@ -36,11 +47,19 @@ public class MigrationEaeService implements IMigrationEaeService {
 	@Autowired
 	private IEaeRepository					eaeRepository;
 	
+	@Autowired
+	private SirhWSConsumer sirhWsConsumer;
+	
 	private Integer cellNum = 0;
-
+	
+	private EaeDeveloppement formateur = new EaeDeveloppement();
+	
+	private DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private DateFormat yearFormat = new SimpleDateFormat("yyyy");
+	
 	@Override
 	@Transactional(readOnly = true)
-	public void exportEAEForMigration() throws IOException {
+	public void exportEAEForMigration() throws IOException, SirhWSConsumerException {
 
 		Workbook workbook = new XSSFWorkbook();
 	    Sheet sheet = workbook.createSheet("EAE");
@@ -57,19 +76,24 @@ public class MigrationEaeService implements IMigrationEaeService {
 	    for (Eae eae : eaeRepository.findAllForMigration()) {
 	    	cellNum = 0;
 			Row row = sheet.createRow(rowNum++);
+			Agent agent = sirhWsConsumer.getAgent(eae.getEaeEvalue().getIdAgent());
+			Agent manager = null;
+			if (!eae.getEaeEvaluateurs().isEmpty())
+				manager = sirhWsConsumer.getAgent(eae.getEaeEvaluateurs().iterator().next().getIdAgent());
 			
-			logger.info("Starting wirte row number {}, for eae {}.", rowNum, eae.getIdEae());
+			logger.info("Write row number {}, for eae {}.", rowNum, eae.getIdEae());
 
-			row.createCell(cellNum++).setCellValue(eae.getIdEae()); // TODO : 
-			row.createCell(cellNum++).setCellValue(eae.getEaeEvalue().getIdAgent()); //TODO : matr Tiarhé
-			row.createCell(cellNum++).setCellValue(eae.getEaeCampagne().getAnnee());
-			row.createCell(cellNum++).setCellValue(eae.getDateEntretien());
+			row.createCell(cellNum++).setCellValue(eae.getIdEae()); // TODO : Supprimer cette ligne après les tests
+			row.createCell(cellNum++).setCellValue(notNull(agent.getIdTiarhe()));
+			row.createCell(cellNum++).setCellValue(eae.getEaeCampagne().getAnnee() - 1);
+			row.createCell(cellNum++).setCellValue(eae.getDateEntretien() == null ? "" : sdf.format(eae.getDateEntretien()));
 			row.createCell(cellNum++).setCellValue("18");
-			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluateurs().isEmpty() ? "" : String.valueOf(eae.getEaeEvaluateurs().iterator().next().getIdAgent())); // TODO : Matr Tiarhé
+			row.createCell(cellNum++).setCellValue(manager == null ? "" : notNull(manager.getIdTiarhe()));
+			
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getEmploi()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getFonction()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getGradePoste()));
-			row.createCell(cellNum++).setCellValue(""); // TODO
+			row.createCell(cellNum++).setCellValue("VILLE DE NOUMEA");
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getDirectionService()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getLocalisation()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getMissions()));
@@ -85,158 +109,12 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(eae.getEaeAutoEvaluation() == null ? "" : notNull(eae.getEaeAutoEvaluation().getSuccesDifficultes()));
 			row.createCell(cellNum++).setCellValue(eae.getCommentaire() != null ? eae.getCommentaire().getText() : "");
 
-			// TODO : Trier en fonction du type. Faire une fonction, ça sera plus propre.
 			setObjectifs(eae.getEaeResultats(), row);
-			// Objectif 1
-//			EaeResultat result = eae.getEaeResultats().isEmpty() ? null : eae.getEaeResultats().iterator().next();
-//			if (result != null) {
-//				row.createCell(cellNum++).setCellValue(result.getCommentaire() == null ? "" : result.getCommentaire().getText());
-//				row.createCell(cellNum++).setCellValue(notNull(result.getObjectif()));
-//				row.createCell(cellNum++).setCellValue(notNull(result.getResultat()));
-//				result = eae.getEaeResultats().iterator().next();
-//			} else {
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//			}
-//			// Objectif 2
-//			if (result != null) {
-//				row.createCell(cellNum++).setCellValue(result.getCommentaire() == null ? "" : result.getCommentaire().getText());
-//				row.createCell(cellNum++).setCellValue(notNull(result.getObjectif()));
-//				row.createCell(cellNum++).setCellValue(notNull(result.getResultat()));
-//				result = eae.getEaeResultats().iterator().next();
-//			} else {
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//			}
-//			// Objectif 3
-//			if (result != null) {
-//				row.createCell(cellNum++).setCellValue(result.getCommentaire() == null ? "" : result.getCommentaire().getText());
-//				row.createCell(cellNum++).setCellValue(notNull(result.getObjectif()));
-//				row.createCell(cellNum++).setCellValue(notNull(result.getResultat()));
-//				result = eae.getEaeResultats().iterator().next();
-//			} else {
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//			}
-//			// Objectif 4
-//			if (result != null) {
-//				row.createCell(cellNum++).setCellValue(result.getCommentaire() == null ? "" : result.getCommentaire().getText());
-//				row.createCell(cellNum++).setCellValue(notNull(result.getObjectif()));
-//				row.createCell(cellNum++).setCellValue(notNull(result.getResultat()));
-//				result = eae.getEaeResultats().iterator().next();
-//			} else {
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//			}
-//			// Objectif 5
-//			if (result != null) {
-//				row.createCell(cellNum++).setCellValue(result.getCommentaire() == null ? "" : result.getCommentaire().getText());
-//				row.createCell(cellNum++).setCellValue(notNull(result.getObjectif()));
-//				row.createCell(cellNum++).setCellValue(notNull(result.getResultat()));
-//			} else {
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//				row.createCell(cellNum++).setCellValue("");
-//			}
 			
-			//OBJ_PROG_IND_ANNEE_PREC;	RESULT_OBJ_ANNEE_PREC;	COM_OBJ_ANNEE_PREC
-			row.createCell(cellNum++).setCellValue("1");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			
-			// QA11
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvalue());
-			//QR11
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-//			row.createCell(cellNum++).setCellValue(eae.getEaeAppreciations().iterator().next().getNoteEvaluateur());
-			// QA11
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			//QR11
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
+			setAppreciations(eae.getEaeAppreciations(), row);
 			
 			// OBJ_ANNEE_SUIV1
-			row.createCell(cellNum++).setCellValue("TODO : plan action - objectif");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - mesure");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - objectif");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - mesure");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - objectif");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - mesure");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - objectif");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - mesure");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - objectif");
-			row.createCell(cellNum++).setCellValue("TODO : plan action - mesure");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("typeObj = 2");
-			row.createCell(cellNum++).setCellValue("typeObj = 3");
-			row.createCell(cellNum++).setCellValue("typeObj = 4");
-			row.createCell(cellNum++).setCellValue("typeObj = 5");
+			setPlansAction(eae.getEaePlanActions(), row);
 			
 			// ZYX4SOUHAI
 			setSouhaits(eae.getEaeEvolution(), row);
@@ -251,7 +129,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 						eae.getEaeEvolution().getDelaiEnvisage().name().equals("ENTRE1ET2ANS") ? "1" : "2";
 					row.createCell(cellNum++).setCellValue(mapping);
 				} else {
-					row.createCell(cellNum++).setCellValue("");
+					addEmptyCell(row);
 				}
 				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().isMobiliteService() ? "1" : "0");
 				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().isMobiliteDirection() ? "1" : "0");
@@ -284,33 +162,8 @@ public class MigrationEaeService implements IMigrationEaeService {
 				row.createCell(cellNum++).setCellValue("");
 			}
 			// ZYX4PROAC1 : Développement
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
+			setDeveloppements(eae.getEaeEvolution(), row);
+			
 			// ZYX4RESULT
 			if (eae.getEaeEvaluation().getNiveauEae() != null) {
 				String mapping = eae.getEaeEvaluation().getNiveauEae().equals(EaeNiveauEnum.EXCELLENT) ? "0" :
@@ -318,12 +171,12 @@ public class MigrationEaeService implements IMigrationEaeService {
 						eae.getEaeEvaluation().getNiveauEae().equals(EaeNiveauEnum.NECESSITANT_DES_PROGRES) ? "2" : "3";
 				row.createCell(cellNum++).setCellValue(mapping);
 			} else {
-				row.createCell(cellNum++).setCellValue("");
+				addEmptyCell(row);
 			}
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getAvisRevalorisation()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getAvisChangementClasse()));
 			// FORMATEUR_DOMAINE
-			row.createCell(cellNum++).setCellValue("");
+			row.createCell(cellNum++).setCellValue(formateur == null ? "" : formateur.getLibelle());
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvaluateur() != null ? eae.getEaeEvolution().getCommentaireEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvalue() != null ? eae.getEaeEvolution().getCommentaireEvalue().getText() : "");
 			row.createCell(cellNum++).setCellValue(notNull(eae.getDureeEntretienMinutes()));
@@ -335,14 +188,14 @@ public class MigrationEaeService implements IMigrationEaeService {
 						eae.getEaeEvaluation().getPropositionAvancement().equals(EaeAvancementEnum.MAXI) ? "M" : "";
 				row.createCell(cellNum++).setCellValue(mapping);
 			} else {
-				row.createCell(cellNum++).setCellValue("");
+				addEmptyCell(row);
 			}
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireEvalue() != null ? eae.getEaeEvaluation().getCommentaireEvalue().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvaluateur() != null ? eae.getEaeEvaluation().getCommentaireAvctEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvalue() != null ? eae.getEaeEvaluation().getCommentaireAvctEvalue().getText() : "");
 			// FORMATEUR_DOMAINE_ECH
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
+			row.createCell(cellNum++).setCellValue(formateur == null || formateur.getEcheance() == null ? "" : sdf.format(formateur.getEcheance()));
+			row.createCell(cellNum++).setCellValue(formateur == null ? "" : String.valueOf(formateur.getPriorisation()));
 			// ZYX4TEMPAR
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isTempsPartiel()));
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isRetraite()));
@@ -352,14 +205,12 @@ public class MigrationEaeService implements IMigrationEaeService {
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getAgent().getNomUsage()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getAgent().getPrenomUsage()));
 			} else {
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
+				addEmptyCell(row, 2);
 			}
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getNouvGrade()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getNouvEchelon()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getDateEffetAvancement()));
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
+			addEmptyCell(row, 2);
 			
 			logger.info("Row number {} wrote, for eae {}.", rowNum, eae.getIdEae());
 	    }
@@ -541,7 +392,6 @@ public class MigrationEaeService implements IMigrationEaeService {
 	}
 	
 	private void setSouhaits(EaeEvolution eaeEvolution, Row row) {
-		logger.info("Enter setSouhaits");
 		String souhaits = "";
 		String suggestions = "";
 		if (eaeEvolution != null) {
@@ -552,11 +402,88 @@ public class MigrationEaeService implements IMigrationEaeService {
 		}
 		row.createCell(cellNum++).setCellValue(souhaits);
 		row.createCell(cellNum++).setCellValue(suggestions);
-		logger.info("Exit setSouhaits");
+	}
+	
+	private void setDeveloppements(EaeEvolution eaeEvolution, Row row) {
+		// Le formateur est déclaré en variable de classe, car les données doivent être affichées plus tard.
+		formateur = null;
+		EaeDeveloppement connaissance1 = null;
+		EaeDeveloppement connaissance2 = null;
+		EaeDeveloppement connaissance3 = null;
+		EaeDeveloppement competence1 = null;
+		EaeDeveloppement competence2 = null;
+		EaeDeveloppement competence3 = null;
+		EaeDeveloppement concours = null;
+		EaeDeveloppement personnel = null;
+		EaeDeveloppement comportement = null;
+
+		// Préparation des données
+		if (eaeEvolution != null) {
+			for (EaeDeveloppement dev : eaeEvolution.getEaeDeveloppements()) {
+				if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.FORMATEUR))
+					formateur = dev;
+				if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.CONCOURS))
+					concours = dev;
+				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.PERSONNEL))
+					personnel = dev;
+				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.COMPORTEMENT))
+					comportement = dev;
+				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.CONNAISSANCE)) {
+					if (connaissance1 == null)
+						connaissance1 = dev;
+					else if (connaissance2 == null)
+						connaissance2 = dev;
+					else if (connaissance3 == null)
+						connaissance3 = dev;
+				}
+				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.COMPETENCE)) {
+					if (competence1 == null)
+						competence1 = dev;
+					else if (competence2 == null)
+						competence2 = dev;
+					else if (competence3 == null)
+						competence3 = dev;
+				}
+			}
+
+			// Ecriture des données
+			row.createCell(cellNum++).setCellValue(connaissance1 == null ? "" : connaissance1.getLibelle());
+			row.createCell(cellNum++).setCellValue(connaissance2 == null ? "" : connaissance2.getLibelle());
+			row.createCell(cellNum++).setCellValue(connaissance3 == null ? "" : connaissance3.getLibelle());
+			row.createCell(cellNum++).setCellValue(connaissance1 == null ? "" : sdf.format(connaissance1.getEcheance()));
+			row.createCell(cellNum++).setCellValue(connaissance2 == null ? "" : sdf.format(connaissance2.getEcheance()));
+			row.createCell(cellNum++).setCellValue(connaissance3 == null ? "" : sdf.format(connaissance3.getEcheance()));
+			row.createCell(cellNum++).setCellValue(connaissance1 == null ? "" : String.valueOf(connaissance1.getPriorisation()));
+			row.createCell(cellNum++).setCellValue(connaissance2 == null ? "" : String.valueOf(connaissance2.getPriorisation()));
+			row.createCell(cellNum++).setCellValue(connaissance3 == null ? "" : String.valueOf(connaissance3.getPriorisation()));
+			
+			row.createCell(cellNum++).setCellValue(competence1 == null ? "" : competence1.getLibelle());
+			row.createCell(cellNum++).setCellValue(competence2 == null ? "" : competence2.getLibelle());
+			row.createCell(cellNum++).setCellValue(competence3 == null ? "" : competence3.getLibelle());
+			row.createCell(cellNum++).setCellValue(competence1 == null ? "" : sdf.format(competence1.getEcheance()));
+			row.createCell(cellNum++).setCellValue(competence2 == null ? "" : sdf.format(competence2.getEcheance()));
+			row.createCell(cellNum++).setCellValue(competence3 == null ? "" : sdf.format(competence3.getEcheance()));
+			row.createCell(cellNum++).setCellValue(competence1 == null ? "" : String.valueOf(competence1.getPriorisation()));
+			row.createCell(cellNum++).setCellValue(competence2 == null ? "" : String.valueOf(competence2.getPriorisation()));
+			row.createCell(cellNum++).setCellValue(competence3 == null ? "" : String.valueOf(competence3.getPriorisation()));
+
+			row.createCell(cellNum++).setCellValue(concours == null ? "" : concours.getLibelle());
+			row.createCell(cellNum++).setCellValue(concours == null ? "" : sdf.format(concours.getEcheance()));
+			row.createCell(cellNum++).setCellValue(concours == null ? "" : String.valueOf(concours.getPriorisation()));
+
+			row.createCell(cellNum++).setCellValue(personnel == null ? "" : personnel.getLibelle());
+			row.createCell(cellNum++).setCellValue(personnel == null ? "" : sdf.format(personnel.getEcheance()));
+			row.createCell(cellNum++).setCellValue(personnel == null ? "" : String.valueOf(personnel.getPriorisation()));
+
+			row.createCell(cellNum++).setCellValue(comportement == null ? "" : comportement.getLibelle());
+			row.createCell(cellNum++).setCellValue(comportement == null ? "" : sdf.format(comportement.getEcheance()));
+			row.createCell(cellNum++).setCellValue(comportement == null ? "" : String.valueOf(comportement.getPriorisation()));
+		} else {
+			addEmptyCell(row, 27);
+		}
 	}
 	
 	private void setObjectifs(Set<EaeResultat> eaeResultat, Row row) {
-		logger.info("Enter setObjectifs");
 		if (!eaeResultat.isEmpty()) {
 			Map<Integer, EaeResultat> map = Maps.newHashMap();
 			int i = 0;
@@ -574,35 +501,124 @@ public class MigrationEaeService implements IMigrationEaeService {
 					row.createCell(cellNum++).setCellValue(result.getResultat());
 					row.createCell(cellNum++).setCellValue(result.getCommentaire() == null ? "" : result.getCommentaire().getText());
 				} else {
-					row.createCell(cellNum++).setCellValue("");
-					row.createCell(cellNum++).setCellValue("");
-					row.createCell(cellNum++).setCellValue("");
+					addEmptyCell(row, 3);
 				}
 			}
 		} else {
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
-			row.createCell(cellNum++).setCellValue("");
+			addEmptyCell(row, 18);
 		}
-		logger.info("Exit setObjectifs");
+	}
+	
+	private void setPlansAction(Set<EaePlanAction> planAction, Row row) {
+		if (!planAction.isEmpty()) {
+			Map<Integer, EaePlanAction> map = Maps.newHashMap();
+			String objAnneeSuivante = "";
+			String besoinMateriel = "";
+			String besoinFinancier = "";
+			String autreBesoin = "";
+			
+			int i = 0;
+			for (EaePlanAction plan : planAction) {
+				if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 1 && i < 5) 
+					map.put(i++, plan);
+				else if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 2 && StringUtils.isEmpty(objAnneeSuivante)) 
+					objAnneeSuivante = plan.getObjectif();
+				else if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 3 && StringUtils.isEmpty(besoinMateriel)) 
+					besoinMateriel = plan.getObjectif();
+				else if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 4 && StringUtils.isEmpty(besoinFinancier)) 
+					besoinFinancier = plan.getObjectif();
+				else if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 5 && StringUtils.isEmpty(autreBesoin)) 
+					autreBesoin = plan.getObjectif();
+			}
+			
+			for (Integer u = 0 ; u < 5 ; u++) {
+				EaePlanAction result = map.get(u);
+				if (result != null) {
+					row.createCell(cellNum++).setCellValue(result.getObjectif());
+					row.createCell(cellNum++).setCellValue(result.getMesure());
+					addEmptyCell(row);
+				} else {
+					addEmptyCell(row, 3);
+				}
+			}
+			// OBJ_PROG_IND_ANNEE_SUIV, BESOIN_MAT, BESOIN_FIN, BESOIN_AUT
+			row.createCell(cellNum++).setCellValue(objAnneeSuivante);
+			row.createCell(cellNum++).setCellValue(besoinMateriel);
+			row.createCell(cellNum++).setCellValue(besoinFinancier);
+			row.createCell(cellNum++).setCellValue(autreBesoin);
+		} else {
+			addEmptyCell(row, 19);
+		}
+	}
+	
+	private void setAppreciations(Set<EaeAppreciation> eaeAppreciations, Row row) {
+		Map<Integer, EaeAppreciation> technique = Maps.newHashMap();
+		Map<Integer, EaeAppreciation> savoirEtre = Maps.newHashMap();
+		Map<Integer, EaeAppreciation> managerial = Maps.newHashMap();
+		Map<Integer, EaeAppreciation> resultat = Maps.newHashMap();
+		
+		if (eaeAppreciations != null && !eaeAppreciations.isEmpty()) {
+			// Construction des données
+			for (EaeAppreciation app : eaeAppreciations) {
+				if (app.getTypeAppreciation().equals(EaeTypeAppreciationEnum.TE))
+					technique.put(app.getNumero(), app);
+				else if (app.getTypeAppreciation().equals(EaeTypeAppreciationEnum.SE))
+					savoirEtre.put(app.getNumero(), app);
+				else if (app.getTypeAppreciation().equals(EaeTypeAppreciationEnum.MA))
+					managerial.put(app.getNumero(), app);
+				else if (app.getTypeAppreciation().equals(EaeTypeAppreciationEnum.RE))
+					resultat.put(app.getNumero(), app);
+			}
+
+				// Ecriture des données (evalue)
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = technique.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvalue());
+			}
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = savoirEtre.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvalue());
+			}
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = managerial.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvalue());
+			}
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = resultat.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvalue());
+			}
+			// Ecriture des données (evaluateur)
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = technique.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+			}
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = savoirEtre.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+			}
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = managerial.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+			}
+			for (int i = 0 ; i < 4 ; i++) {
+				EaeAppreciation appreciation = resultat.get(i);
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+			}
+		} else {
+			addEmptyCell(row, 32);
+		}
 	}
 	
 	private String notNull(Object s) {
 		return s != null ? s.toString() : "";
+	}
+	
+	private void addEmptyCell(Row row, int number) {
+		for (int i = 0 ; i < number ; i++)
+			row.createCell(cellNum++).setCellValue("");
+	}
+	
+	private void addEmptyCell(Row row) {
+		addEmptyCell(row, 1);
 	}
 }

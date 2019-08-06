@@ -13,6 +13,7 @@ public class Agent {
 	private String prenomUsage;
 	private Date dateNaissance;
 	private Date dateDerniereEmbauche;
+	private String idTiarhe;
 
 	public String getDisplayPrenom() {
 		if (getPrenomUsage() != null && !getPrenomUsage().isEmpty())
@@ -100,5 +101,13 @@ public class Agent {
 
 	public void setDateDerniereEmbauche(Date dateDerniereEmbauche) {
 		this.dateDerniereEmbauche = dateDerniereEmbauche;
+	}
+
+	public String getIdTiarhe() {
+		return idTiarhe;
+	}
+
+	public void setIdTiarhe(String idTiarhe) {
+		this.idTiarhe = idTiarhe;
 	}
 }

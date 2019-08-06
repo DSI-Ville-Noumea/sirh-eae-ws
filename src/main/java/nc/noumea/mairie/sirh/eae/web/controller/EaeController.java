@@ -90,7 +90,7 @@ public class EaeController {
 
 	@ResponseBody
 	@RequestMapping(value = "exportEAEForMigration", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
-	public void test() throws IOException {
+	public void exportEAEForMigration() throws IOException, SirhWSConsumerException {
 
 		logger.debug("entered GET [exportEAEForMigration]");
 
