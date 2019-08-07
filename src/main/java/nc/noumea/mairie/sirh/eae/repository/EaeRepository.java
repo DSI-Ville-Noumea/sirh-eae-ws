@@ -47,7 +47,7 @@ public class EaeRepository implements IEaeRepository {
 	public List<String> getActiveAgentFromTiarhe() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select distinct(identifianttechnique) FROM vm_tiarhe_agent ");
-		sb.append("where statut = 'Actif' and identifianttechnique is not null");
+		sb.append("where statut != 'Supprimé' and identifianttechnique is not null");
 
 		Query q = synchrosiPersistenceUnit.createNativeQuery(sb.toString());
 
