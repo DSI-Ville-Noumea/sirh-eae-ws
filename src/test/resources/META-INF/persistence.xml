@@ -46,5 +46,14 @@
 			<property name="hibernate.show_sql" value="true" />
 		</properties>
 	</persistence-unit>
+	
+	<persistence-unit name="synchrosiPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.connection.charSet" value="UTF-8" />
+			<property name="hibernate.show_sql" value="false" />
+		</properties>
+	</persistence-unit>
 
 </persistence>

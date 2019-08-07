@@ -83,6 +83,9 @@ public class EaeService implements IEaeService {
 	@PersistenceContext(unitName = "eaePersistenceUnit")
 	private EntityManager					eaeEntityManager;
 
+	@PersistenceContext(unitName = "synchrosiPersistenceUnit")
+	private EntityManager					synchrosiPersistenceUnit;
+
 	@Autowired
 	private IAgentService					agentService;
 

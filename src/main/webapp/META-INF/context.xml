@@ -21,6 +21,12 @@
 		driverClassName="org.postgresql.Driver" url="***REMOVED***"
 		poolPreparedStatements="true" />
 		
+	<Resource name="jdbc/TIARHE_DS" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="30" minIdle="0" validationQuery="select 1"
+		maxWait="10000" initialSize="1" username="***REMOVED***" password="***REMOVED***"
+		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/synchrosi"
+		poolPreparedStatements="true" />
+		
 
 	<!--  -->
 	<!-- WS SIRH -->

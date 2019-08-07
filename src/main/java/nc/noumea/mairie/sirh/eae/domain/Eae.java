@@ -33,7 +33,8 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeEtatEnum;
 @Table(name = "EAE")
 @PersistenceUnit(unitName = "eaePersistenceUnit")
 @NamedQueries({ @NamedQuery(name = "findEaeByIdAgent", query = "select e from Eae e where e.idEae = :idEae " ),
-	@NamedQuery(name = "findEaeForMigration", query = "select e from Eae e where e.etat in ('F','CO') and e.eaeCampagne.idCampagneEae in (26,27,28) order by idEae" )})
+	@NamedQuery(name = "findEaeForMigration", query = "select e from Eae e where e.etat in ('F','CO') and e.eaeCampagne.idCampagneEae in (26,27,28) "
+			+ "and e.eaeEvalue.idAgent in :listIdsAgent order by idEae")})
 public class Eae {
 
 	@Id

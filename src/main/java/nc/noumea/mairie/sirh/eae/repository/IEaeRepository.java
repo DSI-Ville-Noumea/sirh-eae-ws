@@ -14,6 +14,8 @@ import nc.noumea.mairie.sirh.eae.dto.FormRehercheGestionEae;
 
 public interface IEaeRepository {
 
+	List<String> getActiveAgentFromTiarhe();
+
 	EaeCampagne findEaeCampagne(Integer idEaeCampagne);
 
 	<T> T getEntity(Class<T> Tclass, Object Id);
@@ -22,7 +24,7 @@ public interface IEaeRepository {
 
 	void removeEntity(Object entity);
 	
-	List<Eae> findAllForMigration();
+	List<Eae> findAllForMigration(List<String> listIdsAgent);
 
 	EaeCampagne findEaeCampagneByAnnee(Integer annee);
 

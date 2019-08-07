@@ -51,4 +51,8 @@
 		</properties>
 	</persistence-unit>
 	
+	<persistence-unit name="synchrosiPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	</persistence-unit>
+	
 </persistence>

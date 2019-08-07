@@ -45,7 +45,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 	private Logger logger = LoggerFactory.getLogger(MigrationEaeService.class);
 
 	@Autowired
-	private IEaeRepository					eaeRepository;
+	private IEaeRepository eaeRepository;
 	
 	@Autowired
 	private SirhWSConsumer sirhWsConsumer;
@@ -55,7 +55,6 @@ public class MigrationEaeService implements IMigrationEaeService {
 	private EaeDeveloppement formateur = new EaeDeveloppement();
 	
 	private DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	private DateFormat yearFormat = new SimpleDateFormat("yyyy");
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -71,9 +70,11 @@ public class MigrationEaeService implements IMigrationEaeService {
 	      Cell cell = headerRow.createCell(i++);
 	      cell.setCellValue(h);
 	    }
+	    
+	    List<String> listIdsActiveAgent = eaeRepository.getActiveAgentFromTiarhe();
 
 	    int rowNum = 1;
-	    for (Eae eae : eaeRepository.findAllForMigration()) {
+	    for (Eae eae : eaeRepository.findAllForMigration(listIdsActiveAgent)) {
 	    	cellNum = 0;
 			Row row = sheet.createRow(rowNum++);
 			Agent agent = sirhWsConsumer.getAgent(eae.getEaeEvalue().getIdAgent());
@@ -219,6 +220,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 	    FileOutputStream fileOut = new FileOutputStream("/home/teo/Desktop/testEAE.xlsx");
 	    workbook.write(fileOut);
 	    fileOut.close();
+	    workbook.close();
 	    logger.info("============= Export terminé =============");
 	
 	}

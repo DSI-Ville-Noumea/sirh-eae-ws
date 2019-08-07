@@ -70,6 +70,28 @@
 		<property name="dataSource" ref="eaePostgresDataSource" />
 	</bean>
 	
+	
+	<bean id="synchrosiPostgresDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:synchrositest;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+    
+	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
+		id="synchrosiTransactionManager">
+		<property name="entityManagerFactory" ref="synchrosiEntityManagerFactory" />
+	</bean>
+	<tx:annotation-driven mode="aspectj"
+		transaction-manager="synchrosiTransactionManager" />
+	<bean
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		id="synchrosiEntityManagerFactory">
+		<property name="persistenceXmlLocation" value="/META-INF/persistence.xml" />
+		<property name="persistenceUnitName" value="synchrosiPersistenceUnit" />
+		<property name="dataSource" ref="synchrosiPostgresDataSource" />
+	</bean>
+	
 <!--     <bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="mailSender"/> -->
 	<bean class="java.lang.String" id="typeEnvironnement" />
 	<bean class="java.lang.String" id="RADI_WS_Base_URL" />

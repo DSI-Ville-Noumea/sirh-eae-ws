@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,21 @@ public class EaeRepository implements IEaeRepository {
 	@PersistenceContext(unitName = "eaePersistenceUnit")
 	private EntityManager	eaeEntityManager;
 
+	@PersistenceContext(unitName = "synchrosiPersistenceUnit")
+	private EntityManager	synchrosiPersistenceUnit;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getActiveAgentFromTiarhe() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select distinct(identifianttechnique) FROM vm_tiarhe_agent ");
+		sb.append("where statut = 'Actif' and identifianttechnique is not null");
+
+		Query q = synchrosiPersistenceUnit.createNativeQuery(sb.toString());
+
+		return q.getResultList();
+	}
+
 	@Override
 	public EaeCampagne findEaeCampagne(Integer idEaeCampagne) {
 		return eaeEntityManager.find(EaeCampagne.class, idEaeCampagne);
@@ -59,8 +75,13 @@ public class EaeRepository implements IEaeRepository {
 	}
 	
 	@Override
-	public List<Eae> findAllForMigration() {
+	public List<Eae> findAllForMigration(List<String> listIdsAgent) {
 		TypedQuery<Eae> eaeQuery = eaeEntityManager.createNamedQuery("findEaeForMigration", Eae.class);
+		List<Integer> integerList = Lists.newArrayList();
+		for (String id : listIdsAgent) {
+			integerList.add(Integer.valueOf(id));
+		}
+		eaeQuery.setParameter("listIdsAgent", integerList);
 		return eaeQuery.getResultList();
 	}
 
