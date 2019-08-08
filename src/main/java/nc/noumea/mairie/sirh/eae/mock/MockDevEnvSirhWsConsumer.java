@@ -10,6 +10,7 @@ import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.FichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.ws.ISirhWsConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
@@ -114,6 +115,12 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 	
 	@Override
 	public Integer getModeAccesForAgent(Integer idAgent) throws SirhWSConsumerException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FichePosteDto getFichePoste(Integer idAgent) throws SirhWSConsumerException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -27,6 +27,7 @@ import nc.noumea.mairie.sirh.domain.Agent;
 import nc.noumea.mairie.sirh.eae.domain.Eae;
 import nc.noumea.mairie.sirh.eae.domain.EaeAppreciation;
 import nc.noumea.mairie.sirh.eae.domain.EaeDeveloppement;
+import nc.noumea.mairie.sirh.eae.domain.EaeEvaluateur;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
@@ -35,6 +36,8 @@ import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
+import nc.noumea.mairie.sirh.eae.dto.poste.FichePosteDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumer;
 import nc.noumea.mairie.sirh.ws.SirhWSConsumerException;
@@ -52,7 +55,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 	
 	private Integer cellNum = 0;
 	
-	private EaeDeveloppement formateur = new EaeDeveloppement();
+	private List<EaeDeveloppement> formateurs = Lists.newArrayList();
 	
 	private DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
@@ -77,10 +80,9 @@ public class MigrationEaeService implements IMigrationEaeService {
 	    for (Eae eae : eaeRepository.findAllForMigration(listIdsActiveAgent)) {
 	    	cellNum = 0;
 			Row row = sheet.createRow(rowNum++);
+			FichePosteDto fp = sirhWsConsumer.getFichePoste(eae.getEaeEvalue().getIdAgent());
 			Agent agent = sirhWsConsumer.getAgent(eae.getEaeEvalue().getIdAgent());
-			Agent manager = null;
-			if (!eae.getEaeEvaluateurs().isEmpty())
-				manager = sirhWsConsumer.getAgent(eae.getEaeEvaluateurs().iterator().next().getIdAgent());
+			Agent manager = getManager(eae);
 			
 			logger.info("Write row number {}, for eae {}.", rowNum, eae.getIdEae());
 
@@ -98,11 +100,12 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getDirectionService()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getLocalisation()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getMissions()));
-			row.createCell(cellNum++).setCellValue(eae.getPrimaryFichePoste().getAgentShd() == null ? "" : eae.getPrimaryFichePoste().getAgentShd().getDisplayNom()); // TODO : NPE
+			row.createCell(cellNum++).setCellValue(eae.getPrimaryFichePoste().getAgentShd() == null ? "" : eae.getPrimaryFichePoste().getAgentShd().getDisplayNom());
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getFonctionResponsable()));
-			row.createCell(cellNum++).setCellValue(""); // TODO
-			row.createCell(cellNum++).setCellValue(""); // TODO
-			row.createCell(cellNum++).setCellValue(""); // TODO
+			
+			row.createCell(cellNum++).setCellValue(""); // TODO : #54232
+			row.createCell(cellNum++).setCellValue(""); // TODO : #54232
+			row.createCell(cellNum++).setCellValue(""); // TODO : #54232
 			
 			// AUTOEVAL_NOUVELEM
 			row.createCell(cellNum++).setCellValue(eae.getEaeAutoEvaluation() == null ? "" : notNull(eae.getEaeAutoEvaluation().getParticularites()));
@@ -125,7 +128,6 @@ public class MigrationEaeService implements IMigrationEaeService {
 				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().isMobiliteFonctionnelle() ? "1" : "0");
 				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().isChangementMetier() ? "1" : "0");
 				if (eae.getEaeEvolution().getDelaiEnvisage() != null) {
-					// TODO : Vérifier que le mapping se fait bien (String, ou objet enum ?)
 					String mapping = eae.getEaeEvolution().getDelaiEnvisage().name().equals("MOINS1AN") ? "0" :
 						eae.getEaeEvolution().getDelaiEnvisage().name().equals("ENTRE1ET2ANS") ? "1" : "2";
 					row.createCell(cellNum++).setCellValue(mapping);
@@ -138,29 +140,22 @@ public class MigrationEaeService implements IMigrationEaeService {
 				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().isMobiliteAutre() ? "1" : "0");
 				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().isConcours() ? "1" : "0");
 				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().isVae() ? "1" : "0");
-				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getTempsPartielIdSpbhor())); // TODO : Mapping
+				
+				// Base horaire des temps partiels
+				if (eae.getEaeEvolution().getTempsPartielIdSpbhor() != null) {
+					SpbhorDto bh = sirhWsConsumer.getSpbhorById(eae.getEaeEvolution().getTempsPartielIdSpbhor());
+					String value = String.valueOf(bh.getTaux() * 100).substring(0, 2);
+					row.createCell(cellNum++).setCellValue(value);
+				} else 
+					addEmptyCell(row);
+				
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getDateRetraite()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getLibelleAutrePerspective()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getNomConcours()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getNomVae()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getCommentaireEvolution().getText()));
 			} else {
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
-				row.createCell(cellNum++).setCellValue("");
+				addEmptyCell(row, 16);
 			}
 			// ZYX4PROAC1 : Développement
 			setDeveloppements(eae.getEaeEvolution(), row);
@@ -177,7 +172,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getAvisRevalorisation()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getAvisChangementClasse()));
 			// FORMATEUR_DOMAINE
-			row.createCell(cellNum++).setCellValue(formateur == null ? "" : formateur.getLibelle());
+			row.createCell(cellNum++).setCellValue(getLibelleFormateurs());
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvaluateur() != null ? eae.getEaeEvolution().getCommentaireEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvalue() != null ? eae.getEaeEvolution().getCommentaireEvalue().getText() : "");
 			row.createCell(cellNum++).setCellValue(notNull(eae.getDureeEntretienMinutes()));
@@ -195,19 +190,15 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvaluateur() != null ? eae.getEaeEvaluation().getCommentaireAvctEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvalue() != null ? eae.getEaeEvaluation().getCommentaireAvctEvalue().getText() : "");
 			// FORMATEUR_DOMAINE_ECH
-			row.createCell(cellNum++).setCellValue(formateur == null || formateur.getEcheance() == null ? "" : sdf.format(formateur.getEcheance()));
-			row.createCell(cellNum++).setCellValue(formateur == null ? "" : String.valueOf(formateur.getPriorisation()));
+			row.createCell(cellNum++).setCellValue(getEcheanceFormateurs());
+			row.createCell(cellNum++).setCellValue(getPriorisationFormateurs());
 			// ZYX4TEMPAR
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isTempsPartiel()));
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isRetraite()));
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isAutrePerspective()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getNoteAnnee()));
-			if (eae.getEaeEvalue().getAgent() != null) {
-				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getAgent().getNomUsage()));
-				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getAgent().getPrenomUsage()));
-			} else {
-				addEmptyCell(row, 2);
-			}
+			row.createCell(cellNum++).setCellValue(notNull(agent.getNomUsage()));
+			row.createCell(cellNum++).setCellValue(notNull(agent.getPrenomUsage()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getNouvGrade()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getNouvEchelon()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getDateEffetAvancement()));
@@ -217,14 +208,36 @@ public class MigrationEaeService implements IMigrationEaeService {
 	    }
 
 	    // Write the output to a file
-	    FileOutputStream fileOut = new FileOutputStream("/home/teo/Desktop/testEAE.xlsx");
+	    FileOutputStream fileOut = new FileOutputStream("/home/teo/Desktop/migration_EAE.xlsx");
 	    workbook.write(fileOut);
 	    fileOut.close();
 	    workbook.close();
 	    logger.info("============= Export terminé =============");
-	
 	}
 
+	private Agent getManager(Eae eae) throws SirhWSConsumerException {
+		Agent manager = null;
+		
+		if (!eae.getEaeEvaluateurs().isEmpty()) {
+			for (EaeEvaluateur eval : eae.getEaeEvaluateurs()) {
+				manager = sirhWsConsumer.getAgent(eval.getIdAgent());
+				if (manager.getIdTiarhe() != null)
+					return manager;
+			}
+		}
+		// A ce stade, soit il n'y a pas de manager, soit les managers n'ont pas de matricule TIARHE.
+		// On va donc rechercher le délégataire.
+		if (eae.getIdAgentDelegataire() != null) {
+			manager = sirhWsConsumer.getAgent(eae.getIdAgentDelegataire());
+			if (manager.getIdTiarhe() == null)
+				logger.warn("Le délégataire ne possède pas de matricule TIARHE pour l'EAE {}", eae.getIdEae());
+		} else {
+			logger.warn("Aucun délégataire pour l'EAE {}", eae.getIdEae());
+		}
+		
+		return manager;
+	}
+	
 	private List<String> getHeaders() {
 		List<String> headers = Lists.newArrayList();
 
@@ -407,82 +420,159 @@ public class MigrationEaeService implements IMigrationEaeService {
 	}
 	
 	private void setDeveloppements(EaeEvolution eaeEvolution, Row row) {
-		// Le formateur est déclaré en variable de classe, car les données doivent être affichées plus tard.
-		formateur = null;
-		EaeDeveloppement connaissance1 = null;
-		EaeDeveloppement connaissance2 = null;
-		EaeDeveloppement connaissance3 = null;
-		EaeDeveloppement competence1 = null;
-		EaeDeveloppement competence2 = null;
-		EaeDeveloppement competence3 = null;
-		EaeDeveloppement concours = null;
-		EaeDeveloppement personnel = null;
-		EaeDeveloppement comportement = null;
+		List<EaeDeveloppement> connaissances = Lists.newArrayList();
+		List<EaeDeveloppement> competences = Lists.newArrayList();
+		List<EaeDeveloppement> concours = Lists.newArrayList();
+		List<EaeDeveloppement> personels = Lists.newArrayList();
+		List<EaeDeveloppement> comportements = Lists.newArrayList();
+		formateurs = Lists.newArrayList();
 
+		// Les formateurs sont déclarés en variable de classe, car les données doivent être affichées plus tard.
 		// Préparation des données
 		if (eaeEvolution != null) {
 			for (EaeDeveloppement dev : eaeEvolution.getEaeDeveloppements()) {
-				if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.FORMATEUR))
-					formateur = dev;
-				if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.CONCOURS))
-					concours = dev;
-				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.PERSONNEL))
-					personnel = dev;
-				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.COMPORTEMENT))
-					comportement = dev;
-				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.CONNAISSANCE)) {
-					if (connaissance1 == null)
-						connaissance1 = dev;
-					else if (connaissance2 == null)
-						connaissance2 = dev;
-					else if (connaissance3 == null)
-						connaissance3 = dev;
-				}
-				else if (dev.getTypeDeveloppement().equals(EaeTypeDeveloppementEnum.COMPETENCE)) {
-					if (competence1 == null)
-						competence1 = dev;
-					else if (competence2 == null)
-						competence2 = dev;
-					else if (competence3 == null)
-						competence3 = dev;
+				switch (dev.getTypeDeveloppement()) {
+					case CONNAISSANCE: 
+						connaissances.add(dev);
+						break;
+					case COMPETENCE: 
+						competences.add(dev);
+						break;
+					case CONCOURS: 
+						concours.add(dev);
+						break;
+					case PERSONNEL: 
+						personels.add(dev);
+						break;
+					case COMPORTEMENT: 
+						comportements.add(dev);
+						break;
+					case FORMATEUR: 
+						formateurs.add(dev);
+						break;
+					default : break;
 				}
 			}
+			
+			if (connaissances.size() > 3)
+				logger.warn("Il y a {} connaissances pour l'eaeEvolution id {}", connaissances.size(), eaeEvolution.getIdEaeEvolution());
+			if (competences.size() > 3)
+				logger.warn("Il y a {} compétences pour l'eaeEvolution id {}", competences.size(), eaeEvolution.getIdEaeEvolution());
 
 			// Ecriture des données
-			row.createCell(cellNum++).setCellValue(connaissance1 == null ? "" : connaissance1.getLibelle());
-			row.createCell(cellNum++).setCellValue(connaissance2 == null ? "" : connaissance2.getLibelle());
-			row.createCell(cellNum++).setCellValue(connaissance3 == null ? "" : connaissance3.getLibelle());
-			row.createCell(cellNum++).setCellValue(connaissance1 == null ? "" : sdf.format(connaissance1.getEcheance()));
-			row.createCell(cellNum++).setCellValue(connaissance2 == null ? "" : sdf.format(connaissance2.getEcheance()));
-			row.createCell(cellNum++).setCellValue(connaissance3 == null ? "" : sdf.format(connaissance3.getEcheance()));
-			row.createCell(cellNum++).setCellValue(connaissance1 == null ? "" : String.valueOf(connaissance1.getPriorisation()));
-			row.createCell(cellNum++).setCellValue(connaissance2 == null ? "" : String.valueOf(connaissance2.getPriorisation()));
-			row.createCell(cellNum++).setCellValue(connaissance3 == null ? "" : String.valueOf(connaissance3.getPriorisation()));
-			
-			row.createCell(cellNum++).setCellValue(competence1 == null ? "" : competence1.getLibelle());
-			row.createCell(cellNum++).setCellValue(competence2 == null ? "" : competence2.getLibelle());
-			row.createCell(cellNum++).setCellValue(competence3 == null ? "" : competence3.getLibelle());
-			row.createCell(cellNum++).setCellValue(competence1 == null ? "" : sdf.format(competence1.getEcheance()));
-			row.createCell(cellNum++).setCellValue(competence2 == null ? "" : sdf.format(competence2.getEcheance()));
-			row.createCell(cellNum++).setCellValue(competence3 == null ? "" : sdf.format(competence3.getEcheance()));
-			row.createCell(cellNum++).setCellValue(competence1 == null ? "" : String.valueOf(competence1.getPriorisation()));
-			row.createCell(cellNum++).setCellValue(competence2 == null ? "" : String.valueOf(competence2.getPriorisation()));
-			row.createCell(cellNum++).setCellValue(competence3 == null ? "" : String.valueOf(competence3.getPriorisation()));
-
-			row.createCell(cellNum++).setCellValue(concours == null ? "" : concours.getLibelle());
-			row.createCell(cellNum++).setCellValue(concours == null ? "" : sdf.format(concours.getEcheance()));
-			row.createCell(cellNum++).setCellValue(concours == null ? "" : String.valueOf(concours.getPriorisation()));
-
-			row.createCell(cellNum++).setCellValue(personnel == null ? "" : personnel.getLibelle());
-			row.createCell(cellNum++).setCellValue(personnel == null ? "" : sdf.format(personnel.getEcheance()));
-			row.createCell(cellNum++).setCellValue(personnel == null ? "" : String.valueOf(personnel.getPriorisation()));
-
-			row.createCell(cellNum++).setCellValue(comportement == null ? "" : comportement.getLibelle());
-			row.createCell(cellNum++).setCellValue(comportement == null ? "" : sdf.format(comportement.getEcheance()));
-			row.createCell(cellNum++).setCellValue(comportement == null ? "" : String.valueOf(comportement.getPriorisation()));
+			writeConnaissancesAndCompetences(connaissances, row);
+			writeConnaissancesAndCompetences(competences, row);
+			writeDeveloppements(concours, row);
+			writeDeveloppements(personels, row);
+			writeDeveloppements(comportements, row);
 		} else {
 			addEmptyCell(row, 27);
 		}
+	}
+	
+	private void writeConnaissancesAndCompetences(List<EaeDeveloppement> developpements, Row row) {
+		EaeDeveloppement dev1 = null;
+		EaeDeveloppement dev2 = null;
+		EaeDeveloppement dev3 = null;
+		
+		for (EaeDeveloppement dev : developpements) {
+			if (dev1 == null)
+				dev1 = dev;
+           else if (dev2 == null)
+        	   dev2 = dev;
+           else if (dev3 == null)
+        	   dev3 = dev;
+		}
+		row.createCell(cellNum++).setCellValue(dev1 == null ? "" : dev1.getLibelle());
+		row.createCell(cellNum++).setCellValue(dev2 == null ? "" : dev2.getLibelle());
+		row.createCell(cellNum++).setCellValue(dev3 == null ? "" : dev3.getLibelle());
+		row.createCell(cellNum++).setCellValue(dev1 == null ? "" : sdf.format(dev1.getEcheance()));
+		row.createCell(cellNum++).setCellValue(dev2 == null ? "" : sdf.format(dev2.getEcheance()));
+		row.createCell(cellNum++).setCellValue(dev3 == null ? "" : sdf.format(dev3.getEcheance()));
+		row.createCell(cellNum++).setCellValue(dev1 == null ? "" : String.valueOf(dev1.getPriorisation()));
+		row.createCell(cellNum++).setCellValue(dev2 == null ? "" : String.valueOf(dev2.getPriorisation()));
+		row.createCell(cellNum++).setCellValue(dev3 == null ? "" : String.valueOf(dev3.getPriorisation()));
+	}
+	
+	private void writeDeveloppements(List<EaeDeveloppement> developpements, Row row) {
+		if (developpements.isEmpty()) {
+			addEmptyCell(row, 3);
+			return;
+		}
+		
+		String libelle = "";
+		String echeance = "";
+		String priorisation = "";
+		EaeDeveloppement dev = null;
+		
+		if (developpements.size() > 1) {
+			for (int i = 0 ; i < developpements.size() ; i++) {
+				dev = developpements.get(i);
+				libelle += (i+1) + " - " + dev.getLibelle() + "\n";
+				echeance += (i+1) + " - " + sdf.format(dev.getEcheance()) + "\n";
+				priorisation += (i+1) + " - " + String.valueOf(dev.getPriorisation()) + "\n";
+			}
+		} else {
+			dev = developpements.get(0);
+			libelle = dev.getLibelle();
+			echeance = dev.getEcheance() == null ? "" : sdf.format(dev.getEcheance());
+			priorisation = String.valueOf(dev.getPriorisation());
+		}
+		
+		row.createCell(cellNum++).setCellValue(notNull(libelle));
+		row.createCell(cellNum++).setCellValue(notNull(echeance));
+		row.createCell(cellNum++).setCellValue(notNull(priorisation));
+	}
+	
+	private String getLibelleFormateurs() {
+		if (formateurs.isEmpty())
+			return "";
+		if (formateurs.size() == 1)
+			return formateurs.get(0).getLibelle();
+		
+		String libelle = "";
+		EaeDeveloppement dev = null;
+		
+		for (int i = 0 ; i < formateurs.size() ; i++) {
+			dev = formateurs.get(i);
+			libelle += (i+1) + " - " + dev.getLibelle() + "\n";
+		}
+		
+		return libelle;
+	}
+	
+	private String getEcheanceFormateurs() {
+		if (formateurs.isEmpty())
+			return "";
+		if (formateurs.size() == 1)
+			return formateurs.get(0).getEcheance() == null ? "" : sdf.format(formateurs.get(0).getEcheance());
+		
+		String echeance = "";
+		EaeDeveloppement dev = null;
+		
+		for (int i = 0 ; i < formateurs.size() ; i++) {
+			dev = formateurs.get(i);
+			echeance += dev.getEcheance() == null ? "" : (i+1) + " - " + sdf.format(dev.getEcheance()) + "\n";
+		}
+		
+		return echeance;
+	}
+	
+	private String getPriorisationFormateurs() {
+		if (formateurs.isEmpty())
+			return "";
+		if (formateurs.size() == 1)
+			return String.valueOf(formateurs.get(0).getPriorisation());
+		
+		String priorisation = "";
+		EaeDeveloppement dev = null;
+		
+		for (int i = 0 ; i < formateurs.size() ; i++) {
+			dev = formateurs.get(i);
+			priorisation += (i+1) + " - " + String.valueOf(dev.getPriorisation()) + "\n";
+		}
+		
+		return priorisation;
 	}
 	
 	private void setObjectifs(Set<EaeResultat> eaeResultat, Row row) {

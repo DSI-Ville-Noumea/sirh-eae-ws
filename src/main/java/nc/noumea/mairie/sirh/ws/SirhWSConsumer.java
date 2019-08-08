@@ -23,6 +23,7 @@ import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.FichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.tools.transformer.MSDateTransformer;
 
@@ -48,6 +49,8 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	private static final String sirhAgentUrl = "agents/agent";
 	private static final String sirhDateAvctUrl = "calculEae/calculDateAvancement";
 	private static final String sirhIsUserSirhUrl = "utilisateur/isUtilisateurSIRH";
+	
+	private static final String sirhFichePoste = "fichePostes/getFichePoste";
 
 	public String getSirhWsBaseUrl() {
 		return sirhWsBaseUrl;
@@ -67,6 +70,10 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 
 	private String getSirhAvancementUrl() {
 		return sirhWsBaseUrl + sirhAvancementUrl;
+	}
+
+	private String getSirhFPUrl() {
+		return sirhWsBaseUrl + sirhFichePoste;
 	}
 
 	private String getSirhAvancementDetacheUrl() {
@@ -282,6 +289,17 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAvancementUrl());
 
 		return readResponseDto(AvancementEaeDto.class, res, getSirhAvancementUrl());
+	}
+
+	@Override
+	public FichePosteDto getFichePoste(Integer idAgent) throws SirhWSConsumerException {
+
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("idAgent", String.valueOf(idAgent));
+
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAvancementUrl());
+
+		return readResponseDto(FichePosteDto.class, res, getSirhFPUrl());
 	}
 
 	@Override

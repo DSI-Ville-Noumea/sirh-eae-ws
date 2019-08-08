@@ -7,9 +7,12 @@ import nc.noumea.mairie.sirh.eae.dto.AvancementEaeDto;
 import nc.noumea.mairie.sirh.eae.dto.CalculEaeInfosDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.AutreAdministrationAgentDto;
 import nc.noumea.mairie.sirh.eae.dto.agent.DateAvctDto;
+import nc.noumea.mairie.sirh.eae.dto.poste.FichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 
 public interface ISirhWsConsumer {
+	
+	FichePosteDto getFichePoste(Integer idAgent) throws SirhWSConsumerException;
 
 	public List<Integer> getListOfSubAgentsForAgentId(int agentId) throws SirhWSConsumerException;
 
