@@ -35,7 +35,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
-import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeDeveloppementEnum;
+import nc.noumea.mairie.sirh.eae.dto.poste.ActiviteMetierSavoirFaire;
 import nc.noumea.mairie.sirh.eae.dto.poste.FichePosteDto;
 import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 import nc.noumea.mairie.sirh.eae.repository.IEaeRepository;
@@ -103,9 +103,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(eae.getPrimaryFichePoste().getAgentShd() == null ? "" : eae.getPrimaryFichePoste().getAgentShd().getDisplayNom());
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getFonctionResponsable()));
 			
-			row.createCell(cellNum++).setCellValue(""); // TODO : #54232
-			row.createCell(cellNum++).setCellValue(""); // TODO : #54232
-			row.createCell(cellNum++).setCellValue(""); // TODO : #54232
+			setFichePoste(fp, row);
 			
 			// AUTOEVAL_NOUVELEM
 			row.createCell(cellNum++).setCellValue(eae.getEaeAutoEvaluation() == null ? "" : notNull(eae.getEaeAutoEvaluation().getParticularites()));
@@ -699,6 +697,66 @@ public class MigrationEaeService implements IMigrationEaeService {
 		} else {
 			addEmptyCell(row, 32);
 		}
+	}
+	
+	private void writeActiviteMetierEtSavoirsFaire(List<ActiviteMetierSavoirFaire> liste, Row row) {
+		Map<String, List<String>> mapActiviteMetier = Maps.newHashMap();
+		for (ActiviteMetierSavoirFaire a : liste) {
+			if (mapActiviteMetier.containsKey(a.getActiviteMetier())) {
+				List<String> existingList = mapActiviteMetier.get(a.getActiviteMetier());
+				existingList.add(a.getSavoirFaire());
+				mapActiviteMetier.put(a.getActiviteMetier(), existingList);
+			} else {
+				List<String> newList = Lists.newArrayList();
+				newList.add(a.getSavoirFaire());
+				mapActiviteMetier.put(a.getActiviteMetier(), newList);
+			}
+		}
+		String value = "     ACTIVITES METIER ET SAVOIRS-FAIRE\n\n";
+		for (Map.Entry<String, List<String>> entry : mapActiviteMetier.entrySet()) {
+			value += "\n* " + entry.getKey() + "\n";
+			for(String sf : entry.getValue()) {
+				value += " - " + sf + "\n";
+			}
+		}
+		row.createCell(cellNum++).setCellValue(value);
+	}
+	
+	private void setFichePoste(FichePosteDto fp, Row row) {
+		if (fp == null) {
+			addEmptyCell(row, 3);
+			return;
+		}
+		
+		if (!fp.getActiviteMetier().isEmpty())
+			writeActiviteMetierEtSavoirsFaire(fp.getActiviteMetier(), row);
+		else
+			addEmptyCell(row);
+		
+		String activiteSecondaires = "";
+		if (!fp.getSavoirs().isEmpty()) {
+			activiteSecondaires = "     SAVOIRS : \n\n";
+			for (String activite : fp.getSavoirs())
+				activiteSecondaires += "- " + activite + "\n";
+		}
+		row.createCell(cellNum++).setCellValue(activiteSecondaires);
+
+		String competencesRequises = "";
+		if (!fp.getActiviteGenerale().isEmpty()) {
+			competencesRequises = "     ACTIVITES GENERALES : \n\n";
+			for (String activite : fp.getActiviteGenerale())
+				competencesRequises += "- " + activite + "\n";
+		}
+		if (fp.getInformationsComplementaires() != null && !fp.getInformationsComplementaires().isEmpty()) {
+			competencesRequises += "\n     INFORMATIONS COMPLEMENTAIRES : \n\n";
+			competencesRequises += "- " + fp.getInformationsComplementaires() + "\n";
+		}
+		if (!fp.getConditionExercice().isEmpty()) {
+			competencesRequises += "\n     CONDITIONS D'EXERCICE : \n\n";
+			for (String activite : fp.getConditionExercice())
+				competencesRequises += "- " + activite + "\n";
+		}
+		row.createCell(cellNum++).setCellValue(competencesRequises);
 	}
 	
 	private String notNull(Object s) {

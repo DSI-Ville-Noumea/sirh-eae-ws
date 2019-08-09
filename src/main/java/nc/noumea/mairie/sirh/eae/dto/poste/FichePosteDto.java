@@ -58,6 +58,14 @@ public class FichePosteDto {
 
 	private Integer idAgent;
 	
+	// V2
+	private String informationsComplementaires;
+	private List<ActiviteMetierSavoirFaire> activiteMetier = new ArrayList<>();
+	private List<String> savoirFaireMetier = new ArrayList<>();
+	private List<String> activiteGenerale = new ArrayList<>();
+	private List<String> conditionExercice = new ArrayList<>();
+	private List<String> competenceManagement = new ArrayList<>();
+	
 	public FichePosteDto() {
 		activites = new ArrayList<String>();
 		savoirs = new ArrayList<String>();
@@ -404,6 +412,54 @@ public class FichePosteDto {
 
 	public void setIdServiceADS(Integer idServiceADS) {
 		this.idServiceADS = idServiceADS;
+	}
+
+	public List<ActiviteMetierSavoirFaire> getActiviteMetier() {
+		return activiteMetier;
+	}
+
+	public void setActiviteMetier(List<ActiviteMetierSavoirFaire> activiteMetier) {
+		this.activiteMetier = activiteMetier;
+	}
+
+	public List<String> getSavoirFaireMetier() {
+		return savoirFaireMetier;
+	}
+
+	public void setSavoirFaireMetier(List<String> savoirFaireMetier) {
+		this.savoirFaireMetier = savoirFaireMetier;
+	}
+
+	public List<String> getActiviteGenerale() {
+		return activiteGenerale;
+	}
+
+	public void setActiviteGenerale(List<String> activiteGenerale) {
+		this.activiteGenerale = activiteGenerale;
+	}
+
+	public List<String> getConditionExercice() {
+		return conditionExercice;
+	}
+
+	public void setConditionExercice(List<String> conditionExercice) {
+		this.conditionExercice = conditionExercice;
+	}
+
+	public List<String> getCompetenceManagement() {
+		return competenceManagement;
+	}
+
+	public void setCompetenceManagement(List<String> competenceManagement) {
+		this.competenceManagement = competenceManagement;
+	}
+
+	public String getInformationsComplementaires() {
+		return informationsComplementaires;
+	}
+
+	public void setInformationsComplementaires(String informationsComplementaires) {
+		this.informationsComplementaires = informationsComplementaires;
 	}
 
 }

@@ -297,7 +297,7 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgent", String.valueOf(idAgent));
 
-		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhAvancementUrl());
+		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhFPUrl());
 
 		return readResponseDto(FichePosteDto.class, res, getSirhFPUrl());
 	}
