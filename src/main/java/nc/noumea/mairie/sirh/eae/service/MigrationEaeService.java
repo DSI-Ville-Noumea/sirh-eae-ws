@@ -56,7 +56,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 	
 	private Integer cellNum = 0;
 	
-	private List<EaeDeveloppement> formateurs = Lists.newArrayList();
+	private EaeDeveloppement formateur = null;
 	
 	private DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
@@ -86,6 +86,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			FichePosteDto fp = sirhWsConsumer.getFichePoste(eae.getEaeEvalue().getIdAgent());
 			Agent agent = sirhWsConsumer.getAgent(eae.getEaeEvalue().getIdAgent());
 			Agent manager = getManager(eae);
+			Agent shd = eae.getPrimaryFichePoste().getIdAgentShd() == null ? null : sirhWsConsumer.getAgent(eae.getPrimaryFichePoste().getIdAgentShd());
 			
 			logger.info("Write row number {}, for eae {}.", rowNum, eae.getIdEae());
 
@@ -103,8 +104,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getDirectionService()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getLocalisation()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getMissions()));
-			// TODO : responsable
-			row.createCell(cellNum++).setCellValue(eae.getPrimaryFichePoste().getAgentShd() == null ? "" : eae.getPrimaryFichePoste().getAgentShd().getDisplayNom());
+			row.createCell(cellNum++).setCellValue(shd == null ? "" : shd.getDisplayNom() + " " + shd.getDisplayPrenom());
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getFonctionResponsable()));
 			
 			setFichePoste(fp, row);
@@ -175,7 +175,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue("");
 			row.createCell(cellNum++).setCellValue("");
 			// FORMATEUR_DOMAINE
-			row.createCell(cellNum++).setCellValue(getLibelleFormateurs());
+			row.createCell(cellNum++).setCellValue(formateur == null ? "" : notNull(formateur.getLibelle()));
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvaluateur() != null ? eae.getEaeEvolution().getCommentaireEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvalue() != null ? eae.getEaeEvolution().getCommentaireEvalue().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getDureeEntretienMinutes() == null ? "" : eae.getDureeEntretienMinutes() + " minutes");
@@ -193,8 +193,8 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvaluateur() != null ? eae.getEaeEvaluation().getCommentaireAvctEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvalue() != null ? eae.getEaeEvaluation().getCommentaireAvctEvalue().getText() : "");
 			// FORMATEUR_DOMAINE_ECH
-			row.createCell(cellNum++).setCellValue(getEcheanceFormateurs()); // Toujours null. C'est normal, pas de données.
-			row.createCell(cellNum++).setCellValue(getPriorisationFormateurs()); // TODO : Le format n'est pas bon (numéric sur 2 car) => On ne peut pas mettre les formateurs s'il y en a plus d'un ...
+			row.createCell(cellNum++).setCellValue(formateur == null ? "" : notNull(formateur.getEcheance())); // Toujours null. C'est normal, pas de données.
+			row.createCell(cellNum++).setCellValue(formateur == null ? "" : notNull(formateur.getPriorisation()));
 			// ZYX4TEMPAR
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isTempsPartiel()));
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isRetraite()));
@@ -421,7 +421,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 		List<EaeDeveloppement> concours = Lists.newArrayList();
 		List<EaeDeveloppement> personels = Lists.newArrayList();
 		List<EaeDeveloppement> comportements = Lists.newArrayList();
-		formateurs = Lists.newArrayList();
+		formateur = null;
 
 		// Les formateurs sont déclarés en variable de classe, car les données doivent être affichées plus tard.
 		// Préparation des données
@@ -444,7 +444,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 						comportements.add(dev);
 						break;
 					case FORMATEUR: 
-						formateurs.add(dev);
+						formateur = dev;
 						break;
 					default : break;
 				}
@@ -518,57 +518,6 @@ public class MigrationEaeService implements IMigrationEaeService {
 		row.createCell(cellNum++).setCellValue(notNull(libelle));
 		row.createCell(cellNum++).setCellValue(notNull(echeance));
 		row.createCell(cellNum++).setCellValue(notNull(priorisation));
-	}
-	
-	private String getLibelleFormateurs() {
-		if (formateurs.isEmpty())
-			return "";
-		if (formateurs.size() == 1)
-			return formateurs.get(0).getLibelle();
-		
-		String libelle = "";
-		EaeDeveloppement dev = null;
-		
-		for (int i = 0 ; i < formateurs.size() ; i++) {
-			dev = formateurs.get(i);
-			libelle += (i+1) + " - " + dev.getLibelle() + "\n";
-		}
-		
-		return libelle;
-	}
-	
-	private String getEcheanceFormateurs() {
-		if (formateurs.isEmpty())
-			return "";
-		if (formateurs.size() == 1)
-			return formateurs.get(0).getEcheance() == null ? "" : sdf.format(formateurs.get(0).getEcheance());
-		
-		String echeance = "";
-		EaeDeveloppement dev = null;
-		
-		for (int i = 0 ; i < formateurs.size() ; i++) {
-			dev = formateurs.get(i);
-			echeance += dev.getEcheance() == null ? "" : (i+1) + " - " + sdf.format(dev.getEcheance()) + "\n";
-		}
-		
-		return echeance;
-	}
-	
-	private String getPriorisationFormateurs() {
-		if (formateurs.isEmpty())
-			return "";
-		if (formateurs.size() == 1)
-			return String.valueOf(formateurs.get(0).getPriorisation());
-		
-		String priorisation = "";
-		EaeDeveloppement dev = null;
-		
-		for (int i = 0 ; i < formateurs.size() ; i++) {
-			dev = formateurs.get(i);
-			priorisation += (i+1) + " - " + String.valueOf(dev.getPriorisation()) + "\n";
-		}
-		
-		return priorisation;
 	}
 	
 	private void setObjectifs(Set<EaeResultat> eaeResultat, Row row) {
