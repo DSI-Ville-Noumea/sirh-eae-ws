@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +63,9 @@ public class MigrationEaeService implements IMigrationEaeService {
 	@Override
 	@Transactional(readOnly = true)
 	public void exportEAEForMigration() throws IOException, SirhWSConsumerException {
-
+	    Date startDate = new Date();
+	    logger.info("Start date : {}", startDate.toString());
+	    
 		Workbook workbook = new XSSFWorkbook();
 	    Sheet sheet = workbook.createSheet("EAE");
 
@@ -89,7 +92,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(eae.getIdEae()); // TODO : Supprimer cette ligne après les tests
 			row.createCell(cellNum++).setCellValue(notNull(agent.getIdTiarhe()));
 			row.createCell(cellNum++).setCellValue(eae.getEaeCampagne().getAnnee() - 1);
-			row.createCell(cellNum++).setCellValue(eae.getDateEntretien() == null ? "" : sdf.format(eae.getDateEntretien()));
+			row.createCell(cellNum++).setCellValue(eae.getDateEntretien() != null ? sdf.format(eae.getDateEntretien()) : eae.getDateCreation() != null ? sdf.format(eae.getDateCreation()) : "");
 			row.createCell(cellNum++).setCellValue("18");
 			row.createCell(cellNum++).setCellValue(manager == null ? "" : notNull(manager.getIdTiarhe()));
 			
@@ -100,6 +103,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getDirectionService()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getLocalisation()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getMissions()));
+			// TODO : responsable
 			row.createCell(cellNum++).setCellValue(eae.getPrimaryFichePoste().getAgentShd() == null ? "" : eae.getPrimaryFichePoste().getAgentShd().getDisplayNom());
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getFonctionResponsable()));
 			
@@ -147,7 +151,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 				} else 
 					addEmptyCell(row);
 				
-				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getDateRetraite()));
+				row.createCell(cellNum++).setCellValue(eae.getEaeEvolution().getDateRetraite() == null ? "" : sdf.format(eae.getEaeEvolution().getDateRetraite()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getLibelleAutrePerspective()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getNomConcours()));
 				row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvolution().getNomVae()));
@@ -167,13 +171,14 @@ public class MigrationEaeService implements IMigrationEaeService {
 			} else {
 				addEmptyCell(row);
 			}
-			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getAvisRevalorisation()));
-			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getAvisChangementClasse()));
+			// ZYX4AUGMEN et ZYX4AVCCLA : n'existent plus dans SIRH
+			row.createCell(cellNum++).setCellValue("");
+			row.createCell(cellNum++).setCellValue("");
 			// FORMATEUR_DOMAINE
 			row.createCell(cellNum++).setCellValue(getLibelleFormateurs());
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvaluateur() != null ? eae.getEaeEvolution().getCommentaireEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().getCommentaireEvalue() != null ? eae.getEaeEvolution().getCommentaireEvalue().getText() : "");
-			row.createCell(cellNum++).setCellValue(notNull(eae.getDureeEntretienMinutes()));
+			row.createCell(cellNum++).setCellValue(eae.getDureeEntretienMinutes() == null ? "" : eae.getDureeEntretienMinutes() + " minutes");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireEvaluateur() != null ? eae.getEaeEvaluation().getCommentaireEvaluateur().getText() : "");
 			// ZYX4AVCECH
 			if (eae.getEaeEvaluation().getPropositionAvancement() != null) {
@@ -188,8 +193,8 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvaluateur() != null ? eae.getEaeEvaluation().getCommentaireAvctEvaluateur().getText() : "");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvaluation().getCommentaireAvctEvalue() != null ? eae.getEaeEvaluation().getCommentaireAvctEvalue().getText() : "");
 			// FORMATEUR_DOMAINE_ECH
-			row.createCell(cellNum++).setCellValue(getEcheanceFormateurs());
-			row.createCell(cellNum++).setCellValue(getPriorisationFormateurs());
+			row.createCell(cellNum++).setCellValue(getEcheanceFormateurs()); // Toujours null. C'est normal, pas de données.
+			row.createCell(cellNum++).setCellValue(getPriorisationFormateurs()); // TODO : Le format n'est pas bon (numéric sur 2 car) => On ne peut pas mettre les formateurs s'il y en a plus d'un ...
 			// ZYX4TEMPAR
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isTempsPartiel()));
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isRetraite()));
@@ -199,7 +204,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(notNull(agent.getPrenomUsage()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getNouvGrade()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getNouvEchelon()));
-			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getDateEffetAvancement()));
+			row.createCell(cellNum++).setCellValue(eae.getEaeEvalue().getDateEffetAvancement() == null ? "" : sdf.format(eae.getEaeEvalue().getDateEffetAvancement()));
 			addEmptyCell(row, 2);
 			
 			logger.info("Row number {} wrote, for eae {}.", rowNum, eae.getIdEae());
@@ -210,6 +215,8 @@ public class MigrationEaeService implements IMigrationEaeService {
 	    workbook.write(fileOut);
 	    fileOut.close();
 	    workbook.close();
+	    Date endDate = new Date();
+	    logger.info("End date : {}", endDate.toString());
 	    logger.info("============= Export terminé =============");
 	}
 
@@ -222,15 +229,6 @@ public class MigrationEaeService implements IMigrationEaeService {
 				if (manager.getIdTiarhe() != null)
 					return manager;
 			}
-		}
-		// A ce stade, soit il n'y a pas de manager, soit les managers n'ont pas de matricule TIARHE.
-		// On va donc rechercher le délégataire.
-		if (eae.getIdAgentDelegataire() != null) {
-			manager = sirhWsConsumer.getAgent(eae.getIdAgentDelegataire());
-			if (manager.getIdTiarhe() == null)
-				logger.warn("Le délégataire ne possède pas de matricule TIARHE pour l'EAE {}", eae.getIdEae());
-		} else {
-			logger.warn("Aucun délégataire pour l'EAE {}", eae.getIdEae());
 		}
 		
 		return manager;
