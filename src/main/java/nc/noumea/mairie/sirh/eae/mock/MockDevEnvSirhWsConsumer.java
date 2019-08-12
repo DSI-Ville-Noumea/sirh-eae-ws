@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.eae.mock;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -120,7 +121,7 @@ public class MockDevEnvSirhWsConsumer implements ISirhWsConsumer {
 	}
 
 	@Override
-	public FichePosteDto getFichePoste(Integer idAgent) throws SirhWSConsumerException {
+	public FichePosteDto getFichePoste(Integer idAgent, Date dateAffectation) throws SirhWSConsumerException {
 		// TODO Auto-generated method stub
 		return null;
 	}

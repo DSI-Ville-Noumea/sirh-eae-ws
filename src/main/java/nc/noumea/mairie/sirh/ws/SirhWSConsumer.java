@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -292,10 +293,13 @@ public class SirhWSConsumer implements ISirhWsConsumer {
 	}
 
 	@Override
-	public FichePosteDto getFichePoste(Integer idAgent) throws SirhWSConsumerException {
+	public FichePosteDto getFichePoste(Integer idAgent, Date dateAffectation) throws SirhWSConsumerException {
 
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("idAgent", String.valueOf(idAgent));
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		parameters.put("dateAffectation", sdf.format(dateAffectation));
 
 		ClientResponse res = createAndFireRequestWithParameter(parameters, getSirhFPUrl());
 

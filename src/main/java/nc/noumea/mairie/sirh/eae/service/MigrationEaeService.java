@@ -83,7 +83,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 	    for (Eae eae : eaeRepository.findAllForMigration(listIdsActiveAgent)) {
 	    	cellNum = 0;
 			Row row = sheet.createRow(rowNum++);
-			FichePosteDto fp = sirhWsConsumer.getFichePoste(eae.getEaeEvalue().getIdAgent());
+			FichePosteDto fp = sirhWsConsumer.getFichePoste(eae.getEaeEvalue().getIdAgent(), eae.getDateCreation());
 			Agent agent = sirhWsConsumer.getAgent(eae.getEaeEvalue().getIdAgent());
 			Agent manager = getManager(eae);
 			Agent shd = eae.getPrimaryFichePoste().getIdAgentShd() == null ? null : sirhWsConsumer.getAgent(eae.getPrimaryFichePoste().getIdAgentShd());

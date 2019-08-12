@@ -1,5 +1,6 @@
 package nc.noumea.mairie.sirh.ws;
 
+import java.util.Date;
 import java.util.List;
 
 import nc.noumea.mairie.sirh.domain.Agent;
@@ -12,7 +13,7 @@ import nc.noumea.mairie.sirh.eae.dto.poste.SpbhorDto;
 
 public interface ISirhWsConsumer {
 	
-	FichePosteDto getFichePoste(Integer idAgent) throws SirhWSConsumerException;
+	FichePosteDto getFichePoste(Integer idAgent, Date dateAffectation) throws SirhWSConsumerException;
 
 	public List<Integer> getListOfSubAgentsForAgentId(int agentId) throws SirhWSConsumerException;
 
