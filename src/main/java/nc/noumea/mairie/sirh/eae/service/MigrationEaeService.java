@@ -103,7 +103,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue("VILLE DE NOUMEA");
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getDirectionService()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getLocalisation()));
-			row.createCell(cellNum++).setCellValue(notNull(fp.getMissions()));
+			row.createCell(cellNum++).setCellValue(fp == null ? notNull(eae.getPrimaryFichePoste().getMissions()) : notNull(fp.getMissions()));
 			row.createCell(cellNum++).setCellValue(shd == null ? "" : shd.getDisplayNom() + " " + shd.getDisplayPrenom());
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getFonctionResponsable()));
 			
@@ -553,7 +553,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 					else
 						res5 += "- \n";
 					
-					if (obj.getCommentaire() == null && obj.getCommentaire().getText() == null)
+					if (obj.getCommentaire() != null && obj.getCommentaire().getText() != null)
 						com5 += "- " + obj.getCommentaire().getText() + "\n";
 					else
 						com5 += "- \n";
@@ -582,7 +582,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 				else
 					res5 += "- \n";
 				
-				if (obj.getCommentaire() == null && obj.getCommentaire().getText() == null)
+				if (obj.getCommentaire() != null && obj.getCommentaire().getText() != null)
 					com5 += "- " + obj.getCommentaire().getText() + "\n";
 				else
 					com5 += "- \n";
