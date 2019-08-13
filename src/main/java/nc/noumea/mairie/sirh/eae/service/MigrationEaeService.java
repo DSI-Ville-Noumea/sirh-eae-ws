@@ -103,7 +103,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue("VILLE DE NOUMEA");
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getDirectionService()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getLocalisation()));
-			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getMissions()));
+			row.createCell(cellNum++).setCellValue(notNull(fp.getMissions()));
 			row.createCell(cellNum++).setCellValue(shd == null ? "" : shd.getDisplayNom() + " " + shd.getDisplayPrenom());
 			row.createCell(cellNum++).setCellValue(notNull(eae.getPrimaryFichePoste().getFonctionResponsable()));
 			
@@ -196,9 +196,9 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(formateur == null ? "" : notNull(formateur.getEcheance())); // Toujours null. C'est normal, pas de données.
 			row.createCell(cellNum++).setCellValue(formateur == null ? "" : notNull(formateur.getPriorisation()));
 			// ZYX4TEMPAR
-			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isTempsPartiel()));
-			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isRetraite()));
-			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : notNull(eae.getEaeEvolution().isAutrePerspective()));
+			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().isTempsPartiel() ? "1" : "0");
+			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().isRetraite() ? "1" : "0");
+			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().isAutrePerspective() ? "1" : "0");
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getNoteAnnee()));
 			row.createCell(cellNum++).setCellValue(notNull(agent.getNomUsage()));
 			row.createCell(cellNum++).setCellValue(notNull(agent.getPrenomUsage()));
@@ -522,25 +522,75 @@ public class MigrationEaeService implements IMigrationEaeService {
 	
 	private void setObjectifs(Set<EaeResultat> eaeResultat, Row row) {
 		if (!eaeResultat.isEmpty()) {
-			Map<Integer, EaeResultat> map = Maps.newHashMap();
-			int i = 0;
+			List<EaeResultat> objectifs = Lists.newArrayList();
+			List<EaeResultat> objectifsIndividuels = Lists.newArrayList();
+			
 			for (EaeResultat resultat : eaeResultat) {
-				if (resultat.getTypeObjectif().getIdEaeTypeObjectif() == 1 && i < 5) 
-					map.put(i++, resultat);
-				else if (resultat.getTypeObjectif().getIdEaeTypeObjectif() == 2 && map.get(5) == null) 
-					map.put(5, resultat);
+				if (resultat.getTypeObjectif().getIdEaeTypeObjectif() == 1)
+					objectifs.add(resultat);
+				else if (resultat.getTypeObjectif().getIdEaeTypeObjectif() == 2)
+					objectifsIndividuels.add(resultat);
 			}
 			
-			for (Integer u = 0 ; u < 6 ; u++) {
-				EaeResultat result = map.get(u);
-				if (result != null) {
-					row.createCell(cellNum++).setCellValue(result.getObjectif());
-					row.createCell(cellNum++).setCellValue(result.getResultat());
-					row.createCell(cellNum++).setCellValue(result.getCommentaire() == null ? "" : result.getCommentaire().getText());
-				} else {
-					addEmptyCell(row, 3);
+			int i = 0;
+			String obj5 = "";
+			String res5 = "";
+			String com5 = "";
+			
+			for (EaeResultat obj : objectifs) {
+				if (i < 4) {
+					row.createCell(cellNum++).setCellValue(obj.getObjectif());
+					row.createCell(cellNum++).setCellValue(obj.getResultat());
+					row.createCell(cellNum++).setCellValue(obj.getCommentaire() == null ? "" : obj.getCommentaire().getText());
+				} else if (i >= 4) {
+					if (obj.getObjectif() != null)
+						obj5 += "- " + obj.getObjectif() + "\n";
+					else
+						obj5 += "- \n";
+					
+					if (obj.getResultat() != null)
+						res5 += "- " + obj.getResultat() + "\n";
+					else
+						res5 += "- \n";
+					
+					if (obj.getCommentaire() == null && obj.getCommentaire().getText() == null)
+						com5 += "- " + obj.getCommentaire().getText() + "\n";
+					else
+						com5 += "- \n";
 				}
+				i++;
 			}
+			if (i < 5)
+				addEmptyCell(row, 3 * (4-i));
+			
+			row.createCell(cellNum++).setCellValue(obj5);
+			row.createCell(cellNum++).setCellValue(res5);
+			row.createCell(cellNum++).setCellValue(com5);
+			
+			// Objectifs individuels
+			obj5 = "";
+			res5 = "";
+			com5 = "";
+			for (EaeResultat obj : objectifsIndividuels) {
+				if (obj.getObjectif() != null)
+					obj5 += "- " + obj.getObjectif() + "\n";
+				else
+					obj5 += "- \n";
+				
+				if (obj.getResultat() != null)
+					res5 += "- " + obj.getResultat() + "\n";
+				else
+					res5 += "- \n";
+				
+				if (obj.getCommentaire() == null && obj.getCommentaire().getText() == null)
+					com5 += "- " + obj.getCommentaire().getText() + "\n";
+				else
+					com5 += "- \n";
+			}
+			row.createCell(cellNum++).setCellValue(obj5);
+			row.createCell(cellNum++).setCellValue(res5);
+			row.createCell(cellNum++).setCellValue(com5);
+			
 		} else {
 			addEmptyCell(row, 18);
 		}
@@ -548,16 +598,15 @@ public class MigrationEaeService implements IMigrationEaeService {
 	
 	private void setPlansAction(Set<EaePlanAction> planAction, Row row) {
 		if (!planAction.isEmpty()) {
-			Map<Integer, EaePlanAction> map = Maps.newHashMap();
+			List<EaePlanAction> list = Lists.newArrayList();
 			String objAnneeSuivante = "";
 			String besoinMateriel = "";
 			String besoinFinancier = "";
 			String autreBesoin = "";
 			
-			int i = 0;
 			for (EaePlanAction plan : planAction) {
-				if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 1 && i < 5) 
-					map.put(i++, plan);
+				if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 1) 
+					list.add(plan);
 				else if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 2 && StringUtils.isEmpty(objAnneeSuivante)) 
 					objAnneeSuivante = plan.getObjectif();
 				else if (plan.getTypeObjectif().getIdEaeTypeObjectif() == 3 && StringUtils.isEmpty(besoinMateriel)) 
@@ -568,16 +617,27 @@ public class MigrationEaeService implements IMigrationEaeService {
 					autreBesoin = plan.getObjectif();
 			}
 			
-			for (Integer u = 0 ; u < 5 ; u++) {
-				EaePlanAction result = map.get(u);
-				if (result != null) {
-					row.createCell(cellNum++).setCellValue(result.getObjectif());
-					row.createCell(cellNum++).setCellValue(result.getMesure());
+			int i = 0;
+			String obj5 = "";
+			String mes5 = "";
+			for (EaePlanAction plan : list) {
+				if (i < 4) {
+					row.createCell(cellNum++).setCellValue(plan.getObjectif());
+					row.createCell(cellNum++).setCellValue(plan.getMesure());
 					addEmptyCell(row);
 				} else {
-					addEmptyCell(row, 3);
+					obj5 += "- " + plan.getObjectif() + "\n";
+					mes5 += "- " + plan.getMesure() + "\n";
 				}
+				i++;
 			}
+			if (i < 5)
+				addEmptyCell(row, 3 * (4-i));
+			
+			row.createCell(cellNum++).setCellValue(obj5);
+			row.createCell(cellNum++).setCellValue(mes5);
+			addEmptyCell(row);
+			
 			// OBJ_PROG_IND_ANNEE_SUIV, BESOIN_MAT, BESOIN_FIN, BESOIN_AUT
 			row.createCell(cellNum++).setCellValue(objAnneeSuivante);
 			row.createCell(cellNum++).setCellValue(besoinMateriel);
