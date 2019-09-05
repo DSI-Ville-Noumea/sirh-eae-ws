@@ -199,7 +199,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().isTempsPartiel() ? "1" : "0");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().isRetraite() ? "1" : "0");
 			row.createCell(cellNum++).setCellValue(eae.getEaeEvolution() == null ? "" : eae.getEaeEvolution().isAutrePerspective() ? "1" : "0");
-			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvaluation().getNoteAnnee()));
+			row.createCell(cellNum++).setCellValue((notNull(eae.getEaeEvaluation().getNoteAnnee())).replace(".", ","));
 			row.createCell(cellNum++).setCellValue(notNull(agent.getNomUsage()));
 			row.createCell(cellNum++).setCellValue(notNull(agent.getPrenomUsage()));
 			row.createCell(cellNum++).setCellValue(notNull(eae.getEaeEvalue().getNouvGrade()));
@@ -687,19 +687,19 @@ public class MigrationEaeService implements IMigrationEaeService {
 			// Ecriture des données (evaluateur)
 			for (int i = 0 ; i < 4 ; i++) {
 				EaeAppreciation appreciation = technique.get(i);
-				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvaluateur().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
 			}
 			for (int i = 0 ; i < 4 ; i++) {
 				EaeAppreciation appreciation = savoirEtre.get(i);
-				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvaluateur().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
 			}
 			for (int i = 0 ; i < 4 ; i++) {
 				EaeAppreciation appreciation = managerial.get(i);
-				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvaluateur().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
 			}
 			for (int i = 0 ; i < 4 ; i++) {
 				EaeAppreciation appreciation = resultat.get(i);
-				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvalue().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
+				row.createCell(cellNum++).setCellValue((appreciation == null || appreciation.getNoteEvaluateur().equals("NA")) ? "" : appreciation.getNoteEvaluateur());
 			}
 		} else {
 			addEmptyCell(row, 32);
