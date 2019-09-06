@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import nc.noumea.mairie.sirh.eae.domain.EaeEvolution;
 import nc.noumea.mairie.sirh.eae.domain.EaeEvolutionSouhait;
 import nc.noumea.mairie.sirh.eae.domain.EaePlanAction;
 import nc.noumea.mairie.sirh.eae.domain.EaeResultat;
+import nc.noumea.mairie.sirh.eae.domain.comparator.EaeDeveloppementComparator;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeAvancementEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeNiveauEnum;
 import nc.noumea.mairie.sirh.eae.domain.enums.EaeTypeAppreciationEnum;
@@ -451,9 +453,9 @@ public class MigrationEaeService implements IMigrationEaeService {
 			}
 			
 			if (connaissances.size() > 3)
-				logger.warn("Il y a {} connaissances pour l'eaeEvolution id {}", connaissances.size(), eaeEvolution.getIdEaeEvolution());
+				logger.warn("Il y a {} connaissances pour l'eaeEvolution id {}. On ne récupère que les 3 plus prioritaires !", connaissances.size(), eaeEvolution.getIdEaeEvolution());
 			if (competences.size() > 3)
-				logger.warn("Il y a {} compétences pour l'eaeEvolution id {}", competences.size(), eaeEvolution.getIdEaeEvolution());
+				logger.warn("Il y a {} compétences pour l'eaeEvolution id {}. On ne récupère que les 3 plus prioritaires !", competences.size(), eaeEvolution.getIdEaeEvolution());
 
 			// Ecriture des données
 			writeConnaissancesAndCompetences(connaissances, row);
@@ -470,6 +472,8 @@ public class MigrationEaeService implements IMigrationEaeService {
 		EaeDeveloppement dev1 = null;
 		EaeDeveloppement dev2 = null;
 		EaeDeveloppement dev3 = null;
+
+		Collections.sort(developpements, new EaeDeveloppementComparator());
 		
 		for (EaeDeveloppement dev : developpements) {
 			if (dev1 == null)
@@ -495,6 +499,8 @@ public class MigrationEaeService implements IMigrationEaeService {
 			addEmptyCell(row, 3);
 			return;
 		}
+
+		Collections.sort(developpements, new EaeDeveloppementComparator());
 		
 		String libelle = "";
 		String echeance = "";
