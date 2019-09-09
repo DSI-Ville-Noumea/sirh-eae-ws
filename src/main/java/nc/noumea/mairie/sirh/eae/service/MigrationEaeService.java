@@ -83,14 +83,14 @@ public class MigrationEaeService implements IMigrationEaeService {
 
 	    int rowNum = 1;
 	    for (Eae eae : eaeRepository.findAllForMigration(listIdsActiveAgent)) {
-	    	cellNum = 0;
+			logger.info("Write row number {}, for eae {}.", rowNum, eae.getIdEae());
+
+			cellNum = 0;
 			Row row = sheet.createRow(rowNum++);
 			FichePosteDto fp = sirhWsConsumer.getFichePoste(eae.getEaeEvalue().getIdAgent(), eae.getDateCreation());
 			Agent agent = sirhWsConsumer.getAgent(eae.getEaeEvalue().getIdAgent());
 			Agent manager = getManager(eae);
 			Agent shd = eae.getPrimaryFichePoste().getIdAgentShd() == null ? null : sirhWsConsumer.getAgent(eae.getPrimaryFichePoste().getIdAgentShd());
-			
-			logger.info("Write row number {}, for eae {}.", rowNum, eae.getIdEae());
 
 			row.createCell(cellNum++).setCellValue(eae.getIdEae()); // TODO : Supprimer cette ligne après les tests
 			row.createCell(cellNum++).setCellValue(notNull(agent.getIdTiarhe()));
@@ -473,22 +473,45 @@ public class MigrationEaeService implements IMigrationEaeService {
 		EaeDeveloppement dev2 = null;
 		EaeDeveloppement dev3 = null;
 
+		String libelleDev3 = "";
+		String echeanceDev3 = "";
+		Integer priorisationDev3 = null;
+
 		Collections.sort(developpements, new EaeDeveloppementComparator());
 		
-		for (EaeDeveloppement dev : developpements) {
-			if (dev1 == null)
-				dev1 = dev;
-           else if (dev2 == null)
-        	   dev2 = dev;
-           else if (dev3 == null)
-        	   dev3 = dev;
+		// Ce bout de code est un peu moche...
+		// S'il y a 3 développements ou moins, on les prend en compte "normalement"
+		if (developpements.size() <= 3) {
+			for (EaeDeveloppement dev : developpements) {
+				if (dev1 == null)
+					dev1 = dev;
+	           else if (dev2 == null)
+	        	   dev2 = dev;
+	           else if (dev3 == null)
+	        	   dev3 = dev;
+			}
+		// S'il y en a pus de 3, les deux premiers sont affichés "normalement", et les informations des autres développements sont concaténés dans la 3e colonne.
+		// (sauf la priorisation, il faut prendre la plus faible uniquement.)
+		} else {
+			dev1 = developpements.get(0);
+			dev2 = developpements.get(1);
+			
+			for (int i = 2 ; i < developpements.size() ; i++) {
+				dev3 = developpements.get(i);
+				libelleDev3 += " - " + dev3.getLibelle() + "\n";
+				echeanceDev3 += " - " + sdf.format(dev3.getEcheance()) + "\n";
+				if (priorisationDev3 == null) priorisationDev3 = dev3.getPriorisation();
+			}
+			dev3 = new EaeDeveloppement();
+			dev3.setLibelle(libelleDev3);
+			dev3.setPriorisation(priorisationDev3);
 		}
 		row.createCell(cellNum++).setCellValue(dev1 == null ? "" : dev1.getLibelle());
 		row.createCell(cellNum++).setCellValue(dev2 == null ? "" : dev2.getLibelle());
 		row.createCell(cellNum++).setCellValue(dev3 == null ? "" : dev3.getLibelle());
 		row.createCell(cellNum++).setCellValue(dev1 == null ? "" : sdf.format(dev1.getEcheance()));
 		row.createCell(cellNum++).setCellValue(dev2 == null ? "" : sdf.format(dev2.getEcheance()));
-		row.createCell(cellNum++).setCellValue(dev3 == null ? "" : sdf.format(dev3.getEcheance()));
+		row.createCell(cellNum++).setCellValue(echeanceDev3 != "" ? echeanceDev3 : dev3 == null ? "" : sdf.format(dev3.getEcheance()));
 		row.createCell(cellNum++).setCellValue(dev1 == null ? "" : String.valueOf(dev1.getPriorisation()));
 		row.createCell(cellNum++).setCellValue(dev2 == null ? "" : String.valueOf(dev2.getPriorisation()));
 		row.createCell(cellNum++).setCellValue(dev3 == null ? "" : String.valueOf(dev3.getPriorisation()));
@@ -504,7 +527,7 @@ public class MigrationEaeService implements IMigrationEaeService {
 		
 		String libelle = "";
 		String echeance = "";
-		String priorisation = "";
+		Integer priorisation = null;
 		EaeDeveloppement dev = null;
 		
 		if (developpements.size() > 1) {
@@ -512,13 +535,13 @@ public class MigrationEaeService implements IMigrationEaeService {
 				dev = developpements.get(i);
 				libelle += (i+1) + " - " + dev.getLibelle() + "\n";
 				echeance += (i+1) + " - " + sdf.format(dev.getEcheance()) + "\n";
-				priorisation += (i+1) + " - " + String.valueOf(dev.getPriorisation()) + "\n";
+				if (priorisation == null) priorisation = dev.getPriorisation();
 			}
 		} else {
 			dev = developpements.get(0);
 			libelle = dev.getLibelle();
 			echeance = dev.getEcheance() == null ? "" : sdf.format(dev.getEcheance());
-			priorisation = String.valueOf(dev.getPriorisation());
+			priorisation = dev.getPriorisation();
 		}
 		
 		row.createCell(cellNum++).setCellValue(notNull(libelle));
